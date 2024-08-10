@@ -2,8 +2,7 @@ import { InputLabel } from "@/components/ui/inputlabel"
 import { Button } from "@/components/ui/button"
 import { Link } from "react-router-dom"
 import { Logo } from "@/components/ui/logo"
-import { Github } from "lucide-react"
-import { Facebook } from "lucide-react"
+import { Github, Linkedin } from "lucide-react"
 
 export default function SignIn() {
    
@@ -18,9 +17,9 @@ export default function SignIn() {
                     </h1>
                 </div>
 
-                <InputLabel type="text" id="email" name="email" placeholder=" " label="Email" classname="bg-custom-blue border border-custom-border-gray focus:border-custom-light-blue" />
+                <InputLabel type="text" id="email" name="email" placeholder="Email" label="Email" classname="bg-custom-blue text-white border border-custom-border-gray focus:border-custom-light-blue" />
 
-                <InputLabel type="password" id="password" name="password" placeholder=" " label="Senha" classname="bg-custom-blue border border-custom-border-gray focus:border-custom-light-blue" />
+                <InputLabel type="password" id="password" name="password" placeholder="Senha" label="Senha" classname="border border-custom-border-gray focus:border-custom-light-blue" />
 
                 <Button className="w-full bg-custom-light-blue">Entrar</Button>
 
@@ -32,7 +31,7 @@ export default function SignIn() {
 
                 <div className="flex justify-center gap-3">
                     <Github/>
-                    <Facebook/>
+                    <Linkedin/>
                 </div>
                 <div className="flex justify-center ">
                 <p className="text-custom-text-gray">Não tem uma conta? <Link to="/cadastro" className="text-white ">Cadastrar-se</Link></p>
