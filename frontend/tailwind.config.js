@@ -22,7 +22,10 @@ module.exports = {
         "custom-light-blue": "#1E64E5",
         "custom-gray": "#2D2F31",
         "custom-border-gray":"#374151",
-        "custom-text-gray": "#9CA3AF"
+        "custom-text-gray": "#9CA3AF",
+        "custom-header-dark-purple": "#0E0025",
+        "custom-header-cyan": "#2DEFD8",
+        "custom-search-dark": "#1F192A"
       },
       keyframes: {
         "accordion-down": {
