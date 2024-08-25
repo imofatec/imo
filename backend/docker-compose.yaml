@@ -6,7 +6,7 @@ services:
       - "27017:27017"
     volumes:
       - database:/data/db
-    container_name: mongo
+    container_name: imo_mongodb
 
 volumes:
   database:
