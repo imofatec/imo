@@ -3,13 +3,16 @@ import { InputLabel } from "@/components/ui/inputlabel"
 import { Link } from "react-router-dom"
 import { Logo } from "@/components/ui/logo"
 import { Github, Linkedin } from "lucide-react"
-
+import { Titulo } from "@/components/ui/titulo"
 
 export default function SignUp() {
 
     return (
-        <div className="flex justify-center items-center h-screen bg-custom-gray">
-            <div className="w-96 p-8 space-y-6 text-white bg-custom-blue rounded-xl">
+        <>
+        <Titulo titulo={"Cadastro"}></Titulo>
+
+        <div className="flex justify-center items-center bg-custom-gray ">
+            <div className="w-96 p-8 space-y-6 text-white bg-custom-blue rounded-xl my-16 ">
 
                 <div className="flex flex-col items-center">
                     <Logo />
@@ -18,15 +21,15 @@ export default function SignUp() {
                     </h1>
                 </div>
 
-                <InputLabel type="text" id="email" name="email" placeholder="Email" label="Email" classname="border border-custom-border-gray focus:border-custom-light-blue" />
+                <InputLabel type="text" id="email" name="email" placeholder="Email" label="Email" />
 
                 {/* <InputLabel type="text" id="email" name="email" placeholder="Email" label="Email" classname="text-black border border-custom-border-gray focus:border-custom-light-blue" /> */}
 
-                <InputLabel type="text" id="username" name="username" placeholder="Username" label="Username" className="border border-custom-border-gray focus:border-custom-light-blue" />
+                <InputLabel type="text" id="username" name="username" placeholder="Username" label="Username" />
 
-                <InputLabel type="password" id="password" name="password" placeholder="Senha" label="Senha" className="border border-custom-border-gray focus:border-custom-light-blue" />
+                <InputLabel type="password" id="password" name="password" placeholder="Senha" label="Senha" />
 
-                <InputLabel type="password" id="password-confirm" name="password-confirm" placeholder="Confirmar senha" label="Confirmar senha" className="border border-custom-border-gray focus:border-custom-light-blue" />
+                <InputLabel type="password" id="password-confirm" name="password-confirm" placeholder="Confirmar senha" label="Confirmar senha" />
 
                 <Button className="w-full bg-custom-light-blue">Cadastrar-se</Button>
 
@@ -46,5 +49,7 @@ export default function SignUp() {
                 </div>
             </div>
         </div>
+        </>
+
     )
 }

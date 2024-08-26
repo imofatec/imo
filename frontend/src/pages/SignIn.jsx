@@ -3,12 +3,16 @@ import { Button } from "@/components/ui/button"
 import { Link } from "react-router-dom"
 import { Logo } from "@/components/ui/logo"
 import { Github, Linkedin } from "lucide-react"
+import { Titulo } from "@/components/ui/titulo"
 
 export default function SignIn() {
-   
+
     return (
-        <div className="flex justify-center items-center h-screen bg-custom-gray">
-            <div className="p-8 space-y-6 w-96 text-white bg-custom-blue rounded-xl">
+<>    
+<Titulo titulo={"Login"}></Titulo>
+
+        <div className="flex justify-center items-center bg-custom-gray">
+            <div className="p-8 space-y-6 w-96 text-white bg-custom-blue rounded-xl my-16 ">
 
                 <div className="flex flex-col items-center">
                     <Logo/>
@@ -17,9 +21,9 @@ export default function SignIn() {
                     </h1>
                 </div>
 
-                <InputLabel type="text" id="email" name="email" placeholder="Email" label="Email" classname="bg-custom-blue text-white border border-custom-border-gray focus:border-custom-light-blue" />
+                <InputLabel type="text" id="email" name="email" placeholder="Email" label="Email" />
 
-                <InputLabel type="password" id="password" name="password" placeholder="Senha" label="Senha" classname="border border-custom-border-gray focus:border-custom-light-blue" />
+                <InputLabel type="password" id="password" name="password" placeholder="Senha" label="Senha" />
 
                 <Button className="w-full bg-custom-light-blue">Entrar</Button>
 
@@ -38,5 +42,6 @@ export default function SignIn() {
                 </div>
             </div>
         </div>
+        </>
     )
 }
