@@ -1,3 +1,7 @@
+### KEYS ###
+src/main/resources/app.pub
+src/main/resources/app.key
+
 HELP.md
 target/
 !.mvn/wrapper/maven-wrapper.jar
