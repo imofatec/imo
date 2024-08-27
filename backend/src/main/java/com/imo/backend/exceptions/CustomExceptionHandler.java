@@ -1,9 +1,6 @@
 package com.imo.backend.exceptions;
 
-import com.imo.backend.exceptions.custom.EmailConflitException;
-import com.imo.backend.exceptions.custom.UsernameConflitException;
-import com.imo.backend.exceptions.custom.UserNotFoundException;
-import com.imo.backend.exceptions.custom.WrongPasswordException;
+import com.imo.backend.exceptions.custom.*;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -37,6 +34,17 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(errorResponseDto, HttpStatus.BAD_REQUEST);
     }
 
+//    400
+    @ExceptionHandler(PasswordNotMatchException.class)
+    public final ResponseEntity<Object> handlePasswordNotMatchesException(PasswordNotMatchException ex, WebRequest request) {
+        String errorMessage = ex.getMessage();
+        String description = String.format("path: %s", request.getDescription(false));
+
+        ErrorResponseDto errorResponseDto = new ErrorResponseDto(errorMessage, description);
+        return new ResponseEntity<>(errorResponseDto, HttpStatus.BAD_REQUEST);
+    }
+
+
 //     403
     @ExceptionHandler(WrongPasswordException.class)
     public final ResponseEntity<Object> handleWrongPasswordException(WrongPasswordException ex, WebRequest request) {
@@ -58,8 +66,8 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
 //    409
-    @ExceptionHandler(EmailConflitException.class)
-    public final ResponseEntity<Object> handleEmailAndNameConflitException(EmailConflitException ex, WebRequest request) {
+    @ExceptionHandler(EmailConflictException.class)
+    public final ResponseEntity<Object> handleEmailAndNameConflictException(EmailConflictException ex, WebRequest request) {
         String errorMessage = ex.getMessage();
         String description = String.format("path: %s", request.getDescription(false));
 
@@ -68,8 +76,8 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
 //    409
-    @ExceptionHandler(UsernameConflitException.class)
-    public final ResponseEntity<Object> handleNameConflitException(UsernameConflitException ex, WebRequest request) {
+    @ExceptionHandler(UsernameConflictException.class)
+    public final ResponseEntity<Object> handleNameConflictException(UsernameConflictException ex, WebRequest request) {
         String errorMessage = ex.getMessage();
         String description = String.format("path: %s", request.getDescription(false));
 

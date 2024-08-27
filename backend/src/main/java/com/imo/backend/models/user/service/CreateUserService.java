@@ -1,7 +1,7 @@
 package com.imo.backend.models.user.service;
 
-import com.imo.backend.exceptions.custom.EmailConflitException;
-import com.imo.backend.exceptions.custom.UsernameConflitException;
+import com.imo.backend.exceptions.custom.EmailConflictException;
+import com.imo.backend.exceptions.custom.UsernameConflictException;
 import com.imo.backend.exceptions.custom.PasswordNotMatchException;
 import com.imo.backend.models.user.dtos.CreateUserDto;
 import com.imo.backend.models.user.User;
@@ -24,12 +24,12 @@ public class CreateUserService {
     public void execute(CreateUserDto createUserDto) {
         var username = userRepository.findByUsername(createUserDto.getUsername());
         if (username.isPresent()) {
-            throw new UsernameConflitException();
+            throw new UsernameConflictException();
         }
 
         var userEmail = userRepository.findByEmail(createUserDto.getEmail());
         if (userEmail.isPresent()) {
-            throw new EmailConflitException();
+            throw new EmailConflictException();
         }
 
         if (!createUserDto.getConfPassword().matches(createUserDto.getPassword())) {
