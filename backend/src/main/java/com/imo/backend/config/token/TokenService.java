@@ -1,7 +1,7 @@
 package com.imo.backend.config.token;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.imo.backend.models.dto.LoginResponse;
+import com.imo.backend.models.user.dtos.LoginResponse;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;

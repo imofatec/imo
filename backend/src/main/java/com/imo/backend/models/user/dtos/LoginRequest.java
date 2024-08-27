@@ -1,4 +1,4 @@
-package com.imo.backend.models.dto;
+package com.imo.backend.models.user.dtos;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

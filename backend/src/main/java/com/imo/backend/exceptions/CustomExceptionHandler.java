@@ -1,5 +1,7 @@
 package com.imo.backend.exceptions;
 
+import com.imo.backend.exceptions.custom.EmailConflitException;
+import com.imo.backend.exceptions.custom.UsernameConflitException;
 import com.imo.backend.exceptions.custom.UserNotFoundException;
 import com.imo.backend.exceptions.custom.WrongPasswordException;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
@@ -53,5 +55,25 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 
         ErrorResponseDto errorResponseDto = new ErrorResponseDto(errorMessage, description);
         return new ResponseEntity<>(errorResponseDto, HttpStatus.NOT_FOUND);
+    }
+
+//    409
+    @ExceptionHandler(EmailConflitException.class)
+    public final ResponseEntity<Object> handleEmailAndNameConflitException(EmailConflitException ex, WebRequest request) {
+        String errorMessage = ex.getMessage();
+        String description = String.format("path: %s", request.getDescription(false));
+
+        ErrorResponseDto errorResponseDto = new ErrorResponseDto(errorMessage, description);
+        return new ResponseEntity<>(errorResponseDto, HttpStatus.CONFLICT);
+    }
+
+//    409
+    @ExceptionHandler(UsernameConflitException.class)
+    public final ResponseEntity<Object> handleNameConflitException(UsernameConflitException ex, WebRequest request) {
+        String errorMessage = ex.getMessage();
+        String description = String.format("path: %s", request.getDescription(false));
+
+        ErrorResponseDto errorResponseDto = new ErrorResponseDto(errorMessage, description);
+        return new ResponseEntity<>(errorResponseDto, HttpStatus.CONFLICT);
     }
 }
