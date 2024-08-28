@@ -5,7 +5,7 @@ import { Outlet } from 'react-router-dom';
 /*
     Esta página serve como um molde para todas outras. 
     */
-export default function Layout( {children} ) {
+export default function Layout() {
   return ( 
     <div className="flex flex-col min-h-screen">
       <Header />

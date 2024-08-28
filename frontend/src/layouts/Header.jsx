@@ -3,7 +3,6 @@ import LogoIMO from "@/assets/LogoIMO.svg"
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input"
 import { Search } from "lucide-react";
-import { Outlet } from "react-router-dom";
 import { Link } from "react-router-dom";
 
 const headerItens = ["Data Science", "Devops", "Hardware", "Design", "Back End", "Front End"] // contem todos os botoes do header ciano
@@ -17,7 +16,7 @@ export default function Header() {
 
             <div className="bg-custom-header-dark-purple h-20 flex justify-around items-center">
 
-                <Link to="/">
+                <Link to={"/"}>
                     <img src={LogoIMO} className="cursor-pointer"></img>
                 </Link>
 
@@ -32,11 +31,18 @@ export default function Header() {
 
                 <div className="flex align-middle items-center">
                     <Button className="">
+                        <Link to ={"/cadastro"}>
                         Criar Conta
+                        </Link>
                     </Button>
+
                     <Button className="">
+                    <Link to ={"/login"}>
                         Fazer Login
+                        </Link>
+
                     </Button>
+
                 </div>
 
             </div>

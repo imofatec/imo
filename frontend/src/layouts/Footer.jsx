@@ -1,24 +1,32 @@
+import { Link } from "react-router-dom"
 
 
 export default function Footer() {
     return (
         <footer className=" flex flex-col bg-custom-footer-dark  px-32 text-white mx-auto w-full " >
-            <div className=" mb-10 ">
+            <div className=" mb-24 ">
 
                 <div className=" flex flex-col mt-24 ">
                     <label className=" text-xl font-semibold ">
                         Menu
                     </label>
                     <div className=" mt-6 ">
-                    <a href="  " className=" underline ">
+
+                    <Link to = {""}>
+                    <a className=" underline ">
                         Quem somos
                     </a>
-                    <a href="  " className=" underline px-3 ">
+                    </Link>
+                    <Link to = {""}>
+                    <a className=" underline px-3 ">
                         Termo de uso
                     </a>
-                    <a href="  " className=" underline ">
+                    </Link>
+                    <Link to = {""}>
+                    <a className=" underline ">
                         FAQ
                     </a>
+                    </Link>
                 </div>
                 </div>
 
