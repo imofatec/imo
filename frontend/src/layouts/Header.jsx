@@ -5,19 +5,19 @@ import { Input } from "@/components/ui/input"
 import { Search } from "lucide-react";
 import { Link } from "react-router-dom";
 
-const headerItens = ["Data Science", "Devops", "Hardware", "Design", "Back End", "Front End"] // contem todos os botoes do header ciano
+const headerItens = ["Data Science", "Redes", "Gestão", "Design", "Programação"] // contem todos os botoes do header ciano
 
 // import { Logo } from "@/components/ui/logo"  || talvez utilizar depois caso a logo seja decidida XD
 
 export default function Header() {
 
     return (
-        <header className="h-[8.5rem] flex flex-col">
+        <header className="flex flex-col">
 
-            <div className="bg-custom-header-dark-purple h-20 flex justify-around items-center">
+            <div className="bg-custom-dark-purple h-[3.125rem] flex justify-around items-center">
 
                 <Link to={"/"}>
-                    <img src={LogoIMO} className="cursor-pointer"></img>
+                    <img src={LogoIMO} className="cursor-pointer" /> 
                 </Link>
 
                 <div className=" w-[49rem] relative flex items-center ">
@@ -25,20 +25,20 @@ export default function Header() {
                     <div className="absolute left-12 w-[1px] h-5 bg-white"></div>
                     <Input type="search"
                         placeholder="Pesquise por qualquer coisa"
-                        className="pl-14 bg-custom-search-dark border-custom-search-dark text-white w-full placeholder:text-white"
+                        className="pl-14 bg-custom-search-dark border-custom-search-dark text-white w-full placeholder:text-white h-[2.375rem]"
                     />
                 </div>
 
                 <div className="flex align-middle items-center">
                     <Button className="">
-                        <Link to ={"/cadastro"}>
-                        Criar Conta
+                        <Link to={"/cadastro"}>
+                            Criar Conta
                         </Link>
                     </Button>
 
                     <Button className="">
-                    <Link to ={"/login"}>
-                        Fazer Login
+                        <Link to={"/login"}>
+                            Fazer Login
                         </Link>
 
                     </Button>
@@ -47,7 +47,7 @@ export default function Header() {
 
             </div>
 
-            <div className="bg-custom-header-cyan min-h-14 flex flex-wrap justify-center items-center gap-9">
+            <div className="bg-custom-header-cyan min-h-[2.5rem] flex flex-wrap justify-center items-center gap-9">
 
                 {
                     // CODIGO PARA PEGAR TODOS OS ITENS DA CONSTANTE E RETORNA OS BOTOES
