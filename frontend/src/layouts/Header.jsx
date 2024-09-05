@@ -1,8 +1,10 @@
+import api from "@/api/api";
 import LogoIMO from "@/assets/LogoIMO.svg"
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input"
-import { Search } from "lucide-react";
+import { LogOut, Search } from "lucide-react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 const headerItens = ["Data Science", "Redes", "Gestão", "Design", "Programação"] // contem todos os botoes do header ciano
@@ -10,6 +12,15 @@ const headerItens = ["Data Science", "Redes", "Gestão", "Design", "Programaçã
 // import { Logo } from "@/components/ui/logo"  || talvez utilizar depois caso a logo seja decidida XD
 
 export default function Header() {
+    const [isLoggedIn, setIsLoggedIn] = useState(false)
+    
+    useEffect(() => {
+        const validate = async () => {
+            const token = localStorage.getItem('token')
+            setIsLoggedIn(token ? true : false)
+        }
+        validate()
+    }, [])
 
     return (
         <header className="flex flex-col">
@@ -17,7 +28,7 @@ export default function Header() {
             <div className="bg-custom-dark-purple h-[3.125rem] flex justify-around items-center">
 
                 <Link to={"/"}>
-                    <img src={LogoIMO} className="cursor-pointer" /> 
+                    <img src={LogoIMO} className="cursor-pointer" />
                 </Link>
 
                 <div className=" w-[49rem] relative flex items-center ">
@@ -30,19 +41,27 @@ export default function Header() {
                 </div>
 
                 <div className="flex align-middle items-center">
-                    <Button className="">
-                        <Link to={"/cadastro"}>
-                            Criar Conta
-                        </Link>
-                    </Button>
-
-                    <Button className="">
-                        <Link to={"/login"}>
-                            Fazer Login
+                    {isLoggedIn ? (<>
+                        <Link to={"#"}>
+                            <div className="w-10 h-10 bg-white rounded-full" />
                         </Link>
 
-                    </Button>
+                        <Button className="">
+                            <LogOut onClick={() => { localStorage.clear('token'), window.location.reload() }} />
+                        </Button>
+                    </>) : (<>
+                        <Button className="">
+                            <Link to={"/cadastro"}>
+                                Criar Conta
+                            </Link>
+                        </Button>
 
+                        <Button className="">
+                            <Link to={"/login"}>
+                                Fazer Login
+                            </Link>
+                        </Button>
+                    </>)}
                 </div>
 
             </div>
@@ -60,6 +79,6 @@ export default function Header() {
                 }
 
             </div>
-        </header>
+        </header >
     )
 }
