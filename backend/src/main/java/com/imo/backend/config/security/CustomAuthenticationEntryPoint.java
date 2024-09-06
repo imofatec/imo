@@ -1,4 +1,4 @@
-package com.imo.backend.config;
+package com.imo.backend.config.security;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

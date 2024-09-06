@@ -1,4 +1,4 @@
-package com.imo.backend.config;
+package com.imo.backend.config.security;
 
 import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.JWKSet;

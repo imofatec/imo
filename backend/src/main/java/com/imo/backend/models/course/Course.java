@@ -1,7 +1,7 @@
 package com.imo.backend.models.course;
 
+import com.imo.backend.models.course.dtos.CreateCourseDto;
 import com.imo.backend.models.lessons.Lesson;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,7 +13,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Document("courses")
-@AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
@@ -23,8 +22,11 @@ public class Course {
     private String id;
 
     private String name;
+
     private String contributor;
+
     private String category;
+
     private String description;
 
     @CreatedDate
@@ -32,5 +34,15 @@ public class Course {
 
     private List<Lesson> lessons;
 
+    public static Course fromCreateDto(CreateCourseDto createCourseDto) {
+        Course course = new Course();
+        course.setName(createCourseDto.getName());
+        course.setContributor(createCourseDto.getContribuitor());
+        course.setCategory(createCourseDto.getCategory());
+        course.setDescription(createCourseDto.getDescription());
+        course.setLessons(createCourseDto.getLessons());
+
+        return course;
+    }
 
 }
