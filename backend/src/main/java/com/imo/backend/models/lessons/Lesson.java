@@ -4,16 +4,13 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.Id;
-
 import java.time.LocalDateTime;
 
 @Getter
 @Setter
 public class Lesson {
 
-    @Id
-    private String id;
+    private int index;
 
     @NotBlank(message = "Preencha o titulo da aula")
     private String title;
@@ -27,4 +24,11 @@ public class Lesson {
     @CreatedDate
     private LocalDateTime uploadedAt;
 
-}
+    public void formatLink() {
+            int position = youtubeLink.indexOf("&");
+            if(position != -1){
+                youtubeLink = youtubeLink.substring(0, position);
+            }
+        }
+    }
+

@@ -37,7 +37,7 @@ public class Course {
     public static Course fromCreateDto(CreateCourseDto createCourseDto) {
         Course course = new Course();
         course.setName(createCourseDto.getName());
-        course.setContributor(createCourseDto.getContribuitor());
+        course.setContributor(createCourseDto.getContributor());
         course.setCategory(createCourseDto.getCategory());
         course.setDescription(createCourseDto.getDescription());
         course.setLessons(createCourseDto.getLessons());
