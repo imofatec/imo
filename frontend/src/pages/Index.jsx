@@ -12,7 +12,7 @@ export default function Index() {
         <>
             <Titulo titulo={"IMO"} />
 
-            <div className="bg-custom-dark-purple min-h-screen px-4 md:px-8 flex flex-col">
+            <div className="min-h-screen px-4 md:px-8 flex flex-col">
 
                 {courses.map((item, index) => {
                     return (

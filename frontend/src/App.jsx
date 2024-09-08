@@ -5,6 +5,7 @@ import SignIn from "./pages/SignIn"
 import ProtectedRoute from "./auth/ProtectedRoutes"
 import TestPage from "./pages/TestPage"
 import { createBrowserRouter, RouterProvider } from "react-router-dom"
+import Cursos from "./pages/Cursos"
 import { signUp } from "./requests/user/signup"
 import { signIn } from "./requests/user/signin"
 
@@ -28,12 +29,16 @@ export default function App() {
         action: signIn
       },
       {
+        path: "/cursos",
+        element: <Cursos />
+      },
+      {
         element: <ProtectedRoute />,
         children: [
           {
             path: "/private",
             element: <TestPage />
-          }
+          },
         ]
       }
     ]

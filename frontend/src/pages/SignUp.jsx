@@ -12,7 +12,7 @@ export default function SignUp() {
         <>
             <Titulo titulo={"Cadastro / IMO"}></Titulo>
 
-            <div className="flex justify-center items-center bg-custom-dark-purple">
+            <div className="flex justify-center items-center">
                 <div className="h-screen mt-[3.125rem] text-white">
                     <Form method="post" action="/cadastro" className="w-96 p-8 space-y-6">
 
