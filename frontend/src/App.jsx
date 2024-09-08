@@ -3,6 +3,7 @@ import SignIn from "./pages/SignIn"
 import Index from "./pages/Index"
 import Layout from "./layouts/Layout"
 import { createBrowserRouter, RouterProvider } from "react-router-dom"
+import Cursos from "./pages/Cursos"
 
 export default function App() {
   const router = createBrowserRouter([
@@ -20,7 +21,11 @@ export default function App() {
         {
           path: "/login",
           element: <SignIn />
-        }
+        },
+        {
+          path: "/cursos",
+          element: <Cursos />
+        },
       ]
     },
   
