@@ -6,7 +6,7 @@ export default function FeatureCourses({ title = "Default", text = "Lorem ipsum 
         switch (element) {
             case "image":
                 return (
-                    <img src={src} alt="Imagem do curso" className="w-full max-w-xs md:max-w-md" />
+                    <img src={src} alt="Imagem do curso" className="w-full max-w-xs md:max-w-sm lg:max-w-md" />
                 );
             case "text":
                 return (
@@ -41,7 +41,7 @@ export default function FeatureCourses({ title = "Default", text = "Lorem ipsum 
     };
 
     return (
-        <div className="min-h-[34.438rem] flex flex-col md:flex-row justify-evenly items-center text-white space-y-8 md:space-y-0">
+        <div className="min-h-[34.438rem] flex flex-col md:flex-row justify-evenly items-center text-white space-y-8 md:space-y-0 md:space-x-8">
             {order.map((element, index) => (
                 <div key={index}>
                     {renderElement(element)}
