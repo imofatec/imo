@@ -1,9 +1,9 @@
 package com.imo.backend.models.lessons;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.data.annotation.CreatedDate;
 import java.time.LocalDateTime;
 
 @Getter
@@ -13,15 +13,15 @@ public class Lesson {
     private int index;
 
     @NotBlank(message = "Preencha o titulo da aula")
+    @Size(min = 10, max = 50, message = "O título da aula precisa ter entre 10 e 50 caracteres")
     private String title;
 
-    @NotBlank(message = "Preencha a descição da aula")
+    @Size(max = 600, message = "A descrição da aula pode ter no máximo 600 caracteres")
     private String description;
 
     @NotBlank(message = "Preencha o link da aula")
     private String youtubeLink;
 
-    @CreatedDate
     private LocalDateTime uploadedAt;
 
     public void formatLink() {

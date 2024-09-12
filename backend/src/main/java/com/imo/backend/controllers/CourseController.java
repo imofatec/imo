@@ -1,7 +1,8 @@
 package com.imo.backend.controllers;
 
 import com.imo.backend.models.course.Course;
-import com.imo.backend.models.course.dtos.CreateCourseDto;
+import com.imo.backend.models.course.dtos.CreateCourseRequest;
+import com.imo.backend.models.course.dtos.CreateCourseResponse;
 import com.imo.backend.models.course.services.CreateCourseService;
 import com.imo.backend.models.course.services.GetAllCoursesService;
 import jakarta.validation.Valid;
@@ -23,9 +24,9 @@ public class CourseController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<Course> create(@Valid @RequestBody CreateCourseDto createCourseDto) {
-        var newCourse = createCourseService.execute(createCourseDto);
-        return new ResponseEntity<>(newCourse, HttpStatus.CREATED);
+    public ResponseEntity<CreateCourseResponse> create(@Valid @RequestBody CreateCourseRequest createCourseRequest) {
+        var newCourse = createCourseService.execute(createCourseRequest);
+        return new ResponseEntity<>(newCourse, HttpStatus.ACCEPTED);
     }
 
     @GetMapping("/get-all")
