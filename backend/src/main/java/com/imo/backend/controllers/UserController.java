@@ -1,8 +1,9 @@
 package com.imo.backend.controllers;
 
-import com.imo.backend.models.user.dtos.CreateUserDto;
+import com.imo.backend.models.user.dtos.RegisterUserRequest;
 import com.imo.backend.models.user.dtos.LoginRequest;
 import com.imo.backend.models.user.dtos.LoginResponse;
+import com.imo.backend.models.user.dtos.RegisterUserResponse;
 import com.imo.backend.models.user.service.AuthenticationService;
 import com.imo.backend.models.user.service.CreateUserService;
 import jakarta.validation.Valid;
@@ -28,9 +29,9 @@ public class UserController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<String> create(@Valid @RequestBody CreateUserDto createUserDto) {
-        createUserService.execute(createUserDto);
-        return new ResponseEntity<>("Cadastrado com sucesso!", HttpStatus.CREATED);
+    public ResponseEntity<RegisterUserResponse> create(@Valid @RequestBody RegisterUserRequest registerUserRequest) {
+        var newUser = createUserService.execute(registerUserRequest);
+        return new ResponseEntity<>(newUser, HttpStatus.CREATED);
     }
 
     @PostMapping("/login")

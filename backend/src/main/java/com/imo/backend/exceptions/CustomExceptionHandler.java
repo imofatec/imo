@@ -35,8 +35,8 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
 //    400
-    @ExceptionHandler(PasswordNotMatchException.class)
-    public final ResponseEntity<Object> handlePasswordNotMatchesException(PasswordNotMatchException ex, WebRequest request) {
+    @ExceptionHandler(BadRequestException.class)
+    public final ResponseEntity<Object> handleBadRequestException(BadRequestException ex, WebRequest request) {
         String errorMessage = ex.getMessage();
         String description = String.format("path: %s", request.getDescription(false));
 
@@ -46,8 +46,8 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 
 
 //     403
-    @ExceptionHandler(WrongPasswordException.class)
-    public final ResponseEntity<Object> handleWrongPasswordException(WrongPasswordException ex, WebRequest request) {
+    @ExceptionHandler(ForbiddenException.class)
+    public final ResponseEntity<Object> handleForbiddenException(ForbiddenException ex, WebRequest request) {
         String errorMessage = ex.getMessage();
         String description = String.format("path: %s", request.getDescription(false));
 
@@ -56,8 +56,8 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
 //     404
-    @ExceptionHandler(UserNotFoundException.class)
-    public final ResponseEntity<Object> handleUserNotFoundException(UserNotFoundException ex, WebRequest request) {
+    @ExceptionHandler(NotFoundException.class)
+    public final ResponseEntity<Object> handleNotFoundException(NotFoundException ex, WebRequest request) {
         String errorMessage = ex.getMessage();
         String description = String.format("path: %s", request.getDescription(false));
 
@@ -66,18 +66,8 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
 //    409
-    @ExceptionHandler(EmailConflictException.class)
-    public final ResponseEntity<Object> handleEmailAndNameConflictException(EmailConflictException ex, WebRequest request) {
-        String errorMessage = ex.getMessage();
-        String description = String.format("path: %s", request.getDescription(false));
-
-        ErrorResponseDto errorResponseDto = new ErrorResponseDto(errorMessage, description);
-        return new ResponseEntity<>(errorResponseDto, HttpStatus.CONFLICT);
-    }
-
-//    409
-    @ExceptionHandler(UsernameConflictException.class)
-    public final ResponseEntity<Object> handleNameConflictException(UsernameConflictException ex, WebRequest request) {
+    @ExceptionHandler(ConflictException.class)
+    public final ResponseEntity<Object> handleConflictException(ConflictException ex, WebRequest request) {
         String errorMessage = ex.getMessage();
         String description = String.format("path: %s", request.getDescription(false));
 

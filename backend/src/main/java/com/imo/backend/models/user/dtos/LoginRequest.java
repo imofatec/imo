@@ -7,10 +7,10 @@ import lombok.Getter;
 @Getter
 public class LoginRequest {
 
-    @NotBlank(message = "Preencha os campos vazios")
+    @NotBlank(message = "Preencha o email")
     @Email(message = "Insira um email valido")
     private String email;
 
-    @NotBlank(message = "Preencha os campos vazios")
+    @NotBlank(message = "Preencha a senha")
     private String password;
 }

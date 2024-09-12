@@ -1,11 +1,11 @@
 package com.imo.backend.models.user.service;
 
-import com.imo.backend.exceptions.custom.EmailConflictException;
-import com.imo.backend.exceptions.custom.UsernameConflictException;
-import com.imo.backend.exceptions.custom.PasswordNotMatchException;
-import com.imo.backend.models.user.dtos.CreateUserDto;
+import com.imo.backend.exceptions.custom.ConflictException;
+import com.imo.backend.exceptions.custom.BadRequestException;
+import com.imo.backend.models.user.dtos.RegisterUserRequest;
 import com.imo.backend.models.user.User;
 import com.imo.backend.models.user.UserRepository;
+import com.imo.backend.models.user.dtos.RegisterUserResponse;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -21,25 +21,26 @@ public class CreateUserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public void execute(CreateUserDto createUserDto) {
-        var username = userRepository.findByUsername(createUserDto.getUsername());
+    public RegisterUserResponse execute(RegisterUserRequest registerUserRequest) {
+        var username = userRepository.findByUsername(registerUserRequest.getUsername());
         if (username.isPresent()) {
-            throw new UsernameConflictException();
+            throw new ConflictException("O username já existe");
         }
 
-        var userEmail = userRepository.findByEmail(createUserDto.getEmail());
+        var userEmail = userRepository.findByEmail(registerUserRequest.getEmail());
         if (userEmail.isPresent()) {
-            throw new EmailConflictException();
+            throw new ConflictException("O email já existe");
         }
 
-        if (!createUserDto.getConfPassword().matches(createUserDto.getPassword())) {
-            throw new PasswordNotMatchException();
+        if (!registerUserRequest.getConfPassword().matches(registerUserRequest.getPassword())) {
+            throw new BadRequestException("As senhas não coincidem");
         }
-        User newUser = new User(createUserDto.getUsername(),
-                createUserDto.getEmail(),
-                createUserDto.getPassword());
+        User user = new User(registerUserRequest.getUsername(),
+                registerUserRequest.getEmail(),
+                registerUserRequest.getPassword());
 
-        newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
-        userRepository.save(newUser);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        User newUser = userRepository.save(user);
+        return new RegisterUserResponse(newUser.getUsername(), newUser.getEmail());
     }
 }
