@@ -12,13 +12,13 @@ export default function Index() {
         <>
             <Titulo titulo={"IMO"} />
 
-            <div className="bg-custom-dark-purple min-h-screen px-4 md:px-8 flex flex-col">
+            <div className="min-h-screen px-4 md:px-8 flex flex-col">
 
                 {courses.map((item, index) => {
                     return (
                         <>
                             <Featurecourses key={index} title={item.title} text={item.text} order={item.order} />
-                            <div className="h-[1px] bg-white w-full md:w-[61.75rem] m-auto my-4"></div>
+                            <div className="h-[1px] bg-white w-full max-w-[900px] m-auto my-4"></div>
                         </>
                     )
                 })}
