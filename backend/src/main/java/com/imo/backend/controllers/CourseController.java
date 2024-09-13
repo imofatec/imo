@@ -4,7 +4,7 @@ import com.imo.backend.models.course.Course;
 import com.imo.backend.models.course.dtos.CreateCourseRequest;
 import com.imo.backend.models.course.dtos.CreateCourseResponse;
 import com.imo.backend.models.course.services.CreateCourseService;
-import com.imo.backend.models.course.services.GetAllCoursesService;
+import com.imo.backend.models.course.services.GetAllCoursesByCategoryService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,11 +16,16 @@ import java.util.List;
 @RequestMapping("/api/courses")
 public class CourseController {
     private final CreateCourseService createCourseService;
-    private final GetAllCoursesService getAllCoursesService;;
 
-    public CourseController(CreateCourseService createCourseService, GetAllCoursesService getAllCoursesService) {
+    private final GetAllCoursesByCategoryService getAllCoursesByCategoryService;
+
+
+    public CourseController(
+            CreateCourseService createCourseService,
+            GetAllCoursesByCategoryService getAllCoursesByCategoryService
+    ) {
         this.createCourseService = createCourseService;
-        this.getAllCoursesService = getAllCoursesService;
+        this.getAllCoursesByCategoryService = getAllCoursesByCategoryService;
     }
 
     @PostMapping("/create")
@@ -29,9 +34,9 @@ public class CourseController {
         return new ResponseEntity<>(newCourse, HttpStatus.ACCEPTED);
     }
 
-    @GetMapping("/get-all")
-    public ResponseEntity<List<Course>> getAll() {
-        var courses = getAllCoursesService.execute();
-        return new ResponseEntity<>(courses, HttpStatus.OK);
+    @GetMapping("/get-all/{category}")
+    public ResponseEntity<List<Course>> getAllCoursesByCategory(@PathVariable String category) {
+        var courses = getAllCoursesByCategoryService.execute(category);
+        return ResponseEntity.ok(courses);
     }
 }

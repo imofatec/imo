@@ -7,16 +7,16 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class GetAllCoursesService {
+public class GetAllCoursesByCategoryService {
 
     private final CourseRepository courseRepository;
 
-    public GetAllCoursesService(CourseRepository courseRepository) {
+    public GetAllCoursesByCategoryService(CourseRepository courseRepository) {
         this.courseRepository = courseRepository;
     }
 
-    public List<Course> execute() {
-        return courseRepository.findAll();
+    public List<Course> execute(String category) {
+        return courseRepository.findAllByCategory(category);
     }
 }
 

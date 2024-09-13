@@ -1,6 +1,9 @@
 package com.imo.backend.models.course.services;
 
 import com.imo.backend.exceptions.custom.ConflictException;
+import com.imo.backend.models.category.Category;
+import com.imo.backend.models.category.CategoryRepository;
+import com.imo.backend.models.category.dtos.SummaryCourse;
 import com.imo.backend.models.course.Course;
 import com.imo.backend.models.course.CourseRepository;
 import com.imo.backend.models.course.dtos.CreateCourseRequest;
@@ -20,12 +23,16 @@ public class CreateCourseService {
 
     private final UserRepository userRepository;
 
+    private final CategoryRepository categoryRepository;
+
     public CreateCourseService(
             CourseRepository courseRepository,
-            UserRepository userRepository
+            UserRepository userRepository,
+            CategoryRepository categoryRepository
     ) {
         this.courseRepository = courseRepository;
         this.userRepository = userRepository;
+        this.categoryRepository = categoryRepository;
     }
 
     public CreateCourseResponse execute(CreateCourseRequest createCourseRequest) {
@@ -51,8 +58,20 @@ public class CreateCourseService {
         }
 
         Course newCourse = courseRepository.save(potentialNewCourse);
+        SummaryCourse summaryCourse = SummaryCourse.fromCourse(newCourse);
 
         userRepository.updateContributionsByUsername(newCourse.getContributor(), newCourse);
+
+        var existingCategory = categoryRepository.findByName(newCourse.getCategory());
+
+        if (existingCategory.isEmpty()) {
+            Category newCategory = new Category();
+            newCategory.setName(newCourse.getName());
+            newCategory.setCourses(summaryCourse);
+            categoryRepository.save(newCategory);
+        } else {
+            categoryRepository.updateCategoryByCourses(newCourse.getCategory(), summaryCourse);
+        }
 
         return new CreateCourseResponse("Aguarde sua contribuição ser validada", newCourse.getName(), newCourse.getContributor(), newCourse.getCategory());
     }
