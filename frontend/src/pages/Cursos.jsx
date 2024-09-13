@@ -1,8 +1,9 @@
-import CardCurso from "@/components/ui/cardcurso";
+import CardCurso from "@/components/ui/curso/cardcurso";
 import { Dropdown } from "@/components/ui/dropdown/dropdown";
 import { Titulo } from "@/components/ui/titulo";
 import React from "react";
 
+import fotoTemp from '../assets/thumb.jpg'
 let tipoCurso = "Todos os cursos"
 
 export default function Cursos() {
@@ -17,6 +18,8 @@ export default function Cursos() {
         { nomeCurso: "Git e GitHub", notaCurso: "4.0", avaliacoesCurso: "80" },
         { nomeCurso: "Adobe Ilustrator", notaCurso: "4.6", avaliacoesCurso: "3" }
     ]
+    let descricao = "Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestias maxime culpa officia eveniet. Natus tempore facilis soluta distinctio, ipsam libero, consequatur sit, pariatur iure voluptate aliquam deleniti ea adipisci culpa. Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestias maxime culpa officia eveniet. Natus tempore facilis soluta distinctio, ipsam libero, consequatur sit, pariatur iure voluptate aliquam deleniti ea adipisci culpa."
+    let conteudo = "Lorem ipsum"
 
     return (
         <>
@@ -34,7 +37,7 @@ export default function Cursos() {
                         {infoCurso.map((dado, i) => {
                             return (
                                 <>
-                                    <CardCurso key={i} nomeCurso={dado.nomeCurso} notaCurso={dado.notaCurso} avaliacoesCurso={dado.avaliacoesCurso}></CardCurso>
+                                    <CardCurso key={i} nomeCurso={dado.nomeCurso} notaCurso={dado.notaCurso} avaliacoesCurso={dado.avaliacoesCurso} fotoCurso={fotoTemp} descricaoCurso={descricao} conteudo={conteudo}></CardCurso>
                                 </>
                             )
                         })
