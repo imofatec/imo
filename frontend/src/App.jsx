@@ -1,51 +1,40 @@
-import Layout from "./layouts/Layout"
-import Index from "./pages/Index"
 import SignUp from "./pages/SignUp"
 import SignIn from "./pages/SignIn"
-import ProtectedRoute from "./auth/ProtectedRoutes"
-import TestPage from "./pages/TestPage"
+import Index from "./pages/Index"
+import Layout from "./layouts/Layout"
 import { createBrowserRouter, RouterProvider } from "react-router-dom"
 import Cursos from "./pages/Cursos"
-import { signUp } from "./requests/user/signup"
-import { signIn } from "./requests/user/signin"
 
 export default function App() {
-
-  const router = createBrowserRouter([{
-    element: <Layout />, /* As rotas devem ser inseridas como filhos do módulo Layout (tem o Header e o Footer nele) */
-    children: [
-      {
-        path: '/',
-        element: <Index />,
-      },
-      {
-        path: "/cadastro",
-        element: <SignUp />,
-        action: signUp
-      },
-      {
-        path: "/login",
-        element: <SignIn />,
-        action: signIn
-      },
-      {
-        path: "/cursos",
-        element: <Cursos />
-      },
-      {
-        element: <ProtectedRoute />,
-        children: [
-          {
-            path: "/private",
-            element: <TestPage />
-          },
-        ]
-      }
-    ]
-  }])
+  const router = createBrowserRouter([
+    {
+      element: <Layout />, /* As rotas devem ser inseridas como filhos do módulo Layout (tem o Header e o Footer nele) */
+      children: [
+        {
+          path: '/',
+          element: <Index />,
+        },
+        {
+          path: "/cadastro",
+          element: <SignUp />
+        },
+        {
+          path: "/login",
+          element: <SignIn />
+        },
+        {
+          path: "/cursos",
+          element: <Cursos />
+        },
+      ]
+    },
+  
+  ])
   return (
     <>
       <RouterProvider router={router} />
     </>
   )
 }
+
+

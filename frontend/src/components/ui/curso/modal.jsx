@@ -7,10 +7,10 @@ import {
 import Avaliacao from './avaliacao'
 import { Link } from 'react-router-dom'
 
-qtd = 9
 let codigoCurso = '4'
 
 export default function Modal({ aberto, fechado, notaCurso, avaliacoesCurso, nomeCurso, descricao , qtd}) {
+    qtd = 9
     if (!aberto) {
         return fechado
     }
