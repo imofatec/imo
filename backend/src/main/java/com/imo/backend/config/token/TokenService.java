@@ -33,7 +33,7 @@ public class TokenService {
         }
 
         var now = Instant.now();
-        var expiresIn = 300L;
+        var expiresIn = 18000L; // 5h
 
         var claims = JwtClaimsSet.builder()
                 .issuer("IMO")

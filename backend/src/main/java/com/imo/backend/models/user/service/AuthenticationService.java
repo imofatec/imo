@@ -1,8 +1,8 @@
 package com.imo.backend.models.user.service;
 
 import com.imo.backend.config.token.TokenService;
-import com.imo.backend.exceptions.custom.UserNotFoundException;
-import com.imo.backend.exceptions.custom.WrongPasswordException;
+import com.imo.backend.exceptions.custom.NotFoundException;
+import com.imo.backend.exceptions.custom.ForbiddenException;
 import com.imo.backend.models.user.dtos.LoginRequest;
 import com.imo.backend.models.user.dtos.LoginResponse;
 import com.imo.backend.models.user.UserRepository;
@@ -32,12 +32,12 @@ public class AuthenticationService {
         var user = userRepository.findByEmail(loginRequest.getEmail());
 
         if (user.isEmpty()) {
-            throw new UserNotFoundException();
+            throw new NotFoundException("Email não encontrado");
         }
 
         var isMatch = passwordEncoder.matches(loginRequest.getPassword(),user.get().getPassword());
         if (!isMatch) {
-            throw new WrongPasswordException();
+            throw new ForbiddenException("Senha inválida");
         }
 
         return tokenService.generateToken(user.get().getUsername(), user.get().getId());
