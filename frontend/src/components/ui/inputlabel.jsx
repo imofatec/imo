@@ -7,7 +7,7 @@ export function InputLabel(props) {
     return (
         <div className="grid w-full max-w-sm items-center gap-1.5 my-6">
             <Label htmlFor={id}>{label}</Label>
-            <Input type={type} id={id} name={name} placeholder={placeholder} className="border bg-custom-blue text-white border-custom-border-gray focus:border-white" />
+            <Input type={type} id={id} name={name} placeholder={placeholder} className="text-white border bg-custom-blue border-custom-border-gray focus:border-custom-light-blue" />
         </div>
     )
 }

@@ -1,6 +1,5 @@
 import { Accordion } from "@/components/ui/dropdown/accordion"
 import ItemDropdown from "./itemdropdown"
-import { Seletor } from "./seletor"
 
 export function Dropdown() {
 
@@ -11,7 +10,6 @@ export function Dropdown() {
     { title: "Design" },
     { title: "Programação" },
     { title: "Classificação" }
-
   ]
 
   return (
@@ -20,10 +18,9 @@ export function Dropdown() {
       {nomeCursos.map((dado, i) => {
         return (
           <div>
-            <ItemDropdown key={i} numItem={i} labelItem={dado.title} contItem={<Seletor></Seletor>}></ItemDropdown>
+            <ItemDropdown key={i} numItem={i} labelItem={dado.title} contItem={5}></ItemDropdown>
           </div>
         )
-
       })}
     </Accordion>
   )
