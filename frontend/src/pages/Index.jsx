@@ -18,7 +18,7 @@ export default function Index() {
                     return (
                         <>
                             <Featurecourses key={index} title={item.title} text={item.text} order={item.order} />
-                            <div className="h-[1px] bg-white w-full md:w-[61.75rem] m-auto my-4"></div>
+                            <div className="h-[1px] bg-white w-full max-w-[900px] m-auto my-4"></div>
                         </>
                     )
                 })}

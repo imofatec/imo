@@ -41,11 +41,13 @@ public class CreateCourseService {
 
         boolean existingCourseName = contributorCourses.stream()
                 .anyMatch(conflictCourse -> conflictCourse.getName().equals(potentialNewCourse.getName()));
+
         if (existingCourseName) {
             throw new ConflictException("Você ja cadastrou estre curso anteriormente");
         }
 
         List<Lesson> lessons = potentialNewCourse.getLessons();
+
         Set<List<String>> uniqueInfos = lessons.stream()
                 .map(lesson -> Arrays.asList(lesson.getTitle(), lesson.getDescription(), lesson.getYoutubeLink()))
                 .collect(Collectors.toSet());
@@ -57,18 +59,20 @@ public class CreateCourseService {
 
         Course newCourse = courseRepository.save(potentialNewCourse);
 
-        SummaryCourse summaryCourse = SummaryCourse.fromCourse(newCourse);
-
         userRepository.updateContributionsByUsername(newCourse.getContributor(), newCourse);
+
+        SummaryCourse summaryCourse = SummaryCourse.fromCourse(newCourse);
 
         var existingCategory = categoryRepository.findByName(newCourse.getCategory());
 
         if (existingCategory.isEmpty()) {
             Category newCategory = new Category();
-            newCategory.setName(newCourse.getName());
+            newCategory.setName(newCourse.getCategory());
             newCategory.setCourses(summaryCourse);
             categoryRepository.save(newCategory);
-        } else {
+        }
+
+        if (existingCategory.isPresent()) {
             categoryRepository.updateCategoryByCourses(newCourse.getCategory(), summaryCourse);
         }
 
