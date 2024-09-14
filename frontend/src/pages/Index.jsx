@@ -4,9 +4,9 @@ import Featurecourses from "@/components/featuredcourses";
 export default function Index() {
 
     const courses = [
-        { title: "Front End" },
-        { title: "Back End", order: ["text", "list", "image"] },
-        { title: "Tigrinho" }
+        { title: "Data Science" },
+        { title: "Redes", order: ["text", "list", "image"] },
+        { title: "Gestão" }
     ]
     return (
         <>
