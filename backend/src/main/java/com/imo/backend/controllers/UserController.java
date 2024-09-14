@@ -6,11 +6,11 @@ import com.imo.backend.models.user.dtos.LoginResponse;
 import com.imo.backend.models.user.dtos.RegisterUserResponse;
 import com.imo.backend.models.user.service.AuthenticationService;
 import com.imo.backend.models.user.service.CreateUserService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 
 @RestController
 @RequestMapping("/api")
@@ -22,8 +22,7 @@ public class UserController {
 
     public UserController(
             CreateUserService createUserService,
-            AuthenticationService authenticationService
-    ) {
+            AuthenticationService authenticationService) {
         this.createUserService = createUserService;
         this.authenticationService = authenticationService;
     }
@@ -40,6 +39,7 @@ public class UserController {
         return ResponseEntity.ok(token);
     }
 
+    @SecurityRequirement(name = "Authorization")
     @GetMapping("/private")
     public ResponseEntity<?> privateRoute() {
         return ResponseEntity.ok().build();

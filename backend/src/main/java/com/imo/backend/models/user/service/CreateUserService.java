@@ -12,11 +12,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class CreateUserService {
     private final UserRepository userRepository;
+
     private final PasswordEncoder passwordEncoder;
 
-    public CreateUserService(UserRepository userRepository,
-                             PasswordEncoder passwordEncoder
-    ) {
+    public CreateUserService(
+            UserRepository userRepository,
+            PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
     }
@@ -35,12 +36,16 @@ public class CreateUserService {
         if (!registerUserRequest.getConfPassword().matches(registerUserRequest.getPassword())) {
             throw new BadRequestException("As senhas não coincidem");
         }
-        User user = new User(registerUserRequest.getUsername(),
+        
+        User user = new User(
+                registerUserRequest.getUsername(),
                 registerUserRequest.getEmail(),
                 registerUserRequest.getPassword());
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+
         User newUser = userRepository.save(user);
+
         return new RegisterUserResponse(newUser.getUsername(), newUser.getEmail());
     }
 }

@@ -19,3 +19,9 @@ docker-compose up -d
 cd backend/
 ./mvnw spring-boot:run
 ```
+# Swagger UI
+- Documentação API 
+```
+http://localhost:8080/swagger-ui/index.html
+```
+

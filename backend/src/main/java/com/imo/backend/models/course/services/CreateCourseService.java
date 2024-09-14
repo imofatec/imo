@@ -28,22 +28,19 @@ public class CreateCourseService {
     public CreateCourseService(
             CourseRepository courseRepository,
             UserRepository userRepository,
-            CategoryRepository categoryRepository
-    ) {
+            CategoryRepository categoryRepository) {
         this.courseRepository = courseRepository;
         this.userRepository = userRepository;
         this.categoryRepository = categoryRepository;
     }
 
     public CreateCourseResponse execute(CreateCourseRequest createCourseRequest) {
-
         Course potentialNewCourse = Course.fromCreateDto(createCourseRequest);
 
         List<Course> contributorCourses = courseRepository.findAllByContributor(potentialNewCourse.getContributor());
 
         boolean existingCourseName = contributorCourses.stream()
                 .anyMatch(conflictCourse -> conflictCourse.getName().equals(potentialNewCourse.getName()));
-
         if (existingCourseName) {
             throw new ConflictException("Você ja cadastrou estre curso anteriormente");
         }
@@ -54,10 +51,12 @@ public class CreateCourseService {
                 .collect(Collectors.toSet());
 
         if (lessons.size() != uniqueInfos.size()) {
-            throw new ConflictException("As informações e links de cadas aula do curso precisam ser diferentes uma das outras");
+            throw new ConflictException(
+                    "As informações e links de cadas aula do curso precisam ser diferentes uma das outras");
         }
 
         Course newCourse = courseRepository.save(potentialNewCourse);
+
         SummaryCourse summaryCourse = SummaryCourse.fromCourse(newCourse);
 
         userRepository.updateContributionsByUsername(newCourse.getContributor(), newCourse);
@@ -73,6 +72,7 @@ public class CreateCourseService {
             categoryRepository.updateCategoryByCourses(newCourse.getCategory(), summaryCourse);
         }
 
-        return new CreateCourseResponse("Aguarde sua contribuição ser validada", newCourse.getName(), newCourse.getContributor(), newCourse.getCategory());
+        return new CreateCourseResponse("Aguarde sua contribuição ser validada", newCourse.getName(),
+                newCourse.getContributor(), newCourse.getCategory());
     }
 }

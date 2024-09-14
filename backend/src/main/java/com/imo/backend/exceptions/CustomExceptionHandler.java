@@ -17,9 +17,10 @@ import java.util.List;
 @RestControllerAdvice
 public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 
-//     400
+    // 400
     @Override
-    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
+            HttpHeaders headers, HttpStatusCode status, WebRequest request) {
         List<String> errorMessages = ex
                 .getBindingResult()
                 .getFieldErrors()
@@ -34,7 +35,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(errorResponseDto, HttpStatus.BAD_REQUEST);
     }
 
-//    400
+    // 400
     @ExceptionHandler(BadRequestException.class)
     public final ResponseEntity<Object> handleBadRequestException(BadRequestException ex, WebRequest request) {
         String errorMessage = ex.getMessage();
@@ -44,8 +45,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(errorResponseDto, HttpStatus.BAD_REQUEST);
     }
 
-
-//     403
+    // 403
     @ExceptionHandler(ForbiddenException.class)
     public final ResponseEntity<Object> handleForbiddenException(ForbiddenException ex, WebRequest request) {
         String errorMessage = ex.getMessage();
@@ -55,7 +55,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(errorResponseDto, HttpStatus.FORBIDDEN);
     }
 
-//     404
+    // 404
     @ExceptionHandler(NotFoundException.class)
     public final ResponseEntity<Object> handleNotFoundException(NotFoundException ex, WebRequest request) {
         String errorMessage = ex.getMessage();
@@ -65,7 +65,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(errorResponseDto, HttpStatus.NOT_FOUND);
     }
 
-//    409
+    // 409
     @ExceptionHandler(ConflictException.class)
     public final ResponseEntity<Object> handleConflictException(ConflictException ex, WebRequest request) {
         String errorMessage = ex.getMessage();
