@@ -1,26 +1,30 @@
 package com.imo.backend.config.token;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.imo.backend.models.user.dtos.LoginResponse;
-import org.springframework.security.oauth2.jwt.JwtClaimsSet;
-import org.springframework.security.oauth2.jwt.JwtEncoder;
-import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
+import org.springframework.security.oauth2.jwt.*;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.Map;
 
 @Service
 public class TokenService {
 
     private final JwtEncoder jwtEncoder;
 
+    private final JwtDecoder jwtDecoder;
+
     private final ObjectMapper objectMapper;
 
     public TokenService(
             JwtEncoder jwtEncoder,
+            JwtDecoder jwtDecoder,
             ObjectMapper objectMapper
     ) {
         this.jwtEncoder = jwtEncoder;
+        this.jwtDecoder = jwtDecoder;
         this.objectMapper = objectMapper;
     }
 
@@ -42,8 +46,25 @@ public class TokenService {
                 .expiresAt(now.plusSeconds(expiresIn))
                 .build();
 
-        var token = jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
+        String token = jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
 
         return new LoginResponse(token, expiresIn);
+    }
+
+    public Map<String, String> getSub(String token) {
+        Jwt payload = jwtDecoder.decode(token.substring(7));
+
+        String subAsString = payload.getClaim("sub");
+
+        Map<String, String> subAsMap;
+
+        try {
+            subAsMap = objectMapper.readValue(subAsString, new TypeReference<Map<String, String>>() {
+            });
+        } catch (Exception e) {
+            throw new RuntimeException("Erro pegando sub do payload do token");
+        }
+
+        return subAsMap;
     }
 }
