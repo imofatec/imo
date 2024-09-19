@@ -1,5 +1,6 @@
 package com.imo.backend.models.course.services;
 
+import com.imo.backend.config.token.TokenService;
 import com.imo.backend.exceptions.custom.ConflictException;
 import com.imo.backend.models.category.Category;
 import com.imo.backend.models.category.CategoryRepository;
@@ -8,12 +9,13 @@ import com.imo.backend.models.course.Course;
 import com.imo.backend.models.course.CourseRepository;
 import com.imo.backend.models.course.dtos.CreateCourseRequest;
 import com.imo.backend.models.course.dtos.CreateCourseResponse;
-import com.imo.backend.models.lessons.Lesson;
+import com.imo.backend.models.lessons.dtos.CreateLessonDto;
 import com.imo.backend.models.user.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -25,29 +27,52 @@ public class CreateCourseService {
 
     private final CategoryRepository categoryRepository;
 
+    private final TokenService tokenService;
+
     public CreateCourseService(
             CourseRepository courseRepository,
             UserRepository userRepository,
-            CategoryRepository categoryRepository) {
+            CategoryRepository categoryRepository, TokenService tokenService) {
         this.courseRepository = courseRepository;
         this.userRepository = userRepository;
         this.categoryRepository = categoryRepository;
+        this.tokenService = tokenService;
     }
 
-    public CreateCourseResponse execute(CreateCourseRequest createCourseRequest) {
-        Course potentialNewCourse = Course.fromCreateDto(createCourseRequest);
+    public CreateCourseResponse execute(CreateCourseRequest createCourseRequest, String token) {
+        var contributor = tokenService.getSub(token);
+        String contributorId = contributor.get("id");
 
-        List<Course> contributorCourses = courseRepository.findAllByContributor(potentialNewCourse.getContributor());
+        List<Course> contributorCourses = courseRepository.findAllByContributorId(contributorId);
+        findConflictContributorCourse(contributorId, contributorCourses, createCourseRequest.getName());
 
-        boolean existingCourseName = contributorCourses.stream()
-                .anyMatch(conflictCourse -> conflictCourse.getName().equals(potentialNewCourse.getName()));
+        List<CreateLessonDto> lessons = createCourseRequest.getLessons();
+        findConflictLessons(lessons);
 
-        if (existingCourseName) {
+        Course potentialNewCourse = Course.fromCreateDto(createCourseRequest, contributor);
+        Course newCourse = courseRepository.save(potentialNewCourse);
+        var category = categoryRepository.findByName(newCourse.getCategory());
+
+        SummaryCourse summaryCourse = SummaryCourse.fromCourse(newCourse);
+        updateOrCreateCategory(category, newCourse, summaryCourse);
+
+        userRepository.updateContributionsByUsername(newCourse.getContributorName(), newCourse);
+
+        return new CreateCourseResponse("Aguarde sua contribuição ser validada", newCourse.getName(),
+                newCourse.getContributorName(), newCourse.getCategory());
+    }
+
+    private void findConflictContributorCourse(String contributorId, List<Course> contributorCourses, String potentialNewCourseName) {
+
+        boolean existingContributorCourse = contributorCourses.stream()
+                .anyMatch(conflictCourse -> conflictCourse.getName().equals(potentialNewCourseName));
+
+        if (existingContributorCourse) {
             throw new ConflictException("Você ja cadastrou estre curso anteriormente");
         }
+    }
 
-        List<Lesson> lessons = potentialNewCourse.getLessons();
-
+    private void findConflictLessons(List<CreateLessonDto> lessons) {
         Set<List<String>> uniqueInfos = lessons.stream()
                 .map(lesson -> Arrays.asList(lesson.getTitle(), lesson.getDescription(), lesson.getYoutubeLink()))
                 .collect(Collectors.toSet());
@@ -56,27 +81,18 @@ public class CreateCourseService {
             throw new ConflictException(
                     "As informações e links de cadas aula do curso precisam ser diferentes uma das outras");
         }
+    }
 
-        Course newCourse = courseRepository.save(potentialNewCourse);
-
-        userRepository.updateContributionsByUsername(newCourse.getContributor(), newCourse);
-
-        SummaryCourse summaryCourse = SummaryCourse.fromCourse(newCourse);
-
-        var existingCategory = categoryRepository.findByName(newCourse.getCategory());
-
-        if (existingCategory.isEmpty()) {
+    private void updateOrCreateCategory(Optional<Category> category, Course newCourse, SummaryCourse summaryCourse) {
+        if (category.isEmpty()) {
             Category newCategory = new Category();
             newCategory.setName(newCourse.getCategory());
             newCategory.setCourses(summaryCourse);
             categoryRepository.save(newCategory);
         }
 
-        if (existingCategory.isPresent()) {
+        if (category.isPresent()) {
             categoryRepository.updateCategoryByCourses(newCourse.getCategory(), summaryCourse);
         }
-
-        return new CreateCourseResponse("Aguarde sua contribuição ser validada", newCourse.getName(),
-                newCourse.getContributor(), newCourse.getCategory());
     }
 }

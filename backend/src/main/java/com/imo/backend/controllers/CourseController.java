@@ -6,6 +6,7 @@ import com.imo.backend.models.course.dtos.CreateCourseResponse;
 import com.imo.backend.models.course.services.CreateCourseService;
 import com.imo.backend.models.course.services.GetAllCoursesByCategoryService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,8 +30,8 @@ public class CourseController {
 
     @SecurityRequirement(name = "Authorization")
     @PostMapping("/create")
-    public ResponseEntity<CreateCourseResponse> create(@Valid @RequestBody CreateCourseRequest createCourseRequest) {
-        var newCourse = createCourseService.execute(createCourseRequest);
+    public ResponseEntity<CreateCourseResponse> create(@Valid @RequestBody CreateCourseRequest createCourseRequest, HttpServletRequest request) {
+        var newCourse = createCourseService.execute(createCourseRequest, request.getHeader("Authorization"));
         return new ResponseEntity<>(newCourse, HttpStatus.ACCEPTED);
     }
 
