@@ -2,7 +2,6 @@ package com.imo.backend.controllers;
 
 import com.imo.backend.models.category.Category;
 import com.imo.backend.models.category.services.GetAllCategoriesService;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,7 +24,7 @@ public class CategoryController {
         @GetMapping("/get-all")
         public ResponseEntity<List<Category>> getAllCategories() {
             var categories = getAllCategoriesService.execute();
-            return new ResponseEntity<>(categories, HttpStatus.OK);
+            return ResponseEntity.ok(categories);
         }
 
 }

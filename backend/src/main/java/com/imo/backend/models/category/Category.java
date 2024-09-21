@@ -1,7 +1,7 @@
 package com.imo.backend.models.category;
 
 import com.imo.backend.models.category.dtos.SummaryCourse;
-import lombok.Setter;
+import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Document("categories")
-@Setter
+@Data
 public class Category {
     @Id
     String id;

@@ -6,10 +6,12 @@ import com.imo.backend.models.category.Category;
 import com.imo.backend.models.category.CategoryRepository;
 import com.imo.backend.models.category.dtos.SummaryCourse;
 import com.imo.backend.models.course.Course;
+import com.imo.backend.models.course.CourseFactory;
 import com.imo.backend.models.course.CourseRepository;
 import com.imo.backend.models.course.dtos.CreateCourseRequest;
 import com.imo.backend.models.course.dtos.CreateCourseResponse;
 import com.imo.backend.models.lessons.dtos.CreateLessonDto;
+import com.imo.backend.models.strategy.create.CreateWithTokenService;
 import com.imo.backend.models.user.UserRepository;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +22,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
-public class CreateCourseService {
+public class CreateCourseService implements CreateWithTokenService<CreateCourseRequest, CreateCourseResponse> {
     private final CourseRepository courseRepository;
 
     private final UserRepository userRepository;
@@ -39,6 +41,7 @@ public class CreateCourseService {
         this.tokenService = tokenService;
     }
 
+    @Override
     public CreateCourseResponse execute(CreateCourseRequest createCourseRequest, String token) {
         var contributor = tokenService.getSub(token);
         String contributorId = contributor.get("id");
@@ -49,7 +52,7 @@ public class CreateCourseService {
         List<CreateLessonDto> lessons = createCourseRequest.getLessons();
         findConflictLessons(lessons);
 
-        Course potentialNewCourse = Course.fromCreateDto(createCourseRequest, contributor);
+        Course potentialNewCourse = CourseFactory.fromCreateDto(createCourseRequest, contributor);
         Course newCourse = courseRepository.save(potentialNewCourse);
         var category = categoryRepository.findByName(newCourse.getCategory());
 
