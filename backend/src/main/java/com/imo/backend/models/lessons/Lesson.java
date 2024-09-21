@@ -1,13 +1,9 @@
 package com.imo.backend.models.lessons;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import java.time.LocalDateTime;
 
-@Getter
-@Setter
+@Data
 public class Lesson {
 
     private int index;

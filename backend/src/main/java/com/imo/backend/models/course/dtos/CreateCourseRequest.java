@@ -1,18 +1,15 @@
 package com.imo.backend.models.course.dtos;
 
-import com.imo.backend.models.lessons.Lesson;
 import com.imo.backend.models.lessons.dtos.CreateLessonDto;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
-import lombok.Setter;
 
 import java.util.List;
 
 
 @Getter
-@Setter
 public class CreateCourseRequest {
 
     @NotBlank(message = "Preencha o nome do curso")

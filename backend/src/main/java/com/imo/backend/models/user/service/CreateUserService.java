@@ -2,6 +2,7 @@ package com.imo.backend.models.user.service;
 
 import com.imo.backend.exceptions.custom.ConflictException;
 import com.imo.backend.exceptions.custom.BadRequestException;
+import com.imo.backend.models.strategy.create.CreateService;
 import com.imo.backend.models.user.dtos.RegisterUserRequest;
 import com.imo.backend.models.user.User;
 import com.imo.backend.models.user.UserRepository;
@@ -10,7 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
-public class CreateUserService {
+public class CreateUserService implements CreateService<RegisterUserRequest, RegisterUserResponse> {
     private final UserRepository userRepository;
 
     private final PasswordEncoder passwordEncoder;
@@ -22,6 +23,7 @@ public class CreateUserService {
         this.passwordEncoder = passwordEncoder;
     }
 
+    @Override
     public RegisterUserResponse execute(RegisterUserRequest registerUserRequest) {
         var username = userRepository.findByUsername(registerUserRequest.getUsername());
         if (username.isPresent()) {
@@ -36,7 +38,7 @@ public class CreateUserService {
         if (!registerUserRequest.getConfPassword().matches(registerUserRequest.getPassword())) {
             throw new BadRequestException("As senhas não coincidem");
         }
-        
+
         User user = new User(
                 registerUserRequest.getUsername(),
                 registerUserRequest.getEmail(),

@@ -1,11 +1,11 @@
 package com.imo.backend.models.category.dtos;
 
 import com.imo.backend.models.course.Course;
-import lombok.Setter;
+import lombok.Data;
 
 import java.time.LocalDateTime;
 
-@Setter
+@Data
 public class SummaryCourse {
 
     private String id;
@@ -16,6 +16,8 @@ public class SummaryCourse {
 
     private String description;
 
+    private String firstLessonYoutubeId;
+
     private LocalDateTime createdAt;
 
     public static SummaryCourse fromCourse(Course course) {
@@ -25,6 +27,7 @@ public class SummaryCourse {
         summaryCourse.setActive(course.isActive());
         summaryCourse.setName(course.getName());
         summaryCourse.setDescription(course.getDescription());
+        summaryCourse.setFirstLessonYoutubeId(course.getLessons().getFirst().getYoutubeLink());
         summaryCourse.setCreatedAt(course.getCreatedAt());
 
         return summaryCourse;
