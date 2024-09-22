@@ -16,9 +16,12 @@ public class Category {
 
     String name;
 
+    String slug;
+
     List<SummaryCourse> courses = new ArrayList<>();
 
     public void setCourses(SummaryCourse course) {
         this.courses.add(course);
     }
+
 }

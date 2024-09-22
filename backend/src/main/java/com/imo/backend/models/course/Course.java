@@ -3,6 +3,7 @@ package com.imo.backend.models.course;
 import com.imo.backend.models.course.dtos.CreateCourseRequest;
 import com.imo.backend.models.lessons.Lesson;
 import com.imo.backend.models.lessons.dtos.CreateLessonDto;
+import com.imo.backend.utils.Slug;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
@@ -34,10 +35,16 @@ public class Course {
 
     private String description;
 
+    private String slugCourse;
+
+    private String slugCategory;
+
     @CreatedDate
     private LocalDateTime createdAt;
 
     private List<Lesson> lessons;
+
+
 
     public static Course fromCreateDto(CreateCourseRequest createCourseRequest, Map<String, String> contributor) {
         Course course = new Course();
@@ -47,6 +54,8 @@ public class Course {
         course.setContributorId(contributor.get("id"));
         course.setContributorName(contributor.get("username"));
         course.setDescription(createCourseRequest.getDescription());
+        course.setSlugCourse(Slug.create(createCourseRequest.getName()));
+        course.setSlugCategory(Slug.create(createCourseRequest.getCategory()));
 
         List<CreateLessonDto> createLessonDto = createCourseRequest.getLessons();
 
@@ -73,5 +82,4 @@ public class Course {
 
         return course;
     }
-
 }

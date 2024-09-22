@@ -16,7 +16,7 @@ public class GetAllCoursesByCategoryService {
     }
 
     public List<Course> execute(String category) {
-        return courseRepository.findAllByCategory(category);
+        return courseRepository.findAllBySlugCategory(category);
     }
 }
 
