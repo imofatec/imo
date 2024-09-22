@@ -18,6 +18,8 @@ public class SummaryCourse {
 
     private LocalDateTime createdAt;
 
+    private int totalLessons;
+
     public static SummaryCourse fromCourse(Course course) {
         SummaryCourse summaryCourse = new SummaryCourse();
 
@@ -26,6 +28,7 @@ public class SummaryCourse {
         summaryCourse.setName(course.getName());
         summaryCourse.setDescription(course.getDescription());
         summaryCourse.setCreatedAt(course.getCreatedAt());
+        summaryCourse.setTotalLessons(course.getTotalLessons());
 
         return summaryCourse;
     }
