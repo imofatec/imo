@@ -1,6 +1,7 @@
 package com.imo.backend.models.lessons.dtos;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 
@@ -14,5 +15,8 @@ public class CreateLessonDto {
     private String description;
 
     @NotBlank(message = "Preencha o link da aula")
+    @Pattern(regexp = "^(https://)?(www\\.)?(youtube\\.com/watch\\?v=)?[\\w-]{11}(&.*)?$",
+            message = "Preencha um link do youtube válido, " +
+                    "Ou um código de video válido (aquilo que vem após watch?v=)")
     private String youtubeLink;
 }

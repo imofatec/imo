@@ -17,8 +17,8 @@ public class GetAllCoursesByCategoryService implements GetManyByService<Course> 
     }
 
     @Override
-    public List<Course> execute(String category) {
-        return courseRepository.findAllBySlugCategory(category);
+    public List<Course> execute(String slugCategory) {
+        return courseRepository.findAllBySlugCategory(slugCategory);
     }
 }
 
