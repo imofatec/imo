@@ -1,13 +1,9 @@
 package com.imo.backend.models.lessons;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import java.time.LocalDateTime;
 
-@Getter
-@Setter
+@Data
 public class Lesson {
 
     private int index;
@@ -20,10 +16,11 @@ public class Lesson {
 
     private LocalDateTime uploadedAt;
 
-    public void formatLink() {
-        int position = youtubeLink.indexOf("&");
-        if (position != -1) {
-            youtubeLink = youtubeLink.substring(0, position);
+    public void setYoutubeLink(String youtubeLink) {
+        int left = youtubeLink.indexOf("=");
+        int right = youtubeLink.indexOf("&");
+        if (right != -1) {
+            this.youtubeLink = youtubeLink.substring(left+1, right);
         }
     }
 }
