@@ -8,6 +8,6 @@ import java.util.List;
 
 @Repository
 public interface CourseRepository extends MongoRepository<Course, String> {
-    List<Course> findAllByCategory(String category);
+    List<Course> findAllBySlugCategory(String slugCategory);
     List<Course> findAllByContributorId(String id);
 }

@@ -11,6 +11,7 @@ import com.imo.backend.models.course.dtos.CreateCourseRequest;
 import com.imo.backend.models.course.dtos.CreateCourseResponse;
 import com.imo.backend.models.lessons.dtos.CreateLessonDto;
 import com.imo.backend.models.user.UserRepository;
+import com.imo.backend.utils.Slug;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -43,13 +44,16 @@ public class CreateCourseService {
         var contributor = tokenService.getSub(token);
         String contributorId = contributor.get("id");
 
+        var slugVar = Slug.create(createCourseRequest.getName());
+
         List<Course> contributorCourses = courseRepository.findAllByContributorId(contributorId);
-        findConflictContributorCourse(contributorId, contributorCourses, createCourseRequest.getName());
+        checkConflictContributorCourse(contributorId, contributorCourses, slugVar);
 
         List<CreateLessonDto> lessons = createCourseRequest.getLessons();
-        findConflictLessons(lessons);
+        checkConflictLessons(lessons);
 
         Course potentialNewCourse = Course.fromCreateDto(createCourseRequest, contributor);
+
         Course newCourse = courseRepository.save(potentialNewCourse);
         var category = categoryRepository.findByName(newCourse.getCategory());
 
@@ -62,17 +66,17 @@ public class CreateCourseService {
                 newCourse.getContributorName(), newCourse.getCategory());
     }
 
-    private void findConflictContributorCourse(String contributorId, List<Course> contributorCourses, String potentialNewCourseName) {
+    private static void checkConflictContributorCourse(String contributorId, List<Course> contributorCourses, String potentialNewCourseSlug) {
 
         boolean existingContributorCourse = contributorCourses.stream()
-                .anyMatch(conflictCourse -> conflictCourse.getName().equals(potentialNewCourseName));
+                .anyMatch(conflictCourse -> conflictCourse.getSlugCourse().equals(potentialNewCourseSlug));
 
         if (existingContributorCourse) {
             throw new ConflictException("Você ja cadastrou estre curso anteriormente");
         }
     }
 
-    private void findConflictLessons(List<CreateLessonDto> lessons) {
+    private static void checkConflictLessons(List<CreateLessonDto> lessons) {
         Set<List<String>> uniqueInfos = lessons.stream()
                 .map(lesson -> Arrays.asList(lesson.getTitle(), lesson.getDescription(), lesson.getYoutubeLink()))
                 .collect(Collectors.toSet());
@@ -83,10 +87,12 @@ public class CreateCourseService {
         }
     }
 
+
     private void updateOrCreateCategory(Optional<Category> category, Course newCourse, SummaryCourse summaryCourse) {
         if (category.isEmpty()) {
             Category newCategory = new Category();
             newCategory.setName(newCourse.getCategory());
+            newCategory.setSlug(newCourse.getSlugCategory());
             newCategory.setCourses(summaryCourse);
             categoryRepository.save(newCategory);
         }
