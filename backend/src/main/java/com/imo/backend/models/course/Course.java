@@ -44,6 +44,7 @@ public class Course {
 
     private List<Lesson> lessons;
 
+    private int totalLessons;
 
 
     public static Course fromCreateDto(CreateCourseRequest createCourseRequest, Map<String, String> contributor) {
@@ -79,6 +80,7 @@ public class Course {
         }
 
         course.setLessons(formattedLessons);
+        course.setTotalLessons(formattedLessons.size());
 
         return course;
     }
