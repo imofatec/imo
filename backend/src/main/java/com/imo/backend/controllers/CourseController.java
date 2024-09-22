@@ -42,9 +42,9 @@ public class CourseController {
         return new ResponseEntity<>(newCourse, HttpStatus.ACCEPTED);
     }
 
-    @GetMapping("/get-all/{category}")
-    public ResponseEntity<List<Course>> getAllCoursesByCategory(@PathVariable String category) {
-        var courses = getAllCoursesByCategoryService.execute(category);
+    @GetMapping("/get-all/{slugCategory}")
+    public ResponseEntity<List<Course>> getAllCoursesByCategory(@PathVariable String slugCategory) {
+        var courses = getAllCoursesByCategoryService.execute(slugCategory);
         return ResponseEntity.ok(courses);
     }
 
