@@ -6,11 +6,12 @@ import com.imo.backend.exceptions.custom.ForbiddenException;
 import com.imo.backend.models.user.dtos.LoginRequest;
 import com.imo.backend.models.user.dtos.LoginResponse;
 import com.imo.backend.models.user.UserRepository;
+import com.imo.backend.models.user.interfaces.AuthenticationServiceShape;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
-public class AuthenticationService {
+public class AuthenticationService implements AuthenticationServiceShape {
 
     private final UserRepository userRepository;
 

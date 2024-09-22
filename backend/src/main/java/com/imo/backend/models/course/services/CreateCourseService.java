@@ -6,10 +6,12 @@ import com.imo.backend.models.category.Category;
 import com.imo.backend.models.category.CategoryRepository;
 import com.imo.backend.models.category.dtos.SummaryCourse;
 import com.imo.backend.models.course.Course;
+import com.imo.backend.models.course.CourseFactory;
 import com.imo.backend.models.course.CourseRepository;
 import com.imo.backend.models.course.dtos.CreateCourseRequest;
 import com.imo.backend.models.course.dtos.CreateCourseResponse;
 import com.imo.backend.models.lessons.dtos.CreateLessonDto;
+import com.imo.backend.models.strategy.create.CreateWithTokenService;
 import com.imo.backend.models.user.UserRepository;
 import com.imo.backend.utils.Slug;
 import org.springframework.stereotype.Service;
@@ -21,7 +23,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
-public class CreateCourseService {
+public class CreateCourseService implements CreateWithTokenService<CreateCourseRequest, CreateCourseResponse> {
     private final CourseRepository courseRepository;
 
     private final UserRepository userRepository;
@@ -40,20 +42,20 @@ public class CreateCourseService {
         this.tokenService = tokenService;
     }
 
+    @Override
     public CreateCourseResponse execute(CreateCourseRequest createCourseRequest, String token) {
         var contributor = tokenService.getSub(token);
         String contributorId = contributor.get("id");
 
-        var slugVar = Slug.create(createCourseRequest.getName());
+        var slugCourse = Slug.create(createCourseRequest.getName());
 
         List<Course> contributorCourses = courseRepository.findAllByContributorId(contributorId);
-        checkConflictContributorCourse(contributorId, contributorCourses, slugVar);
+        checkConflictContributorCourse(contributorId, contributorCourses, slugCourse);
 
         List<CreateLessonDto> lessons = createCourseRequest.getLessons();
         checkConflictLessons(lessons);
 
-        Course potentialNewCourse = Course.fromCreateDto(createCourseRequest, contributor);
-
+        Course potentialNewCourse = CourseFactory.fromCreateDto(createCourseRequest, contributor);
         Course newCourse = courseRepository.save(potentialNewCourse);
         var category = categoryRepository.findByName(newCourse.getCategory());
 
@@ -66,7 +68,7 @@ public class CreateCourseService {
                 newCourse.getContributorName(), newCourse.getCategory());
     }
 
-    private static void checkConflictContributorCourse(String contributorId, List<Course> contributorCourses, String potentialNewCourseSlug) {
+    private void checkConflictContributorCourse(String contributorId, List<Course> contributorCourses, String potentialNewCourseSlug) {
 
         boolean existingContributorCourse = contributorCourses.stream()
                 .anyMatch(conflictCourse -> conflictCourse.getSlugCourse().equals(potentialNewCourseSlug));
@@ -76,7 +78,7 @@ public class CreateCourseService {
         }
     }
 
-    private static void checkConflictLessons(List<CreateLessonDto> lessons) {
+    private void checkConflictLessons(List<CreateLessonDto> lessons) {
         Set<List<String>> uniqueInfos = lessons.stream()
                 .map(lesson -> Arrays.asList(lesson.getTitle(), lesson.getDescription(), lesson.getYoutubeLink()))
                 .collect(Collectors.toSet());
@@ -86,7 +88,6 @@ public class CreateCourseService {
                     "As informações e links de cadas aula do curso precisam ser diferentes uma das outras");
         }
     }
-
 
     private void updateOrCreateCategory(Optional<Category> category, Course newCourse, SummaryCourse summaryCourse) {
         if (category.isEmpty()) {
