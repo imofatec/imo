@@ -1,4 +1,3 @@
-import fotoTemp from '@/assets/thumb.jpg'
 import { Dialog, DialogContent, DialogHeader } from './dialog'
 import Avaliacao from './avaliacao'
 import { Link } from 'react-router-dom'
@@ -12,10 +11,9 @@ export default function Modal({
   avaliacoesCurso,
   nomeCurso,
   descricao,
+  fotoTemp,
   qtd,
 }) {
-  qtd = 9
-
   return (
     <Dialog open={aberto} onOpenChange={fechado}>
       <DialogContent className="bg-custom-header-dark-purple border-none text-white">

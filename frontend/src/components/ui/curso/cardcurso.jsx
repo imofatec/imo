@@ -1,4 +1,3 @@
-import fotoCurso from '@/assets/thumb.jpg'
 import React, { useState } from 'react'
 import Modal from './modal'
 import Avaliacao from './avaliacao'
@@ -9,6 +8,8 @@ export default function CardCurso({
   avaliacoesCurso,
   descricaoCurso,
   conteudo,
+  quantidade,
+  fotoCurso,
 }) {
   const [aberto, setAberto] = useState(false)
   const abrir = () => setAberto(true)
@@ -35,6 +36,8 @@ export default function CardCurso({
         nomeCurso={nomeCurso}
         descricao={descricaoCurso}
         conteudo={conteudo}
+        qtd={quantidade}
+        fotoTemp={fotoCurso}
       />
     </>
   )
