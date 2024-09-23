@@ -16,26 +16,26 @@ public class Course {
     @Id
     private String id;
 
-    private boolean active;
-
-    private String name;
-
-    private String category;
-
-    private String contributorName;
-
-    private String contributorId;
-
-    private String description;
-
-    private String slugCourse;
-
-    private String slugCategory;
-
     @CreatedDate
     private LocalDateTime createdAt;
 
-    private List<Lesson> lessons;
+    private boolean active;
+
+    private String contributorId;
+
+    private String contributorName;
+
+    private String name;
+
+    private String slugCourse;
+
+    private String category;
+
+    private String slugCategory;
+
+    private String description;
 
     private int totalLessons;
+
+    private List<Lesson> lessons;
 }
