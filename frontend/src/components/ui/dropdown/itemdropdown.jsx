@@ -1,5 +1,4 @@
 import {
-  AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/dropdown/accordion"
@@ -19,9 +18,6 @@ export default function ItemDropdown({ numItem, labelItem, contItem, conteudo })
   return <>
     <AccordionItem value={numItem}>
       <AccordionTrigger>{labelItem}</AccordionTrigger>
-      <AccordionContent>
-        <Seletores contItem={contItem} conteudo={conteudo}></Seletores>
-      </AccordionContent>
     </AccordionItem>
   </>
 }

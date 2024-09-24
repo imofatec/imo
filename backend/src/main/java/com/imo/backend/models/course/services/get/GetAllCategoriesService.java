@@ -19,7 +19,7 @@ public class GetAllCategoriesService implements GetManyToSetService<Category> {
     @Override
     public Set<Category> execute() {
         return courseRepository.findAll().stream()
-                .map(course -> new Category(course.getCategory(), course.getSlugCourse()))
+                .map(course -> new Category(course.getCategory(), course.getSlugCategory()))
                 .collect(Collectors.toSet());
     }
 }
