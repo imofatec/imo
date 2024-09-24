@@ -12,6 +12,7 @@ export default function Modal({
   nomeCurso,
   descricao,
   fotoTemp,
+  codigoCurso,
   qtd,
 }) {
   return (

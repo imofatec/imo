@@ -36,7 +36,11 @@ export default function App() {
           action: createCourse,
         },
         {
-          path: "/cursos",
+          path: "/categorias",
+          element: <Cursos />
+        },
+        {
+          path: "/categorias/:slug", 
           element: <Cursos />
         },
         {

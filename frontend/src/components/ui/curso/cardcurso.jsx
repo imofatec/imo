@@ -9,6 +9,7 @@ export default function CardCurso({
   descricaoCurso,
   conteudo,
   quantidade,
+  codigo,
   fotoCurso,
 }) {
   const [aberto, setAberto] = useState(false)
@@ -38,6 +39,7 @@ export default function CardCurso({
         conteudo={conteudo}
         qtd={quantidade}
         fotoTemp={fotoCurso}
+        codigoCurso={codigo}
       />
     </>
   )
