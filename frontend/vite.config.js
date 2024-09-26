@@ -1,19 +1,24 @@
-import path from "path"
-import react from "@vitejs/plugin-react"
-import { defineConfig } from "vite"
+import path from 'path'
+import react from '@vitejs/plugin-react'
+import { defineConfig } from 'vite'
 
 export default defineConfig({
   server: {
     proxy: {
-      "/api": {
-        target: "http://localhost:8080"
-      }
-    }
+      '/api': {
+        target: 'http://localhost:8080',
+      },
+    },
   },
   plugins: [react()],
+  esbuild: {
+    include: /\.[jt]sx?/,
+    exclude: [],
+    loader: 'jsx',
+  },
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "./src"),
+      '@': path.resolve(__dirname, './src'),
     },
   },
 })
