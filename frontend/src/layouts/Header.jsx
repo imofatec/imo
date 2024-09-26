@@ -1,4 +1,3 @@
-import api from '@/api/api'
 import LogoIMO from '@/assets/LogoIMO.svg'
 
 import { Button } from '@/components/ui/button'
