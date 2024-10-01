@@ -1,5 +1,4 @@
 import Cursos from '@/pages/Cursos'
-import VerAula from '@/pages/VerAula'
 
 const categories = [
   {
@@ -12,11 +11,8 @@ const categories = [
   },
 ]
 
-const lessons = {
-  path: '/veraula',
-  element: <VerAula />,
-}
 
-const courseRoutes = [...categories, lessons]
+
+const courseRoutes = [...categories]
 
 export default courseRoutes

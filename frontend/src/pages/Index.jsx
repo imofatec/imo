@@ -14,7 +14,7 @@ export default function Index() {
 
             <div className="bg-custom-dark-purple min-h-screen px-4 md:px-8 flex flex-col">
 
-                {courses.map((item, index) => {
+                {courses.map((item, index, i) => {
                     return (
                         <>
                             <Featurecourses key={index} title={item.title} text={item.text} order={item.order} />
