@@ -1,23 +1,31 @@
 import LogoIMO from '@/assets/LogoIMO.svg'
-
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { LogOut, Search } from 'lucide-react'
-import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { useEffect, useMemo, useState } from 'react'
+import { Link,useLocation } from 'react-router-dom'
+import { jwtDecode } from "jwt-decode";
+
 
 const headerItens = ['Data Science', 'Redes', 'Gestão', 'Design', 'Programação'] // contem todos os botoes do header ciano
 
 export default function Header() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [token, setToken] = useState(localStorage.getItem('token'))
+  const location = useLocation()
+
+  const validateTime = (token) => {
+    const {exp} = jwtDecode(token)
+    return exp * 1000 > Date.now() ? true : false
+  }
+
+  const isLoggedIn = useMemo(() => {
+    return token ? validateTime(token) : false
+  },[token])
 
   useEffect(() => {
-    const validate = async () => {
-      const token = localStorage.getItem('token')
-      setIsLoggedIn(token ? true : false)
-    }
-    validate()
-  }, [])
+    const storedToken = localStorage.getItem('token')
+    setToken(storedToken)
+  }, [location])
 
   return (
     <header className="flex flex-col">

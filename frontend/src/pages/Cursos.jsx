@@ -53,7 +53,7 @@ export default function Cursos() {
   return (
     <>
       <Titulo titulo={tipoCurso} />
-      <div className="flex flex-row w-full">
+      <div className="min-h-screen flex flex-row w-full">
         <div className="w-1/3 p-12">
           <button
             onClick={handleShowAllCourses}
@@ -86,6 +86,7 @@ export default function Cursos() {
                   conteudo={curso.name}
                   quantidade={curso.totalLessons}
                   codigo={curso.slugCourse}
+                  codAula={curso.firstLessonYoutubeId}
                 />
               ))
             )}
