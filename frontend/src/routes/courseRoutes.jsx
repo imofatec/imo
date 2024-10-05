@@ -1,4 +1,5 @@
 import Cursos from '@/pages/Cursos'
+import ErrorPage from '@/pages/ErrorPage';
 
 const categories = [
   {
@@ -8,6 +9,10 @@ const categories = [
   {
     path: '/categorias/:slug',
     element: <Cursos />,
+  },
+  {
+    path: '*',
+    element: <ErrorPage />,
   },
 ]
 
