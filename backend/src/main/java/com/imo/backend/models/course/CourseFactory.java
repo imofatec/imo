@@ -1,6 +1,7 @@
 package com.imo.backend.models.course;
 
 import com.imo.backend.models.course.dtos.CourseOverview;
+import com.imo.backend.models.course.dtos.CourseProgress;
 import com.imo.backend.models.course.dtos.CreateCourseRequest;
 import com.imo.backend.models.lessons.Lesson;
 import com.imo.backend.models.lessons.dtos.CreateLessonDto;
@@ -12,41 +13,41 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-    public class CourseFactory {
-        public static Course createCourse(
-                CreateCourseRequest createCourseRequest,
-                Map<String, String> contributor) {
+public class CourseFactory {
+    public static Course createCourse(
+            CreateCourseRequest createCourseRequest,
+            Map<String, String> contributor) {
 
-            Course course = new Course();
+        Course course = new Course();
 
-            course.setActive(false);
-            course.setContributorId(contributor.get("id"));
-            course.setContributorName(contributor.get("username"));
-            course.setName(createCourseRequest.getName());
-            course.setSlugCourse(Slug.create(createCourseRequest.getName()));
-            course.setCategory(createCourseRequest.getCategory());
-            course.setSlugCategory(Slug.create(createCourseRequest.getCategory()));
-            course.setDescription(createCourseRequest.getDescription());
+        course.setActive(false);
+        course.setContributorId(contributor.get("id"));
+        course.setContributorName(contributor.get("username"));
+        course.setName(createCourseRequest.getName());
+        course.setSlugCourse(Slug.create(createCourseRequest.getName()));
+        course.setCategory(createCourseRequest.getCategory());
+        course.setSlugCategory(Slug.create(createCourseRequest.getCategory()));
+        course.setDescription(createCourseRequest.getDescription());
 
-            List<Lesson> formattedLessons = IntStream
-                    .range(0, createCourseRequest.getLessons().size())
-                    .mapToObj(i -> {
-                        CreateLessonDto item = createCourseRequest.getLessons().get(i);
-                        Lesson lesson = new Lesson();
-                        lesson.setIndex(i + 1);
-                        lesson.setTitle(item.getTitle());
-                        lesson.setDescription(item.getDescription());
-                        lesson.setYoutubeLink(item.getYoutubeLink());
-                        lesson.setUploadedAt(LocalDateTime.now());
-                        return lesson;
-                    })
-                    .collect(Collectors.toList());
+        List<Lesson> formattedLessons = IntStream
+                .range(0, createCourseRequest.getLessons().size())
+                .mapToObj(i -> {
+                    CreateLessonDto item = createCourseRequest.getLessons().get(i);
+                    Lesson lesson = new Lesson();
+                    lesson.setIndex(i + 1);
+                    lesson.setTitle(item.getTitle());
+                    lesson.setDescription(item.getDescription());
+                    lesson.setYoutubeLink(item.getYoutubeLink());
+                    lesson.setUploadedAt(LocalDateTime.now());
+                    return lesson;
+                })
+                .collect(Collectors.toList());
 
-            course.setLessons(formattedLessons);
-            course.setTotalLessons(formattedLessons.size());
+        course.setLessons(formattedLessons);
+        course.setTotalLessons(formattedLessons.size());
 
-            return course;
-        }
+        return course;
+    }
 
     public static CourseOverview createCourseOverview(Course course) {
         CourseOverview courseOverview = new CourseOverview();
@@ -62,5 +63,17 @@ import java.util.stream.IntStream;
         courseOverview.setTotalLessons(course.getTotalLessons());
 
         return courseOverview;
+    }
+
+    public static CourseProgress createCourseProgress(Course course) {
+        CourseProgress courseProgress = new CourseProgress();
+
+        courseProgress.setId(course.getId());
+        courseProgress.setName(course.getName());
+        courseProgress.setTotalLessons(course.getTotalLessons());
+        courseProgress.setLessonsWatched(0  );
+        courseProgress.setStatus(CourseProgress.Status.IN_PROGRESS);
+
+        return courseProgress;
     }
 }
