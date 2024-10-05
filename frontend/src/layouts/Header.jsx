@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { LogOut, Search } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
-import { Link,useLocation } from 'react-router-dom'
+import { Link,useLocation,useNavigate } from 'react-router-dom'
 import { jwtDecode } from "jwt-decode";
 
 
@@ -27,6 +27,19 @@ export default function Header() {
     setToken(storedToken)
   }, [location])
 
+  const navigate = useNavigate()
+
+  const handleSearch = (e) => {
+    if(e.key === "Enter"){
+      const searchTerm = e.target.value
+      .trim()
+      .toLowerCase()
+      .replace(/[^\w\s]|_/g, '')
+      .replace(/\s+/g, '-')
+      navigate(`/categorias/${searchTerm}`)
+      e.preventDefault()
+    }
+  }
   return (
     <header className="flex flex-col">
       <div className="bg-custom-dark-purple h-[3.125rem] flex justify-around items-center">
@@ -41,6 +54,7 @@ export default function Header() {
             type="search"
             placeholder="Pesquise por qualquer coisa"
             className="pl-14 bg-custom-search-dark border-custom-search-dark text-white w-full placeholder:text-white h-[2.375rem]"
+            onKeyDown={handleSearch}
           />
         </div>
 
