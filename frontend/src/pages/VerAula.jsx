@@ -4,7 +4,7 @@ import LessonPlaylist from '@/components/ui/lesson/lessonplaylist'
 import { Titulo } from '@/components/ui/titulo'
 import LessonComment from '@/components/ui/lesson/lessoncomment'
 import LessonInfo from '@/components/ui/lesson/lessoninfo'
-import { useParams } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 
@@ -15,6 +15,8 @@ export default function VerAula() {
   const [lessonData, setLessonData] = useState([])
   const [error, setError] = useState(false)
   const [loading, setLoading] = useState(true)
+
+  const navigate = useNavigate()
 
   const fetchData = async () => {
     setError(false)
@@ -36,7 +38,11 @@ export default function VerAula() {
     fetchData()
   }, [slugCourse])
 
-  console.log(lessonData)
+  useEffect(() => {
+    if (!loading && !currentLesson) {
+      navigate('/404')
+    }
+  }, [loading, navigate])
 
   const currentLesson = lessonData.find(
     (lesson) => lesson.youtubeLink === IdLesson,
