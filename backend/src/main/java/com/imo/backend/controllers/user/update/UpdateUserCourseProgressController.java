@@ -3,6 +3,7 @@ package com.imo.backend.controllers.user.update;
 import com.imo.backend.controllers.user.UserController;
 import com.imo.backend.models.user.dtos.UserCourseProgress;
 import com.imo.backend.models.user.service.UpdateUserCourseProgressService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +19,7 @@ public class UpdateUserCourseProgressController extends UserController {
         this.updateUserCourseProgressService = updateUserCourseProgressService;
     }
 
+    @Operation(summary = "Update the progress of any course you started")
     @SecurityRequirement(name = "Authorization")
     @PutMapping("/update-progress/{courseId}")
     public ResponseEntity<UserCourseProgress> handle(@PathVariable String courseId, HttpServletRequest request) {

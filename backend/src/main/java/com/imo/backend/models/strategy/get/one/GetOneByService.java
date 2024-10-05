@@ -1,4 +1,4 @@
-package com.imo.backend.models.strategy.read;
+package com.imo.backend.models.strategy.get.one;
 
 // T - Type
 public interface GetOneByService<T> {

@@ -4,6 +4,7 @@ import com.imo.backend.controllers.course.CourseController;
 import com.imo.backend.models.course.dtos.CreateCourseRequest;
 import com.imo.backend.models.course.dtos.CreateCourseResponse;
 import com.imo.backend.models.course.services.create.CreateCourseService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -22,6 +23,7 @@ public class CreateCourseController extends CourseController{
         this.createCourseService = createCourseService;
     }
 
+    @Operation(summary = "Create a course")
     @SecurityRequirement(name = "Authorization")
     @PostMapping("/create")
     public ResponseEntity<CreateCourseResponse> handle(@Valid @RequestBody

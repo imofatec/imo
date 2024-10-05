@@ -1,4 +1,4 @@
-package com.imo.backend.models.strategy.read.pagination;
+package com.imo.backend.models.strategy.get.many.pagination;
 
 import java.util.List;
 
