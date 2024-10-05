@@ -1,9 +1,9 @@
-package com.imo.backend.models.course.services.get;
+package com.imo.backend.models.course.services.get.lessons;
 
 import com.imo.backend.exceptions.custom.NotFoundException;
 import com.imo.backend.models.course.CourseRepository;
 import com.imo.backend.models.lessons.Lesson;
-import com.imo.backend.models.strategy.read.GetManyByToListService;
+import com.imo.backend.models.strategy.get.many.to_list.GetManyByToListService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

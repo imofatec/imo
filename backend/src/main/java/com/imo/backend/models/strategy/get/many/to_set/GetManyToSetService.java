@@ -1,4 +1,4 @@
-package com.imo.backend.models.strategy.read;
+package com.imo.backend.models.strategy.get.many.to_set;
 
 import java.util.Set;
 

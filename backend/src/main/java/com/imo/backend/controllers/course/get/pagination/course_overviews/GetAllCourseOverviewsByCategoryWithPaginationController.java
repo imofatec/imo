@@ -1,6 +1,6 @@
 package com.imo.backend.controllers.course.get.pagination.course_overviews;
 
-import com.imo.backend.controllers.course.CourseControllerPagination;
+import com.imo.backend.controllers.course.CourseControllerWithPagination;
 import com.imo.backend.models.course.dtos.CourseOverview;
 import com.imo.backend.models.course.services.get.pagination.course_overviews.GetAllCourseOverviewsByCategoryWithPaginationService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-public class GetAllCourseOverviewsByCategoryWithPaginationController extends CourseControllerPagination {
+public class GetAllCourseOverviewsByCategoryWithPaginationController extends CourseControllerWithPagination {
     private final GetAllCourseOverviewsByCategoryWithPaginationService getAllCourseOverviewsByCategoryWithPaginationService;
 
     public GetAllCourseOverviewsByCategoryWithPaginationController(
