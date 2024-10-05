@@ -1,9 +1,9 @@
-package com.imo.backend.models.course.services.get;
+package com.imo.backend.models.course.services.get.course_overviews;
 
 import com.imo.backend.models.course.dtos.CourseOverview;
 import com.imo.backend.models.course.CourseFactory;
 import com.imo.backend.models.course.CourseRepository;
-import com.imo.backend.models.strategy.read.GetManyByToListService;
+import com.imo.backend.models.strategy.get.many.to_list.GetManyByToListService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,6 +21,6 @@ public class GetAllCourseOverviewsByCategoryService implements GetManyByToListSe
     public List<CourseOverview> execute(String slug) {
         return courseRepository.findAllBySlugCategory(slug).stream()
                 .map(CourseFactory::createCourseOverview)
-                .collect(Collectors.toList());
+                .toList();
     }
 }

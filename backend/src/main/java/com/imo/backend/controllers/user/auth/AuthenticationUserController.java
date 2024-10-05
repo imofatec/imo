@@ -4,6 +4,7 @@ import com.imo.backend.controllers.user.UserController;
 import com.imo.backend.models.user.dtos.LoginRequest;
 import com.imo.backend.models.user.dtos.LoginResponse;
 import com.imo.backend.models.user.service.AuthenticationService;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,6 +20,7 @@ public class AuthenticationUserController extends UserController {
         this.authenticationService = authenticationService;
     }
 
+    @Operation(summary = "Login to your account")
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> handle(@Valid @RequestBody LoginRequest loginRequest) {
         var token = authenticationService.execute(loginRequest);

@@ -1,8 +1,8 @@
-package com.imo.backend.models.course.services.get;
+package com.imo.backend.models.course.services.get.courses;
 
 import com.imo.backend.models.course.Course;
 import com.imo.backend.models.course.CourseRepository;
-import com.imo.backend.models.strategy.read.GetManyToListService;
+import com.imo.backend.models.strategy.get.many.to_list.GetManyToListService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

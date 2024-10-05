@@ -5,5 +5,5 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Tag(name = "Course Controllers with pagination")
 @RequestMapping("/api/courses/pagination")
-public abstract class CourseControllerPagination {
+public abstract class CourseControllerWithPagination {
 }

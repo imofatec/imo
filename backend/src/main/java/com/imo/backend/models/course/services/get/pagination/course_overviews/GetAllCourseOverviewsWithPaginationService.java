@@ -3,7 +3,7 @@ package com.imo.backend.models.course.services.get.pagination.course_overviews;
 import com.imo.backend.models.course.CourseFactory;
 import com.imo.backend.models.course.CourseRepository;
 import com.imo.backend.models.course.dtos.CourseOverview;
-import com.imo.backend.models.strategy.read.pagination.GetManyToListWithPaginationService;
+import com.imo.backend.models.strategy.get.many.pagination.GetManyToListWithPaginationService;
 import com.imo.backend.utils.ValidatePageable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
