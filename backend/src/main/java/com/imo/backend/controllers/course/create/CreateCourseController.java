@@ -1,6 +1,6 @@
 package com.imo.backend.controllers.course.create;
 
-import com.imo.backend.controllers.CourseController;
+import com.imo.backend.controllers.course.CourseController;
 import com.imo.backend.models.course.dtos.CreateCourseRequest;
 import com.imo.backend.models.course.dtos.CreateCourseResponse;
 import com.imo.backend.models.course.services.create.CreateCourseService;
