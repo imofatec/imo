@@ -2,6 +2,7 @@ package com.imo.backend.models.course.services.create;
 
 import com.imo.backend.config.token.TokenService;
 import com.imo.backend.exceptions.custom.ConflictException;
+import com.imo.backend.exceptions.custom.NotFoundException;
 import com.imo.backend.models.course.Course;
 import com.imo.backend.models.course.CourseFactory;
 import com.imo.backend.models.course.CourseRepository;
@@ -40,9 +41,10 @@ public class CreateCourseService implements CreateWithTokenService<CreateCourseR
         String contributorId = contributor.get("id");
 
         var contributorCourses = courseRepository.findAllByContributorId(contributorId);
-        var contributorCourses2 = userRepository.findById(contributorId);
-        var slugCourse = Slug.create(createCourseRequest.getName());
-        checkConflictContributorCourse(contributorCourses, contributorCourses2, slugCourse);
+        var user = userRepository.findById(contributorId)
+                .orElseThrow(() -> new NotFoundException("Usuário autenticado não encontrado"));
+        var potentialNewSlugCourse = Slug.create(createCourseRequest.getName());
+        checkConflictContributorCourse(contributorCourses, user, potentialNewSlugCourse);
 
         var lessons = createCourseRequest.getLessons();
         checkConflictLessons(lessons);
@@ -56,20 +58,18 @@ public class CreateCourseService implements CreateWithTokenService<CreateCourseR
                 newCourse.getContributorName(), newCourse.getCategory());
     }
 
-    private static void checkConflictContributorCourse(List<Course> contributorCourses,
-                                                       Optional<User> contributorCourses2,
-                                                       String potentialNewCourseSlug) {
+    private static void checkConflictContributorCourse(
+            List<Course> contributorCourses,
+            User user,
+            String potentialNewSlugCourse) {
 
         boolean existingContributorCourse = contributorCourses.stream()
-                .anyMatch(course -> course.getSlugCourse().equals(potentialNewCourseSlug));
+                .anyMatch(course -> course.getSlugCourse().equals(potentialNewSlugCourse));
 
-        if (contributorCourses2.isPresent()) {
-            existingContributorCourse = contributorCourses2.get().getContributions().stream()
-                    .anyMatch(course -> course.getSlugCourse().equals(potentialNewCourseSlug));
+        boolean existingContributorCoursePt2 = user.getCourseContributions().stream()
+                .anyMatch(course -> course.getSlugCourse().equals(potentialNewSlugCourse));
 
-        }
-
-        if (existingContributorCourse) {
+        if (existingContributorCourse || existingContributorCoursePt2) {
             throw new ConflictException("Você ja cadastrou estre curso anteriormente");
         }
     }

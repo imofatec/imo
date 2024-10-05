@@ -27,7 +27,8 @@ public class GetYourselfService implements GetOneByService<NoPasswordUser> {
         var userId = subAsMap.get("id");
 
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException("User not found"));
-        return new NoPasswordUser(user.getUsername(), user.getEmail());
+                .orElseThrow(() -> new NotFoundException("Usuário não encontrado"));
+
+        return NoPasswordUser.fromUser(user);
     }
 }

@@ -3,15 +3,15 @@ package com.imo.backend.models.user.service;
 import com.imo.backend.exceptions.custom.ConflictException;
 import com.imo.backend.exceptions.custom.BadRequestException;
 import com.imo.backend.models.strategy.create.CreateService;
+import com.imo.backend.models.user.dtos.NoPasswordUser;
 import com.imo.backend.models.user.dtos.RegisterUserRequest;
 import com.imo.backend.models.user.User;
 import com.imo.backend.models.user.UserRepository;
-import com.imo.backend.models.user.dtos.RegisterUserResponse;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
-public class CreateUserService implements CreateService<RegisterUserRequest, RegisterUserResponse> {
+public class CreateUserService implements CreateService<RegisterUserRequest, NoPasswordUser> {
     private final UserRepository userRepository;
 
     private final PasswordEncoder passwordEncoder;
@@ -24,7 +24,7 @@ public class CreateUserService implements CreateService<RegisterUserRequest, Reg
     }
 
     @Override
-    public RegisterUserResponse execute(RegisterUserRequest registerUserRequest) {
+    public NoPasswordUser execute(RegisterUserRequest registerUserRequest) {
         var username = userRepository.findByUsername(registerUserRequest.getUsername());
         if (username.isPresent()) {
             throw new ConflictException("O username já existe");
@@ -48,6 +48,6 @@ public class CreateUserService implements CreateService<RegisterUserRequest, Reg
 
         User newUser = userRepository.save(user);
 
-        return new RegisterUserResponse(newUser.getUsername(), newUser.getEmail());
+        return NoPasswordUser.fromUser(newUser);
     }
 }

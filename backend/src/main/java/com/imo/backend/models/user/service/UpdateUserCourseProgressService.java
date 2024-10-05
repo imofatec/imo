@@ -37,7 +37,7 @@ public class UpdateUserCourseProgressService implements UpdateByIdService<Void, 
         var course = courseRepository.findById(courseId)
                 .orElseThrow(() -> new NotFoundException("Curso não encontrado"));
 
-        CourseProgress currentProgress = checkCurrentCourseProgress(course, user);
+        CourseProgress currentProgress = checkCurrentUserCourseProgress(course, user);
 
         if (currentProgress == null) {
             var courseProgress = CourseFactory.createCourseProgress(course);
@@ -61,8 +61,8 @@ public class UpdateUserCourseProgressService implements UpdateByIdService<Void, 
         return updatedUserCourseProgress(userRepository, userId, courseId);
     }
 
-    private static CourseProgress checkCurrentCourseProgress(Course course, User user) {
-        return user.getProgress()
+    private static CourseProgress checkCurrentUserCourseProgress(Course course, User user) {
+        return user.getCoursesProgress()
                 .stream()
                 .filter(courseProgress -> courseProgress.getId().equals(course.getId()))
                 .findFirst()
@@ -72,7 +72,7 @@ public class UpdateUserCourseProgressService implements UpdateByIdService<Void, 
     private static UserCourseProgress updatedUserCourseProgress(UserRepository userRepository, String userId, String courseId) {
         var user = userRepository.findById(userId).get();
         var currentProgress = user
-                .getProgress()
+                .getCoursesProgress()
                 .stream()
                 .filter(course -> course.getId().equals(courseId))
                 .findFirst().get();

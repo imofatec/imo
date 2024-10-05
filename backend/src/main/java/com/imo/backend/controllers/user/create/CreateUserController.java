@@ -2,8 +2,8 @@ package com.imo.backend.controllers.user.create;
 
 
 import com.imo.backend.controllers.user.UserController;
+import com.imo.backend.models.user.dtos.NoPasswordUser;
 import com.imo.backend.models.user.dtos.RegisterUserRequest;
-import com.imo.backend.models.user.dtos.RegisterUserResponse;
 import com.imo.backend.models.user.service.CreateUserService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
@@ -24,7 +24,7 @@ public class CreateUserController extends UserController {
 
     @Operation(summary = "Create an account")
     @PostMapping("/create")
-    public ResponseEntity<RegisterUserResponse> handle(@Valid @RequestBody RegisterUserRequest registerUserRequest) {
+    public ResponseEntity<NoPasswordUser> handle(@Valid @RequestBody RegisterUserRequest registerUserRequest) {
         var newUser = createUserService.execute(registerUserRequest);
         return new ResponseEntity<>(newUser, HttpStatus.CREATED);
     }
