@@ -19,7 +19,7 @@ public class GetYourselfController extends UserController {
 
     @SecurityRequirement(name = "Authorization")
     @GetMapping("/profile")
-    public NoPasswordUser handle(@RequestHeader("Authorization") String token){
+    public NoPasswordUser handle(@RequestHeader("Authorization") String token) {
         return getYourselfService.execute(token);
     }
 }

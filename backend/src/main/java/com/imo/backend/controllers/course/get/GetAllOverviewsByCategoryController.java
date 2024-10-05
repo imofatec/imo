@@ -1,6 +1,6 @@
 package com.imo.backend.controllers.course.get;
 
-import com.imo.backend.controllers.CourseController;
+import com.imo.backend.controllers.course.CourseController;
 import com.imo.backend.models.course.dtos.CourseOverview;
 import com.imo.backend.models.course.services.get.GetAllCourseOverviewsByCategoryService;
 import org.springframework.http.ResponseEntity;
