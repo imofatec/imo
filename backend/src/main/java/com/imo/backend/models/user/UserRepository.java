@@ -15,18 +15,18 @@ public interface UserRepository extends MongoRepository<User, String> {
     Optional<User> findByUsername(String username);
 
     @Query("{ 'username':  ?0 }")
-    @Update("{ '$push':  { 'contributions': ?1 } }")
+    @Update("{ '$push':  { 'courseContributions': ?1 } }")
     void updateContributionsByUsername(String username, Course course);
 
     @Query("{ 'id': ?0 }")
-    @Update("{ $push: { progress: ?1 } }")
+    @Update("{ $push: { coursesProgress: ?1 } }")
     void saveCourseProgressById(String id, CourseProgress progress);
 
-    @Query("{ 'id':  ?0, 'progress.id': ?1, 'progress.lessonsWatched': { $lt: ?2 } }")
-    @Update("{ $inc: { 'progress.$.lessonsWatched': 1 } }")
+    @Query("{ 'id':  ?0, 'coursesProgress.id': ?1, 'coursesProgress.lessonsWatched': { $lt: ?2 } }")
+    @Update("{ $inc: { 'coursesProgress.$.lessonsWatched': 1 } }")
     void updateCourseProgressLessonsById(String id, String courseId, Integer totalLessons);
 
-    @Query("{ 'id': ?0, 'progress.id': ?1 }")
-    @Update("{ $set: { 'progress.$.status': ?2 } }")
+    @Query("{ 'id': ?0, 'coursesProgress.id': ?1 }")
+    @Update("{ $set: { 'coursesProgress.$.status': ?2 } }")
     void updateCourseProgressStatusById(String id, String courseId, CourseProgress.Status status);
 }

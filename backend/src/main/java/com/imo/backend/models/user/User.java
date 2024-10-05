@@ -23,17 +23,13 @@ public class User {
 
     private String password;
 
-    private List<Course> contributions = new ArrayList<>();
+    private List<Course> courseContributions = new ArrayList<>();
 
-    private List<CourseProgress> progress = new ArrayList<>();
+    private List<CourseProgress> coursesProgress = new ArrayList<>();
 
     public User(String username, String email, String password) {
         this.username = username;
         this.email = email;
         this.password = password;
     }
-
-    public User() {
-    }
-
 }
