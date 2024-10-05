@@ -4,9 +4,7 @@ import com.imo.backend.models.course.CourseFactory;
 import com.imo.backend.models.course.CourseRepository;
 import com.imo.backend.models.course.dtos.CourseOverview;
 import com.imo.backend.models.strategy.get.many.pagination.GetManyToListWithPaginationService;
-import com.imo.backend.utils.ValidatePageable;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import com.imo.backend.utils.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,8 +19,7 @@ public class GetAllCourseOverviewsWithPaginationService implements GetManyToList
 
     @Override
     public List<CourseOverview> execute(Integer page, Integer size) {
-        ValidatePageable.validate(page, size);
-        Pageable pageable = PageRequest.of(page, size);
+        var pageable = Pageable.fromPageSize(page, size);
 
         return courseRepository.findAll(pageable).stream()
                 .map(CourseFactory::createCourseOverview)

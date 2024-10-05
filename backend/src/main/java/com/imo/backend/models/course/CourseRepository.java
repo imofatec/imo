@@ -12,10 +12,11 @@ import java.util.Optional;
 public interface CourseRepository extends MongoRepository<Course, String> {
     Optional<Course> findBySlugCourse(String slugCourse);
 
-
     List<Course> findAllBySlugCategory(String slugCategory);
 
     Page<Course> findAllBySlugCategory(String slugCategory, Pageable pageable);
 
     List<Course> findAllByContributorId(String id);
+
+    Page<Course> findAllByContributorId(String id, Pageable page);
 }
