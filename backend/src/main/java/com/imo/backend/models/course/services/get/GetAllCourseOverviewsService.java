@@ -10,10 +10,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class GetAllCourseOverviews implements GetManyToListService<CourseOverview> {
+public class GetAllCourseOverviewsService implements GetManyToListService<CourseOverview> {
     private final CourseRepository courseRepository;
 
-    public GetAllCourseOverviews(CourseRepository courseRepository) {
+    public GetAllCourseOverviewsService(CourseRepository courseRepository) {
         this.courseRepository = courseRepository;
     }
 
