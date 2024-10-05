@@ -43,6 +43,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/user/private").authenticated()
                         .requestMatchers(HttpMethod.POST, "/api/courses/create").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/user/profile").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/api/user/update-progress/{courseId}").authenticated()
                         .anyRequest().permitAll()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

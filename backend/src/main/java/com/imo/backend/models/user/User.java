@@ -2,6 +2,7 @@ package com.imo.backend.models.user;
 
 
 import com.imo.backend.models.course.Course;
+import com.imo.backend.models.course.dtos.CourseProgress;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -22,7 +23,9 @@ public class User {
 
     private String password;
 
-    private List<Course> contributions;
+    private List<Course> contributions = new ArrayList<>();
+
+    private List<CourseProgress> progress = new ArrayList<>();
 
     public User(String username, String email, String password) {
         this.username = username;
