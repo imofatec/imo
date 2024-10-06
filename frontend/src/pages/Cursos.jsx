@@ -1,4 +1,7 @@
 import CardCurso from '@/components/ui/curso/cardcurso'
+import api from "@/api/api";
+import Pagination from '@/components/ui/pagination'
+import StatusMessage from '@/components/ui/statusMessage'
 import { Dropdown } from '@/components/ui/dropdown/dropdown'
 import { Titulo } from '@/components/ui/titulo'
 import { useState, useEffect } from 'react'
@@ -15,6 +18,9 @@ export default function Cursos() {
   const [loading, setLoading] = useState(true)
   const [categories, setCategories] = useState([])
   const [courses, setCourses] = useState([])
+  const [page, setPage] = useState(0)
+  const [hasMoreCourses, setHasMoreCourses] = useState(true)
+  const size = 10
 
   const fetchData = async (slug) => {
     setError(false)
@@ -26,10 +32,17 @@ export default function Cursos() {
       setCategories(responseCategories.data)
 
       const responseCourses = slug
-        ? await axios.get(`/api/courses/get-all/overviews/${slug}`)
-        : await axios.get('/api/courses/get-all/overviews')
+        ? await axios.get(`/api/courses/pagination/get-all/overviews/${slug}`, {params: {page, size}}) 
+        : await axios.get('/api/courses/pagination/get-all/overviews', {params: {page, size}})
 
       setCourses(responseCourses.data)
+
+      if (responseCourses.data.length < size) {
+        setHasMoreCourses(false) 
+      } else {
+        setHasMoreCourses(true) 
+      }
+
     } catch (error) {
       setError(true)
       console.error(error)
@@ -38,18 +51,41 @@ export default function Cursos() {
     }
   }
 
-  useEffect(() => {
-    fetchData(slug)
-  }, [slug])
-
-  const handleShowAllCourses = () => {
-    window.history.pushState({}, '', '/categorias')
-    fetchData(null)
+  const fetchStartCouse = async (id) => {
+    setError(false)
+    setLoading(true)
+    try {
+      await api.put(`/api/user/update-progress/${id}`)
+    } catch (error) {
+      setError(true)
+    } finally {
+      setLoading(false)
+    }
   }
 
-  let notaCurso = '5.0'
-  let avaliacoesCurso = '80'
+  useEffect(() => {
+    fetchData(slug)
+  }, [slug,page])
 
+  const handleShowAllCourses = () => {
+    fetchData(null)
+    window.history.pushState({}, '', '/categorias')
+  }
+
+  
+  const handlePreviousPage = () => {
+    if (page > 0) {
+      setPage((prevPage) => prevPage - 1)
+    }
+  }
+  
+  const handleNextPage = () => {
+    setPage((prevPage) => prevPage + 1)
+  }
+
+  const handleStartCourse = (id) => {
+    fetchStartCouse(id)
+  }
   return (
     <>
       <Titulo titulo={tipoCurso} />
@@ -68,29 +104,29 @@ export default function Cursos() {
             {tipoCurso}
           </h5>
           <div className="flex flex-row flex-wrap p-18 w-auto max-w-full">
-            {loading ? (
-              <p className="text-white text-center mt-10">Carregando...</p>
-            ) : error ? (
-              <p className="text-white text-center mt-10">
-                O servidor encontrou um erro ao exibir os cursos.
-              </p>
-            ) : (
-              courses.map((curso) => (
-                <CardCurso
-                  key={curso.id}
-                  nomeCurso={curso.name}
-                  notaCurso={notaCurso}
-                  avaliacoesCurso={avaliacoesCurso}
-                  fotoCurso={`https://img.youtube.com/vi/${curso.firstLessonYoutubeId}/maxresdefault.jpg`}
-                  descricaoCurso={curso.description}
-                  conteudo={curso.name}
-                  quantidade={curso.totalLessons}
-                  codigo={curso.slugCourse}
-                  codAula={curso.firstLessonYoutubeId}
-                />
-              ))
-            )}
+            <StatusMessage loading={loading} error={error} />
+            {!loading && !error && courses.map((curso) => (
+              <CardCurso
+                key={curso.id}
+                idCurso={curso.id}
+                nomeCurso={curso.name}
+                notaCurso="5.0"
+                avaliacoesCurso="80"
+                fotoCurso={`https://img.youtube.com/vi/${curso.firstLessonYoutubeId}/maxresdefault.jpg`}
+                descricaoCurso={curso.description}
+                conteudo={curso.name}
+                quantidade={curso.totalLessons}
+                codigo={curso.slugCourse}
+                codAula={curso.firstLessonYoutubeId}
+                onStart={handleStartCourse}
+              />
+            ))}
           </div>
+          <Pagination
+            page={page}
+            hasMoreCourses={hasMoreCourses}
+            onPrevious={handlePreviousPage}
+            onNext={handleNextPage}/>
         </div>
       </div>
     </>
