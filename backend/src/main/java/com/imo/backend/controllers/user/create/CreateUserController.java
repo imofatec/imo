@@ -4,7 +4,7 @@ package com.imo.backend.controllers.user.create;
 import com.imo.backend.controllers.user.UserController;
 import com.imo.backend.models.user.dtos.NoPasswordUser;
 import com.imo.backend.models.user.dtos.RegisterUserRequest;
-import com.imo.backend.models.user.service.CreateUserService;
+import com.imo.backend.models.user.services.create.CreateUserService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;

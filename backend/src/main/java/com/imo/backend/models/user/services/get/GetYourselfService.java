@@ -1,10 +1,10 @@
-package com.imo.backend.models.user.service;
+package com.imo.backend.models.user.services.get;
 
 import com.imo.backend.config.token.TokenService;
 import com.imo.backend.exceptions.custom.NotFoundException;
 import com.imo.backend.models.strategy.get.one.GetOneByService;
 import com.imo.backend.models.user.User;
-import com.imo.backend.models.user.UserRepository;
+import com.imo.backend.models.user.repositories.UserRepository;
 import com.imo.backend.models.user.dtos.NoPasswordUser;
 import org.springframework.stereotype.Service;
 
