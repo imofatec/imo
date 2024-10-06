@@ -10,7 +10,7 @@ export async function signIn({ request }) {
     }
 
     try {
-        const result = await axios.post('/api/login', submission)
+        const result = await axios.post('/api/user/login', submission)
         console.log(result.data)
         const { acessToken } = result.data
         localStorage.setItem('token', acessToken)

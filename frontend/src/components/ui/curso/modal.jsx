@@ -14,7 +14,9 @@ export default function Modal({
   fotoTemp,
   codigoCurso,
   qtd,
-  codigoAula
+  codigoAula,
+  onStart,
+  idCurso
 }) {
   return (
     <Dialog open={aberto} onOpenChange={fechado}>
@@ -37,7 +39,7 @@ export default function Modal({
                 to={`/cursos/${codigoCurso}/${codigoAula}`} /*rota por parametros para acessar o vídeo*/
                 className="underline mt-8 font-normal text-lg hover:text-gray-600"
               >
-                Começe agora!
+                <button onClick={() => onStart(idCurso)}>Comece Agora!</button>
               </Link>
             </div>
 

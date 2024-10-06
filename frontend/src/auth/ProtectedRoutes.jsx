@@ -9,7 +9,7 @@ export default function ProtectedRoute() {
     useEffect(() => {
         const auth = async () => {
             try {
-                await api.get('/api/private')
+                await api.get('/api/user/private')
                 setIsAuth(true)
             } catch (err) {
                 // console.log(err)

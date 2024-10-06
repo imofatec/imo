@@ -11,7 +11,7 @@ export async function signUp({ request }) {
         confPassword: data.get('password-confirm')
     }
     try {
-        await axios.post('/api/create', submission)
+        await axios.post('/api/user/create', submission)
         return redirect('/login')
     } catch (err) {
         return err.response.data.message
