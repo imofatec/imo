@@ -2,7 +2,7 @@ package com.imo.backend.controllers.user.update;
 
 import com.imo.backend.controllers.user.UserController;
 import com.imo.backend.models.user.dtos.UserCourseProgress;
-import com.imo.backend.models.user.service.UpdateUserCourseProgressService;
+import com.imo.backend.models.user.services.update.UpdateUserCourseProgressService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.servlet.http.HttpServletRequest;

@@ -3,7 +3,7 @@ package com.imo.backend.controllers.user.auth;
 import com.imo.backend.controllers.user.UserController;
 import com.imo.backend.models.user.dtos.LoginRequest;
 import com.imo.backend.models.user.dtos.LoginResponse;
-import com.imo.backend.models.user.service.AuthenticationService;
+import com.imo.backend.models.user.services.AuthenticationService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;

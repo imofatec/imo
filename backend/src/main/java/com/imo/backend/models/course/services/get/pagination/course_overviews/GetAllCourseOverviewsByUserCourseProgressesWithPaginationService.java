@@ -8,7 +8,7 @@ import com.imo.backend.models.course.CourseRepository;
 import com.imo.backend.models.course.dtos.CourseOverview;
 import com.imo.backend.models.course.dtos.CourseProgress;
 import com.imo.backend.models.strategy.get.many.pagination.GetManyByToListWithPaginationService;
-import com.imo.backend.models.user.UserRepository;
+import com.imo.backend.models.user.repositories.UserRepository;
 import com.imo.backend.models.user.dtos.UserCourseOverview;
 import org.springframework.stereotype.Service;
 

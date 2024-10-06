@@ -1,11 +1,11 @@
-package com.imo.backend.models.user.service;
+package com.imo.backend.models.user.services;
 
 import com.imo.backend.config.token.TokenService;
 import com.imo.backend.exceptions.custom.NotFoundException;
 import com.imo.backend.exceptions.custom.ForbiddenException;
 import com.imo.backend.models.user.dtos.LoginRequest;
 import com.imo.backend.models.user.dtos.LoginResponse;
-import com.imo.backend.models.user.UserRepository;
+import com.imo.backend.models.user.repositories.UserRepository;
 import com.imo.backend.models.user.interfaces.AuthenticationServiceShape;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

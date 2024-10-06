@@ -2,7 +2,7 @@ package com.imo.backend.controllers.user.get;
 
 import com.imo.backend.controllers.user.UserController;
 import com.imo.backend.models.user.dtos.NoPasswordUser;
-import com.imo.backend.models.user.service.GetYourselfService;
+import com.imo.backend.models.user.services.get.GetYourselfService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.servlet.http.HttpServletRequest;

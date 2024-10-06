@@ -1,6 +1,7 @@
-package com.imo.backend.models.user;
+package com.imo.backend.models.user.repositories;
 
 import com.imo.backend.models.course.Course;
+import com.imo.backend.models.user.User;
 import com.imo.backend.models.course.dtos.CourseProgress;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
@@ -10,7 +11,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface UserRepository extends MongoRepository<User, String> {
+public interface UserRepository extends MongoRepository<User, String> , CustomUserRepository {
     Optional<User> findByEmail(String email);
     Optional<User> findByUsername(String username);
 

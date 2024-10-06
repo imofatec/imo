@@ -1,4 +1,4 @@
-package com.imo.backend.models.user.service;
+package com.imo.backend.models.user.services.update;
 
 import com.imo.backend.config.token.TokenService;
 import com.imo.backend.exceptions.custom.NotFoundException;
@@ -8,7 +8,7 @@ import com.imo.backend.models.course.CourseRepository;
 import com.imo.backend.models.course.dtos.CourseProgress;
 import com.imo.backend.models.strategy.update.UpdateByIdService;
 import com.imo.backend.models.user.User;
-import com.imo.backend.models.user.UserRepository;
+import com.imo.backend.models.user.repositories.UserRepository;
 import com.imo.backend.models.user.dtos.UserCourseProgress;
 import org.springframework.stereotype.Service;
 

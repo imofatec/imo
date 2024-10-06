@@ -1,4 +1,4 @@
-package com.imo.backend.models.user.service;
+package com.imo.backend.models.user.services.create;
 
 import com.imo.backend.exceptions.custom.ConflictException;
 import com.imo.backend.exceptions.custom.BadRequestException;
@@ -6,7 +6,7 @@ import com.imo.backend.models.strategy.create.CreateService;
 import com.imo.backend.models.user.dtos.NoPasswordUser;
 import com.imo.backend.models.user.dtos.RegisterUserRequest;
 import com.imo.backend.models.user.User;
-import com.imo.backend.models.user.UserRepository;
+import com.imo.backend.models.user.repositories.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
