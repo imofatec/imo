@@ -40,10 +40,14 @@ public class SecurityConfig {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.GET, "/api/user/private").authenticated()
-                        .requestMatchers(HttpMethod.POST, "/api/courses/create").authenticated()
-                        .requestMatchers(HttpMethod.GET, "/api/user/profile").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/api/user/update").authenticated()
                         .requestMatchers(HttpMethod.PUT, "/api/user/update-progress/{courseId}").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/api/user/upload/profile-pic").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/user/profile").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/user/private").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/user/courses-progress").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/user/contributions").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/api/courses/create").authenticated()
                         .anyRequest().permitAll()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

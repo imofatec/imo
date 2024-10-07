@@ -2,6 +2,9 @@
 src/main/resources/app.pub
 src/main/resources/app.key
 
+### UPLOAD DIRECTORY ###
+src/main/resources/uploads/**
+
 HELP.md
 target/
 !.mvn/wrapper/maven-wrapper.jar
