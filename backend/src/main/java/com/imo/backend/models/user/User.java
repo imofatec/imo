@@ -23,6 +23,8 @@ public class User {
 
     private String password;
 
+    private String profilePicturePath;
+
     private List<Course> courseContributions = new ArrayList<>();
 
     private List<CourseProgress> coursesProgress = new ArrayList<>();

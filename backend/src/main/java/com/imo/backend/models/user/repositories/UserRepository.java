@@ -13,6 +13,7 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends MongoRepository<User, String> , CustomUserRepository {
     Optional<User> findByEmail(String email);
+
     Optional<User> findByUsername(String username);
 
     @Query("{ 'username':  ?0 }")
@@ -30,4 +31,8 @@ public interface UserRepository extends MongoRepository<User, String> , CustomUs
     @Query("{ 'id': ?0, 'coursesProgress.id': ?1 }")
     @Update("{ $set: { 'coursesProgress.$.status': ?2 } }")
     void updateCourseProgressStatusById(String id, String courseId, CourseProgress.Status status);
+
+    @Query("{ 'id': ?0 }")
+    @Update("{ $set: { 'profilePicturePath': ?1 } }")
+    void updateProfilePictureById(String id, String profilePicturePath);
 }

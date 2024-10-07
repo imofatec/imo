@@ -13,11 +13,16 @@ public class NoPasswordUser {
 
     private String email;
 
+    private String profilePicturePath;
+
     public static NoPasswordUser fromUser(User user) {
         return new NoPasswordUser(
                 user.getId(),
                 user.getUsername(),
-                user.getEmail()
+                user.getEmail(),
+                user.getProfilePicturePath() != null
+                        ? user.getProfilePicturePath()
+                        : ""
         );
     }
 }
