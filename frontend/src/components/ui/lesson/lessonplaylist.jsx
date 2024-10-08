@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { Separator } from '../separator'
 import { Checkbox } from '../dropdown/checkbox'
+import { useState, useEffect } from 'react'
 
 export default function LessonPlaylist({
   thumbLesson,
@@ -8,11 +9,34 @@ export default function LessonPlaylist({
   lessonDuration,
   codeCourse,
   codeLesson,
+  onFinished,
+  idAula,
+  isEnabled,
+  isChecked,
 }) {
+  const [isLessonChecked, setIsLessonChecked] = useState(isChecked)
+
+  useEffect(() => {
+    setIsLessonChecked(isChecked)
+  }, [isChecked])
+
+  const handleCheckboxChange = (checked) => {
+    if (!isChecked && checked && isEnabled) {
+      onFinished()
+      setIsLessonChecked(true)
+    }
+  }
+
   return (
     <div className="flex flex-col px-2 py-2 overflow items-center">
       <div className="flex flex-row  items-center place-content-evenly">
-        <Checkbox id={''} className=" hover:scale-110"></Checkbox>
+        <Checkbox
+          id={idAula}
+          className=" hover:scale-110"
+          checked={isLessonChecked}
+          onCheckedChange={handleCheckboxChange}
+          disabled={!isEnabled || isLessonChecked}
+        ></Checkbox>
         <Link
           to={`/cursos/${codeCourse}/${codeLesson}`}
           className="object-contain p-3 rounded-xl hover:scale-105"
