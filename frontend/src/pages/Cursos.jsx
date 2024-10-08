@@ -42,10 +42,12 @@ export default function Cursos() {
     fetchData(slug)
   }, [slug])
 
-  const handleShowAllCourses = () => {
+  useEffect(() => {
+  {/*const handleShowAllCourses = () => { */}
     window.history.pushState({}, '', '/categorias')
     fetchData(null)
-  }
+  
+})
 
   let notaCurso = '5.0'
   let avaliacoesCurso = '80'
@@ -55,13 +57,8 @@ export default function Cursos() {
       <Titulo titulo={tipoCurso} />
       <div className="flex flex-row w-full">
         <div className="w-1/3 p-12">
-          <button
-            onClick={handleShowAllCourses}
-            className=" px-4 py-4 w-full text-white border-t border-white"
-          >
-            Ver Todos os Cursos
-          </button>
-          <Dropdown categorias={categories}></Dropdown>
+        <Seletor id = "allLessons" label={"text-xl font-semibold"} conteudo={"Todos os cursos"}></Seletor>
+        <Dropdown categorias={categories}></Dropdown>
         </div>
         <div className="w-2/3 p-12">
           <h5 className="font-semibold text-xl mb-10 text-white">

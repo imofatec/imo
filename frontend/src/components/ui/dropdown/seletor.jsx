@@ -1,16 +1,20 @@
 "use client"
 
 import { Checkbox } from "@/components/ui/dropdown/checkbox"
-export function Seletor({ conteudo }) {
+export function Seletor({ conteudo , label }) {
 
   return (
-    <div className="flex items-center space-x-12 justify-center p-2">
+    <div className="flex flex-row items-center  py-3 justify-start hover:duration-200  hover:scale-105">
+      <div className="flex flex-col px-12">
       <Checkbox id="" className="border-white" />
+      </div>
+      <div className="flex flex-col">
       <label
         htmlFor=""
-        className="text-sm  text-center font-medium leading-none  peer-disabled:opacity-70" >
+        className={"text-center  leading-none  peer-disabled:opacity-70" , label} >
         {conteudo}
       </label>
+      </div>
     </div>
   )
 }
