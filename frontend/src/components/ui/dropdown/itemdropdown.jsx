@@ -1,23 +1,14 @@
 import {
   AccordionItem,
-  AccordionTrigger,
 } from "@/components/ui/dropdown/accordion"
 import { Seletor } from "./seletor"
 
-function Seletores({ contItem }) {
-  const lista = []
-  const conteudo = "Lorem Ipsum"
-  for (let i = 0; i < contItem; i++) {
-    lista.push(<Seletor key={i} conteudo={conteudo}></Seletor>)
-  }
-  return <>{lista}</>
-}
 
-export default function ItemDropdown({ numItem, labelItem, contItem, conteudo }) {
+export default function ItemDropdown({ labelItem , sizeLabel}) {
 
   return <>
-    <AccordionItem value={numItem}>
-      <AccordionTrigger>{labelItem}</AccordionTrigger>
+    <AccordionItem>
+    <Seletor sizeLabel={sizeLabel}conteudo={ labelItem }></Seletor>
     </AccordionItem>
   </>
 }

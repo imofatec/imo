@@ -27,7 +27,7 @@ export default function SignIn() {
 
                         <InputLabel type="password" id="password" name="password" placeholder="Senha" label="Senha" />
 
-                        <Button className="w-full bg-custom-light-blue">Entrar</Button>
+                        <Button className="w-full bg-custom-header-cyan text-black">Entrar</Button>
 
                         {message && <div className="text-center text-red-500">{message}</div>}
 
