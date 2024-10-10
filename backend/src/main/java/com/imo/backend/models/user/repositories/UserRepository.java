@@ -8,6 +8,7 @@ import org.springframework.data.mongodb.repository.Query;
 import org.springframework.data.mongodb.repository.Update;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Repository
@@ -29,8 +30,8 @@ public interface UserRepository extends MongoRepository<User, String> , CustomUs
     void updateCourseProgressLessonsById(String id, String courseId, Integer totalLessons);
 
     @Query("{ 'id': ?0, 'coursesProgress.id': ?1 }")
-    @Update("{ $set: { 'coursesProgress.$.status': ?2 } }")
-    void updateCourseProgressStatusById(String id, String courseId, CourseProgress.Status status);
+    @Update("{ $set: { 'coursesProgress.$.status': ?2, 'coursesProgress.$.finishedAt': ?3 }}")
+    void updateCourseProgressStatusById(String id, String courseId, CourseProgress.Status status, LocalDateTime dateTime);
 
     @Query("{ 'id': ?0 }")
     @Update("{ $set: { 'profilePicturePath': ?1 } }")
