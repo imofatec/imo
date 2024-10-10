@@ -70,7 +70,9 @@ public class CreateCourseService implements CreateWithTokenService<CreateCourseR
                 .anyMatch(course -> course.getSlugCourse().equals(potentialNewSlugCourse));
 
         if (existingContributorCourse || existingContributorCoursePt2) {
-            throw new ConflictException("Você ja cadastrou estre curso anteriormente");
+            throw new ConflictException(
+                    String.format("Você ja cadastrou o curso %s anteriormente", potentialNewSlugCourse)
+                );
         }
     }
 
