@@ -12,12 +12,15 @@ import com.imo.backend.models.user.repositories.UserRepository;
 import com.imo.backend.models.user.dtos.UserCourseProgress;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Service
 public class UpdateUserCourseProgressService implements UpdateByIdService<Void, UserCourseProgress> {
     private final UserRepository userRepository;
+
     private final TokenService tokenService;
+
     private final CourseRepository courseRepository;
 
     public UpdateUserCourseProgressService(
@@ -41,6 +44,7 @@ public class UpdateUserCourseProgressService implements UpdateByIdService<Void, 
 
         if (currentProgress == null) {
             var courseProgress = CourseFactory.createCourseProgress(course);
+            courseProgress.setStartedAt(LocalDateTime.now());
             userRepository.saveCourseProgressById(userId, courseProgress);
             return updatedUserCourseProgress(userRepository, userId, courseId);
         }
@@ -50,15 +54,18 @@ public class UpdateUserCourseProgressService implements UpdateByIdService<Void, 
         }
 
         userRepository.updateCourseProgressLessonsById(userId, courseId, course.getTotalLessons());
+        var updatedUser = updatedUserCourseProgress(userRepository, userId, courseId);
+        var updatedUserCoursesProgress = updatedUser.courseProgress();
 
         if (Objects.equals(
-                currentProgress.getTotalLessons() - 1,
-                currentProgress.getLessonsWatched())
+                updatedUserCoursesProgress.getTotalLessons(),
+                updatedUserCoursesProgress.getLessonsWatched())
         ) {
-            userRepository.updateCourseProgressStatusById(userId, courseId, CourseProgress.Status.FINISHED);
+            userRepository.updateCourseProgressStatusById(userId, courseId, CourseProgress.Status.FINISHED, LocalDateTime.now());
+            return updatedUserCourseProgress(userRepository, userId, courseId);
         }
 
-        return updatedUserCourseProgress(userRepository, userId, courseId);
+        return updatedUser;
     }
 
     private static CourseProgress checkCurrentUserCourseProgress(Course course, User user) {

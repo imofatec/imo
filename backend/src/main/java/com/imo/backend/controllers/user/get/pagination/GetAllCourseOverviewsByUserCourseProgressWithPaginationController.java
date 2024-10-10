@@ -26,7 +26,7 @@ public class GetAllCourseOverviewsByUserCourseProgressWithPaginationController e
 
     @Operation(summary = "Get course overviews from the courses you started")
     @SecurityRequirement(name = "Authorization")
-    @GetMapping("/courses-progress")
+    @GetMapping("/course-overviews")
     public ResponseEntity<List<UserCourseOverview>> handle(
             HttpServletRequest request,
             @Parameter(description = "Page number to retrieve", example = "0")

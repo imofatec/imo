@@ -2,6 +2,8 @@ package com.imo.backend.models.course.dtos;
 
 import lombok.Data;
 
+import java.time.LocalDateTime;
+
 @Data
 public class CourseProgress {
     private String id;
@@ -13,6 +15,10 @@ public class CourseProgress {
     private Integer lessonsWatched;
 
     private Status status;
+
+    private LocalDateTime startedAt;
+
+    private LocalDateTime finishedAt;
 
     public enum Status {
         FINISHED,
