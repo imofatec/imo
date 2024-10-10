@@ -2,6 +2,7 @@ package com.imo.backend.utils;
 
 import com.imo.backend.exceptions.custom.BadRequestException;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 
 public class Pageable {
     public static org.springframework.data.domain.Pageable fromPageSize(Integer page, Integer size) {
@@ -13,6 +14,6 @@ public class Pageable {
             throw new BadRequestException("O tamanho da página precisa ser maior do que zero");
         }
 
-        return PageRequest.of(page, size);
+        return PageRequest.of(page, size, Sort.by("createdAt").descending());
     }
 }

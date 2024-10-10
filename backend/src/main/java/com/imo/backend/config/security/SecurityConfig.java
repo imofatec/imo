@@ -49,6 +49,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/user/course-overviews").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/user/contributions").authenticated()
                         .requestMatchers(HttpMethod.POST, "/api/courses/create").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/api/courses/create-many").authenticated()
                         .anyRequest().permitAll()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
