@@ -10,10 +10,6 @@ export default function LessonComment({
   commentContent,
   reply,
 }) {
-  commentContent =
-    'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Velit ratione veritatis vitae a voluptas quibusdam vero veniam, molestiae, ducimus natus quasi alias laboriosam officia eos minus. Est temporibus dolores hic.'
-  profileName = 'Nome'
-  commentTitle = 'Lorem ipsum dolor sit amet'
   reply = 3
   const [open, setOpen] = useState(false)
   const [arrowOrientation, setArrowOrientation] = useState('down')
