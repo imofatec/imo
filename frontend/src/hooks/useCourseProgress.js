@@ -5,19 +5,17 @@ export const useCoursesProgress = () => {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(false)
 
-  const fetchStartCourse = async (id, page, size) => {
+  const fetchStartCourse = async (id) => {
     setError(false)
     setLoading(true)
     try {
       //Obtendo o progresso dos cursos
-      const response = await api.get(`/api/user/courses-progress`, {
-        params: { page, size },
-      })
+      const response = await api.get(`/api/user/courses-progress`)
       const progressList = response.data
 
       //Verificando se o curso já existe no progresso
       const courseProgress = progressList.find(
-        (progress) => progress.courseOverview.id === id,
+        (progress) => progress.id === id,
       )
 
       //Se o curso não estiver em andamento, inicia ele
