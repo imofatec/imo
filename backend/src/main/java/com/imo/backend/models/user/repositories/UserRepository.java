@@ -1,5 +1,6 @@
 package com.imo.backend.models.user.repositories;
 
+import com.imo.backend.models.certificate.Certificate;
 import com.imo.backend.models.course.Course;
 import com.imo.backend.models.user.User;
 import com.imo.backend.models.course.dtos.CourseProgress;
@@ -36,4 +37,10 @@ public interface UserRepository extends MongoRepository<User, String> , CustomUs
     @Query("{ 'id': ?0 }")
     @Update("{ $set: { 'profilePicturePath': ?1 } }")
     void updateProfilePictureById(String id, String profilePicturePath);
+
+    @Query("{ 'id': ?0 }")
+    @Update("{ $push: { 'certificates': ?1 } }")
+    void pushCertificateById(String userId, Certificate certificate);
+
+
 }

@@ -45,6 +45,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PUT, "/api/user/update-progress/{courseId}").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/user/profile").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/user/private").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/user/get-certificate/{courseId}").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/user/courses-progress").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/user/course-progress/{courseId}").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/user/course-overviews").authenticated()

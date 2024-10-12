@@ -1,11 +1,15 @@
 package com.imo.backend.models.course;
 
+import com.imo.backend.exceptions.custom.BadRequestException;
+import com.imo.backend.models.certificate.Certificate;
 import com.imo.backend.models.course.dtos.CourseOverview;
 import com.imo.backend.models.course.dtos.CourseProgress;
 import com.imo.backend.models.course.dtos.CreateCourseRequest;
 import com.imo.backend.models.lessons.Lesson;
 import com.imo.backend.models.lessons.dtos.CreateLessonDto;
-import com.imo.backend.utils.Slug;
+import com.imo.backend.models.user.User;
+import com.imo.backend.lib.Slug;
+import org.bson.types.ObjectId;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -71,9 +75,39 @@ public class CourseFactory {
         courseProgress.setId(course.getId());
         courseProgress.setName(course.getName());
         courseProgress.setTotalLessons(course.getTotalLessons());
-        courseProgress.setLessonsWatched(0  );
+        courseProgress.setLessonsWatched(0);
         courseProgress.setStatus(CourseProgress.Status.IN_PROGRESS);
 
         return courseProgress;
+    }
+
+    public static Certificate createCertificate(User user, Course course) {
+        Certificate certificate = new Certificate();
+
+        certificate.setId(new ObjectId().toString());
+        certificate.setUserId(user.getId());
+        certificate.setUsername(user.getUsername());
+        certificate.setUserEmail(user.getEmail());
+        certificate.setCourseId(course.getId());
+        certificate.setCourseName(course.getName());
+        certificate.setCourseSlug(course.getSlugCourse());
+
+        var courseProgress = user.getCoursesProgress().stream()
+                .filter(data -> data.getId().equals(course.getId()))
+                .findFirst()
+                .orElseThrow(() -> new BadRequestException(
+                        String.format("Curso %s não iniciado", course.getName())
+                ));
+
+        if (!courseProgress.getStatus().equals(CourseProgress.Status.FINISHED)) {
+            throw new BadRequestException(
+                    String.format("Curso %s não finalizado", course.getName()));
+        }
+
+        certificate.setCourseStartedAt(courseProgress.getStartedAt());
+        certificate.setCourseFinishedAt(courseProgress.getFinishedAt());
+        certificate.setIssuedAt(LocalDateTime.now());
+
+        return certificate;
     }
 }

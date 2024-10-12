@@ -1,4 +1,4 @@
-package com.imo.backend.utils;
+package com.imo.backend.lib;
 
 import com.imo.backend.exceptions.custom.BadRequestException;
 import org.springframework.data.domain.PageRequest;
