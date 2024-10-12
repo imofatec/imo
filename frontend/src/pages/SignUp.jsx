@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button'
-import { InputLabel } from '@/components/ui/inputlabel'
+import { InputLabel } from '@/components/ui/inputs/inputlabel'
 import { Form, Link, useActionData } from 'react-router-dom'
 import { Github, Linkedin } from 'lucide-react'
 import { Titulo } from '@/components/ui/titulo'

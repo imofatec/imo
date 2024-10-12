@@ -1,4 +1,4 @@
-import { InputLabel } from '@/components/ui/inputlabel'
+import { InputLabel } from '@/components/ui/inputs/inputlabel'
 import { Button } from '@/components/ui/button'
 import { Form, Link, useActionData } from 'react-router-dom'
 import { Logo } from '@/components/ui/logo'

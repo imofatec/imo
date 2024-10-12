@@ -1,6 +1,6 @@
 import LogoIMO from '@/assets/LogoIMO.svg'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
+import { Input } from '@/components/ui/inputs/input'
 import { LogOut, Search } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
 import { Link,useLocation,useNavigate } from 'react-router-dom'
