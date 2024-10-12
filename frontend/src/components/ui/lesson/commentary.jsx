@@ -1,14 +1,11 @@
 import { Button } from '../button'
+import LargeInput from '../inputs/largeinput'
 
 export default function Commentary() {
   return (
     <div className="my-6 ml-6 ">
       <div className="flex flex-row">
-        <textarea
-          className="w-full rounded-lg bg-custom-blue p-6 h-36"
-          placeholder="Faça seu comentário"
-          type="text"
-        ></textarea>
+        <LargeInput placeholder="Faça seu comentário" />
       </div>
       <div className="flex flex-row mt-6">
         <div className="flex flex-col">
