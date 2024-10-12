@@ -1,10 +1,8 @@
 package com.imo.backend.models.certificate;
 
-import com.imo.backend.models.course.Course;
 import lombok.Data;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Document(collection = "certificates")
@@ -23,9 +21,11 @@ public class Certificate {
 
     private String courseName;
 
-    private LocalDateTime courseStartDate;
+    private String courseSlug;
 
-    private LocalDateTime courseEndDate;
+    private LocalDateTime courseStartedAt;
+
+    private LocalDateTime courseFinishedAt;
 
     private LocalDateTime issuedAt;
 

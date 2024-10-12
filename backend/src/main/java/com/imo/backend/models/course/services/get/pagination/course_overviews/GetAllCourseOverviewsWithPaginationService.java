@@ -4,7 +4,7 @@ import com.imo.backend.models.course.CourseFactory;
 import com.imo.backend.models.course.CourseRepository;
 import com.imo.backend.models.course.dtos.CourseOverview;
 import com.imo.backend.models.strategy.get.many.pagination.GetManyToListWithPaginationService;
-import com.imo.backend.utils.Pageable;
+import com.imo.backend.lib.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
