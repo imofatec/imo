@@ -12,7 +12,7 @@ import com.imo.backend.models.lessons.dtos.CreateLessonDto;
 import com.imo.backend.models.strategy.create.CreateWithTokenService;
 import com.imo.backend.models.user.User;
 import com.imo.backend.models.user.repositories.UserRepository;
-import com.imo.backend.utils.Slug;
+import com.imo.backend.lib.Slug;
 import org.springframework.stereotype.Service;
 
 import java.util.*;

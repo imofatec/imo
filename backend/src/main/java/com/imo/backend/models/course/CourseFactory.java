@@ -1,5 +1,6 @@
 package com.imo.backend.models.course;
 
+import com.imo.backend.exceptions.custom.BadRequestException;
 import com.imo.backend.models.certificate.Certificate;
 import com.imo.backend.models.course.dtos.CourseOverview;
 import com.imo.backend.models.course.dtos.CourseProgress;
@@ -7,7 +8,7 @@ import com.imo.backend.models.course.dtos.CreateCourseRequest;
 import com.imo.backend.models.lessons.Lesson;
 import com.imo.backend.models.lessons.dtos.CreateLessonDto;
 import com.imo.backend.models.user.User;
-import com.imo.backend.utils.Slug;
+import com.imo.backend.lib.Slug;
 import org.bson.types.ObjectId;
 
 import java.time.LocalDateTime;
@@ -89,13 +90,22 @@ public class CourseFactory {
         certificate.setUserEmail(user.getEmail());
         certificate.setCourseId(course.getId());
         certificate.setCourseName(course.getName());
+        certificate.setCourseSlug(course.getSlugCourse());
 
         var courseProgress = user.getCoursesProgress().stream()
                 .filter(data -> data.getId().equals(course.getId()))
-                .findFirst().get();
+                .findFirst()
+                .orElseThrow(() -> new BadRequestException(
+                        String.format("Curso %s não iniciado", course.getName())
+                ));
 
-        certificate.setCourseStartDate(courseProgress.getStartedAt());
-        certificate.setCourseEndDate(courseProgress.getFinishedAt());
+        if (!courseProgress.getStatus().equals(CourseProgress.Status.FINISHED)) {
+            throw new BadRequestException(
+                    String.format("Curso %s não finalizado", course.getName()));
+        }
+
+        certificate.setCourseStartedAt(courseProgress.getStartedAt());
+        certificate.setCourseFinishedAt(courseProgress.getFinishedAt());
         certificate.setIssuedAt(LocalDateTime.now());
 
         return certificate;
