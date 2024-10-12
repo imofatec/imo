@@ -1,5 +1,6 @@
 import CardCurso from '@/components/ui/curso/cardcurso'
 import Pagination from '@/components/ui/pagination'
+import { Seletor } from '@/components/ui/dropdown/seletor'
 import StatusMessage from '@/components/ui/statusMessage'
 import { Dropdown } from '@/components/ui/dropdown/dropdown'
 import { Titulo } from '@/components/ui/titulo'
@@ -33,7 +34,7 @@ export default function Cursos() {
   }
 
   const handleStartCourse = (id) => {
-    console.log("ID: ", id)
+    console.log('ID: ', id)
     fetchStartCourse(id, page, size)
   }
 
@@ -52,12 +53,12 @@ export default function Cursos() {
       <Titulo titulo={tipoCurso} />
       <div className="min-h-screen flex flex-row w-full">
         <div className="w-1/3 p-12">
-          <button
-            onClick={handleShowAllCourses}
-            className=" px-4 py-4 w-full text-white border-t border-white"
-          >
-            Ver Todos os Cursos
-          </button>
+          <Seletor
+            id="allLessons"
+            label={'text-xl font-semibold'}
+            conteudo={'Todos os cursos'}
+            onShowAllCourses={handleShowAllCourses}
+          ></Seletor>
           <Dropdown categorias={categories}></Dropdown>
         </div>
         <div className="w-2/3 p-12">

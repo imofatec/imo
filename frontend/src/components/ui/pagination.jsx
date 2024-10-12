@@ -1,6 +1,6 @@
 export default function Pagination({ page, hasMoreCourses, onPrevious, onNext }){
     return (
-        <div className="flex justify-center items-center mt-6">
+        <div className="flex justify-center items-center">
             <button
               onClick={onPrevious}
               disabled={page === 0}

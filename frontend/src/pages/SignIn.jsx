@@ -35,7 +35,9 @@ export default function SignIn() {
               label="Senha"
             />
 
-            <Button className="w-full bg-custom-light-blue">Entrar</Button>
+            <Button className="w-full bg-custom-header-cyan text-black">
+              Entrar
+            </Button>
 
             {message && (
               <div className="text-center text-red-500">{message}</div>

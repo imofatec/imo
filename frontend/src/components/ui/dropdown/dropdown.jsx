@@ -11,7 +11,7 @@ export function Dropdown({ categorias }) {
             to={`/categorias/${dado.slug}`}
             className="hover:bg-custom-header-cyan text-blue-600"
           >
-            <ItemDropdown numItem={i} labelItem={dado.name} />
+            <ItemDropdown labelItem={dado.name} />
           </NavLink>
         </div>
       ))}

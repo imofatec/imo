@@ -11,7 +11,7 @@ export default function SignUp() {
     <>
       <Titulo titulo={'Cadastro / IMO'}></Titulo>
 
-      <div className="flex justify-center items-center bg-custom-dark-purple">
+      <div className="flex justify-center items-center bg-custom-dark-purple pb-8">
         <div className="h-screen mt-[3.125rem] text-white">
           <Form method="post" action="/cadastro" className="w-96 p-8 space-y-6">
             <div className="flex flex-col items-center">
@@ -50,7 +50,7 @@ export default function SignUp() {
               label="Confirmar senha"
             />
 
-            <Button className="w-full bg-custom-light-blue">
+            <Button className="w-full bg-custom-header-cyan text-black">
               Cadastrar-se
             </Button>
 
