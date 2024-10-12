@@ -1,4 +1,4 @@
-import CreateCourses from '@/pages/createCourses'
+import CreateCourses from '@/pages/CreateCourses'
 import ProtectedRoute from '@/auth/ProtectedRoutes'
 import TestPage from '@/pages/TestPage'
 import { createCourse as createCourseRequest } from '@/requests/createCourse'
