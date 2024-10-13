@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Repository
-public interface UserRepository extends MongoRepository<User, String> , CustomUserRepository {
+public interface UserRepository extends MongoRepository<User, String>, CustomUserRepository {
     Optional<User> findByEmail(String email);
 
     Optional<User> findByUsername(String username);
@@ -41,6 +41,10 @@ public interface UserRepository extends MongoRepository<User, String> , CustomUs
     @Query("{ 'id': ?0 }")
     @Update("{ $push: { 'certificates': ?1 } }")
     void pushCertificateById(String userId, Certificate certificate);
+
+    @Query("{ 'id': ?0, 'certificates.id': ?1 }")
+    @Update("{ $set: { 'certificates.$.issuedAt': ?2} }")
+    void updateIssuedAtCertificateById(String userId, String certificateId, LocalDateTime localDateTime);
 
 
 }
