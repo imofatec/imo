@@ -16,7 +16,6 @@ import com.imo.backend.lib.Slug;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class CreateCourseService implements CreateWithTokenService<CreateCourseRequest, CreateCourseResponse> {
@@ -72,18 +71,32 @@ public class CreateCourseService implements CreateWithTokenService<CreateCourseR
         if (existingContributorCourse || existingContributorCoursePt2) {
             throw new ConflictException(
                     String.format("Você ja cadastrou o curso %s anteriormente", potentialNewSlugCourse)
-                );
+            );
         }
     }
 
     private static void checkConflictLessons(List<CreateLessonDto> lessons) {
-        Set<List<String>> uniqueInfos = lessons.stream()
-                .map(lesson -> Arrays.asList(lesson.getTitle(), lesson.getDescription(), lesson.getYoutubeLink()))
-                .collect(Collectors.toSet());
+        var titles = new HashSet<>();
+        var descriptions = new HashSet<>();
+        var youtubeLinks = new HashSet<>();
 
-        if (lessons.size() != uniqueInfos.size()) {
-            throw new ConflictException(
-                    "As informações e links de cadas aula do curso precisam ser diferentes uma das outras");
-        }
+        lessons.forEach(lesson -> {
+            if (!titles.add(lesson.getTitle())) {
+                throw new ConflictException(
+                        String.format("Titulo '%s' repetido", lesson.getTitle())
+                );
+            }
+
+            if (!descriptions.add(lesson.getDescription())) {
+                throw new ConflictException(
+                        String.format("Descrição '%s...' repetida", lesson.getDescription().substring(10))
+                );
+            }
+
+            if (!youtubeLinks.add(lesson.getYoutubeLink())) {
+                throw new ConflictException(
+                        String.format("Aula '%s' repetida", lesson.getYoutubeLink()));
+            }
+        });
     }
 }

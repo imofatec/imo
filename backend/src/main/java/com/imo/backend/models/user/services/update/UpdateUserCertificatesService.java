@@ -5,8 +5,11 @@ import com.imo.backend.models.certificate.Certificate;
 import com.imo.backend.models.course.CourseFactory;
 import com.imo.backend.models.course.CourseRepository;
 import com.imo.backend.models.strategy.get.one.GetOneByWithTokenService;
+import com.imo.backend.models.user.User;
 import com.imo.backend.models.user.repositories.UserRepository;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
 
 @Service
 public class UpdateUserCertificatesService implements GetOneByWithTokenService<Certificate> {
@@ -29,10 +32,22 @@ public class UpdateUserCertificatesService implements GetOneByWithTokenService<C
         var course = courseRepository.findById(courseId)
                 .orElseThrow(() -> new NotFoundException("Curso não encontrado"));
 
-        var certificate = CourseFactory.createCertificate(user, course);
+        var alreadyIssuedCertificate = checkIssuedCertificate(user, courseId);
 
-        userRepository.pushCertificateById(userId, certificate);
+        if (alreadyIssuedCertificate != null) {
+            userRepository.updateIssuedAtCertificateById(
+                    userId, alreadyIssuedCertificate.getId(), LocalDateTime.now());
+            return alreadyIssuedCertificate;
+        }
 
-        return certificate;
+        var newCertificate = CourseFactory.createCertificate(user, course);
+        userRepository.pushCertificateById(userId, newCertificate);
+        return newCertificate;
+    }
+
+    private static Certificate checkIssuedCertificate(User user, String courseId) {
+        return user.getCertificates().stream()
+                .filter(certificate -> certificate.getCourseId().equals(courseId))
+                .findFirst().orElse(null);
     }
 }
