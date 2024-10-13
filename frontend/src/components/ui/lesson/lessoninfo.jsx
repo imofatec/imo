@@ -1,5 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { Arrow } from '../arrow'
+import previous_arrow from '@/assets/previous-arrow.png'
+import next_arrow from '@/assets/next-arrow.png'
 import UserPicture from '../userpicture'
 
 export default function LessonInfo({
@@ -39,16 +41,16 @@ export default function LessonInfo({
           <h1 className="">{lessonName}</h1>
         </div>
 
-        <div className="flex flex-row justify-end underline mx-2">
+        <div className="flex flex-row justify-end mx-2">
           {previousLesson && (
             <>
-              <Arrow></Arrow>
+              <img src={previous_arrow} alt="" width="28px" height="28px"/>
               <div
                 className="flex flex-col"
                 id="preview"
                 onClick={handlePrevious}
               >
-                <p className="mr-8">Anterior</p>
+                <p className="mr-8">Voltar</p>
               </div>
             </>
           )}
@@ -56,9 +58,9 @@ export default function LessonInfo({
           {nextLesson && (
             <>
               <div className="flex flex-col" id="next" onClick={handleNext}>
-                <p className="">Próximo</p>
+                <p className="">Avançar</p>
               </div>
-              <Arrow orientation={'right'}></Arrow>
+              <img src={next_arrow} alt="" width="28px" height="28px"/>
             </>
           )}
         </div>

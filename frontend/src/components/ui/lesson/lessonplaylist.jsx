@@ -30,13 +30,17 @@ export default function LessonPlaylist({
   return (
     <div className="flex flex-col px-2 py-2 overflow items-center">
       <div className="flex flex-row  items-center place-content-evenly">
-        <Checkbox
-          id={idAula}
-          className=" hover:scale-110"
-          checked={isLessonChecked}
-          onCheckedChange={handleCheckboxChange}
-          disabled={!isEnabled || isLessonChecked}
-        ></Checkbox>
+        <div
+          className={` flex items-center justify-center w-4 h-4 ${isLessonChecked ? 'bg-custom-header-cyan' : 'bg-transparent'}`}
+        >
+          <Checkbox
+            id={idAula}
+            className="hover:scale-110"
+            checked={isLessonChecked}
+            onCheckedChange={handleCheckboxChange}
+            disabled={!isEnabled || isLessonChecked}
+          />
+        </div>
         <Link
           to={`/cursos/${codeCourse}/${codeLesson}`}
           className="object-contain p-3 rounded-xl hover:scale-105"
