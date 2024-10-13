@@ -54,9 +54,14 @@ public class CreateCertificatePdfService implements CreateService<Certificate, b
         context.setVariable("courseId", certificate.getCourseId());
         context.setVariable("courseName", certificate.getCourseName());
 
-        var startedAt = FormatDateTime.toDateTime(certificate.getCourseStartedAt());
-        var finishedAt = FormatDateTime.toDateTime(certificate.getCourseFinishedAt());
-        var issuedAt = FormatDateTime.toDateTime(certificate.getIssuedAt());
+        var startedAt = FormatDateTime.toDateTime(certificate.getCourseStartedAt())
+                .replaceAll("-", "/");
+
+        var finishedAt = FormatDateTime.toDateTime(certificate.getCourseFinishedAt())
+                .replaceAll("-", "/");
+
+        var issuedAt = FormatDateTime.toDateTime(certificate.getIssuedAt())
+                .replaceAll("-", "/");
 
         context.setVariable("startDate", startedAt);
         context.setVariable("endDate", finishedAt);
