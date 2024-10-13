@@ -1,59 +1,133 @@
 <!DOCTYPE html>
 <html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
     <title>Certificado</title>
     <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            text-align: center;
-        }
-        .certificate-container {
-            width: 80%;
-            margin: 50px auto;
-            padding: 20px;
-            border: 10px solid #333;
-            background-color: #fff;
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-        }
-        h1 {
-            font-size: 36px;
-            margin-bottom: 20px;
-        }
-        .certificate-body {
-            font-size: 18px;
-            margin-bottom: 40px;
-        }
-        .certificate-info {
-            margin-top: 50px;
-            font-size: 16px;
-        }
-        .certificate-dates {
-            margin-top: 30px;
-            font-size: 16px;
-        }
+      @font-face {
+        font-family: "Merriweather";
+        src: url("/fonts/Merriweather-Regular.ttf");
+      }
+      body {
+        font-family: "Merriweather", Helvetica, sans-serif;
+        text-align: center;
+      }
+      .certificate-container {
+        width: 80%;
+        margin: 50px auto;
+        padding: 20px;
+        border: 1px solid #000000;
+        position: relative;
+      }
+      .triangle {
+        content: "";
+        position: absolute;
+        width: 0;
+        height: 0;
+        border-style: solid;
+      }
+      .triangle.top-left {
+        border-width: 150px 150px 0 0;
+        border-color: #d16229 transparent transparent transparent;
+        top: -30px;
+        left: -30px;
+      }
+      .triangle.top-right {
+        border-width: 0 150px 150px 0;
+        border-color: transparent #d16229 transparent transparent;
+        top: -30px;
+        right: -30px;
+      }
+      .triangle.bottom-left {
+        border-width: 150px 0 0 150px;
+        border-color: transparent transparent transparent #d16229;
+        bottom: -30px;
+        left: -30px;
+      }
+      .triangle.bottom-right {
+        border-width: 0 0 150px 150px;
+        border-color: transparent transparent #d16229 transparent;
+        bottom: -30px;
+        right: -30px;
+      }
+
+      .certificate-title {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 20px;
+      }
+
+      .line-left,
+      .line-right {
+        height: 1px;
+        width: 75px;
+        background-color: #d16229;
+      }
+
+      .line-left {
+        margin-right: 5px;
+      }
+
+      .line-right {
+        margin-left: 5px;
+      }
+
+      .text-title {
+        font-size: 36px;
+      }
+      .certificate-body {
+        font-size: 18px;
+        margin-bottom: 40px;
+      }
+      .certificate-info {
+        margin-top: 30px;
+        font-size: 16px;
+      }
+      .certificate-dates {
+        margin-top: 30px;
+        font-size: 16px;
+      }
+
+      .name {
+        font-size: 35px;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
+    <div class="certificate-container">
+      <div class="triangle top-left"></div>
+      <div class="triangle top-right"></div>
+      <div class="triangle bottom-left"></div>
+      <div class="triangle bottom-right"></div>
 
-<div class="certificate-container">
-    <h1>Certificado de Conclusão</h1>
-    <p class="certificate-body">
-        Certificamos que <span th:text="${username}">[NOME]</span> concluiu o curso <span th:text="${courseName}">[NOME DO CURSO]</span> com êxito.
-    </p>
-    <p class="certificate-info">
-        Email do aluno: <span th:text="${userEmail}">[EMAIL]</span><br>
-        Nome do curso: <span th:text="${courseName}">[NOME DO CURSO]</span><br>
-        ID do Curso: <span th:text="${courseId}">[ID CURSO]</span><br>
-        ID do Certificado: <span th:text="${certificateId}">[ID CERTIFICADO]</span>
-    </p>
-    <p class="certificate-dates">
-        Data de Início do Curso: <span th:text="${startDate}">[DATA INÍCIO]</span><br>
-        Data de Término do Curso: <span th:text="${endDate}">[DATA TÉRMINO]</span><br>
-        Data de Emissão do Certificado: <span th:text="${issueDate}">[DATA EMISSÃO]</span>
-    </p>
-</div>
+      <div class="certificate-title">
+        <div class="line-left"></div>
+        <p class="text-title">CERTIFICADO</p>
+        <div class="line-right"></div>
+      </div>
+      <p class="certificate-body">
+        Certificamos que <br /><br /><span class="name" th:text="${username}"
+          >[NOME]</span
+        ><br /><br />
+        concluiu com aproveitamento o curso
+        <span th:text="${courseName}">[NOME DO CURSO]</span> no periodo de
+        <span th:text="${startDate}">[DATA INÍCIO]</span> a
+        <span th:text="${endDate}">[DATA TÉRMINO]</span>.
+      </p>
+      <p class="certificate-info">
+        Nome do curso: <span th:text="${courseName}">[NOME DO CURSO]</span
+        ><br />
+        ID do Certificado:
+        <span th:text="${certificateId}">[ID CERTIFICADO]</span>
+      </p>
+      <p class="certificate-dates">
+        IMO <br />
+        <span>Plataforma Gratuita de Cursos de TI</span>
+      </p>
 
-</body>
+      <p>Brasil - São Paulo</p>
+      <p>Data de Emissão: <span th:text="${issueDate}">[DATA EMISSÃO]</span></p>
+    </div>
+  </body>
 </html>

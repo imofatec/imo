@@ -37,6 +37,30 @@ export default function VerAula() {
     }
   }
 
+  const handleGetCertificate = async () => {
+    try {
+      const result = await api.get(`/api/user/get-certificate/${courseID}`, {
+        responseType: 'blob',
+      })
+
+      const contentDisposition = result.headers['content-disposition']
+      const fileName = contentDisposition
+        ? contentDisposition.split('filename=')[1].replace(/['"]/g, '') 
+        : 'certificado.pdf'
+
+      const url = window.URL.createObjectURL(new Blob([result.data]))
+      const link = document.createElement('a')
+      link.href = url
+      link.setAttribute(
+        'download',
+        fileName,
+      )
+      link.click()
+    } catch (error) {
+      console.error('Erro ao gerar certificado:', error)
+    }
+  }
+
   let commentData = [
     {
       profileName: 'João',
@@ -46,7 +70,7 @@ export default function VerAula() {
     },
   ]
 
-  console.log(progress)
+  console.log('progresso aqui', progress)
   return (
     <div className="max-w-full min-h-screen">
       <Titulo titulo={currentLesson?.title}></Titulo>
@@ -120,6 +144,17 @@ export default function VerAula() {
               ></LessonPlaylist>
             )
           })}
+          <button
+            onClick={handleGetCertificate}
+            disabled={progress.lessonsWatched < lessonData.length}
+            className={`mt-4 px-4 py-2 rounded ${
+              progress.lessonsWatched < lessonData.length
+                ? 'bg-gray-500 cursor-not-allowed text-white'
+                : 'bg-custom-header-cyan text-black'
+            }`}
+          >
+            Gerar certificado
+          </button>
         </div>
       </div>
     </div>
