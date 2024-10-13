@@ -16,6 +16,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Paths;
 
 @Service
 public class CreateCertificatePdfService implements CreateService<Certificate, byte[]> {
@@ -42,12 +43,15 @@ public class CreateCertificatePdfService implements CreateService<Certificate, b
     private static String createTemplate(Certificate certificate, TemplateEngine templateEngine) {
         Context context = new Context();
 
-        context.setVariable("certificateId", certificate.getId());
-        context.setVariable("userId", certificate.getUserId());
-        context.setVariable("username", certificate.getUsername());
-        context.setVariable("userEmail", certificate.getUserEmail());
-        context.setVariable("courseId", certificate.getCourseId());
+        var documentTile = String.format("IMO-%s-%s-%s",
+                certificate.getUsername().toUpperCase(),
+                certificate.getCourseSlug().toUpperCase(),
+                FormatDateTime.toDate(certificate.getIssuedAt()));
+
+        context.setVariable("documentTitle", documentTile);
+        context.setVariable("username", certificate.getUsername().toUpperCase());
         context.setVariable("courseName", certificate.getCourseName());
+        context.setVariable("certificateId", certificate.getId());
 
         var startedAt = FormatDateTime.toDate(certificate.getCourseStartedAt())
                 .replaceAll("-", "/");
@@ -58,9 +62,9 @@ public class CreateCertificatePdfService implements CreateService<Certificate, b
         var issuedAt = FormatDateTime.toDateTime(certificate.getIssuedAt())
                 .replaceAll("-", "/");
 
-        context.setVariable("startDate", startedAt);
-        context.setVariable("endDate", finishedAt);
-        context.setVariable("issueDate", issuedAt);
+        context.setVariable("startedAt", startedAt);
+        context.setVariable("finishedAt", finishedAt);
+        context.setVariable("issuedAt", issuedAt);
 
         return templateEngine.process("certificado", context);
     }
@@ -78,6 +82,10 @@ public class CreateCertificatePdfService implements CreateService<Certificate, b
             pdfDocument.setDefaultPageSize(PAGE_SIZE);
 
             ConverterProperties converterProperties = new ConverterProperties();
+            converterProperties.setBaseUri(
+                    Paths.get("src", "main", "resources", "static").toAbsolutePath().toString()
+            );
+
             HtmlConverter.convertToPdf(inputStream, pdfDocument, converterProperties);
 
             pdfDocument.close();
