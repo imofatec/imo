@@ -50,7 +50,7 @@ export default function Cursos() {
 
   return (
     <>
-      <Titulo titulo={tipoCurso} />
+      <Titulo titulo={`IMO / ${tipoCurso}`} />
       <div className="min-h-screen flex flex-row w-full">
         <div className="w-1/3 p-12">
           <Seletor

@@ -6,7 +6,10 @@ export default function UserPicture({ profilePic, size }) {
       size = 'w-16 h-16'
       break
     case 'lg':
-      size = 'w-21 h-21'
+      size = 'w-20 h-20'
+      break
+    case 'xl':
+      size = 'w-24 h-24'
       break
     default:
       size = ''
