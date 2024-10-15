@@ -23,7 +23,7 @@ export default function CardCurso({
     <>
       <div
         onClick={abrir}
-        className="flex flex-col text-center max-w-64 font-semibold px-5 cursor-pointer mb-12 hover:scale-105 hover:duration-200 text-white"
+        className="flex flex-col text-center max-w-64 font-semibold px-5 cursor-pointer mb-12 hover:scale-105 duration-200 text-white"
       >
         <img className="max-w-thumb max-h-thumb" src={fotoCurso} alt={nomeCurso + " "+ descricaoCurso}></img>
         <h6 className="">{nomeCurso}</h6>

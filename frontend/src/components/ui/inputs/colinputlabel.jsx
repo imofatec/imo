@@ -1,4 +1,4 @@
-import { InputLabel } from './inputlabel'
+import { InputLabel } from "./inputlabel"
 
 export default function ColInputLabel({ label, idInput, placeholder }) {
   return (

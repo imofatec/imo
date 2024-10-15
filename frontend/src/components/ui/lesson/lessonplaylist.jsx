@@ -35,7 +35,7 @@ export default function LessonPlaylist({
         >
           <Checkbox
             id={idAula}
-            className="hover:scale-110"
+            className="hover:scale-105 duration-200"
             checked={isLessonChecked}
             onCheckedChange={handleCheckboxChange}
             disabled={!isEnabled || isLessonChecked}

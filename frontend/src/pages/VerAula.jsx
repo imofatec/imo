@@ -73,7 +73,7 @@ export default function VerAula() {
   console.log('progresso aqui', progress)
   return (
     <div className="max-w-full min-h-screen">
-      <Titulo titulo={currentLesson?.title}></Titulo>
+      <Titulo titulo={`IMO / ${currentLesson?.title}`}></Titulo>
 
       <div className="flex flex-row">
         <div className="flex flex-col w-3/4 p-8">
@@ -102,11 +102,6 @@ export default function VerAula() {
           ></LessonDescription>
           <div className="">
             <h2 className="font-semibold text-xl">Comentários</h2>
-            {/*
-                caso tenham comentarios, os dados virão num .json
-                caso não tenham comentarios, vai dar uma mensagem
-                ******* quanto implementado no back-end, verificar se a mensagem virá do back ou ficará a da página**********
-                */}
             {commentData
               ? commentData.map((item, i) => {
                   return (
