@@ -14,7 +14,7 @@ export async function signIn({ request }) {
         console.log(result.data)
         const { acessToken } = result.data
         localStorage.setItem('token', acessToken)
-        return redirect('/private')
+        return redirect('/categorias')
     } catch (err) {
         return err.response.data.message
     }

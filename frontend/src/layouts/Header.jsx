@@ -2,25 +2,25 @@ import LogoIMO from '@/assets/LogoIMO.svg'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/inputs/input'
 import { LogOut, Search } from 'lucide-react'
+import DropdownHeader from '@/components/ui/header/dropdwnHeader'
 import { useEffect, useMemo, useState } from 'react'
-import { Link,useLocation,useNavigate } from 'react-router-dom'
-import { jwtDecode } from "jwt-decode";
+import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { jwtDecode } from 'jwt-decode'
 
-
-const headerItens = ['Data Science', 'Redes', 'Gestão', 'Design', 'Programação'] // contem todos os botoes do header ciano
+const headerItens = ['Data Science', 'Redes', 'Gestão', 'Design', 'Programação']
 
 export default function Header() {
   const [token, setToken] = useState(localStorage.getItem('token'))
   const location = useLocation()
 
   const validateTime = (token) => {
-    const {exp} = jwtDecode(token)
+    const { exp } = jwtDecode(token)
     return exp * 1000 > Date.now() ? true : false
   }
 
   const isLoggedIn = useMemo(() => {
     return token ? validateTime(token) : false
-  },[token])
+  }, [token])
 
   useEffect(() => {
     const storedToken = localStorage.getItem('token')
@@ -30,12 +30,12 @@ export default function Header() {
   const navigate = useNavigate()
 
   const handleSearch = (e) => {
-    if(e.key === "Enter"){
+    if (e.key === 'Enter') {
       const searchTerm = e.target.value
-      .trim()
-      .toLowerCase()
-      .replace(/[^\w\s]|_/g, '')
-      .replace(/\s+/g, '-')
+        .trim()
+        .toLowerCase()
+        .replace(/[^\w\s]|_/g, '')
+        .replace(/\s+/g, '-')
       navigate(`/categorias/${searchTerm}`)
       e.preventDefault()
     }
@@ -47,7 +47,7 @@ export default function Header() {
           <img src={LogoIMO} className="cursor-pointer" />
         </Link>
 
-        <div className=" w-[49rem] relative flex items-center ">
+        <div className="w-[49rem] relative flex items-center ">
           <Search className="absolute left-3 text-white" />
           <div className="absolute left-12 w-[1px] h-5 bg-white"></div>
           <Input
@@ -57,48 +57,17 @@ export default function Header() {
             onKeyDown={handleSearch}
           />
         </div>
-
-        <div className="flex align-middle items-center">
-          {isLoggedIn ? (
-            <>
-              <Link to={'#'}>
-                <div className="w-10 h-10 bg-white rounded-full" />
-              </Link>
-
-              <Button className="">
-                <LogOut
-                  onClick={() => {
-                    localStorage.clear('token'), window.location.reload()
-                  }}
-                />
-              </Button>
-            </>
-          ) : (
-            <>
-              <Button className="">
-                <Link to={'/cadastro'}>Criar Conta</Link>
-              </Button>
-
-              <Button className="">
-                <Link to={'/login'}>Fazer Login</Link>
-              </Button>
-            </>
-          )}
-        </div>
+        <DropdownHeader isLoggedIn={isLoggedIn}/>
       </div>
 
       <div className="bg-custom-header-cyan min-h-[2.5rem] flex flex-wrap justify-center items-center gap-9 mb-3">
-        {
-          // CODIGO PARA PEGAR TODOS OS ITENS DA CONSTANTE E RETORNA OS BOTOES
-
-          headerItens.map(function (item, index) {
-            return (
-              <Button key={index} className="text-black">
-                {item}
-              </Button>
-            )
-          })
-        }
+        {headerItens.map(function (item, index) {
+          return (
+            <Button key={index} className="text-black">
+              {item}
+            </Button>
+          )
+        })}
       </div>
     </header>
   )
