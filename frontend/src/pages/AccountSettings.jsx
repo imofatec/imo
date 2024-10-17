@@ -28,7 +28,7 @@ export default function AccountSettings() {
 
       <div className="flex flex-col h-screen m-16 mx-28">
         <h1 className="font-semibold text-3xl">Configurações da conta</h1>
-        <p className="text-sm p-3 font-thin">
+        <p className="text-sm p-3 text-white">
           Veja e edite informações sobre a sua conta IMO
         </p>
         <Separator className="m-4 bg-custom-border-gray"></Separator>
