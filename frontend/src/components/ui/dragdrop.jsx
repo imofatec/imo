@@ -12,7 +12,7 @@ function DragDrop({ onImageUpload }) {
     setIsUploaded(true)
     const newPic = URL.createObjectURL(file)
     setImageUrl(newPic)
-    onImageUpload(newPic)
+    onImageUpload(file)
   }
 
   return (
@@ -31,17 +31,17 @@ function DragDrop({ onImageUpload }) {
             <p className="text-justify text-sm">
               Arraste ou clique para inserir sua foto
             </p>
-            <ImageUp></ImageUp>
+            <ImageUp/>
           </div>
         }
       />
       {isUploaded ? (
         <>
-          <p className="text-sm pt-6 pb-2 font-thin">Arquivo: {file.name}</p>
+          <p className="text-sm pt-6 pb-2 text-white">Arquivo: {file.name}</p>
         </>
       ) : (
         <>
-          <p className="text-sm pt-6 pb-2 font-thin">
+          <p className="text-sm pt-6 pb-2 text-white">
             Nenhum arquivo selecionado
           </p>
         </>

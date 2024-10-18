@@ -58,12 +58,12 @@ export default function NewLesson() {
               onClick={() => lessLessons(index)}
             >
               <Minus></Minus>
-              <label className="ml-6 font-thin italic text-sm">
+              <label className="ml-6 text-white italic text-sm">
                 Clique no “-” para remover uma aula
               </label>
             </div>
             <div className="flex-row flex items-center text-white" onClick={moreLessons}>
-              <label className="mr-6 font-thin italic text-sm">
+              <label className="mr-6 text-white italic text-sm">
                 Clique no “+” para adicionar uma aula
               </label>
               <Plus></Plus>
