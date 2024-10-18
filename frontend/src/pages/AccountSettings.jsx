@@ -1,26 +1,28 @@
 import DragDrop from '@/components/ui/dragdrop'
-import profilePic from '@/assets/thumb.jpg'
 import UserPicture from '@/components/ui/userpicture'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { Titulo } from '@/components/ui/titulo'
 import { InputLabel } from '@/components/ui/inputs/inputlabel'
-import { Form } from 'react-router-dom'
-import { useState } from 'react'
+import { Form, useActionData } from 'react-router-dom'
+import {  useEffect, useRef } from 'react'
+import useFetchUserInfo from '@/hooks/useFetchUserInfo'
+import useImageUpload from '@/hooks/useImageUpload'
 
 export default function AccountSettings() {
-  const [urlImage, setUrlImage] = useState(profilePic) //atualizar a profilePic pra foto do usuário
+  
+  const actionData = useActionData()
+  const formRef = useRef()
+  const {setUrlImage,userInfo,urlImage,fetchUserInfo} = useFetchUserInfo();
+  const {handleImageUpload} = useImageUpload(setUrlImage)
+  
 
-  const handleImageUpload = (newPic) => {
-    setUrlImage(newPic)
-  }
-
-  let account = [
-    {
-      username: 'ILoveIMO',
-      email: 'joaozinho123@yahoo.com',
-    },
-  ]
+  useEffect(() => {
+    if (actionData?.success) {
+      formRef.current.reset()
+      fetchUserInfo()
+    }
+  }, [actionData])
 
   return (
     <>
@@ -50,34 +52,37 @@ export default function AccountSettings() {
           </div>
 
           <div className="flex flex-col w-3/4 mx-8">
-            <Form method="post" action="/atualizardados">
+            <Form method="post" action="/user/configurar-conta" ref={formRef}>
               <div className="flex flex-row gap-x-14">
                 <InputLabel
                   label={'Username'}
-                  required
+                  id="username"
+                  name="username"
                   type="text"
-                  defaultValue={account[0].username}
-                  placeholder="Username Atual"
+                  placeholder={userInfo?.username}
                 ></InputLabel>
+
                 <InputLabel
                   label={'E-mail'}
-                  required
+                  id="email"
+                  name="email"
                   type="text"
-                  defaultValue={account[0].email}
-                  placeholder="Email Atual"
+                  placeholder={userInfo?.email}
                 ></InputLabel>
               </div>
               <div className="flex flex-row gap-x-14">
                 <InputLabel
                   label={'Senha'}
-                  required
-                  type="text"
+                  id="password"
+                  name="password"
+                  type="password"
                   placeholder="Digite a nova senha"
                 ></InputLabel>
                 <InputLabel
                   label="Confirme a senha"
-                  required
-                  type="text"
+                  id="password-confirm"
+                  name="password-confirm"
+                  type="password"
                   placeholder="Confirme a nova senha"
                 ></InputLabel>
               </div>
@@ -90,6 +95,16 @@ export default function AccountSettings() {
                 </Button>
               </div>
             </Form>
+            {actionData && (
+              <div className="flex justify-center pt-5">
+                {actionData?.error && (
+                  <p className="text-red-500">{actionData.error}</p>
+                )}
+                {actionData?.success && (
+                  <p className="text-green-500">{actionData.success}</p>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </div>

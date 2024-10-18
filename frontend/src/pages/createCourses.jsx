@@ -8,7 +8,7 @@ export default function CreateCourses() {
   return (
     <div className='flex justify-center'>
       <div className="w-[70rem]">
-        <Form method="post" action="/criarcurso">
+        <Form method="post" action="/criar-curso">
           <div className="w-full border-white border rounded-xl p-6 px-10 my-6 ">
             <ColInputLabel
               label={'Nome do Curso'}
