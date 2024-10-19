@@ -3,9 +3,23 @@ import { Form, useActionData } from 'react-router-dom'
 import ColLargeInput from '@/components/ui/inputs/collargeinput'
 import ColInputLabel from '@/components/ui/inputs/colinputlabel'
 import NewLesson from '@/components/ui/newlesson'
+import { SpinnerButton } from '@/components/ui/spinnerButton'
+import { useEffect, useState } from 'react'
 
 export default function CreateCourses() {
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState(null)
   const actionData = useActionData()
+
+  useEffect(() => {
+    setTimeout(() => {
+      if (actionData) {
+        setIsLoading(false)
+        setError(actionData.error)
+      }
+    }, 1000)
+  }, [actionData])
+
   return (
     <div className="flex justify-center">
       <div className="w-[70rem]">
@@ -31,22 +45,19 @@ export default function CreateCourses() {
           </div>
 
           <NewLesson></NewLesson>
-          <div className="flex flex-row justify-end">
-            <Button
-              type="submit"
+          <div className="flex flex-row justify-end w-full">
+            <SpinnerButton
+              children="Adicionar"
+              isLoading={isLoading}
+              onClick={() => setIsLoading(true)}
               className="bg-custom-header-cyan text-black font-bold px-10 mx-10"
-            >
-              Adicionar
-            </Button>
+            />
           </div>
         </Form>
-        {actionData && (
-          <div className="flex justify-center py-5">
-            {actionData?.error && (
-              <p className="text-red-500">{actionData.error}</p>
-            )}
-          </div>
-        )}
+
+        <div className="flex justify-center py-5">
+          {error && <p className="text-red-500">{actionData.error}</p>}
+        </div>
       </div>
     </div>
   )

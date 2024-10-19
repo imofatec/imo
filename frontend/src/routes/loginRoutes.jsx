@@ -1,18 +1,18 @@
 import SignUp from '@/pages/SignUp'
 import SignIn from '@/pages/SignIn'
-import { signUp } from '@/requests/user/signup'
-import { signIn } from '@/requests/user/signin'
+import { registerRequest } from '@/requests/user/registerRequest'
+import { loginRequest } from '@/requests/user/loginRequest'
 
 const cadastro = {
   path: '/cadastro',
   element: <SignUp />,
-  action: signUp,
+  action: registerRequest,
 }
 
 const login = {
   path: '/login',
   element: <SignIn />,
-  action: signIn,
+  action: loginRequest,
 }
 
 const loginRoutes = [cadastro, login]
