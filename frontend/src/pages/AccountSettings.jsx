@@ -4,18 +4,17 @@ import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { Titulo } from '@/components/ui/titulo'
 import { InputLabel } from '@/components/ui/inputs/inputlabel'
-import { Form, useActionData } from 'react-router-dom'
-import {  useEffect, useRef } from 'react'
+import { Form, useActionData,redirect } from 'react-router-dom'
+import { useEffect, useRef, useState } from 'react'
 import useFetchUserInfo from '@/hooks/useFetchUserInfo'
 import useImageUpload from '@/hooks/useImageUpload'
 
 export default function AccountSettings() {
-  
   const actionData = useActionData()
   const formRef = useRef()
-  const {setUrlImage,userInfo,urlImage,fetchUserInfo} = useFetchUserInfo();
-  const {handleImageUpload} = useImageUpload(setUrlImage)
-  
+  const { setUrlImage, userInfo, urlImage, fetchUserInfo } = useFetchUserInfo()
+  const { handleImageUpload } = useImageUpload(setUrlImage)
+  const [selectedFile, setSelectedFile] = useState(null)
 
   useEffect(() => {
     if (actionData?.success) {
@@ -23,6 +22,14 @@ export default function AccountSettings() {
       fetchUserInfo()
     }
   }, [actionData])
+
+  const handleUploadClick = () => {
+    if (!selectedFile) {
+      console.error('Nenhum arquivo selecionado')
+      return;
+    }
+    handleImageUpload(selectedFile)
+  }
 
   return (
     <>
@@ -44,16 +51,24 @@ export default function AccountSettings() {
                 alt="Foto de Perfil"
               ></UserPicture>
 
-              <DragDrop onImageUpload={handleImageUpload}></DragDrop>
+              <DragDrop onImageSelect={setSelectedFile}></DragDrop>
             </div>
-            <Button className="bg-custom-header-cyan text-black font-bold px-8">
+            <Button
+              className="bg-custom-header-cyan text-black font-bold px-8"
+              onClick={handleUploadClick}
+            >
               Editar Foto de Perfil
             </Button>
           </div>
 
           <div className="flex flex-col w-3/4 mx-8">
-            <Form method="post" action="/user/configurar-conta" ref={formRef}>
-              <div className="flex flex-row gap-x-14">
+            <Form
+              method="post"
+              action={`/user/configurar-conta`}
+              ref={formRef}
+              className="w-full"
+            >
+              <div className="flex flex-row justify-center gap-x-14 w-full">
                 <InputLabel
                   label={'Username'}
                   id="username"
@@ -70,7 +85,7 @@ export default function AccountSettings() {
                   placeholder={userInfo?.email}
                 ></InputLabel>
               </div>
-              <div className="flex flex-row gap-x-14">
+              <div className="flex flex-row justify-center gap-x-14 w-full">
                 <InputLabel
                   label={'Senha'}
                   id="password"

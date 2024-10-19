@@ -15,7 +15,7 @@ let tipoCurso = 'Todos os cursos'
 export default function Cursos() {
   const { slug } = useParams()
   const [page, setPage] = useState(0)
-  const size = 10
+  const size = 8
   const {
     categories,
     courses,

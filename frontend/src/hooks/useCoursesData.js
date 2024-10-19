@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { safeAwait } from '@/lib/safeAwait'
 import axios from 'axios'
 
 export const useCoursesData = (slug, page, size, setPage) => {
@@ -12,13 +13,12 @@ export const useCoursesData = (slug, page, size, setPage) => {
   const fetchData = async () => {
     setError(false)
     setLoading(true)
-    try {
-      const responseCategories = await axios.get(
-        '/api/courses/get-all/categories',
-      )
-      setCategories(responseCategories.data)
 
-      const responseCourses = currentSlug
+    const [errorCategories, responseCategories] = await safeAwait(
+      axios.get('/api/courses/get-all/categories'),
+    )
+    const [errorCourses, responseCourses] = await safeAwait(
+      currentSlug
         ? await axios.get(
             `/api/courses/pagination/get-all/overviews/${currentSlug}`,
             {
@@ -27,16 +27,27 @@ export const useCoursesData = (slug, page, size, setPage) => {
           )
         : await axios.get('/api/courses/pagination/get-all/overviews', {
             params: { page, size },
-          })
+          }),
+    )
 
-      setCourses(responseCourses.data)
-
-      setHasMoreCourses(responseCourses.data.length >= size)
-    } catch (error) {
+    if (errorCategories) {
       setError(true)
-    } finally {
-      setLoading(false)
+      console.error(errorCategories)
+      return
     }
+    if (errorCourses) {
+      setError(true)
+      console.error(errorCourses)
+      return
+    }
+
+    setCategories(responseCategories.data)
+
+    setCourses(responseCourses.data)
+
+    setHasMoreCourses(responseCourses.data.length >= size)
+
+    setLoading(false)
   }
 
   useEffect(() => {

@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react'
+import { BASE_URL } from '@/api/environment'
+import { safeAwait } from '@/lib/safeAwait'
 import api from '@/api/api'
 
 const useFetchUserInfo = () => {
@@ -6,22 +8,20 @@ const useFetchUserInfo = () => {
   const [userInfo, setUserInfo] = useState(null)
 
   const fetchUserInfo = async () => {
-    try {
-      const result = await api.get('/api/user/profile')
-      setUserInfo(result.data)
-      setUrlImage(
-        `http://localhost:8080/uploads/${result.data.profilePicturePath}`,
-      )
-    } catch (error) {
+    const [error, result] = await safeAwait(await api.get('/api/user/profile'))
+    if (error) {
       console.error('Erro ao buscar informações do usuário:', error)
+      return
     }
+    setUserInfo(result.data)
+    setUrlImage(`${BASE_URL}/uploads/${result.data.profilePicturePath}`)
   }
 
   useEffect(() => {
     fetchUserInfo()
   }, [])
 
-  return { setUrlImage,userInfo, urlImage, fetchUserInfo }
+  return { setUrlImage, userInfo, urlImage, fetchUserInfo }
 }
 
 export default useFetchUserInfo
