@@ -54,7 +54,7 @@ export default function NewLesson() {
 
           <div className="flex flex-row justify-between m-6">
             <div
-              className="flex-row flex items-center "
+              className="flex-row flex items-center cursor-pointer"
               onClick={() => lessLessons(index)}
             >
               <Minus></Minus>
@@ -62,7 +62,10 @@ export default function NewLesson() {
                 Clique no “-” para remover uma aula
               </label>
             </div>
-            <div className="flex-row flex items-center text-white" onClick={moreLessons}>
+            <div
+              className="flex-row flex items-center text-white cursor-pointer"
+              onClick={moreLessons}
+            >
               <label className="mr-6 text-white italic text-sm">
                 Clique no “+” para adicionar uma aula
               </label>

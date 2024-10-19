@@ -5,8 +5,7 @@ import { safeAwait } from '@/lib/safeAwait'
 const useImageUpload = (setUrlImage) => {
   const handleImageUpload = async (file) => {
     if (!file) {
-      console.error('Nenhum arquivo selecionado')
-      return
+      return { error: '' }
     }
     const formData = new FormData()
     formData.append('file', file)
@@ -16,16 +15,13 @@ const useImageUpload = (setUrlImage) => {
     )
 
     if (error) {
-      console.error(
-        'Erro ao enviar a imagem:',
-        error.response ? error.response.data : error.message,
-      )
-      return
+      return { error: error.response.data.message }
     }
 
     const newImagePath = `${BASE_URL}/uploads/${result.data.profilePicturePath}`
     setUrlImage(newImagePath)
-    window.location.reload()
+
+    return { error: null }
   }
 
   return { handleImageUpload }

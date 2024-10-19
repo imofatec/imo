@@ -1,8 +1,7 @@
 import api from '@/api/api'
 import { safeAwait } from '@/lib/safeAwait'
-import { redirect } from 'react-router-dom'
 
-export async function updateUser({ request }) {
+export async function updateUserRequest({ request }) {
   const data = await request.formData()
 
   const username = data.get('username')
@@ -25,5 +24,9 @@ export async function updateUser({ request }) {
     return { error: error.response.data.message }
   }
 
-  return { success: 'Dados atualizados com sucesso!' }
+  if (result.status === 204) {
+    return { success: 204 }
+  }
+
+  return { success: 'Atualizado com sucesso' }
 }

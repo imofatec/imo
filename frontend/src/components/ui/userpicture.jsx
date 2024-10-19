@@ -17,8 +17,8 @@ export default function UserPicture({ profilePic, size }) {
   }
   return (
     <Avatar className={size}>
-      <AvatarImage src={profilePic} />
-      <AvatarFallback>LD</AvatarFallback>
+      <AvatarImage src={profilePic} className="object-cover" />
+      <AvatarFallback></AvatarFallback>
     </Avatar>
   )
 }

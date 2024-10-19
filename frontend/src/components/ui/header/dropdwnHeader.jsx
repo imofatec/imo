@@ -46,12 +46,12 @@ export default function DropdownHeader({ isLoggedIn }) {
             <img
               src={urlImage}
               alt="Avatar do usuario"
-              className="w-full h-full rounded-full"
+              className="w-full h-full rounded-full object-cover"
             />
           </div>
           {showDropdown && (
             <>
-              <div className='absolute top-[3rem] right-[0.75rem]'>
+              <div className="absolute top-[3rem] right-[0.75rem]">
                 <DropdownTriangle />
               </div>
               <div

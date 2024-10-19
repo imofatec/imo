@@ -4,7 +4,7 @@ import ProtectedRoute from '@/auth/ProtectedRoutes'
 import TestPage from '@/pages/TestPage'
 import VerAula from '@/pages/VerAula'
 import { createCourse as createCourseRequest } from '@/requests/createCourse'
-import { updateUser } from '@/requests/user/updateUser'
+import { updateUserRequest } from '@/requests/user/updateUserRequest'
 
 const teste = {
   path: '/private',
@@ -25,7 +25,7 @@ const lessons = {
 const accountSettings = {
   path: '/user/configurar-conta',
   element: <AccountSettings />,
-  action: updateUser,
+  action: updateUserRequest,
 }
 const authRoutes = [
   {
