@@ -1,11 +1,11 @@
-import { Label } from "../label"
-import { Input } from "./input"
+import { Label } from '../label'
+import { Input } from './input'
 
 export function InputLabel(props) {
   const { type, id, name, placeholder, defaultValue, label } = props
 
   return (
-    <div className="grid w-full max-w-sm items-center gap-1.5 my-6">
+    <div className="grid w-full items-center gap-1.5 my-6">
       <Label htmlFor={id}>{label}</Label>
       <Input
         defaultValue={defaultValue}

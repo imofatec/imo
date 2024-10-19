@@ -44,13 +44,19 @@ export default function LessonInfo({
         <div className="flex flex-row gap-2 justify-end mx-2">
           {previousLesson && (
             <>
-                <img src={previous_arrow} alt="" width="28px" height="28px" className='cursor-pointer'/>
+              <img
+                src={previous_arrow}
+                alt=""
+                width="28px"
+                height="28px"
+                className="cursor-pointer"
+              />
               <div
                 className="flex flex-col"
                 id="preview"
                 onClick={handlePrevious}
               >
-                <p className="cursor-pointer mr-8">Voltar</p>
+                <p className="hover:underline cursor-pointer mr-8">Voltar</p>
               </div>
             </>
           )}
@@ -58,9 +64,15 @@ export default function LessonInfo({
           {nextLesson && (
             <>
               <div className="flex flex-col" id="next" onClick={handleNext}>
-                <p className="cursor-pointer">Avançar</p>
+                <p className="hover:underline cursor-pointer">Avançar</p>
               </div>
-              <img src={next_arrow} alt="" width="28px" height="28px" className='cursor-pointer'/>
+              <img
+                src={next_arrow}
+                alt=""
+                width="28px"
+                height="28px"
+                className="cursor-pointer"
+              />
             </>
           )}
         </div>

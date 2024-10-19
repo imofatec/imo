@@ -43,7 +43,7 @@ export default function LessonPlaylist({
         </div>
         <Link
           to={`/cursos/${codeCourse}/${codeLesson}`}
-          className="object-contain p-3 rounded-xl hover:scale-105"
+          className="object-contain p-3 rounded-xl hover:scale-105 duration-200"
         >
           <img className="rounded-xl" src={thumbLesson}></img>{' '}
         </Link>
