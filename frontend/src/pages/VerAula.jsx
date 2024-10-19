@@ -1,5 +1,6 @@
 import LessonDescription from '@/components/ui/lesson/lessondescription'
 import api from '@/api/api'
+import { safeAwait } from '@/lib/safeAwait'
 import thumbLesson from '@/assets/thumb.jpg'
 import LessonPlaylist from '@/components/ui/lesson/lessonplaylist'
 import { Titulo } from '@/components/ui/titulo'
@@ -29,36 +30,39 @@ export default function VerAula() {
   }, [loading, currentLesson, navigate])
 
   const handleFinishedLesson = async () => {
-    try {
-      await api.put(`/api/user/update-progress/${courseID}`)
-      fetchProgress()
-    } catch (error) {
+    const [error, result] = await safeAwait(
+      api.put(`/api/user/update-progress/${courseID}`),
+    )
+    if (error) {
       console.error('Erro ao marcar a aula como concluída:', error)
+      return
     }
+    fetchProgress()
   }
 
   const handleGetCertificate = async () => {
-    try {
-      const result = await api.get(`/api/user/get-certificate/${courseID}`, {
+    const [error, result] = await safeAwait(
+      api.get(`/api/user/get-certificate/${courseID}`, {
         responseType: 'blob',
       })
-
-      const contentDisposition = result.headers['content-disposition']
-      const fileName = contentDisposition
-        ? contentDisposition.split('filename=')[1].replace(/['"]/g, '') 
-        : 'certificado.pdf'
-
-      const url = window.URL.createObjectURL(new Blob([result.data]))
-      const link = document.createElement('a')
-      link.href = url
-      link.setAttribute(
-        'download',
-        fileName,
-      )
-      link.click()
-    } catch (error) {
+    )
+    if (error) {
       console.error('Erro ao gerar certificado:', error)
+      return
     }
+    const contentDisposition = result.headers['content-disposition']
+    const fileName = contentDisposition
+      ? contentDisposition.split('filename=')[1].replace(/['"]/g, '') 
+      : 'certificado.pdf'
+
+    const url = window.URL.createObjectURL(new Blob([result.data]))
+    const link = document.createElement('a')
+    link.href = url
+    link.setAttribute(
+      'download',
+      fileName,
+    )
+    link.click()
   }
 
   let commentData = [

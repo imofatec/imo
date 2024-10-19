@@ -11,23 +11,13 @@ import useFetchUserInfo from '@/hooks/useFetchUserInfo'
 export default function DropdownHeader({ isLoggedIn }) {
   const [showDropdown, setShowDropdown] = useState(false)
   const [hideTimeout, setHideTimeout] = useState(null)
-  const [userInfo, setUserInfo] = useState(null)
-  const { urlImage } = useFetchUserInfo()
+  const { urlImage, fetchUserInfo, userInfo } = useFetchUserInfo()
 
   useEffect(() => {
-    const fetchUserInfo = async () => {
-      if (isLoggedIn && !userInfo) {
-        try {
-          const result = await api.get('/api/user/profile')
-          setUserInfo(result.data)
-        } catch (error) {
-          console.error('Erro ao buscar informações do usuário:', error)
-        }
-      }
+    if (isLoggedIn) {
+      fetchUserInfo()
     }
-
-    fetchUserInfo()
-  }, [isLoggedIn])
+  }, [isLoggedIn, fetchUserInfo])
 
   const handleMouseEnter = () => {
     if (hideTimeout) {
@@ -55,7 +45,7 @@ export default function DropdownHeader({ isLoggedIn }) {
             <img
               src={urlImage}
               alt="Avatar do usuario"
-              className='w-full h-full rounded-full'
+              className="w-full h-full rounded-full"
             />
           </div>
           {showDropdown && (

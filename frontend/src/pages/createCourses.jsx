@@ -1,12 +1,13 @@
 import { Button } from '@/components/ui/button'
-import { Form } from 'react-router-dom'
+import { Form, useActionData } from 'react-router-dom'
 import ColLargeInput from '@/components/ui/inputs/collargeinput'
 import ColInputLabel from '@/components/ui/inputs/colinputlabel'
 import NewLesson from '@/components/ui/newlesson'
 
 export default function CreateCourses() {
+  const actionData = useActionData()
   return (
-    <div className='flex justify-center'>
+    <div className="flex justify-center">
       <div className="w-[70rem]">
         <Form method="post" action="/criar-curso">
           <div className="w-full border-white border rounded-xl p-6 px-10 my-6 ">
@@ -39,6 +40,13 @@ export default function CreateCourses() {
             </Button>
           </div>
         </Form>
+        {actionData && (
+          <div className="flex justify-center py-5">
+            {actionData?.error && (
+              <p className="text-red-500">{actionData.error}</p>
+            )}
+          </div>
+        )}
       </div>
     </div>
   )

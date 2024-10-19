@@ -1,4 +1,5 @@
 import api from '@/api/api'
+import { safeAwait } from '@/lib/safeAwait'
 import { redirect } from 'react-router-dom'
 
 export async function updateUser({ request }) {
@@ -9,24 +10,20 @@ export async function updateUser({ request }) {
   const password = data.get('password')
   const confPassword = data.get('password-confirm')
 
-  if (password!== confPassword) {
-     return { error: 'As senhas estão diferentes.' }
+  if (password !== confPassword) {
+    return { error: 'As senhas estão diferentes.' }
   }
-
-
-
   const user = {}
 
   if (username) user.username = username
   if (email) user.email = email
   if (password) user.password = password
 
-  console.log('dados enviados', user)
+  const [error, result] = await safeAwait(api.put(`/api/user/update`, user))
 
-  try {
-    await api.put(`/api/user/update`, user)
-    return { success: 'Dados atualizados com sucesso!' }
-  } catch (err) {
-    return { error: err.response.data.message }
+  if (error) {
+    return { error: error.response.data.message }
   }
+
+  return { success: 'Dados atualizados com sucesso!' }
 }

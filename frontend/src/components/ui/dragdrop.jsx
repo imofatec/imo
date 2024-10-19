@@ -2,7 +2,7 @@ import { ImageUp } from 'lucide-react'
 import React, { useState } from 'react'
 import { FileUploader } from 'react-drag-drop-files'
 
-function DragDrop({ onImageUpload }) {
+function DragDrop({ onImageSelect}) {
   const [file, setFile] = useState(null)
   const [isUploaded, setIsUploaded] = useState(false)
   const [imageUrl, setImageUrl] = useState('')
@@ -12,7 +12,7 @@ function DragDrop({ onImageUpload }) {
     setIsUploaded(true)
     const newPic = URL.createObjectURL(file)
     setImageUrl(newPic)
-    onImageUpload(file)
+    onImageSelect(file)
   }
 
   return (
