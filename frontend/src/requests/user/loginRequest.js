@@ -1,9 +1,8 @@
-import { safeAwait } from '@/lib/safeAwait'
 import axios from 'axios'
+import { safeAwait } from '@/lib/safeAwait'
 import { redirect } from 'react-router-dom'
 
-// LOGIN
-export async function signIn({ request }) {
+export async function loginRequest({ request }) {
   const data = await request.formData()
   const submission = {
     email: data.get('email'),
@@ -15,7 +14,7 @@ export async function signIn({ request }) {
   )
 
   if (error) {
-    return error.response.data.message || ' '
+    return { error: error.response.data.message }
   }
 
   const { acessToken } = result.data

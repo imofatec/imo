@@ -2,8 +2,7 @@ import axios from 'axios'
 import { safeAwait } from '@/lib/safeAwait'
 import { redirect } from 'react-router-dom'
 
-// CADASTRO
-export async function signUp({ request }) {
+export async function registerRequest({ request }) {
   const data = await request.formData()
   const submission = {
     username: data.get('username'),
@@ -12,12 +11,10 @@ export async function signUp({ request }) {
     confPassword: data.get('password-confirm'),
   }
 
-  const [error, result] = await safeAwait(
-    axios.post('/api/user/create', submission),
-  )
+  const [error] = await safeAwait(axios.post('/api/user/create', submission))
 
   if (error) {
-    return error.response.data.message || ' '
+    return { error: error.response.data.message }
   }
 
   return redirect('/login')
