@@ -1,5 +1,6 @@
 import LogoIMO from '@/assets/LogoIMO.svg'
 import { Button } from '@/components/ui/button'
+import CyanLink from '@/components/ui/header/cyanLink'
 import { Input } from '@/components/ui/inputs/input'
 import { Search } from 'lucide-react'
 import DropdownHeader from '@/components/ui/header/dropdwnHeader'
@@ -7,7 +8,13 @@ import { useEffect, useMemo, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { jwtDecode } from 'jwt-decode'
 
-const headerItens = ['Data Science', 'Redes', 'Gestão', 'Design', 'Programação']
+const headerItens = [
+  { name: 'Página Inicial', to: '/' },
+  { name:'Cursos em Alta', to: '/'},
+  { name:'Todos os Cursos', to: '/categorias'},
+  { name:'Contribuir com Curso', to: '/criar-curso'},
+  { name:'Validar Certificado', to: '/validar-certificado'}
+]
 
 export default function Header() {
   const [token, setToken] = useState(localStorage.getItem('token'))
@@ -57,15 +64,13 @@ export default function Header() {
             onKeyDown={handleSearch}
           />
         </div>
-        <DropdownHeader isLoggedIn={isLoggedIn}/>
+        <DropdownHeader isLoggedIn={isLoggedIn} />
       </div>
 
       <div className="bg-custom-header-cyan min-h-[2.5rem] flex flex-wrap justify-center items-center gap-9 mb-3">
         {headerItens.map(function (item, index) {
           return (
-            <Button key={index} className="text-black">
-              {item}
-            </Button>
+            <CyanLink key={index} to={item.to} name={item.name}/>
           )
         })}
       </div>
