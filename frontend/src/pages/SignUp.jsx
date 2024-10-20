@@ -71,7 +71,9 @@ export default function SignUp() {
             <SpinnerButton
               children="Cadastrar"
               isLoading={isLoading}
-              onClick={() => setIsLoading(true)}
+              onClick={() => {
+                setIsLoading(true), setError(null)
+              }}
               className="w-full bg-custom-header-cyan text-black"
             />
 
@@ -96,7 +98,7 @@ export default function SignUp() {
             <div className="flex justify-center ">
               <p className="text-custom-text-gray">
                 Ja tem uma conta?{' '}
-                <Link to="/login" className="text-white underline">
+                <Link to="/login" className="text-white hover:underline">
                   Fazer login
                 </Link>
               </p>
