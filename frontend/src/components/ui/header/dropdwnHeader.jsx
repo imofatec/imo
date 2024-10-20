@@ -1,14 +1,15 @@
-import { useState, useEffect } from 'react'
-import { Button } from '@/components/ui/button'
 import SettingsIcon from './icons/settingsIcon'
 import Certificate from './icons/certificate'
 import CoursesIcon from './icons/coursesIcon'
 import PlusHeader from './icons/plusheader'
 import DropdownTriangle from './icons/dropdownTriangle'
 import LogoutHeader from './icons/logoutHeader'
-import { Link } from 'react-router-dom'
-import api from '@/api/api'
 import useFetchUserInfo from '@/hooks/useFetchUserInfo'
+
+import { useState, useEffect } from 'react'
+import { Button } from '@/components/ui/button'
+import { Link } from 'react-router-dom'
+
 export default function DropdownHeader({ isLoggedIn }) {
   const [showDropdown, setShowDropdown] = useState(false)
   const [hideTimeout, setHideTimeout] = useState(null)
@@ -104,12 +105,12 @@ export default function DropdownHeader({ isLoggedIn }) {
         </>
       ) : (
         <>
-          <Button className="">
-            <Link to={'/cadastro'}>Criar Conta</Link>
+          <Button className="bg-custom-dark-background">
+            <Link to="/cadastro">Criar Conta</Link>
           </Button>
 
-          <Button className="">
-            <Link to={'/login'}>Fazer Login</Link>
+          <Button className="bg-custom-dark-background">
+            <Link to="/login">Fazer Login</Link>
           </Button>
         </>
       )}
