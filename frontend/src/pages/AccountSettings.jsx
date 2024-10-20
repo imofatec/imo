@@ -87,6 +87,10 @@ export default function AccountSettings() {
     }, 400)
   }, [actionData])
 
+  useEffect(() => {
+    fetchUserInfo()
+  }, [])
+
   return (
     <>
       <Titulo titulo={'IMO / Configurar conta'}></Titulo>

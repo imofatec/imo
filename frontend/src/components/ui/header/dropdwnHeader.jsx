@@ -13,10 +13,10 @@ import { Link } from 'react-router-dom'
 export default function DropdownHeader({ isLoggedIn }) {
   const [showDropdown, setShowDropdown] = useState(false)
   const [hideTimeout, setHideTimeout] = useState(null)
-  const { urlImage, fetchUserInfo } = useFetchUserInfo()
+  const { urlImage, userInfo, fetchUserInfo } = useFetchUserInfo()
 
   useEffect(() => {
-    if (isLoggedIn) {
+    if (isLoggedIn && !userInfo) {
       fetchUserInfo()
     }
   }, [isLoggedIn, fetchUserInfo])
