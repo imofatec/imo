@@ -55,7 +55,9 @@ export default function SignIn() {
             <SpinnerButton
               children="Entrar"
               isLoading={isLoading}
-              onClick={() => setIsLoading(true)}
+              onClick={() => {
+                setIsLoading(true), setError(null)
+              }}
               className="w-full bg-custom-header-cyan text-black"
             />
 
@@ -80,7 +82,7 @@ export default function SignIn() {
             <div className="flex justify-center ">
               <p className="text-custom-text-gray">
                 Não tem uma conta?{' '}
-                <Link to="/cadastro" className="text-white underline">
+                <Link to="/cadastro" className="text-white hover:underline">
                   Cadastrar-se
                 </Link>
               </p>
