@@ -17,10 +17,6 @@ const useFetchUserInfo = () => {
     setUrlImage(`${BASE_URL}/uploads/${result.data.profilePicturePath}`)
   }
 
-  useEffect(() => {
-    fetchUserInfo()
-  }, [])
-
   return { setUrlImage, userInfo, urlImage, fetchUserInfo }
 }
 
