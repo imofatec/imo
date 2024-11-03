@@ -21,9 +21,9 @@ const useImageUpload = (setUrlImage) => {
     const newImagePath = `${BASE_URL}/uploads/${result.data.profilePicturePath}`
     setUrlImage(newImagePath)
 
+    window.location.reload()
     return { error: null }
   }
-
   return { handleImageUpload }
 }
 
