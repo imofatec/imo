@@ -59,7 +59,7 @@ export default function Header() {
           <div className="absolute left-12 w-[1px] h-5 bg-white"></div>
           <Input
             type="search"
-            placeholder="Pesquise por qualquer coisa"
+            placeholder="PESQUISE POR UMA CATEGORIA"
             className="pl-14 bg-custom-search-dark border-custom-search-dark text-white w-full placeholder:text-white h-[2.375rem]"
             onKeyDown={handleSearch}
           />
