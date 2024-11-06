@@ -15,6 +15,7 @@ let tipoCurso = 'Todos os cursos'
 export default function Cursos() {
   const { slug } = useParams()
   const [page, setPage] = useState(0)
+  const [selectedCategory, setSelectedCategory] = useState(null)
   const size = 8
   const {
     categories,
@@ -28,9 +29,16 @@ export default function Cursos() {
   const { fetchStartCourse } = useCoursesProgress()
 
   const handleShowAllCourses = () => {
+    setSelectedCategory(null)
     setCurrentSlug(null)
     setPage(0)
     window.history.pushState({}, '', '/categorias')
+  }
+
+  const handleCategorySelect = (slug) => {
+    setSelectedCategory(slug)
+    setPage(0)
+    window.history.pushState({}, '', `/categorias/${slug}`)
   }
 
   const handleStartCourse = (id) => {
@@ -58,8 +66,13 @@ export default function Cursos() {
             label={'text-xl font-semibold'}
             conteudo={'Todos os cursos'}
             onShowAllCourses={handleShowAllCourses}
+            isSelected={!selectedCategory}
           ></Seletor>
-          <Dropdown categorias={categories}></Dropdown>
+          <Dropdown
+            categorias={categories}
+            onCategorySelect={handleCategorySelect}
+            selectedCategory={selectedCategory}
+          ></Dropdown>
         </div>
         <div className="w-2/3 p-12">
           <h5 className="font-semibold text-xl mb-10 text-white">
