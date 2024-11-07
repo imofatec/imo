@@ -75,7 +75,7 @@ export default function DropdownHeader({ isLoggedIn }) {
                     </li>
                   </Link>
 
-                  <Link to={'/'}>
+                  <Link to={'/user/cursos'}>
                     <li className="flex items-center gap-1 px-4 py-2 hover:bg-custom-header-cyan hover:text-black transition-colors duration-300 ease-in-out">
                       <CoursesIcon />
                       Meus Cursos

@@ -1,65 +1,62 @@
 import CardCurso from '@/components/ui/curso/cardcurso'
-import { Dropdown } from '@/components/ui/dropdown/dropdown'
-import { Seletor } from '@/components/ui/dropdown/seletor'
+import CategorySelector from '@/components/ui/mycourses/CategorySelector'
+import { useMyCourses } from '@/hooks/useMyCourses'
 import { DropdownSelect } from '@/components/ui/dropdownselect'
 import Pagination from '@/components/ui/pagination'
 import StatusMessage from '@/components/ui/statusMessage'
 import { Titulo } from '@/components/ui/titulo'
+import { useState } from 'react'
+import { useSortedCourses } from '@/hooks/useSortedCourses'
 
 export default function MyCourses() {
+  const size = 8
+  const [selectedCategory, setSelectedCategory] = useState(null)
+  const [page, setPage] = useState(0)
+  const [order, setOrder] = useState(null)
+  const { myCourses, loading, error, hasMoreCourses } = useMyCourses(
+    selectedCategory,
+    page,
+    size,
+  )
+  const sortedCourses = useSortedCourses(myCourses, order)
 
-  let categories = [
-    { name: 'Cursos Concluídos' },
-    { name: 'Cursos que Realizei Upload' },
-    { name: 'Cursos em Andamento' }
-  ]
+  const handleShowAllCourses = () => {
+    setSelectedCategory(null)
+    setPage(0)
+    window.history.pushState({}, '', '/user/cursos')
+  }
+
+  const handleCategorySelect = (slug) => {
+    setSelectedCategory(slug)
+    setPage(0)
+  }
+
+  const handlePreviousPage = () => {
+    if (page > 0) {
+      setPage((prevPage) => prevPage - 1)
+    }
+  }
+
+  const handleNextPage = () => {
+    setPage((prevPage) => prevPage + 1)
+  }
+
+  const handleSelectOrder = (order) => {
+    setOrder(order)
+  }
+
   let tipoCurso = 'Meus Cursos'
-  let courses = [
-    {
-      id: 1,
-      name: 'The Decorator Pattern Explained in Java',
-      firstLessonYoutubeId: 'v6tpISNjHf8',
-      description: '',
-      totalLessons: 1,
-      slugCourse: 2,
-    },
-    {
-      id: 2,
-      name: 'Estrutura de Dados com Java ',
-      firstLessonYoutubeId: 'RW0oD2L_tSg',
-      description: '',
-      totalLessons: 1,
-      slugCourse: 2,
-    },
-    {
-      id: 3,
-      name: 'Automatizando Relatórios com Python',
-      firstLessonYoutubeId: 'diLns814no0',
-      description: '',
-      totalLessons: 1,
-      slugCourse: 2,
-    },
-    {
-      id: 4,
-      name: 'Desenvolvendo Doom em Python',
-      firstLessonYoutubeId: 'KdYTvqZmyBk',
-      description: '',
-      totalLessons: 1,
-      slugCourse: 2,
-    },
-  ]
 
   return (
     <>
       <Titulo titulo={`IMO / Meus Cursos`} />
       <div className="min-h-screen flex flex-row w-full">
         <div className="w-1/3 p-12">
-          <Seletor
-            id="allLessons"
-            label={'text-xl font-semibold'}
-            conteudo={'Todos os cursos'}
-          ></Seletor>
-          <Dropdown categorias={categories}></Dropdown>
+          <CategorySelector
+            selectedCategory={selectedCategory}
+            onCategorySelect={handleCategorySelect}
+            onShowAllCourses={handleShowAllCourses}
+          />
         </div>
 
         <div className="w-2/3 p-12">
@@ -70,34 +67,34 @@ export default function MyCourses() {
               </h5>
             </div>
             <div className="flex flex-col w-1/2 items-end">
-              <DropdownSelect></DropdownSelect>
+              <DropdownSelect
+                onSelectOrder={handleSelectOrder}
+              ></DropdownSelect>
             </div>
           </div>
 
           <div className="flex flex-row flex-wrap p-18 w-auto max-w-full">
-            {/*<StatusMessage loading={loading} error={error} />
+            <StatusMessage loading={loading} error={error} />
             {!loading &&
               !error &&
-              */}
-            {courses.map((curso) => (//apagar esta chave ao implementar a resposta de carregamento
-              <CardCurso
-                key={curso.id}
-                idCurso={curso.id}
-                nomeCurso={curso.name}
-                notaCurso="5.0"
-                avaliacoesCurso="80"
-                fotoCurso={`https://img.youtube.com/vi/${curso.firstLessonYoutubeId}/maxresdefault.jpg`}
-                descricaoCurso={curso.description}
-                conteudo={curso.name}
-                quantidade={curso.totalLessons}
-                codigo={curso.slugCourse}
-                codAula={curso.firstLessonYoutubeId}
-                //onStart={handleStartCourse}
-              />
-            ))}
+              sortedCourses.map((curso) => (
+                <CardCurso
+                  key={curso.courseOverview.id}
+                  idCurso={curso.courseOverview.id}
+                  nomeCurso={curso.courseOverview.name}
+                  notaCurso="5.0"
+                  avaliacoesCurso="80"
+                  fotoCurso={`https://img.youtube.com/vi/${curso.courseOverview.firstLessonYoutubeId}/maxresdefault.jpg`}
+                  descricaoCurso={curso.courseOverview.description}
+                  conteudo={curso.courseOverview.name}
+                  quantidade={curso.courseOverview.totalLessons}
+                  codigo={curso.courseOverview.slugCourse}
+                  codAula={curso.courseOverview.firstLessonYoutubeId}
+                  nameButton="Retomar Curso!"
+                  //onStart={handleStartCourse}
+                />
+              ))}
           </div>
-          {/*
-           > Implementar
 
           <Pagination
             page={page}
@@ -105,7 +102,6 @@ export default function MyCourses() {
             onPrevious={handlePreviousPage}
             onNext={handleNextPage}
           />
-          */}
         </div>
       </div>
     </>

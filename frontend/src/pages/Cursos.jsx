@@ -72,6 +72,7 @@ export default function Cursos() {
             categorias={categories}
             onCategorySelect={handleCategorySelect}
             selectedCategory={selectedCategory}
+            url= "categorias"
           ></Dropdown>
         </div>
         <div className="w-2/3 p-12">

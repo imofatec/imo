@@ -24,11 +24,6 @@ const categories = [
     path: '/meus-cursos',
     element: <MyCourses />,
   }
-  /*
-      path: '/meus-cursos/:slug',
-    element: <MyCourses />,
-  }
-  */
 ]
 
 
