@@ -27,13 +27,17 @@ import {
 import { Arrow } from "./arrow"
 import { useState } from "react"
   
-  export function DropdownSelect() {
+  export function DropdownSelect({onSelectOrder}) {
     let arrowState = 'up'
     const [isOpen , setIsOpen] = useState(false)
     if(isOpen){
       arrowState = 'down'
     }else{
       arrowState = 'up'
+    }
+
+    const handleOrderSelect = (order) => {
+      onSelectOrder(order) 
     }
 
     return (
@@ -45,23 +49,23 @@ import { useState } from "react"
           
           <DropdownMenuGroup>
 
-            <DropdownMenuItem>
-              <span>Upload Mais Antigo</span>
+            <DropdownMenuItem onClick={() => handleOrderSelect('oldest')}> 
+              <span>Mais antigo</span>
             </DropdownMenuItem>
             <DropdownMenuSeparator className='mx-2' />
 
-            <DropdownMenuItem>
-              <span>Upload Mais Recente</span>
+            <DropdownMenuItem onClick={() => handleOrderSelect('newest')}>
+              <span>Mais recente</span>
             </DropdownMenuItem>
             <DropdownMenuSeparator className='mx-2'  />
 
-            <DropdownMenuItem>
-              <span>A - Z Alfabético</span>
+            <DropdownMenuItem onClick={() => handleOrderSelect('az')}>
+              <span>A - Z</span>
             </DropdownMenuItem>
             <DropdownMenuSeparator className='mx-2'  />
 
-            <DropdownMenuItem>
-              <span>Z - A Alfabético</span>
+            <DropdownMenuItem onClick={() => handleOrderSelect('za')}>
+              <span>Z - A</span>
             </DropdownMenuItem>
             
           </DropdownMenuGroup>

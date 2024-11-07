@@ -10,6 +10,7 @@ import com.imo.backend.models.course.dtos.CourseProgress;
 import com.imo.backend.models.strategy.get.many.pagination.GetManyByToListWithPaginationService;
 import com.imo.backend.models.user.repositories.UserRepository;
 import com.imo.backend.models.user.dtos.UserCourseOverview;
+import com.imo.backend.lib.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -49,7 +50,8 @@ public class GetAllCourseOverviewsByUserCourseProgressesWithPaginationService
                 .map(CourseProgress::getId)
                 .collect(Collectors.toSet());
 
-        List<Course> courses = courseRepository.findAll();
+        var pageable = Pageable.fromPageSize(page, size);
+        List<Course> courses = courseRepository.findAll(pageable).stream().toList();
 
         List<Course> matchedCourses = courses.stream()
                 .filter(course -> userCoursesIds.contains(course.getId()))

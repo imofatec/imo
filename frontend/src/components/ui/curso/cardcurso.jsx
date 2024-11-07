@@ -13,7 +13,8 @@ export default function CardCurso({
   fotoCurso,
   codAula,
   onStart,
-  idCurso
+  idCurso,
+  nameButton
 }) {
   const [aberto, setAberto] = useState(false)
   const abrir = () => setAberto(true)
@@ -46,6 +47,7 @@ export default function CardCurso({
         codigoAula={codAula}
         onStart={onStart}
         idCurso={idCurso}
+        nameButton={nameButton}
       />
     </>
   )
