@@ -115,6 +115,7 @@ export default function AccountSettings() {
               <DragDrop
                 onImageSelect={setSelectedFile}
                 selectedFile={selectedFile}
+                setImagePreview={setUrlImage}
               ></DragDrop>
             </div>
 
@@ -144,11 +145,11 @@ export default function AccountSettings() {
           >
             <div className="flex flex-row justify-center gap-x-14 w-full mt-10">
               <InputLabel
-                label={'Username'}
-                id="username"
-                name="username"
+                label={'Nome'}
+                id="name"
+                name="name"
                 type="text"
-                placeholder={userInfo?.username}
+                placeholder={userInfo?.name}
               ></InputLabel>
 
               <InputLabel
@@ -182,7 +183,9 @@ export default function AccountSettings() {
                 children="Atualizar dados"
                 isLoading={isLoading[1]}
                 onClick={() => {
-                  setIsLoading(startCredentialsLoading), clearErrors()
+                  setIsLoading(startCredentialsLoading),
+                    clearErrors(),
+                    setSelectedFile(null)
                 }}
                 className="w-[18rem] bg-custom-header-cyan text-black font-bold"
               />

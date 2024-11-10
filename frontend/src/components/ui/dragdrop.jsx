@@ -2,14 +2,13 @@ import { ImageUp } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
 import { FileUploader } from 'react-drag-drop-files'
 
-function DragDrop({ onImageSelect, selectedFile }) {
+function DragDrop({ onImageSelect, selectedFile, setImagePreview }) {
   const [file, setFile] = useState(null)
-  const [imageUrl, setImageUrl] = useState('')
 
   const handleChange = (file) => {
     setFile(file)
-    const newPic = URL.createObjectURL(file)
-    setImageUrl(newPic)
+    const previewUrl = URL.createObjectURL(file)
+    setImagePreview(previewUrl)
     onImageSelect(file)
   }
 
