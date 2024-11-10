@@ -11,9 +11,9 @@ public class FieldsToUpdateUser {
     @Email(message = "Insira um email válido")
     String email;
 
-    @Pattern(regexp = "^[\\S]+$", message = "Username não pode conter espaços em branco")
-    @Size(min = 5, max = 20, message = "O username precisa ter entre 5 a 20 caracteres")
-    String username;
+//    @Pattern(regexp = "^[\\S]+$", message = "Username não pode conter espaços em branco")
+    @Size(min = 5, max = 20, message = "O seu nome precisa ter no mínimo 5 caracteres")
+    String name;
 
     @Pattern(regexp = "^(?=.*[A-Z])(?=.*\\d).+$", message = "A senha precisa ter no mínimo uma letra maiúscula e 1 número")
     @Size(min = 8, message = "A senha precisa ter no mínimo 8 caracteres")

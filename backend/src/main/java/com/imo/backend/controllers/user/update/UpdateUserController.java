@@ -23,7 +23,7 @@ public class UpdateUserController extends UserController {
         this.updateUserService = updateUserService;
     }
 
-    @Operation(summary = "Update the user's credentials, including username, password, and email.")
+    @Operation(summary = "Update the user's credentials, including name, password, and email.")
     @SecurityRequirement(name = "Authorization")
     @PutMapping("/update")
     public ResponseEntity<NoPasswordUser> handle(HttpServletRequest request,
@@ -41,7 +41,7 @@ public class UpdateUserController extends UserController {
     }
 
     private static boolean checkNoContent(FieldsToUpdateUser fieldsToUpdateUser) {
-        return Stream.of(fieldsToUpdateUser.getUsername(),
+        return Stream.of(fieldsToUpdateUser.getName(),
                         fieldsToUpdateUser.getPassword(),
                         fieldsToUpdateUser.getEmail())
                 .allMatch(Objects::isNull);

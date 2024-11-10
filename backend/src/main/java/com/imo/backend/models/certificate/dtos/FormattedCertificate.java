@@ -7,7 +7,7 @@ import lombok.Data;
 @Data
 public class FormattedCertificate {
 
-    private String username;
+    private String name;
 
     private String courseName;
 
@@ -20,7 +20,7 @@ public class FormattedCertificate {
     public static FormattedCertificate fromCertificate(Certificate certificate) {
         FormattedCertificate formattedCertificate = new FormattedCertificate();
 
-        formattedCertificate.setUsername(certificate.getUsername().toUpperCase());
+        formattedCertificate.setName(certificate.getName().toUpperCase());
         formattedCertificate.setCourseName(certificate.getCourseName());
 
         var startedAt = FormatDateTime.toDate(certificate.getCourseStartedAt())

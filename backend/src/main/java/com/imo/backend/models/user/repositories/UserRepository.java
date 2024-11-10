@@ -16,11 +16,11 @@ import java.util.Optional;
 public interface UserRepository extends MongoRepository<User, String>, CustomUserRepository {
     Optional<User> findByEmail(String email);
 
-    Optional<User> findByUsername(String username);
+    Optional<User> findByName(String name);
 
-    @Query("{ 'username':  ?0 }")
+    @Query("{ 'name':  ?0 }")
     @Update("{ '$push':  { 'courseContributions': ?1 } }")
-    void updateContributionsByUsername(String username, Course course);
+    void updateContributionsByName(String name, Course course);
 
     @Query("{ 'id': ?0 }")
     @Update("{ $push: { coursesProgress: ?1 } }")

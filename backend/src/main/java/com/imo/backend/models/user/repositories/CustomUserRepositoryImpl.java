@@ -7,7 +7,6 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
 
@@ -37,10 +36,10 @@ public class CustomUserRepositoryImpl implements CustomUserRepository {
         }
 
         Stream.of(
-                new AbstractMap.SimpleEntry<>("username",
-                        fieldsToUpdateUser.getUsername() != null && !fieldsToUpdateUser.getUsername().isEmpty()
-                                ? fieldsToUpdateUser.getUsername()
-                                : existingUser.getUsername()),
+                new AbstractMap.SimpleEntry<>("name",
+                        fieldsToUpdateUser.getName() != null && !fieldsToUpdateUser.getName().isEmpty()
+                                ? fieldsToUpdateUser.getName()
+                                : existingUser.getName()),
                 new AbstractMap.SimpleEntry<>("password",
                         fieldsToUpdateUser.getPassword() != null && !fieldsToUpdateUser.getPassword().isEmpty()
                                 ? passwordEncoder.encode(fieldsToUpdateUser.getPassword())

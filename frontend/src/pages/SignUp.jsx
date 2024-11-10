@@ -46,10 +46,10 @@ export default function SignUp() {
 
             <InputLabel
               type="text"
-              id="username"
-              name="username"
-              placeholder="Username"
-              label="Username"
+              id="name"
+              name="name"
+              placeholder="Nome"
+              label="Nome"
             />
 
             <InputLabel

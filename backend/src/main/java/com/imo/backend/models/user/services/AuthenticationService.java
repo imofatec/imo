@@ -41,6 +41,6 @@ public class AuthenticationService implements AuthenticationServiceShape {
             throw new ForbiddenException("Senha inválida");
         }
 
-        return tokenService.generateToken(user.get().getUsername(), user.get().getId());
+        return tokenService.generateToken(user.get().getName(), user.get().getId());
     }
 }
