@@ -19,5 +19,5 @@ export async function loginRequest({ request }) {
 
   const { acessToken } = result.data
   localStorage.setItem('token', acessToken)
-  return redirect('/meus-cursos')
+  return redirect(`/user/cursos`)
 }
