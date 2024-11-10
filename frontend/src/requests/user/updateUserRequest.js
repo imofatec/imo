@@ -4,7 +4,7 @@ import { safeAwait } from '@/lib/safeAwait'
 export async function updateUserRequest({ request }) {
   const data = await request.formData()
 
-  const username = data.get('username')
+  const name = data.get('name')
   const email = data.get('email')
   const password = data.get('password')
   const confPassword = data.get('password-confirm')
@@ -14,7 +14,7 @@ export async function updateUserRequest({ request }) {
   }
   const user = {}
 
-  if (username) user.username = username
+  if (name) user.name = name
   if (email) user.email = email
   if (password) user.password = password
 

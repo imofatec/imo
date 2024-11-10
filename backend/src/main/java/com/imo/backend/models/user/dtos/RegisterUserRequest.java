@@ -1,15 +1,15 @@
 package com.imo.backend.models.user.dtos;
 
 import jakarta.validation.constraints.*;
-import lombok.Getter;
+import lombok.Data;
 
-@Getter
+@Data
 public class RegisterUserRequest {
 
-    @NotBlank(message = "Preencha o username")
-    @Pattern(regexp = "^[\\S]+$", message = "Username não pode conter espaços em branco")
-    @Size(min = 5, max = 20, message = "O username precisa ter entre 5 a 20 caracteres")
-    private String username;
+    @NotBlank(message = "Preencha o seu nome")
+//    @Pattern(regexp = "^[\\S]+$", message = "Username não pode conter espaços em branco")
+    @Size(min = 5, max = 20, message = "O seu nome precisa ter no mínimo 5 caracteres")
+    private String name;
 
     @Email(message = "Insira um email válido")
     @NotBlank(message = "Preencha o email")

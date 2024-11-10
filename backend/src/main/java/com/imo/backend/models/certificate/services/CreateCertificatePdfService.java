@@ -44,12 +44,12 @@ public class CreateCertificatePdfService implements CreateService<Certificate, b
         Context context = new Context();
 
         var documentTile = String.format("IMO-%s-%s-%s",
-                certificate.getUsername().toUpperCase(),
+                certificate.getName().toUpperCase(),
                 certificate.getCourseSlug().toUpperCase(),
                 FormatDateTime.toDate(certificate.getIssuedAt()));
 
         context.setVariable("documentTitle", documentTile);
-        context.setVariable("username", certificate.getUsername().toUpperCase());
+        context.setVariable("name", certificate.getName().toUpperCase());
         context.setVariable("courseName", certificate.getCourseName());
         context.setVariable("certificateId", certificate.getId());
 

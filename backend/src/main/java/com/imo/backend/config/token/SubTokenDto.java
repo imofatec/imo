@@ -1,4 +1,4 @@
 package com.imo.backend.config.token;
 
-public record SubTokenDto(String id, String username) {
+public record SubTokenDto(String id, String name) {
 }

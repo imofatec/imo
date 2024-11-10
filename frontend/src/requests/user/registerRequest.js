@@ -5,7 +5,7 @@ import { redirect } from 'react-router-dom'
 export async function registerRequest({ request }) {
   const data = await request.formData()
   const submission = {
-    username: data.get('username'),
+    name: data.get('name'),
     email: data.get('email'),
     password: data.get('password'),
     confPassword: data.get('password-confirm'),

@@ -86,7 +86,7 @@ public class UpdateUserCourseProgressService implements UpdateByIdService<Void, 
 
         return new UserCourseProgress(
                 user.getId(),
-                user.getUsername(),
+                user.getName(),
                 user.getEmail(),
                 currentProgress);
     }

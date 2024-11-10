@@ -26,7 +26,7 @@ public class CourseFactory {
 
         course.setActive(false);
         course.setContributorId(contributor.get("id"));
-        course.setContributorName(contributor.get("username"));
+        course.setContributorName(contributor.get("name"));
         course.setName(createCourseRequest.getName());
         course.setSlugCourse(Slug.create(createCourseRequest.getName()));
         course.setCategory(createCourseRequest.getCategory());
@@ -86,7 +86,7 @@ public class CourseFactory {
 
         certificate.setId(new ObjectId().toString());
         certificate.setUserId(user.getId());
-        certificate.setUsername(user.getUsername());
+        certificate.setName(user.getName());
         certificate.setUserEmail(user.getEmail());
         certificate.setCourseId(course.getId());
         certificate.setCourseName(course.getName());

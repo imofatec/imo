@@ -36,7 +36,7 @@ module.exports = {
         'custom-dark-blue': '#05000E',
         'custom-dataScience-index': '#25A9E1',
         'custom-redes-index': '#25E1CB',
-        'custom-gestao-index': '#E19925'
+        'custom-gestao-index': '#E19925',
       },
       backgroundColor: {
         'custom-dark-background': '#0c0424',
@@ -83,5 +83,8 @@ module.exports = {
       },
     },
   },
-  plugins: [require('tailwindcss-animate'),(require('tailwind-scrollbar'))],
+  plugins: [
+    require('tailwindcss-animate'),
+    require('tailwind-scrollbar')({ nocompatible: true }),
+  ],
 }

@@ -51,7 +51,7 @@ public class CreateCourseService implements CreateWithTokenService<CreateCourseR
         var course = CourseFactory.createCourse(createCourseRequest, contributor);
         Course newCourse = courseRepository.save(course);
 
-        userRepository.updateContributionsByUsername(newCourse.getContributorName(), newCourse);
+        userRepository.updateContributionsByName(newCourse.getContributorName(), newCourse);
 
         return new CreateCourseResponse("Aguarde sua contribuição ser validada", newCourse.getName(),
                 newCourse.getContributorName(), newCourse.getCategory());

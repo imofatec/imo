@@ -18,7 +18,7 @@ public class User {
     @Id
     private String id;
 
-    private String username;
+    private String name;
 
     private String email;
 
@@ -32,8 +32,8 @@ public class User {
 
     private List<Certificate> certificates = new ArrayList<>();
 
-    public User(String username, String email, String password) {
-        this.username = username;
+    public User(String name, String email, String password) {
+        this.name = name;
         this.email = email;
         this.password = password;
     }
