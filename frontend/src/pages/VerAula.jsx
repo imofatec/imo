@@ -12,16 +12,17 @@ import { useLessonProgress } from '@/hooks/useLessonProgress'
 import { useEffect } from 'react'
 
 export default function VerAula() {
-  const { slugCourse, IdLesson } = useParams()
+  const { slugCourse, idLesson } = useParams()
   const { lessonData, courseID, error, loading } = useLessonData(slugCourse)
   const { progress, fetchProgress } = useLessonProgress(
     courseID ? courseID : null,
   )
   const navigate = useNavigate()
 
-  const currentLesson = lessonData.find(
-    (lesson) => lesson.youtubeLink === IdLesson,
-  )
+  const currentLesson =
+    lessonData && lessonData.length > 0
+      ? lessonData.find((lesson) => lesson.youtubeLink === idLesson)
+      : null
 
   useEffect(() => {
     if (!loading && !currentLesson) {
@@ -30,7 +31,7 @@ export default function VerAula() {
   }, [loading, currentLesson, navigate])
 
   const handleFinishedLesson = async () => {
-    const [error, result] = await safeAwait(
+    const [error] = await safeAwait(
       api.put(`/api/user/update-progress/${courseID}`),
     )
     if (error) {
@@ -44,7 +45,7 @@ export default function VerAula() {
     const [error, result] = await safeAwait(
       api.get(`/api/user/get-certificate/${courseID}`, {
         responseType: 'blob',
-      })
+      }),
     )
     if (error) {
       console.error('Erro ao gerar certificado:', error)
@@ -52,16 +53,13 @@ export default function VerAula() {
     }
     const contentDisposition = result.headers['content-disposition']
     const fileName = contentDisposition
-      ? contentDisposition.split('filename=')[1].replace(/['"]/g, '') 
+      ? contentDisposition.split('filename=')[1].replace(/['"]/g, '')
       : 'certificado.pdf'
 
     const url = window.URL.createObjectURL(new Blob([result.data]))
     const link = document.createElement('a')
     link.href = url
-    link.setAttribute(
-      'download',
-      fileName,
-    )
+    link.setAttribute('download', fileName)
     link.click()
   }
 
@@ -74,7 +72,6 @@ export default function VerAula() {
     },
   ]
 
-  console.log('progresso aqui', progress)
   return (
     <div className="max-w-full min-h-screen">
       <Titulo titulo={`IMO / ${currentLesson?.title}`}></Titulo>
@@ -85,7 +82,7 @@ export default function VerAula() {
             loading="lazy"
             width="w-full"
             height="560"
-            src={`https://www.youtube.com/embed/${IdLesson}`}
+            src={`https://www.youtube.com/embed/${idLesson}`}
             title="YouTube video player"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
             referrerPolicy="strict-origin-when-cross-origin"
@@ -96,7 +93,7 @@ export default function VerAula() {
             <LessonInfo
               lessonName={currentLesson.title}
               lessonData={lessonData}
-              IdLesson={IdLesson}
+              idLesson={idLesson}
               slugCourse={slugCourse}
             ></LessonInfo>
           )}

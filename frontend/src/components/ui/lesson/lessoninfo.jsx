@@ -10,14 +10,14 @@ export default function LessonInfo({
   channelName,
   slugCourse,
   lessonData,
-  IdLesson,
+  idLesson,
 }) {
   channelName = 'Professor fulano'
 
   const navigate = useNavigate()
 
   const currentLessonIndex = lessonData.findIndex(
-    (lesson) => lesson.youtubeLink === IdLesson,
+    (lesson) => lesson.youtubeLink === idLesson,
   )
 
   const nextLesson = lessonData[currentLessonIndex + 1]

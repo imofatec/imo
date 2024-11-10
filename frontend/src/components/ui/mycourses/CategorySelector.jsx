@@ -5,7 +5,7 @@ export default function CategorySelector({
   onCategorySelect,
   onShowAllCourses,
 }) {
-  let categories = [
+  const categories = [
     { name: 'Finalizados', slug: 'finalizados' },
     { name: 'Submissões', slug: 'submissoes' },
     { name: 'Em andamento', slug: 'em-andamento' },

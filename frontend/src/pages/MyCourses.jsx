@@ -45,7 +45,7 @@ export default function MyCourses() {
     setOrder(order)
   }
 
-  let tipoCurso = 'Meus Cursos'
+  const tipoCurso = 'Meus Cursos'
 
   return (
     <>
