@@ -13,10 +13,9 @@ import { useEffect } from 'react'
 
 export default function VerAula() {
   const { slugCourse, idLesson } = useParams()
-  const { lessonData, courseID, error, loading } = useLessonData(slugCourse)
-  const { progress, fetchProgress } = useLessonProgress(
-    courseID ? courseID : null,
-  )
+  const { lessonData, courseId, error, loading } = useLessonData(slugCourse)
+  const { fetchProgress, progress, cansei, loadingProgress, updateProgress } =
+    useLessonProgress(courseId ? courseId : null)
   const navigate = useNavigate()
 
   const currentLesson =
@@ -25,25 +24,19 @@ export default function VerAula() {
       : null
 
   useEffect(() => {
-    if (!loading && !currentLesson) {
+    if (!loading && error) {
       navigate('/404')
     }
-  }, [loading, currentLesson, navigate])
+  }, [loading, error, navigate, progress])
 
   const handleFinishedLesson = async () => {
-    const [error] = await safeAwait(
-      api.put(`/api/user/update-progress/${courseID}`),
-    )
-    if (error) {
-      console.error('Erro ao marcar a aula como concluída:', error)
-      return
-    }
-    fetchProgress()
+    await updateProgress()
+    await fetchProgress()
   }
 
   const handleGetCertificate = async () => {
     const [error, result] = await safeAwait(
-      api.get(`/api/user/get-certificate/${courseID}`, {
+      api.get(`/api/user/get-certificate/${courseId}`, {
         responseType: 'blob',
       }),
     )
@@ -63,7 +56,7 @@ export default function VerAula() {
     link.click()
   }
 
-  let commentData = [
+  const commentData = [
     {
       profileName: 'João',
       commentTitle: 'Essa aula mudou minha vida',
@@ -71,7 +64,6 @@ export default function VerAula() {
         'Essa aula mudou minha vida! Eu sempre tive dificuldades em entender esse assunto, mas a forma clara e prática como foi apresentada me ajudou a superar meus desafios. Agora me sinto mais confiante e preparado para aplicar esse conhecimento no meu dia a dia. Agradeço ao instrutor pela dedicação e por compartilhar essas lições valiosas!',
     },
   ]
-
   return (
     <div className="max-w-full min-h-screen">
       <Titulo titulo={`IMO / ${currentLesson?.title}`}></Titulo>
@@ -119,32 +111,34 @@ export default function VerAula() {
           </div>
         </div>
 
-        <div className="flex flex-col w-1/4 pl-4 bg-custom-dark-blue p-6 max-h-[calc(100vh-4rem)] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-800">
+        <div className="flex flex-col w-1/4 pl-4 bg-custom-dark-blue p-6 max-h-[calc(100vh-4rem)] overscroll-auto overflow-y-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-800">
           <h2 className="text-xl mb-6 text-center">Aulas do curso</h2>
-          {lessonData.map((item, i) => {
-            const isEnabled = i <= progress?.lessonsWatched
-            const isChecked = i < progress?.lessonsWatched
-            return (
-              <LessonPlaylist
-                key={i}
-                idAula={item.index}
-                thumbLesson={`https://img.youtube.com/vi/${item.youtubeLink}/maxresdefault.jpg`}
-                title={item.title}
-                lessonDuration="30:23"
-                author={item.author}
-                codeCourse={slugCourse}
-                codeLesson={item.youtubeLink}
-                onFinished={() => handleFinishedLesson(item.index)}
-                isEnabled={isEnabled}
-                isChecked={isChecked}
-              ></LessonPlaylist>
-            )
-          })}
+          {!loadingProgress && (
+            <>
+              {lessonData.map((item, i) => {
+                return (
+                  <LessonPlaylist
+                    key={i}
+                    indexLesson={item.index}
+                    thumbLesson={`https://img.youtube.com/vi/${item.youtubeLink}/maxresdefault.jpg`}
+                    title={item.title}
+                    lessonDuration="30:23"
+                    author={item.author}
+                    codeCourse={slugCourse}
+                    codeLesson={item.youtubeLink}
+                    onFinished={handleFinishedLesson}
+                    progress={progress}
+                    loadingProgress={loadingProgress}
+                  ></LessonPlaylist>
+                )
+              })}
+            </>
+          )}
           <button
             onClick={handleGetCertificate}
             disabled={progress.lessonsWatched < lessonData.length}
             className={`mt-4 px-4 py-2 rounded ${
-              progress.lessonsWatched < lessonData.length
+              progress.lessonsWatched < lessonData.length || cansei
                 ? 'bg-gray-500 cursor-not-allowed text-white'
                 : 'bg-custom-header-cyan text-black'
             }`}
