@@ -6,7 +6,7 @@ export const useLessonData = (slugCourse) => {
   const [lessonData, setLessonData] = useState([])
   const [error, setError] = useState(false)
   const [loading, setLoading] = useState(true)
-  const [courseID, setCourseId] = useState()
+  const [courseId, setCourseId] = useState()
 
   useEffect(() => {
     const fetchData = async () => {
@@ -36,6 +36,9 @@ export const useLessonData = (slugCourse) => {
       )
 
       setCourseId(course.id)
+      if (response.data == []) {
+        setError(true)
+      }
       setLessonData(response.data)
 
       setLoading(false)
@@ -43,5 +46,5 @@ export const useLessonData = (slugCourse) => {
     fetchData()
   }, [slugCourse])
 
-  return { lessonData, courseID, error, loading }
+  return { lessonData, courseId, error, loading }
 }
