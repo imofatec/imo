@@ -90,7 +90,7 @@ export default function MyCourses() {
                   quantidade={curso.courseOverview.totalLessons}
                   codigo={curso.courseOverview.slugCourse}
                   codAula={curso.courseOverview.firstLessonYoutubeId}
-                  nameButton="Retomar Curso!"
+                  nameButton="Retomar curso"
                   //onStart={handleStartCourse}
                 />
               ))}

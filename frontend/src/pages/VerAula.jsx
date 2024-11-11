@@ -13,9 +13,9 @@ import { useEffect } from 'react'
 
 export default function VerAula() {
   const { slugCourse, idLesson } = useParams()
-  const { lessonData, courseID, error, loading } = useLessonData(slugCourse)
-  const { progress, fetchProgress } = useLessonProgress(
-    courseID ? courseID : null,
+  const { lessonData, courseId, error, loading } = useLessonData(slugCourse)
+  const { progress, cansei, updateProgress } = useLessonProgress(
+    courseId ? courseId : null,
   )
   const navigate = useNavigate()
 
@@ -25,25 +25,18 @@ export default function VerAula() {
       : null
 
   useEffect(() => {
-    if (!loading && !currentLesson) {
+    if (!loading && error) {
       navigate('/404')
     }
-  }, [loading, currentLesson, navigate])
+  }, [loading, error, navigate])
 
   const handleFinishedLesson = async () => {
-    const [error] = await safeAwait(
-      api.put(`/api/user/update-progress/${courseID}`),
-    )
-    if (error) {
-      console.error('Erro ao marcar a aula como concluída:', error)
-      return
-    }
-    fetchProgress()
+    return await updateProgress()
   }
 
   const handleGetCertificate = async () => {
     const [error, result] = await safeAwait(
-      api.get(`/api/user/get-certificate/${courseID}`, {
+      api.get(`/api/user/get-certificate/${courseId}`, {
         responseType: 'blob',
       }),
     )
@@ -63,7 +56,7 @@ export default function VerAula() {
     link.click()
   }
 
-  let commentData = [
+  const commentData = [
     {
       profileName: 'João',
       commentTitle: 'Essa aula mudou minha vida',
@@ -144,7 +137,7 @@ export default function VerAula() {
             onClick={handleGetCertificate}
             disabled={progress.lessonsWatched < lessonData.length}
             className={`mt-4 px-4 py-2 rounded ${
-              progress.lessonsWatched < lessonData.length
+              progress.lessonsWatched < lessonData.length || cansei
                 ? 'bg-gray-500 cursor-not-allowed text-white'
                 : 'bg-custom-header-cyan text-black'
             }`}

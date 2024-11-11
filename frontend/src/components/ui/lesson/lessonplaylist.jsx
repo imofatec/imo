@@ -22,8 +22,8 @@ export default function LessonPlaylist({
 
   const handleCheckboxChange = (checked) => {
     if (!isChecked && checked && isEnabled) {
-      onFinished()
       setIsLessonChecked(true)
+      onFinished()
     }
   }
 
