@@ -7,10 +7,9 @@ import { Titulo } from '@/components/ui/titulo'
 import { useState, useEffect } from 'react'
 import { useCoursesData } from '@/hooks/useCoursesData'
 import { useCoursesProgress } from '@/hooks/useCourseProgress'
-import React from 'react'
 import { useParams } from 'react-router-dom'
 
-let tipoCurso = 'Todos os cursos'
+const tipoCurso = 'Todos os cursos'
 
 export default function Cursos() {
   const { slug } = useParams()
@@ -56,6 +55,10 @@ export default function Cursos() {
     setPage((prevPage) => prevPage + 1)
   }
 
+  useEffect(() => {
+    setSelectedCategory(slug)
+  }, [slug])
+
   return (
     <>
       <Titulo titulo={`IMO / ${tipoCurso}`} />
@@ -72,7 +75,7 @@ export default function Cursos() {
             categorias={categories}
             onCategorySelect={handleCategorySelect}
             selectedCategory={selectedCategory}
-            url= "categorias"
+            url="categorias"
           ></Dropdown>
         </div>
         <div className="w-2/3 p-12">
