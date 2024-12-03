@@ -5,6 +5,7 @@ import thumbLesson from '@/assets/thumb.jpg'
 import LessonPlaylist from '@/components/ui/lesson/lessonplaylist'
 import { Titulo } from '@/components/ui/titulo'
 import LessonComment from '@/components/ui/lesson/lessoncomment'
+import SkeletonLoading from '@/components/ui/curso/skeletonLoading'
 import LessonInfo from '@/components/ui/lesson/lessoninfo'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useLessonData } from '@/hooks/useLessonData'
@@ -14,9 +15,8 @@ import { useEffect } from 'react'
 export default function VerAula() {
   const { slugCourse, idLesson } = useParams()
   const { lessonData, courseId, error, loading } = useLessonData(slugCourse)
-  const { progress, cansei, updateProgress } = useLessonProgress(
-    courseId ? courseId : null,
-  )
+  const { fetchProgress, progress, cansei, loadingProgress, updateProgress } =
+    useLessonProgress(courseId ? courseId : null)
   const navigate = useNavigate()
 
   const currentLesson =
@@ -28,10 +28,11 @@ export default function VerAula() {
     if (!loading && error) {
       navigate('/404')
     }
-  }, [loading, error, navigate])
+  }, [loading, error, navigate, progress])
 
   const handleFinishedLesson = async () => {
-    return await updateProgress()
+    await updateProgress()
+    await fetchProgress()
   }
 
   const handleGetCertificate = async () => {
@@ -64,7 +65,6 @@ export default function VerAula() {
         'Essa aula mudou minha vida! Eu sempre tive dificuldades em entender esse assunto, mas a forma clara e prática como foi apresentada me ajudou a superar meus desafios. Agora me sinto mais confiante e preparado para aplicar esse conhecimento no meu dia a dia. Agradeço ao instrutor pela dedicação e por compartilhar essas lições valiosas!',
     },
   ]
-
   return (
     <div className="max-w-full min-h-screen">
       <Titulo titulo={`IMO / ${currentLesson?.title}`}></Titulo>
@@ -112,27 +112,34 @@ export default function VerAula() {
           </div>
         </div>
 
-        <div className="flex flex-col w-1/4 pl-4 bg-custom-dark-blue p-6 max-h-[calc(100vh-4rem)] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-800">
+        <div className="flex flex-col w-1/4 pl-4 bg-custom-dark-blue p-6 max-h-[calc(100vh-4rem)] overscroll-auto overflow-y-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-800">
           <h2 className="text-xl mb-6 text-center">Aulas do curso</h2>
-          {lessonData.map((item, i) => {
-            const isEnabled = i <= progress?.lessonsWatched
-            const isChecked = i < progress?.lessonsWatched
-            return (
-              <LessonPlaylist
-                key={i}
-                idAula={item.index}
-                thumbLesson={`https://img.youtube.com/vi/${item.youtubeLink}/maxresdefault.jpg`}
-                title={item.title}
-                lessonDuration="30:23"
-                author={item.author}
-                codeCourse={slugCourse}
-                codeLesson={item.youtubeLink}
-                onFinished={() => handleFinishedLesson(item.index)}
-                isEnabled={isEnabled}
-                isChecked={isChecked}
-              ></LessonPlaylist>
-            )
-          })}
+          {loading && (
+              Array.from({ length: 4 }).map((index) => (
+                <SkeletonLoading key={index} />
+              ))
+            )}
+          {!loadingProgress && (
+            <>
+              {lessonData.map((item, i) => {
+                return (
+                  <LessonPlaylist
+                    key={i}
+                    indexLesson={item.index}
+                    thumbLesson={`https://img.youtube.com/vi/${item.youtubeLink}/maxresdefault.jpg`}
+                    title={item.title}
+                    lessonDuration="30:23"
+                    author={item.author}
+                    codeCourse={slugCourse}
+                    codeLesson={item.youtubeLink}
+                    onFinished={handleFinishedLesson}
+                    progress={progress}
+                    loadingProgress={loadingProgress}
+                  ></LessonPlaylist>
+                )
+              })}
+            </>
+          )}
           <button
             onClick={handleGetCertificate}
             disabled={progress.lessonsWatched < lessonData.length}
