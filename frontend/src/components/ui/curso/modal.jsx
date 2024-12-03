@@ -40,7 +40,8 @@ export default function Modal({
                 to={`/cursos/${codigoCurso}/${codigoAula}`} /*rota por parametros para acessar o vídeo*/
                 className="underline mt-8 font-normal text-lg hover:scale-105 duration-200"
               >
-                <button onClick={() => onStart(idCurso)}>{nameButton}</button>
+                {/* <button onClick={() => onStart(idCurso)}>{nameButton}</button> */}
+                <button>{nameButton}</button>
               </Link>
             </div>
 

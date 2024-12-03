@@ -1,6 +1,7 @@
 import CardCurso from '@/components/ui/curso/cardcurso'
 import CategorySelector from '@/components/ui/mycourses/CategorySelector'
 import { useMyCourses } from '@/hooks/useMyCourses'
+import SkeletonLoading from '@/components/ui/curso/skeletonLoading'
 import { DropdownSelect } from '@/components/ui/dropdownselect'
 import Pagination from '@/components/ui/pagination'
 import StatusMessage from '@/components/ui/statusMessage'
@@ -74,7 +75,12 @@ export default function MyCourses() {
           </div>
 
           <div className="flex flex-row flex-wrap p-18 w-auto max-w-full">
-            <StatusMessage loading={loading} error={error} />
+            <StatusMessage error={error} />
+            {loading && (
+              Array.from({ length: size }).map((index) => (
+                <SkeletonLoading key={index} />
+              ))
+            )}
             {!loading &&
               !error &&
               sortedCourses.map((curso) => (

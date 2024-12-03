@@ -5,6 +5,7 @@ import StatusMessage from '@/components/ui/statusMessage'
 import { Dropdown } from '@/components/ui/dropdown/dropdown'
 import { Titulo } from '@/components/ui/titulo'
 import { useState, useEffect } from 'react'
+import SkeletonLoading from '@/components/ui/curso/skeletonLoading'
 import { useCoursesData } from '@/hooks/useCoursesData'
 import { useCoursesProgress } from '@/hooks/useCourseProgress'
 import { useParams } from 'react-router-dom'
@@ -83,7 +84,12 @@ export default function Cursos() {
             {tipoCurso}
           </h5>
           <div className="flex flex-row flex-wrap p-18 w-auto max-w-full">
-            <StatusMessage loading={loading} error={error} />
+            <StatusMessage error={error} />
+            {loading && (
+              Array.from({ length: size }).map((index) => (
+                <SkeletonLoading key={index} />
+              ))
+            )}
             {!loading &&
               !error &&
               courses.map((curso) => (
