@@ -25,10 +25,10 @@ public class CreateUserService implements CreateService<RegisterUserRequest, NoP
 
     @Override
     public NoPasswordUser execute(RegisterUserRequest registerUserRequest) {
-        var username = userRepository.findByUsername(registerUserRequest.getUsername());
-        if (username.isPresent()) {
-            throw new ConflictException("O username já existe");
-        }
+//        var username = userRepository.findByName(registerUserRequest.getName());
+//        if (username.isPresent()) {
+//            throw new ConflictException("O nome já existe");
+//        }
 
         var userEmail = userRepository.findByEmail(registerUserRequest.getEmail());
         if (userEmail.isPresent()) {
@@ -39,8 +39,26 @@ public class CreateUserService implements CreateService<RegisterUserRequest, NoP
             throw new BadRequestException("As senhas não coincidem");
         }
 
+        if (registerUserRequest.getName().length() > 30) {
+            var oldName = registerUserRequest.getName();
+            var splitName = oldName.split(" ");
+            var formattedNamePt1 = splitName[0] + " ";
+            var formattedNamePt2 = "";
+
+            var potentialPrepositionInName = splitName[splitName.length - 2];
+            if (potentialPrepositionInName.toLowerCase().matches("^(de|do|da)$")) {
+                formattedNamePt2 = potentialPrepositionInName + " ";
+
+            }
+
+            var formattedNamePt3 = splitName[splitName.length - 1];
+
+            registerUserRequest.setName(
+                    formattedNamePt1 + formattedNamePt2 + formattedNamePt3);
+        }
+
         User user = new User(
-                registerUserRequest.getUsername(),
+                registerUserRequest.getName(),
                 registerUserRequest.getEmail(),
                 registerUserRequest.getPassword());
 

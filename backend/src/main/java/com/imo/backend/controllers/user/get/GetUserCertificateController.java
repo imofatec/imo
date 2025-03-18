@@ -60,7 +60,7 @@ public class GetUserCertificateController extends UserController {
         var issuedAt = FormatDateTime.toDate(certificate.getIssuedAt());
 
         var filename = String.format("%s-%s-%s",
-                certificate.getUsername().toUpperCase(),
+                certificate.getName().toUpperCase(),
                 certificate.getCourseSlug().toUpperCase(),
                 issuedAt
         );

@@ -28,10 +28,10 @@ public class TokenService {
         this.objectMapper = objectMapper;
     }
 
-    public LoginResponse generateToken(String username, String id) {
+    public LoginResponse generateToken(String name, String id) {
         String sub;
         try {
-            sub = objectMapper.writeValueAsString(new SubTokenDto(id, username));
+            sub = objectMapper.writeValueAsString(new SubTokenDto(id, name));
         } catch (Exception e) {
             throw new RuntimeException("Erro serializando o token");
         }

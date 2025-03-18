@@ -1,5 +1,6 @@
 import Cursos from '@/pages/Cursos'
-import ErrorPage from '@/pages/ErrorPage';
+import ErrorPage from '@/pages/ErrorPage'
+import ValidateCertificate from '@/pages/ValidateCertificate'
 
 const categories = [
   {
@@ -14,9 +15,11 @@ const categories = [
     path: '*',
     element: <ErrorPage />,
   },
+  {
+    path: '/validar-certificado',
+    element: <ValidateCertificate />,
+  },
 ]
-
-
 
 const courseRoutes = [...categories]
 

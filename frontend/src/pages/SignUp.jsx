@@ -3,9 +3,23 @@ import { InputLabel } from '@/components/ui/inputs/inputlabel'
 import { Form, Link, useActionData } from 'react-router-dom'
 import { Github, Linkedin } from 'lucide-react'
 import { Titulo } from '@/components/ui/titulo'
+import { SpinnerButton } from '@/components/ui/spinnerButton'
+import { useEffect, useState } from 'react'
+import { registerRequest } from '@/requests/user/registerRequest'
 
 export default function SignUp() {
-  const message = useActionData()
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState(null)
+  const actionData = useActionData()
+
+  useEffect(() => {
+    setTimeout(() => {
+      if (actionData) {
+        setError(actionData.error)
+        setIsLoading(false)
+      }
+    }, 400)
+  }, [actionData])
 
   return (
     <>
@@ -13,7 +27,11 @@ export default function SignUp() {
 
       <div className="flex justify-center items-center bg-custom-dark-purple pb-8">
         <div className="h-screen mt-[3.125rem] text-white">
-          <Form method="post" action="/cadastro" className="w-96 p-8 space-y-6">
+          <Form
+            method="post"
+            action={registerRequest}
+            className="w-96 p-8 space-y-6"
+          >
             <div className="flex flex-col items-center">
               <h1 className="text-xl font-bold text-center">Cadastro</h1>
             </div>
@@ -28,10 +46,10 @@ export default function SignUp() {
 
             <InputLabel
               type="text"
-              id="username"
-              name="username"
-              placeholder="Username"
-              label="Username"
+              id="name"
+              name="name"
+              placeholder="Nome"
+              label="Nome"
             />
 
             <InputLabel
@@ -50,12 +68,19 @@ export default function SignUp() {
               label="Confirmar senha"
             />
 
-            <Button className="w-full bg-custom-header-cyan text-black">
-              Cadastrar-se
-            </Button>
+            <SpinnerButton
+              children="Cadastrar"
+              isLoading={isLoading}
+              onClick={() => {
+                setIsLoading(true), setError(null)
+              }}
+              className="w-full bg-custom-header-cyan text-black"
+            />
 
-            {message && (
-              <div className="text-center text-red-500">{message}</div>
+            {error ? (
+              <div className="h-6 text-center text-red-500">{error}</div>
+            ) : (
+              <div className="h-6"></div>
             )}
 
             <div className="flex items-center justify-center h-8">
@@ -73,7 +98,7 @@ export default function SignUp() {
             <div className="flex justify-center ">
               <p className="text-custom-text-gray">
                 Ja tem uma conta?{' '}
-                <Link to="/login" className="text-white underline">
+                <Link to="/login" className="text-white hover:underline">
                   Fazer login
                 </Link>
               </p>

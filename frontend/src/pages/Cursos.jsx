@@ -5,17 +5,18 @@ import StatusMessage from '@/components/ui/statusMessage'
 import { Dropdown } from '@/components/ui/dropdown/dropdown'
 import { Titulo } from '@/components/ui/titulo'
 import { useState, useEffect } from 'react'
+import SkeletonLoading from '@/components/ui/curso/skeletonLoading'
 import { useCoursesData } from '@/hooks/useCoursesData'
 import { useCoursesProgress } from '@/hooks/useCourseProgress'
-import React from 'react'
 import { useParams } from 'react-router-dom'
 
-let tipoCurso = 'Todos os cursos'
+const tipoCurso = 'Todos os cursos'
 
 export default function Cursos() {
   const { slug } = useParams()
   const [page, setPage] = useState(0)
-  const size = 10
+  const [selectedCategory, setSelectedCategory] = useState(null)
+  const size = 8
   const {
     categories,
     courses,
@@ -28,9 +29,16 @@ export default function Cursos() {
   const { fetchStartCourse } = useCoursesProgress()
 
   const handleShowAllCourses = () => {
+    setSelectedCategory(null)
     setCurrentSlug(null)
     setPage(0)
     window.history.pushState({}, '', '/categorias')
+  }
+
+  const handleCategorySelect = (slug) => {
+    setSelectedCategory(slug)
+    setPage(0)
+    window.history.pushState({}, '', `/categorias/${slug}`)
   }
 
   const handleStartCourse = (id) => {
@@ -48,6 +56,10 @@ export default function Cursos() {
     setPage((prevPage) => prevPage + 1)
   }
 
+  useEffect(() => {
+    setSelectedCategory(slug)
+  }, [slug])
+
   return (
     <>
       <Titulo titulo={`IMO / ${tipoCurso}`} />
@@ -58,15 +70,26 @@ export default function Cursos() {
             label={'text-xl font-semibold'}
             conteudo={'Todos os cursos'}
             onShowAllCourses={handleShowAllCourses}
+            isSelected={!selectedCategory}
           ></Seletor>
-          <Dropdown categorias={categories}></Dropdown>
+          <Dropdown
+            categorias={categories}
+            onCategorySelect={handleCategorySelect}
+            selectedCategory={selectedCategory}
+            url="categorias"
+          ></Dropdown>
         </div>
         <div className="w-2/3 p-12">
           <h5 className="font-semibold text-xl mb-10 text-white">
             {tipoCurso}
           </h5>
           <div className="flex flex-row flex-wrap p-18 w-auto max-w-full">
-            <StatusMessage loading={loading} error={error} />
+            <StatusMessage error={error} />
+            {loading && (
+              Array.from({ length: size }).map((index) => (
+                <SkeletonLoading key={index} />
+              ))
+            )}
             {!loading &&
               !error &&
               courses.map((curso) => (

@@ -9,7 +9,7 @@ import lombok.Data;
 public class NoPasswordUser {
     private String id;
 
-    private String username;
+    private String name;
 
     private String email;
 
@@ -18,7 +18,7 @@ public class NoPasswordUser {
     public static NoPasswordUser fromUser(User user) {
         return new NoPasswordUser(
                 user.getId(),
-                user.getUsername(),
+                user.getName(),
                 user.getEmail(),
                 user.getProfilePicturePath() != null
                         ? user.getProfilePicturePath()

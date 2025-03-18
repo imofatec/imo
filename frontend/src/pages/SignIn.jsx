@@ -1,12 +1,25 @@
 import { InputLabel } from '@/components/ui/inputs/inputlabel'
-import { Button } from '@/components/ui/button'
 import { Form, Link, useActionData } from 'react-router-dom'
-import { Logo } from '@/components/ui/logo'
 import { Github, Linkedin } from 'lucide-react'
 import { Titulo } from '@/components/ui/titulo'
+import { useEffect, useState } from 'react'
+import { SpinnerButton } from '@/components/ui/spinnerButton'
+import { loginRequest } from '@/requests/user/loginRequest'
 
 export default function SignIn() {
-  const message = useActionData()
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState(null)
+
+  const actionData = useActionData()
+
+  useEffect(() => {
+    setTimeout(() => {
+      if (actionData) {
+        setError(actionData.error)
+        setIsLoading(false)
+      }
+    }, 400)
+  }, [actionData])
 
   return (
     <>
@@ -14,7 +27,11 @@ export default function SignIn() {
 
       <div className="flex justify-center items-center bg-custom-dark-purple">
         <div className="h-screen mt-[3.125rem] text-white">
-          <Form method="post" action="/login" className="w-96 p-8 space-y-6">
+          <Form
+            method="post"
+            action={loginRequest}
+            className="w-96 p-8 space-y-6"
+          >
             <div className="flex flex-col items-center">
               <h1 className="text-xl font-bold text-center">Login</h1>
             </div>
@@ -35,12 +52,19 @@ export default function SignIn() {
               label="Senha"
             />
 
-            <Button className="w-full bg-custom-header-cyan text-black">
-              Entrar
-            </Button>
+            <SpinnerButton
+              children="Entrar"
+              isLoading={isLoading}
+              onClick={() => {
+                setIsLoading(true), setError(null)
+              }}
+              className="w-full bg-custom-header-cyan text-black"
+            />
 
-            {message && (
-              <div className="text-center text-red-500">{message}</div>
+            {error ? (
+              <div className="h-1 text-center text-red-500">{error}</div>
+            ) : (
+              <div className="h-1"></div>
             )}
 
             <div className="flex items-center justify-center h-8">
@@ -58,7 +82,7 @@ export default function SignIn() {
             <div className="flex justify-center ">
               <p className="text-custom-text-gray">
                 Não tem uma conta?{' '}
-                <Link to="/cadastro" className="text-white underline">
+                <Link to="/cadastro" className="text-white hover:underline">
                   Cadastrar-se
                 </Link>
               </p>

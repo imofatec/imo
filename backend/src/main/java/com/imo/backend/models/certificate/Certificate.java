@@ -13,7 +13,7 @@ public class Certificate {
 
     private String userId;
 
-    private String username;
+    private String name;
 
     private String userEmail;
 

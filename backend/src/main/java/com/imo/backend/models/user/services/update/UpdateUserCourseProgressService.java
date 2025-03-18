@@ -11,6 +11,7 @@ import com.imo.backend.models.user.User;
 import com.imo.backend.models.user.repositories.UserRepository;
 import com.imo.backend.models.user.dtos.UserCourseProgress;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -33,6 +34,7 @@ public class UpdateUserCourseProgressService implements UpdateByIdService<Void, 
         this.courseRepository = courseRepository;
     }
 
+    @Transactional
     public UserCourseProgress execute(String courseId, Void dto, String token) {
         var userId = tokenService.getSub(token).get("id");
         var user = userRepository.findById(userId)
@@ -53,7 +55,7 @@ public class UpdateUserCourseProgressService implements UpdateByIdService<Void, 
             return updatedUserCourseProgress(userRepository, userId, courseId);
         }
 
-        userRepository.updateCourseProgressLessonsById(userId, courseId, course.getTotalLessons());
+        userRepository.updateCourseProgressLessonsById(userId, courseId);
         var updatedUser = updatedUserCourseProgress(userRepository, userId, courseId);
         var updatedUserCoursesProgress = updatedUser.courseProgress();
 
@@ -86,7 +88,7 @@ public class UpdateUserCourseProgressService implements UpdateByIdService<Void, 
 
         return new UserCourseProgress(
                 user.getId(),
-                user.getUsername(),
+                user.getName(),
                 user.getEmail(),
                 currentProgress);
     }
