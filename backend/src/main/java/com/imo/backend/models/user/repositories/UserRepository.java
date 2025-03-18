@@ -18,6 +18,7 @@ public interface UserRepository extends MongoRepository<User, String>, CustomUse
 
     Optional<User> findByName(String name);
 
+
     @Query("{ 'name':  ?0 }")
     @Update("{ '$push':  { 'courseContributions': ?1 } }")
     void updateContributionsByName(String name, Course course);
@@ -46,5 +47,7 @@ public interface UserRepository extends MongoRepository<User, String>, CustomUse
     @Update("{ $set: { 'certificates.$.issuedAt': ?2} }")
     void updateIssuedAtCertificateById(String userId, String certificateId, LocalDateTime localDateTime);
 
-
+    @Query("{ '_id' : ?0 }")
+    @Update("{ $set: { 'isConfirmed':?1 }}")
+    void updateUserAccessById(String userId, Boolean isConfirmed);
 }
