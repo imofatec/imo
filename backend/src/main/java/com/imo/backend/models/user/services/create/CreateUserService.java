@@ -60,9 +60,12 @@ public class CreateUserService implements CreateService<RegisterUserRequest, NoP
         User user = new User(
                 registerUserRequest.getName(),
                 registerUserRequest.getEmail(),
-                registerUserRequest.getPassword());
+                registerUserRequest.getPassword(),
+                false);
+
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+
 
         User newUser = userRepository.save(user);
 
