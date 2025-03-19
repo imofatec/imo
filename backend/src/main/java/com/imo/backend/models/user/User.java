@@ -24,6 +24,8 @@ public class User {
 
     private String password;
 
+    private Boolean isConfirmed;
+
     private String profilePicturePath;
 
     private List<Course> courseContributions = new ArrayList<>();
@@ -32,9 +34,10 @@ public class User {
 
     private List<Certificate> certificates = new ArrayList<>();
 
-    public User(String name, String email, String password) {
+    public User(String name, String email, String password, Boolean isConfirmed) {
         this.name = name;
         this.email = email;
         this.password = password;
+        this.isConfirmed = isConfirmed;
     }
 }
