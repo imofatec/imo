@@ -32,6 +32,8 @@ public class CourseFactory {
         course.setCategory(createCourseRequest.getCategory());
         course.setSlugCategory(Slug.create(createCourseRequest.getCategory()));
         course.setDescription(createCourseRequest.getDescription());
+        course.setLevel(createCourseRequest.getLevel());
+        course.setSlugLevel(Slug.create(createCourseRequest.getLevel()));
 
         List<Lesson> formattedLessons = IntStream
                 .range(0, createCourseRequest.getLessons().size())
@@ -61,6 +63,8 @@ public class CourseFactory {
         courseOverview.setName(course.getName());
         courseOverview.setSlugCourse(course.getSlugCourse());
         courseOverview.setCategory(course.getCategory());
+        courseOverview.setLevel(course.getLevel());
+        courseOverview.setSlugLevel(course.getSlugLevel());
         courseOverview.setSlugCategory(course.getSlugCategory());
         courseOverview.setDescription(course.getDescription());
         courseOverview.setFirstLessonYoutubeId(course.getLessons().get(0).getYoutubeLink());

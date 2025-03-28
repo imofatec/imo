@@ -29,6 +29,10 @@ public class Course {
 
     private String slugCourse;
 
+    private String level;
+
+    private String slugLevel;
+
     private String category;
 
     private String slugCategory;
