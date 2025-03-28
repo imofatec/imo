@@ -12,12 +12,16 @@ import java.util.List;
 @Getter
 public class CreateCourseRequest {
 
+
     @NotBlank(message = "Preencha o nome do curso")
     @Size(min = 10, max = 100, message = "O nome do curso precisa ter de 10 a 100 caracteres")
     private String name;
 
     @NotBlank(message = "Preencha a categoria do curso")
     private String category;
+
+    @NotBlank(message = "Preencha o nível do curso")
+    private String level;
 
     @NotBlank(message = "Preencha a descrição do curso")
     @Size(min = 10, max = 300, message = "A descrição do curso precisa ter de 10 a 300 caracteres")
@@ -26,4 +30,5 @@ public class CreateCourseRequest {
     @Size(min = 1, max = 100, message = "Um curso pode ter no mínimo 1 e no máximo 100 aulas")
     @Valid
     private List<CreateLessonDto> lessons;
+
 }
