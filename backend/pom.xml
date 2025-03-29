@@ -28,7 +28,7 @@
     </scm>
     <properties>
         <java.version>21</java.version>
-        <spring-boot.repackage.skip>true</spring-boot.repackage.skip>
+        <start-class>com.imo.backend.BackendApplication</start-class>
     </properties>
     <dependencies>
         <dependency>
