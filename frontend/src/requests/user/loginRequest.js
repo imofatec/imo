@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axiosInstance from '@/api/axiosInstance'
 import { safeAwait } from '@/lib/safeAwait'
 import { redirect } from 'react-router-dom'
 
@@ -10,7 +10,9 @@ export async function loginRequest({ request }) {
   }
 
   const [error, result] = await safeAwait(
-    axios.post('/api/user/login', submission),
+    axiosInstance.post('/api/user/login', submission, {
+      withCredentials: true,
+    }),
   )
 
   if (error) {

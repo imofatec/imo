@@ -1,10 +1,10 @@
-import axios from 'axios'
+import axiosInstance from '@/api/axiosInstance'
 import { safeAwait } from '@/lib/safeAwait'
 
 const useCertificateValidation = () => {
   const fetchCertificateData = async (id) => {
     const [error, response] = await safeAwait(
-      axios.get(`/api/user/certificate/${id}`),
+      axiosInstance.get(`/api/user/certificate/${id}`),
     )
 
     if (error) {

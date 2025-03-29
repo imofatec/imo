@@ -1,26 +1,27 @@
-import api from "@/api/api"
-import { useEffect, useState } from "react"
-import { Navigate, Outlet } from "react-router-dom"
+import authAxiosInstance from '@/api/authAxiosInstance'
+import { useEffect, useState } from 'react'
+import { Navigate, Outlet } from 'react-router-dom'
 
 export default function ProtectedRoute() {
-    const [isAuth, setIsAuth] = useState(false)
-    const [isLoading, setIsLoading] = useState(true)
+  const [isAuth, setIsAuth] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
 
-    useEffect(() => {
-        const auth = async () => {
-            try {
-                await api.get('/api/user/private')
-                setIsAuth(true)
-            } catch (err) {
-                // console.log(err)
-            } finally {
-                setIsLoading(false)
-            }
-        }
-        auth()
-    }, [])
-
-    if (isLoading === false) {
-        return isAuth ? <Outlet /> : <Navigate to="/login" replace />
+  useEffect(() => {
+    const auth = async () => {
+      try {
+        console.log('teste')
+        await authAxiosInstance.get('/api/user/private')
+        setIsAuth(true)
+      } catch (err) {
+        // console.log(err)
+      } finally {
+        setIsLoading(false)
+      }
     }
+    auth()
+  }, [])
+
+  if (isLoading === false) {
+    return isAuth ? <Outlet /> : <Navigate to="/login" replace />
+  }
 }
