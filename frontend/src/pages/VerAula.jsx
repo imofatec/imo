@@ -1,16 +1,16 @@
-import LessonDescription from '@/components/ui/lesson/lessondescription'
-import api from '@/api/api'
-import { safeAwait } from '@/lib/safeAwait'
+import authAxiosInstance from '@/api/authAxiosInstance'
 import thumbLesson from '@/assets/thumb.jpg'
+import SkeletonLoading from '@/components/ui/curso/skeletonLoading'
+import LessonComment from '@/components/ui/lesson/lessoncomment'
+import LessonDescription from '@/components/ui/lesson/lessondescription'
+import LessonInfo from '@/components/ui/lesson/lessoninfo'
 import LessonPlaylist from '@/components/ui/lesson/lessonplaylist'
 import { Titulo } from '@/components/ui/titulo'
-import LessonComment from '@/components/ui/lesson/lessoncomment'
-import SkeletonLoading from '@/components/ui/curso/skeletonLoading'
-import LessonInfo from '@/components/ui/lesson/lessoninfo'
-import { useParams, useNavigate } from 'react-router-dom'
 import { useLessonData } from '@/hooks/useLessonData'
 import { useLessonProgress } from '@/hooks/useLessonProgress'
+import { safeAwait } from '@/lib/safeAwait'
 import { useEffect } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
 
 export default function VerAula() {
   const { slugCourse, idLesson } = useParams()
@@ -37,7 +37,7 @@ export default function VerAula() {
 
   const handleGetCertificate = async () => {
     const [error, result] = await safeAwait(
-      api.get(`/api/user/get-certificate/${courseId}`, {
+      authAxiosInstance.get(`/api/user/get-certificate/${courseId}`, {
         responseType: 'blob',
       }),
     )
@@ -114,11 +114,10 @@ export default function VerAula() {
 
         <div className="flex flex-col w-1/4 pl-4 bg-custom-dark-blue p-6 max-h-[calc(100vh-4rem)] overscroll-auto overflow-y-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-800">
           <h2 className="text-xl mb-6 text-center">Aulas do curso</h2>
-          {loading && (
-              Array.from({ length: 4 }).map((index) => (
-                <SkeletonLoading key={index} />
-              ))
-            )}
+          {loading &&
+            Array.from({ length: 4 }).map((index) => (
+              <SkeletonLoading key={index} />
+            ))}
           {!loadingProgress && (
             <>
               {lessonData.map((item, i) => {

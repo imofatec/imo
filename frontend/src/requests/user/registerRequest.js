@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axiosInstance from '@/api/axiosInstance'
 import { safeAwait } from '@/lib/safeAwait'
 import { redirect } from 'react-router-dom'
 
@@ -11,7 +11,9 @@ export async function registerRequest({ request }) {
     confPassword: data.get('password-confirm'),
   }
 
-  const [error] = await safeAwait(axios.post('/api/user/create', submission))
+  const [error] = await safeAwait(
+    axiosInstance.post('/api/user/create', submission),
+  )
 
   if (error) {
     return { error: error.response.data.message }
