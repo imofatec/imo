@@ -58,8 +58,7 @@ como o YouTube por exemplo, estas aulas a serem incorporadas são disponibilizad
 - **Componentes**: [shadcn/ui](https://ui.shadcn.com/)
 
 ## Requisitos
-> Rodar o projeto na sua máquina
-- Git
+> Rodar o projeto na sua máquina para **desenvolver**
 - Java 21
 - MongoDB
 - Navegador internet
@@ -71,15 +70,26 @@ git clone https://github.com/imofatec/imo.git
 cd imo
 ```
 
-## Setup Back
+## Setup back
 > Acesse o diretório do backend
 ```
 cd backend
 ```
-### Base de dados
-Em `imo/backend/docker-compose.yml` tem um docker compose configurado
+
+### Profile
+> Ative o perfil de desenvolvimento em `imo/backend/src/main/resources/application.properties`
 ```
-docker-compose up -d
+spring.profiles.default=prod
+spring.profiles.active=dev
+
+```
+
+### Envs
+Crie um arquivo em `imo/backend/src/main/resources` chamado `.env-dev.properties` e adicine neles as variáveis de ambiente necessárias
+Exemplo:
+```
+MONGO_URI=mongodb://localhost:27017/imo
+CLIENT_URL=http://localhost:5173
 ```
 
 ### Criptografia assimétrica
@@ -92,7 +102,6 @@ docker-compose up -d
 - Crie o arquivo  **app.key** coloque nele a chave PRIVADA
 
 ### Spring Boot
-> Também pode inicar por alguma IDE ou pelo maven instalado na sua máquina, caso contrário, rode o comando abaixo no terminal dentro do diretório `imo/backend`
 ```
 ./mvnw spring-boot:run
 ```
@@ -103,7 +112,16 @@ docker-compose up -d
 
 
 ## Setup Front
-> Frontend do projeto http://localhost:5173
+### Envs
+Crie um arquivo em `imo/frontend` chamado `.env` e adicione neles as variáveis de ambiente necessárias
+> Necessário para conexão com backend
+
+Exemplo:
+```
+VITE_API_BASE_URL=http://localhost:8080
+```
+### Run
+> Inicie o projeto e acesse http://localhost:5173
 ```
 cd frontend
 npm install 
