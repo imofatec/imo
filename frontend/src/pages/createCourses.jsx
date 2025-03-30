@@ -2,6 +2,7 @@ import { Button } from '@/components/ui/button'
 import { Form, useActionData } from 'react-router-dom'
 import ColLargeInput from '@/components/ui/inputs/collargeinput'
 import ColInputLabel from '@/components/ui/inputs/colinputlabel'
+import ColSelectLabel from '@/components/ui/inputs/colselectlabel'
 import NewLesson from '@/components/ui/newlesson'
 import { SpinnerButton } from '@/components/ui/spinnerButton'
 import { useEffect, useState } from 'react'
@@ -37,11 +38,18 @@ export default function CreateCourses() {
               idInput={'category'}
             ></ColInputLabel>
 
+            <ColSelectLabel
+              label={'level'}
+              placeholder={'Selecione a dificuldade do curso'}
+              idInput={'level'}
+            ></ColSelectLabel>
+
             <ColLargeInput
               placeholder={'Insira aqui a Descrição do Curso'}
               label={'Descrição do Curso'}
               idInput={'description'}
             ></ColLargeInput>
+            
           </div>
 
           <NewLesson></NewLesson>
