@@ -1,7 +1,9 @@
 package com.imo.backend.models.course;
 
+import com.imo.backend.models.entity.Entity;
 import com.imo.backend.models.lessons.Lesson;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -9,16 +11,10 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.time.LocalDateTime;
 import java.util.List;
 
+@EqualsAndHashCode(callSuper = true)
 @Document("courses")
 @Data
-public class Course {
-
-    @Id
-    private String id;
-
-    @CreatedDate
-    private LocalDateTime createdAt;
-
+public class Course extends Entity {
     private boolean active;
 
     private String contributorId;
