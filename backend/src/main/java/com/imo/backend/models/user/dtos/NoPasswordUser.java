@@ -7,22 +7,25 @@ import lombok.Data;
 @AllArgsConstructor
 @Data
 public class NoPasswordUser {
-    private String id;
+  private String id;
 
-    private String name;
+  private String name;
 
-    private String email;
+  private String email;
 
-    private String profilePicturePath;
+  private Boolean isConfirmed;
 
-    public static NoPasswordUser fromUser(User user) {
-        return new NoPasswordUser(
-                user.getId(),
-                user.getName(),
-                user.getEmail(),
-                user.getProfilePicturePath() != null
-                        ? user.getProfilePicturePath()
-                        : ""
-        );
-    }
+  private String profilePicturePath;
+
+  public static NoPasswordUser fromUser(User user) {
+    return new NoPasswordUser(
+        user.getId(),
+        user.getName(),
+        user.getEmail(),
+        user.getIsConfirmed(),
+        user.getProfilePicturePath() != null
+            ? user.getProfilePicturePath()
+            : ""
+    );
+  }
 }
