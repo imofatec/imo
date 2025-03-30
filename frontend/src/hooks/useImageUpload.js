@@ -1,5 +1,5 @@
-import api from '@/api/api'
-import { BASE_URL } from '@/api/environment'
+import authAxiosInstance from '@/api/authAxiosInstance'
+import { baseURL } from '@/api/environment'
 import { safeAwait } from '@/lib/safeAwait'
 
 const useImageUpload = (setUrlImage) => {
@@ -11,14 +11,14 @@ const useImageUpload = (setUrlImage) => {
     formData.append('file', file)
 
     const [error, result] = await safeAwait(
-      api.put('/api/user/upload/profile-picture', formData),
+      authAxiosInstance.put('/api/user/upload/profile-picture', formData),
     )
 
     if (error) {
       return { error: error.response.data.message }
     }
 
-    const newImagePath = `${BASE_URL}/uploads/${result.data.profilePicturePath}`
+    const newImagePath = `${baseURL}/uploads/${result.data.profilePicturePath}`
     setUrlImage(newImagePath)
 
     window.location.reload()
