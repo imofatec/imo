@@ -1,6 +1,7 @@
 package com.imo.backend.models.course.services.create;
 
 import com.imo.backend.config.token.TokenService;
+import com.imo.backend.exceptions.custom.BadRequestException;
 import com.imo.backend.exceptions.custom.ConflictException;
 import com.imo.backend.exceptions.custom.NotFoundException;
 import com.imo.backend.models.course.Course;
@@ -42,6 +43,7 @@ public class CreateCourseService implements CreateWithTokenService<CreateCourseR
         var contributorCourses = courseRepository.findAllByContributorId(contributorId);
         var user = userRepository.findById(contributorId)
                 .orElseThrow(() -> new NotFoundException("Usuário autenticado não encontrado"));
+        checkUserIsConfirmed(user);
         var potentialNewSlugCourse = Slug.create(createCourseRequest.getName());
         checkConflictContributorCourse(contributorCourses, user, potentialNewSlugCourse);
 
@@ -55,6 +57,12 @@ public class CreateCourseService implements CreateWithTokenService<CreateCourseR
 
         return new CreateCourseResponse("Aguarde sua contribuição ser validada", newCourse.getName(),
                 newCourse.getContributorName(), newCourse.getCategory());
+    }
+
+    private static void checkUserIsConfirmed(User user) {
+        if (!user.getIsConfirmed()) {
+            throw new BadRequestException("Confirme seu email antes de submeter um curso");
+        }
     }
 
     private static void checkConflictContributorCourse(

@@ -3,13 +3,8 @@ import Featurecourses from '@/components/featuredcourses'
 import dataScienceF from '@/assets/dataSciencef.png'
 import gestaoW from '@/assets/gestaoW.png'
 import redesW from '@/assets/redesW.png'
-import { useEffect } from 'react'
 
 export default function Index() {
-  useEffect(() => {
-    console.log(import.meta.env.VITE_API_BASE_URL)
-  }, [])
-
   const courses = [
     {
       title: 'Data Science',

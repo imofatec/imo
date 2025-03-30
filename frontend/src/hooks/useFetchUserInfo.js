@@ -16,6 +16,10 @@ const useFetchUserInfo = () => {
       return
     }
     setUserInfo(result.data)
+
+    if (result.data.profilePicturePath === '') {
+      return
+    }
     setUrlImage(`${baseURL}/uploads/${result.data.profilePicturePath}`)
   }
 
