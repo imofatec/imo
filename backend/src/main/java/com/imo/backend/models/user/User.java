@@ -4,20 +4,19 @@ package com.imo.backend.models.user;
 import com.imo.backend.models.certificate.Certificate;
 import com.imo.backend.models.course.Course;
 import com.imo.backend.models.course.dtos.CourseProgress;
+import com.imo.backend.models.entity.Entity;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@EqualsAndHashCode(callSuper = true)
 @Document("users")
 @Data
-public class User {
-
-    @Id
-    private String id;
-
+public class User extends Entity {
     private String name;
 
     private String email;
