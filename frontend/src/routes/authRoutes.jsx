@@ -6,6 +6,7 @@ import MyCourses from '@/pages/MyCourses'
 import VerAula from '@/pages/VerAula'
 import { createCourse as createCourseRequest } from '@/requests/createCourse'
 import { updateUserRequest } from '@/requests/user/updateUserRequest'
+import UserEmailConfirmation from '@/pages/UserEmailConfirmation'
 
 const teste = {
   path: '/private',
@@ -28,14 +29,22 @@ const accountSettings = {
   element: <AccountSettings />,
   action: updateUserRequest,
 }
+
 const myCourses = {
   path: '/user/cursos',
   element: <MyCourses />,
 }
+
 const myCoursesRoute = {
   path: '/user/cursos/:route',
   element: <MyCourses />,
 }
+
+const userEmailConfirmation = {
+  path: '/user/confirmar-email',
+  element: <UserEmailConfirmation />,
+}
+
 const authRoutes = [
   {
     element: <ProtectedRoute />,
@@ -46,6 +55,7 @@ const authRoutes = [
       accountSettings,
       myCourses,
       myCoursesRoute,
+      userEmailConfirmation,
     ],
   },
 ]
