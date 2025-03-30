@@ -12,6 +12,10 @@ const categories = [
     element: <Cursos />,
   },
   {
+    path: '/categorias/n/:level',
+    element: <Cursos />,
+  },
+  {
     path: '*',
     element: <ErrorPage />,
   },
