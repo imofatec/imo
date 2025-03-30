@@ -9,7 +9,6 @@ export default function ProtectedRoute() {
   useEffect(() => {
     const auth = async () => {
       try {
-        console.log('teste')
         await authAxiosInstance.get('/api/user/private')
         setIsAuth(true)
       } catch (err) {
