@@ -3,8 +3,13 @@ import Featurecourses from '@/components/featuredcourses'
 import dataScienceF from '@/assets/dataSciencef.png'
 import gestaoW from '@/assets/gestaoW.png'
 import redesW from '@/assets/redesW.png'
+import { useEffect } from 'react'
 
 export default function Index() {
+  useEffect(() => {
+    console.log(import.meta.env.VITE_API_BASE_URL)
+  }, [])
+
   const courses = [
     {
       title: 'Data Science',
@@ -23,7 +28,7 @@ export default function Index() {
     },
     {
       title: 'Gestão',
-      text:"Para ser um líder de sucesso, é preciso mais do que apenas conhecimento técnico — você também precisa entender como gerenciar recursos, equipes e projetos de forma eficaz. Em Gestão, você aprenderá a planejar, organizar e executar estratégias que potencializam os resultados de qualquer negócio. Seja você um empreendedor ou alguém em busca de crescimento profissional, o domínio da gestão pode transformar suas ideias em ações de sucesso.",
+      text: 'Para ser um líder de sucesso, é preciso mais do que apenas conhecimento técnico — você também precisa entender como gerenciar recursos, equipes e projetos de forma eficaz. Em Gestão, você aprenderá a planejar, organizar e executar estratégias que potencializam os resultados de qualquer negócio. Seja você um empreendedor ou alguém em busca de crescimento profissional, o domínio da gestão pode transformar suas ideias em ações de sucesso.',
       src: gestaoW,
       colorTitle: 'text-custom-gestao-index',
       colorInfo: 'bg-custom-gestao-index',

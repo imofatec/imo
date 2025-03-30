@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react'
+import axiosInstance from '@/api/axiosInstance'
 import { safeAwait } from '@/lib/safeAwait'
-import axios from 'axios'
+import { useEffect, useState } from 'react'
 
 export const useCoursesData = (slug, page, size, setPage) => {
   const [error, setError] = useState(false)
@@ -15,17 +15,17 @@ export const useCoursesData = (slug, page, size, setPage) => {
     setLoading(true)
 
     const [errorCategories, responseCategories] = await safeAwait(
-      axios.get('/api/courses/get-all/categories'),
+      axiosInstance.get('/api/courses/get-all/categories'),
     )
     const [errorCourses, responseCourses] = await safeAwait(
       currentSlug
-        ? await axios.get(
+        ? await axiosInstance.get(
             `/api/courses/pagination/get-all/overviews/${currentSlug}`,
             {
               params: { page, size },
             },
           )
-        : await axios.get('/api/courses/pagination/get-all/overviews', {
+        : await axiosInstance.get('/api/courses/pagination/get-all/overviews', {
             params: { page, size },
           }),
     )
