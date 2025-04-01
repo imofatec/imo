@@ -25,6 +25,10 @@ public class Course extends Entity {
 
     private String slugCourse;
 
+    private String level;
+
+    private String slugLevel;
+
     private String category;
 
     private String slugCategory;

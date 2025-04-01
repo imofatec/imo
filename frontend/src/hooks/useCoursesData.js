@@ -2,13 +2,14 @@ import axiosInstance from '@/api/axiosInstance'
 import { safeAwait } from '@/lib/safeAwait'
 import { useEffect, useState } from 'react'
 
-export const useCoursesData = (slug, page, size, setPage) => {
+export const useCoursesData = (slug,level, page, size, setPage) => {
   const [error, setError] = useState(false)
   const [loading, setLoading] = useState(true)
   const [categories, setCategories] = useState([])
   const [courses, setCourses] = useState([])
   const [hasMoreCourses, setHasMoreCourses] = useState(true)
   const [currentSlug, setCurrentSlug] = useState(slug)
+  const [currentLevel, setCurrentLevel] = useState(level)
 
   const fetchData = async () => {
     setError(false)
@@ -21,6 +22,13 @@ export const useCoursesData = (slug, page, size, setPage) => {
       currentSlug
         ? await axiosInstance.get(
             `/api/courses/pagination/get-all/overviews/${currentSlug}`,
+            {
+              params: { page, size },
+            },
+          )
+        : currentLevel
+        ? await axiosInstance.get(
+            `/api/courses/pagination/get-all/overviews/nk/${currentLevel}`,
             {
               params: { page, size },
             },
@@ -52,12 +60,14 @@ export const useCoursesData = (slug, page, size, setPage) => {
 
   useEffect(() => {
     setCurrentSlug(slug)
+    setCurrentLevel(level)
     setPage(0)
-  }, [slug])
+    fetchData()
+  }, [slug,level])
 
   useEffect(() => {
     fetchData()
-  }, [currentSlug, page])
+  }, [currentSlug,currentLevel, page])
 
   return {
     categories,
@@ -67,5 +77,6 @@ export const useCoursesData = (slug, page, size, setPage) => {
     error,
     fetchData,
     setCurrentSlug,
+    setCurrentLevel,
   }
 }

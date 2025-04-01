@@ -15,6 +15,10 @@ public interface CourseRepository extends MongoRepository<Course, String> {
 
     List<Course> findAllBySlugCategory(String slugCategory);
 
+    List<Course> findAllBySlugLevel(String slugLevel);
+
+    Page<Course> findAllBySlugLevel(String slugLevel, Pageable pageable);
+
     Page<Course> findAllBySlugCategory(String slugCategory, Pageable pageable);
 
     List<Course> findAllByContributorId(String id);
@@ -23,4 +27,6 @@ public interface CourseRepository extends MongoRepository<Course, String> {
 
     @Query("{ 'name': { $regex: ?0, $options: 'i' } }")
     Page<Course> findAllByName(String name, Pageable page);
+
+
 }

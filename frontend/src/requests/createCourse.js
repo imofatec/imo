@@ -20,6 +20,7 @@ export async function createCourse({ request }) {
     name: data.get('name'),
     description: data.get('description'),
     category: data.get('category'),
+    level: data.get('level'),
     lessons: lessons,
   }
 
