@@ -1,9 +1,12 @@
 package com.imo.backend.models.course;
 
+import com.imo.backend.models.comments.Comment;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.mongodb.repository.Aggregation;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
+import org.springframework.data.mongodb.repository.Update;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -28,5 +31,22 @@ public interface CourseRepository extends MongoRepository<Course, String> {
     @Query("{ 'name': { $regex: ?0, $options: 'i' } }")
     Page<Course> findAllByName(String name, Pageable page);
 
+
+    @Query("{ '_id': ?0, 'lessons.id': ?1 }")
+    @Update("{ $push: { 'lessons.$.comments': ?2 } }")
+    long addCommentToLesson(String courseId, String lessonId, Comment comment);
+
+    @Aggregation(pipeline = {
+        "{ $match: { '_id': ?0 } }",
+        "{ $unwind: '$lessons' }",
+        "{ $match: { 'lessons.id': ?1 } }",
+        "{ $unwind: '$lessons.comments' }",
+        "{ $replaceRoot: { newRoot: '$lessons.comments' } }"
+    })
+    List<Comment> findCommentsByLessonId(String courseId,String lessonId);
+
+
+    @Query("{'lessons_id': ?0}")
+    Course findByLessonId(String lessonId);
 
 }
