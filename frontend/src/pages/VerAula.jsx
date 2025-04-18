@@ -11,6 +11,7 @@ import { useLessonProgress } from '@/hooks/useLessonProgress'
 import { safeAwait } from '@/lib/safeAwait'
 import { useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
+import SkeletonVerAula from '@/components/skeletons/SkeletonVerAula'
 
 export default function VerAula() {
   const { slugCourse, idLesson } = useParams()
@@ -57,6 +58,8 @@ export default function VerAula() {
     link.click()
   }
 
+
+
   const commentData = [
     {
       profileName: 'João',
@@ -66,9 +69,12 @@ export default function VerAula() {
     },
   ]
   return (
+    <>
     <div className="max-w-full min-h-screen">
       <Titulo titulo={`IMO / ${currentLesson?.title}`}></Titulo>
-
+      {loading ? (
+        <SkeletonVerAula />
+      ) : (
       <div className="flex flex-row">
         <div className="flex flex-col w-3/4 p-8">
           <iframe
@@ -152,6 +158,8 @@ export default function VerAula() {
           </button>
         </div>
       </div>
-    </div>
+      )}
+      </div>
+    </>
   )
 }

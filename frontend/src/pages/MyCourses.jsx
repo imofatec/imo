@@ -8,6 +8,7 @@ import StatusMessage from '@/components/ui/statusMessage'
 import { Titulo } from '@/components/ui/titulo'
 import { useState } from 'react'
 import { useSortedCourses } from '@/hooks/useSortedCourses'
+import SkeletonMyCourses from '@/components/skeletons/SkeletonMyCourses'
 
 export default function MyCourses() {
   const size = 8
@@ -51,6 +52,9 @@ export default function MyCourses() {
   return (
     <>
       <Titulo titulo={`IMO / Meus Cursos`} />
+      {loading ? (
+        <SkeletonMyCourses />
+      ) : (
       <div className="min-h-screen flex flex-row w-full">
         <div className="w-1/3 p-12">
           <CategorySelector
@@ -110,6 +114,7 @@ export default function MyCourses() {
           />
         </div>
       </div>
+      )}
     </>
   )
 }

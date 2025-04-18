@@ -24,7 +24,6 @@ export default function SignUp() {
   return (
     <>
       <Titulo titulo={'Cadastro / IMO'}></Titulo>
-
       <div className="flex justify-center items-center bg-custom-dark-purple pb-8">
         <div className="h-screen mt-[3.125rem] text-white">
           <Form
