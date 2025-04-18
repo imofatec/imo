@@ -24,7 +24,6 @@ export default function SignIn() {
   return (
     <>
       <Titulo titulo={'Login / IMO'}></Titulo>
-
       <div className="flex justify-center items-center bg-custom-dark-purple">
         <div className="h-screen mt-[3.125rem] text-white">
           <Form
