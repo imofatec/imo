@@ -6,11 +6,21 @@ import ColSelectLabel from '@/components/ui/inputs/colselectlabel'
 import NewLesson from '@/components/ui/newlesson'
 import { SpinnerButton } from '@/components/ui/spinnerButton'
 import { useEffect, useState } from 'react'
+import { useFormValidator } from '@/hooks/useFormValidator'
+import { createCourseBaseSchema } from '@/schemas/createCourseSchema'
 
 export default function CreateCourses() {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState(null)
   const actionData = useActionData()
+
+  const {
+    formData,
+    fieldErrors,
+    handleChange,
+    setFormData,
+    setFieldErrors,
+  } = useFormValidator(createCourseBaseSchema)
 
   useEffect(() => {
     setTimeout(() => {
@@ -30,29 +40,41 @@ export default function CreateCourses() {
               label={'Nome do Curso'}
               placeholder={'Insira aqui o Nome do Curso'}
               idInput={'name'}
-            ></ColInputLabel>
+              value={formData.name || ''}
+              onChange={handleChange}
+              error={fieldErrors.name}
+            />
 
             <ColInputLabel
               label={'Categoria'}
               placeholder={'Insira uma categoria'}
               idInput={'category'}
-            ></ColInputLabel>
+              value={formData.category || ''}
+              onChange={handleChange}
+              error={fieldErrors.category}
+            />
 
             <ColSelectLabel
-              label={'level'}
+              label={'Nível'}
               placeholder={'Selecione a dificuldade do curso'}
               idInput={'level'}
-            ></ColSelectLabel>
+              value={formData.level || ''}
+              onChange={handleChange}
+              error={fieldErrors.level}
+            />
 
             <ColLargeInput
               placeholder={'Insira aqui a Descrição do Curso'}
               label={'Descrição do Curso'}
               idInput={'description'}
-            ></ColLargeInput>
-            
+              value={formData.description || ''}
+              onChange={handleChange}
+              error={fieldErrors.description}
+            />
           </div>
 
-          <NewLesson></NewLesson>
+          <NewLesson />
+
           <div className="flex flex-row justify-end w-full">
             <SpinnerButton
               children="Adicionar"

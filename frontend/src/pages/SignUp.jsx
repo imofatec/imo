@@ -63,9 +63,10 @@ export default function SignUp() {
               label="Email"
               value={formData.email}
               onChange={handleChange}
+              className={fieldErrors.email ? 'border-red-500 focus:border-red-500' : ''}
             />
             {fieldErrors.email && (
-              <p className="text-sm text-red-500">{fieldErrors.email}</p>
+              <p className="text-sm text-red-500 !mt-0">{fieldErrors.email}</p>
             )}
 
             <InputLabel
@@ -76,9 +77,10 @@ export default function SignUp() {
               label="Nome"
               value={formData.name}
               onChange={handleChange}
+              className={fieldErrors.name ? 'border-red-500 focus:border-red-500' : ''}
             />
             {fieldErrors.name && (
-              <p className="text-sm text-red-500">{fieldErrors.name}</p>
+              <p className="text-sm text-red-500 !mt-0">{fieldErrors.name}</p>
             )}
 
             <InputLabel
@@ -89,9 +91,10 @@ export default function SignUp() {
               label="Senha"
               value={formData.password}
               onChange={handleChange}
+              className={fieldErrors.password ? 'border-red-500 focus:border-red-500' : ''}
             />
             {fieldErrors.password && (
-              <p className="text-sm text-red-500">{fieldErrors.password}</p>
+              <p className="text-sm text-red-500 !mt-0">{fieldErrors.password}</p>
             )}
 
             <InputLabel
@@ -102,9 +105,10 @@ export default function SignUp() {
               label="Confirmar senha"
               value={formData.confPassword}
               onChange={handleChange}
+              className={fieldErrors.confPassword ? 'border-red-500 focus:border-red-500' : ''}
             />
             {fieldErrors.confPassword && (
-              <p className="text-sm text-red-500">{fieldErrors.confPassword}</p>
+              <p className="text-sm text-red-500 !mt-0">{fieldErrors.confPassword}</p>
             )}
 
             <SpinnerButton
