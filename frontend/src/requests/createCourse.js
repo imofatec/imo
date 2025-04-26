@@ -25,7 +25,7 @@ export async function createCourse({ request }) {
   }
 
   const [error, result] = await safeAwait(
-    authAxiosInstance.post('/api/courses/create', course, {
+    authAxiosInstance.post('/api/courses', course, {
       headers: {
         'Content-Type': 'application/json',
       },
