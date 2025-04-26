@@ -14,11 +14,11 @@ export const useLessonData = (slugCourse) => {
       setLoading(true)
 
       const [errorData, courseData] = await safeAwait(
-        axiosInstance.get(`/api/courses/get-all/overviews`),
+        axiosInstance.get(`/api/courses/overviews`),
       )
 
       const [errorResponse, response] = await safeAwait(
-        axiosInstance.get(`/api/courses/get-all/lessons/${slugCourse}`),
+        axiosInstance.get(`/api/courses/lessons/${slugCourse}`),
       )
       if (errorData) {
         setError(true)
