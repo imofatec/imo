@@ -20,7 +20,7 @@ public class GetAllCoursesController extends CourseController {
     }
 
     @Operation(summary = "Get all courses")
-    @GetMapping("/get-all")
+    @GetMapping()
     public ResponseEntity<List<Course>> handle() {
         var courses = getAllCoursesService.execute();
         return ResponseEntity.ok(courses);

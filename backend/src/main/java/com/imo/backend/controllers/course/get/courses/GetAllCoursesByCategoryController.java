@@ -21,7 +21,7 @@ public class GetAllCoursesByCategoryController extends CourseController {
     }
 
     @Operation(summary = "Get all courses by category")
-    @GetMapping("/get-all/{slugCategory}")
+    @GetMapping("/categories/{slugCategory}")
     public ResponseEntity<List<Course>> handle(@PathVariable String slugCategory) {
         var courses = getAllCoursesByCategoryService.execute(slugCategory);
         return ResponseEntity.ok(courses);

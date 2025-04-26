@@ -22,7 +22,7 @@ public class GetCoursesProgressController extends UserController {
 
     @Operation(summary = "Get your courses progress")
     @SecurityRequirement(name = "Authorization")
-    @GetMapping("/courses-progress")
+    @GetMapping("/courses/progress")
     public ResponseEntity<List<CourseProgress>> handle(HttpServletRequest request) {
         var coursesProgress = getCoursesProgressService.execute(request.getHeader("Authorization"));
         return ResponseEntity.ok(coursesProgress);

@@ -25,7 +25,7 @@ public class GetCourseOverviewsByCourseNameWithPaginationController extends Cour
     }
 
     @Operation(summary = "Get all course overviews by course name")
-    @GetMapping("/get-all/overviews/cn/{courseName}")
+    @GetMapping("/overviews/course/name/{courseName}")
     public ResponseEntity<List<CourseOverview>> handle(
             @PathVariable String courseName,
             @Parameter(description = "Page number to retrieve", example = "0")

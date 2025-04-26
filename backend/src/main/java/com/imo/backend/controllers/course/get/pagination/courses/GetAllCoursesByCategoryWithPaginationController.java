@@ -24,7 +24,7 @@ public class GetAllCoursesByCategoryWithPaginationController extends CourseContr
     }
 
     @Operation(summary = "Get all courses by category")
-    @GetMapping("/get-all/{slugCategory}")
+    @GetMapping("/categories/{slugCategory}")
     public ResponseEntity<List<Course>> handle(
             @PathVariable String slugCategory,
             @Parameter(description = "Page number to retrieve", example = "0")

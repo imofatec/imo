@@ -21,7 +21,7 @@ public class GetAllCoursesByLevelController extends CourseController {
     }
 
     @Operation(summary = "Get all courses by level")
-    @GetMapping("/get-all/nk/{slugLevel}")
+    @GetMapping("/level/{slugLevel}")
     public ResponseEntity<List<Course>> handle(@PathVariable String slugLevel) {
         var courses = getAllCoursesByLevelService.execute(slugLevel);
         return ResponseEntity.ok(courses);

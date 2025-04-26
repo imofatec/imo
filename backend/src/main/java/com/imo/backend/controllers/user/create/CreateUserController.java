@@ -35,7 +35,7 @@ public class CreateUserController extends UserController {
 
   @Transactional
   @Operation(summary = "Create an account")
-  @PostMapping("/create")
+  @PostMapping()
   public ResponseEntity<NoPasswordUser> handle(
       @Valid @RequestBody RegisterUserRequest registerUserRequest
   ) {
