@@ -26,7 +26,7 @@ public class CreateManyCoursesController extends CourseController {
 
     @Operation(summary = "Create many courses")
     @SecurityRequirement(name = "Authorization")
-    @PostMapping("/create-many")
+    @PostMapping("/many/courses")
     public ResponseEntity<List<CreateCourseResponse>> handle(@Valid @RequestBody
                                                              List<CreateCourseRequest> createCoursesRequest,
                                                              HttpServletRequest request) {

@@ -23,7 +23,7 @@ public class GetAllCoursesWithPaginationController extends CourseControllerWithP
     }
 
     @Operation(summary = "Get all courses")
-    @GetMapping("/get-all")
+    @GetMapping()
     public ResponseEntity<List<Course>> handle(
             @Parameter(description = "Page number to retrieve", example = "0")
             @RequestParam Integer page,

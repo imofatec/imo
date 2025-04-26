@@ -23,7 +23,7 @@ public class GetAllCourseOverviewsWithPaginationController extends CourseControl
     }
 
     @Operation(summary = "Get all course overviews")
-    @GetMapping("/get-all/overviews")
+    @GetMapping("/overviews")
     public ResponseEntity<List<CourseOverview>> handle(
             @Parameter(description = "Page number to retrieve", example = "0")
             @RequestParam Integer page,

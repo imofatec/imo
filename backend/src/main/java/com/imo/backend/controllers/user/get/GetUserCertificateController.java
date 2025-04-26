@@ -35,7 +35,7 @@ public class GetUserCertificateController extends UserController {
 
     @Operation(summary = "Get certificate from a course")
     @SecurityRequirement(name = "Authorization")
-    @GetMapping("/get-certificate/{courseId}")
+    @GetMapping("/course/certificate/{courseId}") //Não é o do front!!!!!!!!!!
     public ResponseEntity<byte[]> handle(
             HttpServletRequest request,
             @PathVariable String courseId

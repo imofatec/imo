@@ -25,7 +25,7 @@ public class CreateCourseController extends CourseController{
 
     @Operation(summary = "Create a course")
     @SecurityRequirement(name = "Authorization")
-    @PostMapping("/create")
+    @PostMapping()
     public ResponseEntity<CreateCourseResponse> handle(@Valid @RequestBody
                                                        CreateCourseRequest createCourseRequest,
                                                        HttpServletRequest request) {
