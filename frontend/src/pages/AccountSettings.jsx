@@ -9,6 +9,8 @@ import useFetchUserInfo from '@/hooks/useFetchUserInfo'
 import useImageUpload from '@/hooks/useImageUpload'
 import { SpinnerButton } from '@/components/ui/spinnerButton'
 import { updateUserRequest } from '@/requests/user/updateUserRequest'
+import { useFormValidator } from '@/hooks/useFormValidator'
+import { updateUserSchema } from '@/schemas/updateUserSchema'
 
 const startUploadLoading = [true, false]
 const startCredentialsLoading = [false, true]
@@ -25,6 +27,14 @@ export default function AccountSettings() {
   const [credentialsError, setCredentialsError] = useState(null)
   const [successUpdated, setSuccessUpdated] = useState(null)
   const [selectedFile, setSelectedFile] = useState(null)
+
+  const {
+    formData,
+    fieldErrors,
+    handleChange,
+    setFormData,
+    setFieldErrors,
+  } = useFormValidator(updateUserSchema)
 
   const clearErrors = () => {
     setSuccessUpdated(null)
@@ -144,38 +154,69 @@ export default function AccountSettings() {
             className="flex flex-col justify-between w-3/4 ml-14"
           >
             <div className="flex flex-row justify-center gap-x-14 w-full mt-10">
-              <InputLabel
-                label={'Nome'}
-                id="name"
-                name="name"
-                type="text"
-                placeholder={userInfo?.name}
-              ></InputLabel>
-
-              <InputLabel
-                label={'E-mail'}
-                id="email"
-                name="email"
-                type="text"
-                placeholder={userInfo?.email}
-              ></InputLabel>
+              <div className='w-full'>
+                <InputLabel
+                  label={'Nome'}
+                  id="name"
+                  name="name"
+                  type="text"
+                  placeholder={userInfo?.name}
+                  value={formData.name || ''}
+                  onChange={handleChange}
+                  className={fieldErrors.name ? 'border-red-500 focus:border-red-500' : ''}
+                ></InputLabel>
+                {fieldErrors.name && (
+                  <p className="text-sm text-red-500 !mt-0">{fieldErrors.name}</p>
+                )}
+              </div>
+              <div className='w-full'>
+                <InputLabel
+                  label={'E-mail'}
+                  id="email"
+                  name="email"
+                  type="text"
+                  placeholder={userInfo?.email}
+                  value={formData.email || ''}
+                  onChange={handleChange}
+                  className={fieldErrors.email ? 'border-red-500 focus:border-red-500' : ''}
+                ></InputLabel>
+                {fieldErrors.email && (
+                  <p className="text-sm text-red-500 !mt-0">{fieldErrors.email}</p>
+                )}
+              </div>
             </div>
 
             <div className="flex flex-row justify-center gap-x-14 w-full">
-              <InputLabel
-                label={'Senha'}
-                id="password"
-                name="password"
-                type="password"
-                placeholder="Digite a nova senha"
-              ></InputLabel>
-              <InputLabel
-                label="Confirme a senha"
-                id="password-confirm"
-                name="password-confirm"
-                type="password"
-                placeholder="Confirme a nova senha"
-              ></InputLabel>
+              <div className='w-full'>
+                <InputLabel
+                  label={'Senha'}
+                  id="password"
+                  name="password"
+                  type="password"
+                  placeholder="Digite a nova senha"
+                  value={formData.password || ''}
+                  onChange={handleChange}
+                  className={fieldErrors.password ? 'border-red-500 focus:border-red-500' : ''}
+                ></InputLabel>
+                {fieldErrors.password && (
+                  <p className="text-sm text-red-500 !mt-0">{fieldErrors.password}</p>
+                )}
+              </div>
+              <div className='w-full'>
+                <InputLabel
+                  label="Confirme a senha"
+                  id="confPassword"
+                  name="confPassword"
+                  type="password"
+                  placeholder="Confirme a nova senha"
+                  value={formData.confPassword || ''}
+                  onChange={handleChange}
+                  className={fieldErrors.confPassword ? 'border-red-500 focus:border-red-500' : ''}
+                ></InputLabel>
+                {fieldErrors.confPassword && (
+                  <p className="text-sm text-red-500 !mt-0">{fieldErrors.confPassword}</p>
+                )}
+              </div>
             </div>
 
             <div className="flex flex-col items-center mb-[0.80rem]">
