@@ -6,12 +6,11 @@ export const lessonSchema = z.object({
     .min(10, 'O título da aula precisa ter no mínimo 10 caracteres')
     .max(50, 'O título da aula pode ter no máximo 50 caracteres'),
 
-  description: z
+  descriptionC: z
     .string()
-    .max(600, 'A descrição da aula pode ter no máximo 600 caracteres')
-    .optional()
-    .or(z.literal('')),
-
+    .min(10, 'A descrição da aula precisa ter no mínimo 10 caracteres')
+    .max(600, 'A descrição da aula pode ter no máximo 600 caracteres'),
+    
   youtubeLink: z
     .string()
     .regex(
