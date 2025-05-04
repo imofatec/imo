@@ -11,7 +11,7 @@ const useImageUpload = (setUrlImage) => {
     formData.append('file', file)
 
     const [error, result] = await safeAwait(
-      authAxiosInstance.put('/api/user/upload/profile-picture', formData),
+      authAxiosInstance.put('/api/user/profile-picture', formData),
     )
 
     if (error) {

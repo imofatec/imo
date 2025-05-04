@@ -21,7 +21,7 @@ export const useMyCourses = (selectedCategory, page, size) => {
             : null
 
       const [error, result] = await safeAwait(
-        authAxiosInstance.get('/api/user/course-overviews', {
+        authAxiosInstance.get('/api/user/course/overviews', {
           params: { page, size },
         }),
       )

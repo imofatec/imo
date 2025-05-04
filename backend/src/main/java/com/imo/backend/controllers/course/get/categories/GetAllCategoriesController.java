@@ -20,7 +20,7 @@ public class GetAllCategoriesController extends CourseController {
     }
 
     @Operation(summary = "Get all categories")
-    @GetMapping("/get-all/categories")
+    @GetMapping("/categories")
     public ResponseEntity<Set<Category>> handle() {
         var categories = getAllCategoriesService.execute();
         return ResponseEntity.ok(categories);

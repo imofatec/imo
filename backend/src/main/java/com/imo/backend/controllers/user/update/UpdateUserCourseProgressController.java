@@ -21,7 +21,7 @@ public class UpdateUserCourseProgressController extends UserController {
 
     @Operation(summary = "Update the progress of any course you started")
     @SecurityRequirement(name = "Authorization")
-    @PutMapping("/update-progress/{courseId}")
+    @PutMapping("/progress/{courseId}")
     public ResponseEntity<UserCourseProgress> handle(@PathVariable String courseId, HttpServletRequest request) {
         var updatedProgress = updateUserCourseProgressService.execute(courseId, null, request.getHeader("Authorization"));
         return ResponseEntity.ok(updatedProgress);

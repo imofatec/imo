@@ -25,7 +25,7 @@ public class UpdateUserController extends UserController {
 
     @Operation(summary = "Update the user's credentials, including name, password, and email.")
     @SecurityRequirement(name = "Authorization")
-    @PutMapping("/update")
+    @PutMapping()
     public ResponseEntity<NoPasswordUser> handle(HttpServletRequest request,
                                                  @Valid @RequestBody FieldsToUpdateUser fieldsToUpdateUser) {
 

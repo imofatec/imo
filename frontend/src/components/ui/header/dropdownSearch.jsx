@@ -25,7 +25,7 @@ export default function DropdownSearch() {
     setTimeout(async () => {
       const [error, result] = await safeAwait(
         axiosInstance.get(
-          `/api/courses/pagination/get-all/overviews/cn/${courseName}?page=0&size=10`,
+          `/api/courses/pagination/overviews/course/name/${courseName}?page=0&size=10`,
         ),
       )
       if (result?.data) {

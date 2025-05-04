@@ -20,7 +20,7 @@ public class GetAllCourseOverviewsController extends CourseController {
     }
 
     @Operation(summary = "Get all course overviews")
-    @GetMapping("/get-all/overviews")
+    @GetMapping("/overviews")
     public ResponseEntity<List<CourseOverview>> handle() {
         var courseOverviews = getAllCourseOverviewsService.execute();
         return ResponseEntity.ok(courseOverviews);
