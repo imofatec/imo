@@ -7,7 +7,7 @@ export async function updateUserRequest({ request }) {
   const name = data.get('name')
   const email = data.get('email')
   const password = data.get('password')
-  const confPassword = data.get('password-confirm')
+  const confPassword = data.get('confPassword')
 
   if (password !== confPassword) {
     return { error: 'As senhas estão diferentes.' }
