@@ -40,11 +40,12 @@ public class CourseFactory {
                 .mapToObj(i -> {
                     CreateLessonDto item = createCourseRequest.getLessons().get(i);
                     Lesson lesson = new Lesson();
+                    lesson.setId(new ObjectId().toString());
                     lesson.setIndex(i + 1);
                     lesson.setTitle(item.getTitle());
                     lesson.setDescription(item.getDescription());
                     lesson.setYoutubeLink(item.getYoutubeLink());
-                    lesson.setUploadedAt(LocalDateTime.now());
+//                    lesson.setUploadedAt(LocalDateTime.now());
                     return lesson;
                 })
                 .collect(Collectors.toList());
