@@ -21,7 +21,7 @@ public class GetCourseProgressByIdController extends UserController {
 
     @Operation(summary = "Get course progress by course id")
     @SecurityRequirement(name = "Authorization")
-    @GetMapping("/course-progress/{courseId}")
+    @GetMapping("/course/progress/{courseId}")
     public ResponseEntity<CourseProgress> handle(@PathVariable String courseId, HttpServletRequest request) {
         var courseProgress = getCourseProgressByIdService.execute(courseId, request.getHeader("Authorization"));
         return ResponseEntity.ok(courseProgress);

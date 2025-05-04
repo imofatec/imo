@@ -19,7 +19,7 @@ export async function updateUserRequest({ request }) {
   if (password) user.password = password
 
   const [error, result] = await safeAwait(
-    authAxiosInstance.put(`/api/user/update`, user),
+    authAxiosInstance.put(`/api/user`, user),
   )
 
   if (error) {

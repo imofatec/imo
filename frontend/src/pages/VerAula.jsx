@@ -37,7 +37,7 @@ export default function VerAula() {
 
   const handleGetCertificate = async () => {
     const [error, result] = await safeAwait(
-      authAxiosInstance.get(`/api/user/get-certificate/${courseId}`, {
+      authAxiosInstance.get(`/api/user/course/certificate/${courseId}`, {
         responseType: 'blob',
       }),
     )

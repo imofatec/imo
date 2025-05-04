@@ -12,7 +12,7 @@ export async function registerRequest({ request }) {
   }
 
   const [error] = await safeAwait(
-    axiosInstance.post('/api/user/create', submission),
+    axiosInstance.post('/api/user', submission),
   )
 
   if (error) {

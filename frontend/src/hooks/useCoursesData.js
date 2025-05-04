@@ -16,24 +16,24 @@ export const useCoursesData = (slug,level, page, size, setPage) => {
     setLoading(true)
 
     const [errorCategories, responseCategories] = await safeAwait(
-      axiosInstance.get('/api/courses/get-all/categories'),
+      axiosInstance.get('/api/courses/categories'),
     )
     const [errorCourses, responseCourses] = await safeAwait(
       currentSlug
         ? await axiosInstance.get(
-            `/api/courses/pagination/get-all/overviews/${currentSlug}`,
+            `/api/courses/pagination/overviews/categories/${currentSlug}`,
             {
               params: { page, size },
             },
           )
         : currentLevel
         ? await axiosInstance.get(
-            `/api/courses/pagination/get-all/overviews/nk/${currentLevel}`,
+            `/api/courses/pagination/overviews/level/${currentLevel}`,
             {
               params: { page, size },
             },
           )
-        : await axiosInstance.get('/api/courses/pagination/get-all/overviews', {
+        : await axiosInstance.get('/api/courses/pagination/overviews', {
             params: { page, size },
           }),
     )

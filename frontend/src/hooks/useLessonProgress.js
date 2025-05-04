@@ -11,7 +11,7 @@ export const useLessonProgress = (courseId) => {
     if (!courseId) return
 
     const [error] = await safeAwait(
-      authAxiosInstance.put(`/api/user/update-progress/${courseId}`),
+      authAxiosInstance.put(`/api/user/progress/${courseId}`),
     )
 
     if (error) {
@@ -25,7 +25,7 @@ export const useLessonProgress = (courseId) => {
     if (!courseId) return
 
     const [error, result] = await safeAwait(
-      authAxiosInstance.get(`/api/user/course-progress/${courseId}`),
+      authAxiosInstance.get(`/api/user/course/progress/${courseId}`),
     )
 
     if (error?.status === 404) {

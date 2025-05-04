@@ -26,7 +26,7 @@ public class UploadUserProfilePictureController extends UserController {
     @Operation(summary = "Upload a profile picture",
             description = "Allow users to upload a new profile picture")
     @SecurityRequirement(name = "Authorization")
-    @PutMapping(value = "upload/profile-picture", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PutMapping(value = "/profile-picture", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<NoPasswordUser> handle(
             @RequestParam("file") MultipartFile file, HttpServletRequest request) {
         var updatedUser = uploadUserProfilePictureService.execute(file, request.getHeader("Authorization"));
