@@ -6,6 +6,7 @@ import MyCourses from '@/pages/MyCourses'
 import VerAula from '@/pages/VerAula'
 import { createCourse as createCourseRequest } from '@/requests/createCourse'
 import { updateUserRequest } from '@/requests/user/updateUserRequest'
+import { createComment } from '@/requests/courses/createComment'
 import UserEmailConfirmation from '@/pages/UserEmailConfirmation'
 
 const teste = {
@@ -22,6 +23,7 @@ const createCourse = {
 const lessons = {
   path: '/cursos/:slugCourse/:idLesson',
   element: <VerAula />,
+  action: createComment,
 }
 
 const accountSettings = {
