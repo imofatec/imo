@@ -11,6 +11,7 @@ import { useLessonProgress } from '@/hooks/useLessonProgress'
 import { safeAwait } from '@/lib/safeAwait'
 import { useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
+import CommentForm from '@/components/ui/lessons/commentForm'
 
 export default function VerAula() {
   const { slugCourse, idLesson } = useParams()
@@ -94,20 +95,21 @@ export default function VerAula() {
           <LessonDescription
             descr={currentLesson?.description}
           ></LessonDescription>
+          <CommentForm lessonId={currentLesson?.id} />
           <div className="">
             <h2 className="font-semibold text-xl">Comentários</h2>
             {commentData
               ? commentData.map((item, i) => {
-                  return (
-                    <LessonComment
-                      key={i}
-                      profilePic={thumbLesson}
-                      profileName={item.profileName}
-                      commentContent={item.commentContent}
-                      commentTitle={item.commentTitle}
-                    ></LessonComment>
-                  )
-                })
+                return (
+                  <LessonComment
+                    key={i}
+                    profilePic={thumbLesson}
+                    profileName={item.profileName}
+                    commentContent={item.commentContent}
+                    commentTitle={item.commentTitle}
+                  ></LessonComment>
+                )
+              })
               : 'Seja o primeiro a comentar!'}
           </div>
         </div>
@@ -142,11 +144,10 @@ export default function VerAula() {
           <button
             onClick={handleGetCertificate}
             disabled={progress.lessonsWatched < lessonData.length}
-            className={`mt-4 px-4 py-2 rounded ${
-              progress.lessonsWatched < lessonData.length || cansei
-                ? 'bg-gray-500 cursor-not-allowed text-white'
-                : 'bg-custom-header-cyan text-black'
-            }`}
+            className={`mt-4 px-4 py-2 rounded ${progress.lessonsWatched < lessonData.length || cansei
+              ? 'bg-gray-500 cursor-not-allowed text-white'
+              : 'bg-custom-header-cyan text-black'
+              }`}
           >
             Gerar certificado
           </button>
