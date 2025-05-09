@@ -26,11 +26,12 @@ export default function CommentForm({ lessonId }) {
                     placeholder="Deixe seu comentário aqui"
                     id="comment"
                     name="comment"
+                    maxLength={300}
                 />
                 <div className="flex flex-row justify-between">
-                    <Button className="w-1/4 bg-transparent text-white underline">
+                    <button className="w-1/4 bg-transparent text-white underline" type="button" onClick={() => formRef.current.reset()}>
                         Cancelar
-                    </Button>
+                    </button>
                     <Button className="w-1/4 bg-custom-header-cyan text-black">
                         Comentar
                     </Button>

@@ -33,9 +33,11 @@ export default function LessonComment({
           </label>
         </div>
       </div>
-      <div className="flex flex-col ml-12 ">
-        <h2 className="font-semibold text-lg">{commentTitle}</h2>
-        <p className="my-3">{commentContent}</p>
+      <div className="flex flex-col ml-12 w-full">
+        <div className='w-full'>
+          <h2 className="font-semibold text-lg">{commentTitle}</h2>
+          <p className="my-3 break-all">{commentContent}</p>
+        </div>
         <div className="flex flex-row" onClick={openComment}>
           <a className="ml-6 underline">
             {reply ? (
