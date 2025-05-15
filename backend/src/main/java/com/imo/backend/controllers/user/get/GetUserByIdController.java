@@ -1,6 +1,7 @@
 package com.imo.backend.controllers.user.get;
 
 import com.imo.backend.controllers.user.UserController;
+import com.imo.backend.lib.ValidateObjectId;
 import com.imo.backend.models.user.dtos.NoPasswordUser;
 import com.imo.backend.models.user.services.get.interfaces.GetUserByIdService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -20,6 +21,7 @@ public class GetUserByIdController extends UserController {
   @Operation(summary = "Get user by id")
   @GetMapping("/{id}")
   public ResponseEntity<NoPasswordUser> handle(@PathVariable String id) {
+    ValidateObjectId.execute(id);
     var user = this.getUserByIdService.execute(id);
     return ResponseEntity.ok(user);
   }
