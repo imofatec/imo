@@ -2,14 +2,15 @@ package com.imo.backend.models.user.repositories;
 
 import com.imo.backend.models.certificate.Certificate;
 import com.imo.backend.models.course.Course;
-import com.imo.backend.models.user.User;
 import com.imo.backend.models.course.dtos.CourseProgress;
+import com.imo.backend.models.user.User;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.data.mongodb.repository.Update;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -50,4 +51,7 @@ public interface UserRepository extends MongoRepository<User, String>, CustomUse
     @Query("{ '_id' : ?0 }")
     @Update("{ $set: { 'isConfirmed':?1 }}")
     void updateUserAccessById(String userId, Boolean isConfirmed);
+
+    @Query("{ '_id': { $in: ?0 } }")
+    List<User> findByIds(List<String> ids);
 }
