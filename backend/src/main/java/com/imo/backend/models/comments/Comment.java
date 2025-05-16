@@ -48,7 +48,7 @@ public class Comment {
   public static ConvertedCommentDto toDTO(Comment comment) {
     return new ConvertedCommentDto(
         comment.getId(), comment.getUserId().toString(), comment.getUsername(),
-        comment.getComment(), comment.getParentId().toString(), comment.getCreatedAt(), comment.getUpdatedAt()
+        comment.getComment(), comment.getParentId() != null ? comment.getParentId().toString() : null, comment.getCreatedAt(), comment.getUpdatedAt()
     );
   }
 }
