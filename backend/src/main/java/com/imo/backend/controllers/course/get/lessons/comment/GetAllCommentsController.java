@@ -1,7 +1,7 @@
 package com.imo.backend.controllers.course.get.lessons.comment;
 
 import com.imo.backend.controllers.course.CourseController;
-import com.imo.backend.models.comments.Comment;
+import com.imo.backend.models.comments.dto.ConvertedCommentDto;
 import com.imo.backend.models.comments.service.get.interfaces.GetAllCommentsService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -25,7 +25,7 @@ public class GetAllCommentsController extends CourseController {
 
   @Operation(summary = "Get all comments by lessonId")
   @GetMapping("/comments/{lessonId}")
-  public ResponseEntity<List<Comment>> handle(
+  public ResponseEntity<List<ConvertedCommentDto>> handle(
       @PathVariable String lessonId,
       @RequestParam(required = false) Integer page,
       @Parameter(description = "Size of each page", example = "10")
