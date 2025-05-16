@@ -13,9 +13,15 @@ export const useCommentsData = (idLesson) => {
             setError(false)
             setLoading(true)
 
+            const page = undefined
+            const size = undefined
+
             const [errorData, data] = await safeAwait(
                 axiosInstance.get(
                     `/api/courses/comments/${idLesson}`,
+                    {
+                        params: { page, size },
+                    },
                 ),
             )
             if (errorData) {

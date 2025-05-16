@@ -14,6 +14,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import CommentForm from '@/components/ui/lessons/commentForm'
 import { useCommentsData } from '@/hooks/useCommentsData'
 import { Arrow } from '@/components/ui/arrow'
+import { useFetchManyUsersInfo } from '@/hooks/useFetchManyUsersInfo'
 
 export default function VerAula() {
   const { slugCourse, idLesson } = useParams()
@@ -30,6 +31,10 @@ export default function VerAula() {
 
   const { commentsData, error: commentsError, loading: commentsLoading } =
     useCommentsData(currentLesson?.id ?? null)
+
+  const userIds = commentsData?.map((c) => c.userId) ?? []
+  const { images } = useFetchManyUsersInfo(userIds)
+
   useEffect(() => {
     if (!loading && error) {
       navigate('/404')
@@ -114,10 +119,10 @@ export default function VerAula() {
                     {commentsData.map((comentario) => (
                       <LessonComment
                         key={comentario.id}
-                        profilePic={thumbLesson}
+                        profilePic={images[comentario.userId] || thumbLesson}
                         profileName={comentario.username}
                         commentContent={comentario.comment}
-                        commentTitle={`${comentario.username} comentou:`}
+                        commentTitle={`${comentario.username}`}
                       />
                     ))}
                   </div>
@@ -157,8 +162,8 @@ export default function VerAula() {
             onClick={handleGetCertificate}
             disabled={progress.lessonsWatched < lessonData.length}
             className={`mt-4 px-4 py-2 rounded ${progress.lessonsWatched < lessonData.length || cansei
-                ? 'bg-gray-500 cursor-not-allowed text-white'
-                : 'bg-custom-header-cyan text-black'
+              ? 'bg-gray-500 cursor-not-allowed text-white'
+              : 'bg-custom-header-cyan text-black'
               }`}
           >
             Gerar certificado
