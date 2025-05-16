@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface GetAllCommentsService {
   List<Comment> execute(String lessonId);
+
+  List<Comment> execute(String lessonId, Integer page, Integer size);
 }
