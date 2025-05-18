@@ -1,50 +1,6 @@
 # IMO - Plataforma para cursos de TI
-> Integrantes https://github.com/orgs/imofatec/people
 
-## Quem somos
-Este projeto está sendo desenvolvido na FATEC Diadema como parte do curso Desenvolvimento de Software Multiplataforma (DSM)
-
-## Objetivo
-Nosso objetivo é mudar a forma como consumimos os algoritmos,
-servindo como um repositório de conteúdo educativo e treinamentos da área de
-TI, com um mecanismo de busca honesto, de código aberto, com o único
-proposito de alcançar o livre conhecimento.
-
-A plataforma será gratuita, fazendo uso de interfaces acessíveis e compreensíveis tanto para profissionais tanto para iniciantes.
-
-O projeto está alinhado com o [Objetivo de Desenvolvimento Sustentável (ODS) de número 4 - Educação de Qualidade](https://brasil.un.org/pt-br/sdgs/4)
-
-## Como funciona
-O conteúdo da plataforma é incorporado de plataformas que já
-mantém esses treinamentos, mas não cumprem com as necessidades dos usuários,
-como o YouTube por exemplo, estas aulas a serem incorporadas são disponibilizadas pelos próprios usuários
-
-## Prints
-
-### Index
-> No index o usuário pode visualizar conteúdos disponíveis e ja avistar uma barra de pesquisa no header
-
-![pagina index](./assets/index.png)
-
-### Todos cursos
-> Na pagina de cursos o usuário pode filtrar por categorias e ver a avaliação dos cursos
-
-![pagina todos cursos](./assets/todos-cursos.png)
-
-### Assistir aula
-> Pode assitir a aula e acompanhar na barra lateral seu progresso no curso
-
-![pagina de assistir aula](./assets/assistir-aula.png)
-
-### Adicionar curso
-> Página para o usuário disponibilizar o curso na plataforma
-
-![pagina de adicionar curso](./assets/contribuir-curso.png)
-
-### Configurar conta
-> Usuário pode configurar sua conta
-
-![pagina de configurar conta](./assets/configurar-conta.png)
+[Informações sobre o projeto](https://github.com/imofatec/imo/wiki/IMO-%E2%80%90-Plataforma-para-cursos-de-TI)
 
 ## Tecnologias utilizadas
 > API
