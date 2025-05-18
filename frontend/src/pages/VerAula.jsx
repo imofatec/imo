@@ -33,7 +33,32 @@ export default function VerAula() {
     useCommentsData(currentLesson?.id ?? null)
 
   const userIds = commentsData?.map((c) => c.userId) ?? []
-  const { images } = useFetchManyUsersInfo(userIds)
+  const { images, usersInfo } = useFetchManyUsersInfo(userIds)
+
+  function buildCommentTree(comments) {
+    const commentMap = new Map()
+
+    comments.forEach((comment) => {
+      commentMap.set(comment.id, { ...comment, children: [] })
+    })
+
+    const tree = []
+
+    commentMap.forEach((comment) => {
+      if (comment.parentId) {
+        const parent = commentMap.get(comment.parentId)
+        if (parent) {
+          parent.children.push(comment)
+        }
+      } else {
+        tree.push(comment)
+      }
+    })
+
+    return tree
+  }
+
+  const commentTree = buildCommentTree(commentsData)
 
   useEffect(() => {
     if (!loading && error) {
@@ -116,13 +141,22 @@ export default function VerAula() {
                 </div>
                 {showComments && (
                   <div>
-                    {commentsData.map((comentario) => (
+                    {commentTree.map((comentario) => (
                       <LessonComment
                         key={comentario.id}
                         profilePic={images[comentario.userId] || thumbLesson}
-                        profileName={comentario.username}
+                        profileName={usersInfo[comentario.userId]?.name}
                         commentContent={comentario.comment}
-                        commentTitle={`${comentario.username}`}
+                        commentTitle={`${usersInfo[comentario.userId]?.name}`}
+                        parentId={comentario.id}
+                        lessonId={currentLesson?.id}
+                        children={comentario.children.map((child) => ({
+                          ...child,
+                          profilePic: images[child.userId] || thumbLesson,
+                          profileName: usersInfo[child.userId]?.name,
+                          commentTitle: `${usersInfo[child.userId]?.name}`,
+                          commentContent: child.comment,
+                        }))}
                       />
                     ))}
                   </div>

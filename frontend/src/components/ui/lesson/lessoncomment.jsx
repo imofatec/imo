@@ -8,70 +8,49 @@ export default function LessonComment({
   profileName,
   commentTitle,
   commentContent,
-  reply,
+  parentId = null,
+  lessonId = null,
+  children = []
 }) {
-  reply = 3
   const [open, setOpen] = useState(false)
   const [arrowOrientation, setArrowOrientation] = useState('down')
 
-  const openComment = () => {
-    if (!open) {
-      setOpen(true)
-      setArrowOrientation('up')
-    } else {
-      setOpen(false)
-      setArrowOrientation('down')
-    }
+  const toggleOpen = () => {
+    setOpen(!open)
+    setArrowOrientation(open ? 'down' : 'up')
   }
+
   return (
-    <div className="flex flex-row my-10">
-      <div className="flex flex-col ">
-        <div className="flex flex-row text-center">
-          <label>
-            <UserPicture size={'md'} profilePic={profilePic}></UserPicture>
-            {profileName}
-          </label>
-        </div>
-      </div>
-      <div className="flex flex-col ml-12 w-full">
-        <div className='w-full'>
+    <div className="ml-4 my-6">
+      <div className="flex flex-row">
+        <UserPicture size="md" profilePic={profilePic} />
+        <div className="ml-4 w-full">
           <h2 className="font-semibold text-lg">{commentTitle}</h2>
           <p className="my-3 break-all">{commentContent}</p>
-        </div>
-        <div className="flex flex-row" onClick={openComment}>
-          <a className="ml-6 underline">
-            {reply ? (
-              <>{reply} respostas</>
-            ) : (
-              <>Seja o primeiro a responder esse cometário!</>
-            )}
-          </a>
-          <Arrow size={'sm'} orientation={arrowOrientation}></Arrow>
-        </div>
-        <div className="w-full">
-          {open ? (
-            reply ? (
-              <>
-                {/*
-              listaRespostas.map((data , i) => {
-                    return (
-                      <LessonComment
-                        profilePic={xis}
-                        profileName={item.profileName}
-                        commentContent={item.commentContent}
-                        commentTitle={item.commentTitle}
-                      ></LessonComment>
-                    )
-                  })
-                })
-              */}
-                <Commentary></Commentary>
-              </>
-            ) : (
-              <Commentary></Commentary>
-            )
-          ) : (
-            <></>
+
+          <div className="flex flex-row items-center cursor-pointer" onClick={toggleOpen}>
+            <span className="underline text-sm">
+              {children.length > 0 ? `${children.length} Resposta(s)` : 'Responder'}
+            </span>
+            <Arrow size="sm" orientation={arrowOrientation} />
+          </div>
+
+          {open && (
+            <div className="ml-6">
+              {children.map((child) => (
+                <LessonComment
+                key={child.id}
+                profilePic={child.profilePic}
+                profileName={child.profileName}
+                commentTitle={child.commentTitle}
+                commentContent={child.commentContent}
+                parentId={child.id}
+                lessonId={lessonId}
+                children={child.children}
+                />
+              ))}
+              <Commentary parentId={parentId} lessonId={lessonId} />
+            </div>
           )}
         </div>
       </div>

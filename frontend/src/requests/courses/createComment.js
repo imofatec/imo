@@ -8,6 +8,7 @@ export async function createComment({ request}) {
     const id = data.get('lessonId')
     const comment = {
         comment: data.get('comment'),
+        parentId: data.get('parentId'),
     }
 
     const [error, result] = await safeAwait(
