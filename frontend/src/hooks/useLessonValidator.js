@@ -9,7 +9,7 @@ export function useLessonValidator(schema) {
     const handleChange = (index, e) => {
         const { name, value } = e.target
 
-        const pureName = name.split('-')[0] 
+        const pureName = name.split('-')[0]
 
         const updatedLesson = {
             ...formDataList[index],
@@ -20,21 +20,22 @@ export function useLessonValidator(schema) {
         newFormDataList[index] = updatedLesson
         setFormDataList(newFormDataList)
 
-        const result = schema.safeParse(updatedLesson)
+        const fieldSchema = schema.shape[pureName]
+        const fieldValidation = fieldSchema.safeParse(value)
 
         const newFieldErrorsList = [...fieldErrorsList]
-        if (!result.success) {
-            const errors = {}
-            result.error.errors.forEach((err) => {
-                errors[err.path[0]] = err.message
-            })
-            newFieldErrorsList[index] = errors
+        const currentErrors = { ...fieldErrorsList[index] }
+
+        if (!fieldValidation.success) {
+            currentErrors[pureName] = fieldValidation.error.errors[0].message
         } else {
-            newFieldErrorsList[index] = {}
+            delete currentErrors[pureName]
         }
 
+        newFieldErrorsList[index] = currentErrors
         setFieldErrorsList(newFieldErrorsList)
     }
+
     const addLesson = () => {
         setFormDataList([...formDataList, { title: '', descriptionC: '', youtubeLink: '' }])
         setFieldErrorsList([...fieldErrorsList, {}])
