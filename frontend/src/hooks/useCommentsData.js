@@ -7,35 +7,34 @@ export const useCommentsData = (idLesson) => {
     const [error, setError] = useState(false)
     const [loading, setLoading] = useState(true)
 
-    useEffect(() => {
-        const fetchData = async () => {
-            if (!idLesson) return;
-            setError(false)
-            setLoading(true)
 
-            const page = undefined
-            const size = undefined
+    const fetchData = async () => {
+        if (!idLesson) return;
+        setError(false)
+        setLoading(true)
 
-            const [errorData, data] = await safeAwait(
-                axiosInstance.get(
-                    `/api/courses/comments/${idLesson}`,
-                    {
-                        params: { page, size },
-                    },
-                ),
-            )
-            if (errorData) {
-                setError(true)
-                console.error(errorData)
-                return
-            }
+        const page = undefined
+        const size = undefined
 
-            setCommentsData(data.data)
-
-            setLoading(false)
+        const [errorData, data] = await safeAwait(
+            axiosInstance.get(
+                `/api/courses/comments/${idLesson}`,
+                {
+                    params: { page, size },
+                },
+            ),
+        )
+        if (errorData) {
+            setError(true)
+            console.error(errorData)
+            return
         }
+
+        setCommentsData(data.data)
+        setLoading(false)
+    }
+    useEffect(() => {
         fetchData()
     }, [idLesson])
-
-    return { commentsData, error, loading }
+    return { commentsData, error, loading,refetchComments: fetchData }
 }
