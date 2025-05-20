@@ -4,15 +4,18 @@ import LargeInput from '@/components/ui/inputs/largeinput'
 import { Button } from '@/components/ui/button'
 import { createComment } from '@/requests/courses/createComment'
 
-export default function CommentForm({ lessonId }) {
+export default function CommentForm({ lessonId, onCommentSubmit }) {
     const formRef = useRef(null)
     const actionData = useActionData()
 
     useEffect(() => {
         if (actionData?.success && formRef.current) {
-          formRef.current.reset()
+            formRef.current.reset()
+            if (onCommentSubmit) {
+                onCommentSubmit()
+            }
         }
-      }, [actionData])
+    }, [actionData])
     return (
         <div>
             <h2 className='font-semibold text-xl'>Comentários</h2>

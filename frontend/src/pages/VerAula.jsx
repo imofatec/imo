@@ -29,7 +29,7 @@ export default function VerAula() {
       ? lessonData.find((lesson) => lesson.youtubeLink === idLesson)
       : null
 
-  const { commentsData, error: commentsError, loading: commentsLoading } =
+  const { commentsData, error: commentsError, loading: commentsLoading,refetchComments } =
     useCommentsData(currentLesson?.id ?? null)
 
   const userIds = commentsData?.map((c) => c.userId) ?? []
@@ -93,6 +93,7 @@ export default function VerAula() {
     link.click()
   }
 
+  console.log('comentario', commentsData)
   return (
     <div className="max-w-full min-h-screen">
       <Titulo titulo={`IMO / ${currentLesson?.title}`}></Titulo>
@@ -121,7 +122,7 @@ export default function VerAula() {
 
           <LessonDescription descr={currentLesson?.description} />
 
-          {currentLesson && <CommentForm lessonId={currentLesson?.id} />}
+          {currentLesson && <CommentForm lessonId={currentLesson?.id} onCommentSubmit={refetchComments} />}
           <div>
             {commentsData && commentsData.length > 0 ? (
               <>
