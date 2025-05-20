@@ -19,12 +19,7 @@ export default function SignUp() {
     fieldErrors,
     handleChange,
     setFieldErrors
-  } = useFormValidator(registerSchema, {
-    email: '',
-    name: '',
-    password: '',
-    confPassword: ''
-  })
+  } = useFormValidator(registerSchema)
 
   useEffect(() => {
     if (actionData) {
@@ -61,7 +56,7 @@ export default function SignUp() {
               name="email"
               placeholder="Email"
               label="Email"
-              value={formData.email}
+              value={formData.email || ''}
               onChange={handleChange}
               className={fieldErrors.email ? 'border-red-500 focus:border-red-500' : ''}
             />
@@ -75,7 +70,7 @@ export default function SignUp() {
               name="name"
               placeholder="Nome"
               label="Nome"
-              value={formData.name}
+              value={formData.name || ''}
               onChange={handleChange}
               className={fieldErrors.name ? 'border-red-500 focus:border-red-500' : ''}
             />
@@ -89,7 +84,7 @@ export default function SignUp() {
               name="password"
               placeholder="Senha"
               label="Senha"
-              value={formData.password}
+              value={formData.password || ''}
               onChange={handleChange}
               className={fieldErrors.password ? 'border-red-500 focus:border-red-500' : ''}
             />
@@ -103,7 +98,7 @@ export default function SignUp() {
               name="confPassword"
               placeholder="Confirmar senha"
               label="Confirmar senha"
-              value={formData.confPassword}
+              value={formData.confPassword || ''}
               onChange={handleChange}
               className={fieldErrors.confPassword ? 'border-red-500 focus:border-red-500' : ''}
             />

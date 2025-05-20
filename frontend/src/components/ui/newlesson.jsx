@@ -26,7 +26,7 @@ export default function NewLesson() {
             placeholder="Insira aqui o Link da Aula"
             idInput={`youtubeLink-${index}`}
             name="youtubeLink"
-            value={lesson.youtubeLink}
+            value={lesson.youtubeLink || ''}
             onChange={(e) => handleChange(index, e)}
             error={fieldErrorsList[index]?.youtubeLink}
           />
@@ -36,7 +36,7 @@ export default function NewLesson() {
             placeholder="Insira aqui o Nome da Aula"
             idInput={`title-${index}`}
             name="title"
-            value={lesson.title}
+            value={lesson.title || ''}
             onChange={(e) => handleChange(index, e)}
             error={fieldErrorsList[index]?.title}
           />
@@ -46,7 +46,7 @@ export default function NewLesson() {
             placeholder="Insira aqui a Descrição da Aula"
             idInput={`descriptionC-${index}`}
             name="descriptionC"
-            value={lesson.descriptionC}
+            value={lesson.descriptionC || ''}
             onChange={(e) => handleChange(index, e)}
             error={fieldErrorsList[index]?.descriptionC}
           />
