@@ -10,7 +10,8 @@ export default function LessonComment({
   commentContent,
   parentId = null,
   lessonId = null,
-  children = []
+  children = [],
+  isReply = false
 }) {
   const [open, setOpen] = useState(false)
   const [arrowOrientation, setArrowOrientation] = useState('down')
@@ -28,12 +29,14 @@ export default function LessonComment({
           <h2 className="font-semibold text-lg">{commentTitle}</h2>
           <p className="my-3 break-all">{commentContent}</p>
 
-          <div className="flex flex-row items-center cursor-pointer" onClick={toggleOpen}>
-            <span className="underline text-sm">
-              {'Responder'}
-            </span>
-            <Arrow size="sm" orientation={arrowOrientation} />
-          </div>
+          {!isReply && (
+            <div className="flex flex-row items-center cursor-pointer" onClick={toggleOpen}>
+              <span className="underline text-sm">
+                {'Responder'}
+              </span>
+              <Arrow size="sm" orientation={arrowOrientation} />
+            </div>
+          )}
 
           <div className="ml-6">
             {children.map((child) => (
@@ -45,7 +48,8 @@ export default function LessonComment({
                 commentContent={child.commentContent}
                 parentId={child.id}
                 lessonId={lessonId}
-                children={child.children}
+                children={[]}
+                isReply={true}
               />
             ))}
             {open && (
