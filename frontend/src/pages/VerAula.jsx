@@ -15,6 +15,7 @@ import CommentForm from '@/components/ui/lessons/commentForm'
 import { useCommentsData } from '@/hooks/useCommentsData'
 import { Arrow } from '@/components/ui/arrow'
 import { useFetchManyUsersInfo } from '@/hooks/useFetchManyUsersInfo'
+import buildCommentTree from '@/lib/builCommentTree'
 
 export default function VerAula() {
   const { slugCourse, idLesson } = useParams()
@@ -35,28 +36,6 @@ export default function VerAula() {
   const userIds = commentsData?.map((c) => c.userId) ?? []
   const { images, usersInfo } = useFetchManyUsersInfo(userIds)
 
-  function buildCommentTree(comments) {
-    const commentMap = new Map()
-
-    comments.forEach((comment) => {
-      commentMap.set(comment.id, { ...comment, children: [] })
-    })
-
-    const tree = []
-
-    commentMap.forEach((comment) => {
-      if (comment.parentId) {
-        const parent = commentMap.get(comment.parentId)
-        if (parent) {
-          parent.children.push(comment)
-        }
-      } else {
-        tree.push(comment)
-      }
-    })
-
-    return tree
-  }
 
   const commentTree = buildCommentTree(commentsData)
 
