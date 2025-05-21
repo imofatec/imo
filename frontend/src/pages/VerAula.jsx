@@ -29,7 +29,7 @@ export default function VerAula() {
       ? lessonData.find((lesson) => lesson.youtubeLink === idLesson)
       : null
 
-  const { commentsData, error: commentsError, loading: commentsLoading,refetchComments } =
+  const { commentsData, error: commentsError, loading: commentsLoading, refetchComments } =
     useCommentsData(currentLesson?.id ?? null)
 
   const userIds = commentsData?.map((c) => c.userId) ?? []
@@ -130,15 +130,15 @@ export default function VerAula() {
                   className="flex items-center gap-2 cursor-pointer mb-4"
                   onClick={() => setShowComments(!showComments)}
                 >
-                  <span className="underline">
+                  <span className="underline pt-5 flex gap-2">
                     {showComments
                       ? 'Fechar todos os comentários'
                       : 'Exibir todos os comentários'}
+                    <Arrow
+                      size="sm"
+                      orientation={showComments ? 'up' : 'down'}
+                    />
                   </span>
-                  <Arrow
-                    size="sm"
-                    orientation={showComments ? 'up' : 'down'}
-                  />
                 </div>
                 {showComments && (
                   <div>
