@@ -24,6 +24,7 @@ export default function VerAula() {
     useLessonProgress(courseId ? courseId : null)
   const navigate = useNavigate()
   const [showComments, setShowComments] = useState(true)
+  const [showLessons, setShowLessons] = useState(true)
 
   const currentLesson =
     lessonData && lessonData.length > 0
@@ -78,7 +79,7 @@ export default function VerAula() {
       <Titulo titulo={`IMO / ${currentLesson?.title}`}></Titulo>
 
       <div className="flex flex-row">
-        <div className="flex flex-col w-3/4 p-8">
+        <div className={`flex flex-col p-8 transition-all duration-300 ease-in-out ${showLessons ? 'w-3/4' : 'w-full'}`}>
           <iframe
             loading="lazy"
             width="w-full"
@@ -147,41 +148,60 @@ export default function VerAula() {
             )}
           </div>
         </div>
-        <div className="flex flex-col w-1/4 pl-4 bg-custom-dark-blue p-6 max-h-[calc(100vh-4rem)] overscroll-auto overflow-y-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-800">
-          <h2 className="text-xl mb-6 text-center">Aulas do curso</h2>
-          {loading &&
-            Array.from({ length: 4 }).map((_, index) => (
-              <SkeletonLoading key={index} />
-            ))}
-          {!loadingProgress && (
-            <>
-              {lessonData.map((item, i) => (
-                <LessonPlaylist
-                  key={i}
-                  indexLesson={item.index}
-                  thumbLesson={`https://img.youtube.com/vi/${item.youtubeLink}/maxresdefault.jpg`}
-                  title={item.title}
-                  lessonDuration="30:23"
-                  author={item.author}
-                  codeCourse={slugCourse}
-                  codeLesson={item.youtubeLink}
-                  onFinished={handleFinishedLesson}
-                  progress={progress}
-                  loadingProgress={loadingProgress}
-                />
-              ))}
-            </>
-          )}
+
+        <div className={`relative transition-all duration-300 ease-in-out ${showLessons ? 'w-1/4' : 'w-12' }`}>
           <button
-            onClick={handleGetCertificate}
-            disabled={progress.lessonsWatched < lessonData.length}
-            className={`mt-4 px-4 py-2 rounded ${progress.lessonsWatched < lessonData.length || cansei
-              ? 'bg-gray-500 cursor-not-allowed text-white'
-              : 'bg-custom-header-cyan text-black'
-              }`}
+            onClick={() => setShowLessons(!showLessons)}
+            className="absolute top-4 left-4 z-10 bg-gray-700 hover:bg-gray-600 text-white p-2 rounded-md transition-colors duration-200"
           >
-            Gerar certificado
+            {showLessons ? (
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            ) : (
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                <path d="M15 18L9 12L15 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            )}
           </button>
+
+          <div className={`bg-custom-dark-blue p-6 max-h-[calc(100vh-4rem)] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-800 transition-opacity duration-300 ${showLessons ? 'opacity-100' : 'opacity-0 pointer-events-none'
+            }`}>
+            <h2 className="text-xl mb-6 text-center">Aulas do curso</h2>
+            {loading &&
+              Array.from({ length: 4 }).map((_, index) => (
+                <SkeletonLoading key={index} />
+              ))}
+            {!loadingProgress && (
+              <>
+                {lessonData.map((item, i) => (
+                  <LessonPlaylist
+                    key={i}
+                    indexLesson={item.index}
+                    thumbLesson={`https://img.youtube.com/vi/${item.youtubeLink}/maxresdefault.jpg`}
+                    title={item.title}
+                    lessonDuration="30:23"
+                    author={item.author}
+                    codeCourse={slugCourse}
+                    codeLesson={item.youtubeLink}
+                    onFinished={handleFinishedLesson}
+                    progress={progress}
+                    loadingProgress={loadingProgress}
+                  />
+                ))}
+              </>
+            )}
+            <button
+              onClick={handleGetCertificate}
+              disabled={progress.lessonsWatched < lessonData.length}
+              className={` w-full mt-4 px-4 py-2 rounded ${progress.lessonsWatched < lessonData.length || cansei
+                ? 'bg-gray-500 cursor-not-allowed text-white'
+                : 'bg-custom-header-cyan text-black'
+                }`}
+            >
+              Gerar certificado
+            </button>
+          </div>
         </div>
       </div>
     </div>
