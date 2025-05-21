@@ -30,15 +30,14 @@ export default function LessonComment({
 
           <div className="flex flex-row items-center cursor-pointer" onClick={toggleOpen}>
             <span className="underline text-sm">
-              {children.length > 0 ? `${children.length} Resposta(s)` : 'Responder'}
+              {'Responder'}
             </span>
             <Arrow size="sm" orientation={arrowOrientation} />
           </div>
 
-          {open && (
-            <div className="ml-6">
-              {children.map((child) => (
-                <LessonComment
+          <div className="ml-6">
+            {children.map((child) => (
+              <LessonComment
                 key={child.id}
                 profilePic={child.profilePic}
                 profileName={child.profileName}
@@ -47,11 +46,12 @@ export default function LessonComment({
                 parentId={child.id}
                 lessonId={lessonId}
                 children={child.children}
-                />
-              ))}
+              />
+            ))}
+            {open && (
               <Commentary parentId={parentId} lessonId={lessonId} />
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </div>
     </div>
