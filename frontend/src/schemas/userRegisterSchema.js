@@ -6,12 +6,14 @@ export const registerSchema = z
       .string()
       .min(1, { message: 'Nome é obrigatório' })
       .min(5, { message: 'O seu nome precisa ter no mínimo 5 caracteres' })
-      .max(20, { message: 'O seu nome pode ter no máximo 20 caracteres' }),
+      .max(20, { message: 'O seu nome pode ter no máximo 20 caracteres' })
+      .optional(), 
 
     email: z
       .string()
       .email({ message: 'Email inválido' })
-      .min(1, { message: 'Preencha o email' }),
+      .min(1, { message: 'Preencha o email' })
+      .optional(),
 
     password: z
       .string()
@@ -20,12 +22,14 @@ export const registerSchema = z
       .regex(/^\S+$/, { message: 'A senha não pode conter espaços em branco' }) 
       .regex(/^(?=.*[A-Z])(?=.*\d).+$/, {
         message: 'A senha precisa ter no mínimo uma letra maiúscula e 1 número',
-      }), 
+      })
+      .optional(), 
 
     confPassword: z
       .string()
       .min(8, { message: 'Senha deve ter no mínimo 6 caracteres' })
-      .min(1, { message: 'Preencha o campo de confirmar senha' }) 
+      .min(1, { message: 'Preencha o campo de confirmar senha' })
+      .optional(), 
   })
   .refine((data) => data.password === data.confPassword, {
     message: 'As senhas não conferem',
