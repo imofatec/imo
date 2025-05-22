@@ -18,10 +18,8 @@ export default function CertificateForm({
       return
     }
 
-    setTimeout(() => {
       onValidate(certificateId)
       setIsLoading(false)
-    }, 400)
   }
   return (
     <form onSubmit={handleGetCertificate} className="flex flex-col w-96">

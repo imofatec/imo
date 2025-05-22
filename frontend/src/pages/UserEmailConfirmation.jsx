@@ -1,5 +1,6 @@
 import authAxiosInstance from '@/api/authAxiosInstance'
 import Spinner from '@/components/ui/spinner'
+import { useAuth } from '@/context/useAuth'
 import useFetchUserInfo from '@/hooks/useFetchUserInfo'
 import { safeAwait } from '@/lib/safeAwait'
 import { useEffect, useState } from 'react'
@@ -9,6 +10,8 @@ export default function UserEmailConfirmation() {
   const [updateResult, setUpdateResult] = useState(undefined)
 
   const { userInfo, fetchUserInfo } = useFetchUserInfo()
+
+  const { authLoading } = useAuth()
 
   const updateUserAccess = async () => {
     const [error] = await safeAwait(authAxiosInstance.put('/api/user/confirm'))
@@ -36,7 +39,7 @@ export default function UserEmailConfirmation() {
 
   return (
     <>
-      {isLoading ? (
+      {isLoading || authLoading ? (
         <Spinner className=" w-8 h-8 mt-4 animate-spin" />
       ) : (
         <>{updateResult}</>
