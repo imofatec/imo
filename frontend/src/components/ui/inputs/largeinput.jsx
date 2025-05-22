@@ -1,4 +1,4 @@
-export default function LargeInput({ placeholder, id, name, value, onChange, className = '' }) {
+export default function LargeInput({ placeholder, id, name, value, onChange, className = '', maxLength = 500}) {
   return (
     <textarea
       id={id}
@@ -7,6 +7,8 @@ export default function LargeInput({ placeholder, id, name, value, onChange, cla
       placeholder={placeholder}
       value={value}
       onChange={onChange}
+      required
+      maxLength={maxLength}
     />
   )
 }

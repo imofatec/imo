@@ -45,6 +45,16 @@ public interface CourseRepository extends MongoRepository<Course, String> {
     })
     List<Comment> findCommentsByLessonId(String courseId,String lessonId);
 
+    @Aggregation(pipeline = {
+        "{ $match: { '_id': ?0 } }",
+        "{ $unwind: '$lessons' }",
+        "{ $match: { 'lessons.id': ?1 } }",
+        "{ $unwind: '$lessons.comments' }",
+        "{ $replaceRoot: { newRoot: '$lessons.comments' } }",
+        "{ $skip: ?2}",
+        "{ $limit: ?3}"
+    })
+    List<Comment> findCommentsByLessonId(String courseId, String lessonId, int skip, int limit);
 
     @Query("{'lessons_id': ?0}")
     Course findByLessonId(String lessonId);
