@@ -1,6 +1,9 @@
 package com.imo.backend.models.course;
 
 import com.imo.backend.models.comments.Comment;
+import com.imo.backend.models.course.repositories.CustomCourseRepository;
+
+import org.bson.Document;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.Aggregation;
@@ -13,7 +16,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface CourseRepository extends MongoRepository<Course, String> {
+public interface CourseRepository extends MongoRepository<Course, String>, CustomCourseRepository{
     Optional<Course> findBySlugCourse(String slugCourse);
 
     List<Course> findAllBySlugCategory(String slugCategory);
@@ -23,6 +26,8 @@ public interface CourseRepository extends MongoRepository<Course, String> {
     Page<Course> findAllBySlugLevel(String slugLevel, Pageable pageable);
 
     Page<Course> findAllBySlugCategory(String slugCategory, Pageable pageable);
+
+    Course findByContributorId(String contributorId);
 
     List<Course> findAllByContributorId(String id);
 

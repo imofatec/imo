@@ -65,6 +65,9 @@ public class SecurityConfig {
             .requestMatchers(HttpMethod.POST, "/api/courses").authenticated()
             .requestMatchers(HttpMethod.POST, "/api/courses/many/courses").authenticated()
             .requestMatchers(HttpMethod.POST, "/api/courses/comments/lessons/{lessonId}").authenticated()
+            .requestMatchers(HttpMethod.POST, "/api/courses/create").authenticated()
+            .requestMatchers(HttpMethod.POST, "/api/courses/create-many").authenticated()
+            .requestMatchers(HttpMethod.PUT, "/api/courses/{courseId}").authenticated()
             .anyRequest().permitAll()
         )
         .sessionManagement(
