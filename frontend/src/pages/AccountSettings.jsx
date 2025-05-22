@@ -11,12 +11,15 @@ import { SpinnerButton } from '@/components/ui/spinnerButton'
 import { updateUserRequest } from '@/requests/user/updateUserRequest'
 import { useFormValidator } from '@/hooks/useFormValidator'
 import { updateUserSchema } from '@/schemas/updateUserSchema'
+import SkeletonAccountSettings from '@/components/skeletons/SkeletonAccountSettings'
 
-const startUploadLoading = [true, false]
-const startCredentialsLoading = [false, true]
-const finishedLoading = [false, false]
+
 
 export default function AccountSettings() {
+  const startUploadLoading = [true, false]
+  const startCredentialsLoading = [false, true]
+  const finishedLoading = [false, false]
+  const [pageLoading, setPageLoading] = useState(true)
   const actionData = useActionData()
   const formRef = useRef()
   const { setUrlImage, userInfo, urlImage, fetchUserInfo } = useFetchUserInfo()
@@ -101,9 +104,22 @@ export default function AccountSettings() {
     fetchUserInfo()
   }, [])
 
+  useEffect(() => {
+    const fetch = async () => {
+      await fetchUserInfo ()
+      setPageLoading(false)
+    }
+
+    fetch()
+  }, [])
+
   return (
     <>
       <Titulo titulo={'IMO / Configurar conta'}></Titulo>
+      
+      {pageLoading ? (
+        <SkeletonAccountSettings />
+      ) : (
       <div className="h-screen mx-28 mt-16">
         <>
           <h1 className="font-semibold text-3xl">Configurações da conta</h1>
@@ -244,6 +260,7 @@ export default function AccountSettings() {
           </Form>
         </div>
       </div>
+      )}
     </>
   )
 }

@@ -3,6 +3,7 @@ import Featurecourses from '@/components/featuredcourses'
 import dataScienceF from '@/assets/dataSciencef.png'
 import gestaoW from '@/assets/gestaoW.png'
 import redesW from '@/assets/redesW.png'
+import SkeletonIndex from '@/components/skeletons/SkeletonIndex'
 
 export default function Index() {
   const courses = [
@@ -29,10 +30,10 @@ export default function Index() {
       colorInfo: 'bg-custom-gestao-index',
     },
   ]
+
   return (
     <>
       <Titulo titulo={'IMO'} />
-
       <div className="bg-custom-dark-purple min-h-screen px-4 md:px-8 flex flex-col">
         {courses.map((item, index) => {
           return (
