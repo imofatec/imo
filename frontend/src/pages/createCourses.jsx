@@ -20,12 +20,10 @@ export default function CreateCourses() {
     useFormValidator(createCourseBaseSchema)
 
   useEffect(() => {
-    setTimeout(() => {
       if (actionData) {
         setIsLoading(false)
         setError(actionData.error)
       }
-    }, 1000)
   }, [actionData])
 
   return (
