@@ -8,6 +8,8 @@ import { SpinnerButton } from '@/components/ui/spinnerButton'
 import { useEffect, useState } from 'react'
 import { useFormValidator } from '@/hooks/useFormValidator'
 import { createCourseBaseSchema } from '@/schemas/createCourseSchema'
+import SkeletonCreateCourses from '@/components/skeletons/SkeletonCreateCourses'
+
 
 export default function CreateCourses() {
   const [isLoading, setIsLoading] = useState(false)
@@ -32,6 +34,7 @@ export default function CreateCourses() {
   }, [actionData])
 
   return (
+    <>
     <div className="flex justify-center">
       <div className="w-[70rem]">
         <Form method="post" action="/criar-curso">
@@ -90,5 +93,6 @@ export default function CreateCourses() {
         </div>
       </div>
     </div>
+    </>
   )
 }

@@ -1,10 +1,12 @@
 import { Titulo } from '@/components/ui/titulo'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import CertificateForm from '@/components/ui/certificate/certificateForm'
 import CertificateDetails from '@/components/ui/certificate/certificateDetails'
 import useCertificateValidation from '@/hooks/useCertificateValidation'
+import SkeletonValidateCertificate from '@/components/skeletons/SkeletonValidateCertificate'
 
 export default function ValidateCertificate() {
+  const [isLoading, setisLoading] = useState(false)
   const [error, setError] = useState(null)
   const [certificateData, setCertificateData] = useState(null)
   const { fetchCertificateData } = useCertificateValidation()
@@ -16,6 +18,7 @@ export default function ValidateCertificate() {
       return
     }
     setCertificateData(success)
+    setisLoading(false)
   }
 
   return (
@@ -25,7 +28,9 @@ export default function ValidateCertificate() {
         <div className="w-1/2 flex flex-col items-center gap-10 pt-10 ">
           <h1 className="text-xl font-bold">Validar Certificado</h1>
 
-          {certificateData ? (
+          {isLoading ? (
+            <SkeletonValidateCertificate />
+          ) : certificateData ? (
             <CertificateDetails data={certificateData} />
           ) : (
             <>
