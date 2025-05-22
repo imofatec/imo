@@ -45,13 +45,12 @@ export default function AccountSettings() {
     setIsLoading(finishedLoading)
   }
 
-  const handleUploadClick = () => {
+  const handleUploadClick = async () => {
     if (!selectedFile) {
       finishLoading()
       return
     }
 
-    setTimeout(async () => {
       const { error } = await handleImageUpload(selectedFile)
 
       if (error) {
@@ -63,7 +62,6 @@ export default function AccountSettings() {
       fetchUserInfo()
       setSelectedFile(null)
       finishLoading()
-    }, 400)
   }
 
   const handleActionData = () => {
@@ -91,9 +89,7 @@ export default function AccountSettings() {
   }
 
   useEffect(() => {
-    setTimeout(() => {
       handleActionData()
-    }, 400)
   }, [actionData])
 
   useEffect(() => {

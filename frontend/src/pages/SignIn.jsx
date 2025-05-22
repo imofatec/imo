@@ -13,12 +13,10 @@ export default function SignIn() {
   const actionData = useActionData()
 
   useEffect(() => {
-    setTimeout(() => {
       if (actionData) {
         setError(actionData.error)
         setIsLoading(false)
       }
-    }, 400)
   }, [actionData])
 
   return (
