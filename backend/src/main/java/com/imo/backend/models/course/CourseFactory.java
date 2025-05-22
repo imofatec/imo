@@ -24,7 +24,7 @@ public class CourseFactory {
 
         Course course = new Course();
 
-        course.setActive(false);
+        course.setActive(true);
         course.setContributorId(contributor.get("id"));
         course.setContributorName(contributor.get("name"));
         course.setName(createCourseRequest.getName());
