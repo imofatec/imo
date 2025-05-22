@@ -88,6 +88,7 @@ public class SecurityConfig {
     configuration.setAllowCredentials(true);
     configuration.setAllowedHeaders(
         List.of("Authorization", "Cache-Control", "Content-Type"));
+    configuration.setExposedHeaders(List.of("Content-Disposition"));
     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
     source.registerCorsConfiguration("/**", configuration);
     return source;
