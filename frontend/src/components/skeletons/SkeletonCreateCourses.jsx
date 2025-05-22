@@ -1,6 +1,6 @@
 export default function SkeletonCreateCourses() {
     return (
-      <div className="flex justify-center">
+      <div className="h-screen flex justify-center">
         <div className="w-[70rem]">
           <div className="w-full border-white border rounded-xl p-6 px-10 my-6 space-y-4">
             <div className="space-y-2">
