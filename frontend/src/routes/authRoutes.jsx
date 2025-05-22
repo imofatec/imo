@@ -1,6 +1,6 @@
 import AccountSettings from '@/pages/AccountSettings'
 import CreateCourses from '@/pages/createCourses'
-import ProtectedRoute from '@/auth/ProtectedRoutes'
+import ProtectedRoute from '@/context/useAuth'
 import TestPage from '@/pages/TestPage'
 import MyCourses from '@/pages/MyCourses'
 import VerAula from '@/pages/VerAula'

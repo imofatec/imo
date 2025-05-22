@@ -1,17 +1,18 @@
 import authAxiosInstance from '@/api/authAxiosInstance'
 import thumbLesson from '@/assets/thumb.jpg'
+import SkeletonVerAula from '@/components/skeletons/SkeletonVerAula'
 import SkeletonLoading from '@/components/ui/curso/skeletonLoading'
 import LessonComment from '@/components/ui/lesson/lessoncomment'
 import LessonDescription from '@/components/ui/lesson/lessondescription'
 import LessonInfo from '@/components/ui/lesson/lessoninfo'
 import LessonPlaylist from '@/components/ui/lesson/lessonplaylist'
 import { Titulo } from '@/components/ui/titulo'
+import { useAuth } from '@/context/useAuth'
 import { useLessonData } from '@/hooks/useLessonData'
 import { useLessonProgress } from '@/hooks/useLessonProgress'
 import { safeAwait } from '@/lib/safeAwait'
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import SkeletonVerAula from '@/components/skeletons/SkeletonVerAula'
 import CommentForm from '@/components/ui/lessons/commentForm'
 import { useCommentsData } from '@/hooks/useCommentsData'
 import { Arrow } from '@/components/ui/arrow'
@@ -24,6 +25,8 @@ export default function VerAula() {
   const { fetchProgress, progress, cansei, loadingProgress, updateProgress } =
     useLessonProgress(courseId ? courseId : null)
   const navigate = useNavigate()
+
+  const { authLoading } = useAuth()
   const [showComments, setShowComments] = useState(true)
   const [showLessons, setShowLessons] = useState(true)
 
@@ -79,23 +82,23 @@ export default function VerAula() {
   console.log('comentario', commentsData)
   return (
     <>
-    <div className="max-w-full min-h-screen">
-      <Titulo titulo={`IMO / ${currentLesson?.title}`}></Titulo>
-      {loading ? (
-        <SkeletonVerAula />
-      ) : (
-      <div className="flex flex-row">
-        <div className={`flex flex-col p-8 transition-all duration-300 ease-in-out ${showLessons ? 'w-3/4' : 'w-full'}`}>
-          <iframe
-            loading="lazy"
-            width="w-full"
-            height="560"
-            src={`https://www.youtube.com/embed/${idLesson}`}
-            title="YouTube video player"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            referrerPolicy="strict-origin-when-cross-origin"
-            allowFullScreen
-          ></iframe>
+      <div className="max-w-full min-h-screen">
+        <Titulo titulo={`IMO / ${currentLesson?.title}`}></Titulo>
+        {loading || authLoading ? (
+          <SkeletonVerAula />
+        ) : (
+          <div className="flex flex-row">
+            <div className={`flex flex-col p-8 transition-all duration-300 ease-in-out ${showLessons ? 'w-3/4' : 'w-full'}`}>
+              <iframe
+                loading="lazy"
+                width="w-full"
+                height="560"
+                src={`https://www.youtube.com/embed/${idLesson}`}
+                title="YouTube video player"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerPolicy="strict-origin-when-cross-origin"
+                allowFullScreen
+              ></iframe>
 
           {currentLesson && (
             <LessonInfo

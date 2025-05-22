@@ -1,14 +1,14 @@
 import CardCurso from '@/components/ui/curso/cardcurso'
-import CategorySelector from '@/components/ui/mycourses/CategorySelector'
-import { useMyCourses } from '@/hooks/useMyCourses'
 import SkeletonLoading from '@/components/ui/curso/skeletonLoading'
 import { DropdownSelect } from '@/components/ui/dropdownselect'
+import CategorySelector from '@/components/ui/mycourses/CategorySelector'
 import Pagination from '@/components/ui/pagination'
 import StatusMessage from '@/components/ui/statusMessage'
 import { Titulo } from '@/components/ui/titulo'
-import { useState } from 'react'
+import { useAuth } from '@/context/useAuth'
+import { useMyCourses } from '@/hooks/useMyCourses'
 import { useSortedCourses } from '@/hooks/useSortedCourses'
-import SkeletonMyCourses from '@/components/skeletons/SkeletonMyCourses'
+import { useState } from 'react'
 
 export default function MyCourses() {
   const size = 8
@@ -21,6 +21,8 @@ export default function MyCourses() {
     size,
   )
   const sortedCourses = useSortedCourses(myCourses, order)
+
+  const { authLoading } = useAuth()
 
   const handleShowAllCourses = () => {
     setSelectedCategory(null)
@@ -52,9 +54,6 @@ export default function MyCourses() {
   return (
     <>
       <Titulo titulo={`IMO / Meus Cursos`} />
-      {loading ? (
-        <SkeletonMyCourses />
-      ) : (
       <div className="min-h-screen flex flex-row w-full">
         <div className="w-1/3 p-12">
           <CategorySelector
@@ -80,11 +79,10 @@ export default function MyCourses() {
 
           <div className="flex flex-row flex-wrap p-18 w-auto max-w-full">
             <StatusMessage error={error} />
-            {loading && (
+            {(loading || authLoading) &&
               Array.from({ length: size }).map((index) => (
                 <SkeletonLoading key={index} />
-              ))
-            )}
+              ))}
             {!loading &&
               !error &&
               sortedCourses.map((curso) => (
@@ -114,7 +112,6 @@ export default function MyCourses() {
           />
         </div>
       </div>
-      )}
     </>
   )
 }
