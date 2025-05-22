@@ -4,6 +4,7 @@ import com.imo.backend.config.token.TokenService;
 import com.imo.backend.exceptions.custom.NotFoundException;
 import com.imo.backend.models.comments.Comment;
 import com.imo.backend.models.comments.dto.CommentDTO;
+import com.imo.backend.models.comments.dto.ConvertedCommentDto;
 import com.imo.backend.models.comments.service.create.interfaces.CreateCommentService;
 import com.imo.backend.models.course.Course;
 import com.imo.backend.models.course.CourseRepository;
@@ -30,7 +31,7 @@ public class CreateCommentServiceImpl implements CreateCommentService {
   }
 
   @Override
-  public Comment execute(String token, String lessonId,
+  public ConvertedCommentDto execute(String token, String lessonId,
                          CommentDTO commentDTO) {
     var user = tokenService.getSub(token);
     String userId = user.get("id");
@@ -43,14 +44,14 @@ public class CreateCommentServiceImpl implements CreateCommentService {
     var courseId = course.getId();
 
     Comment newComment = Comment.fromDTO(userId, foundUser.getName(),
-        commentDTO.getComment());
+        commentDTO.getComment(), commentDTO.getParentId());
 
     long updateCount = courseRepository.addCommentToLesson(courseId, lessonId, newComment);
 
     if (updateCount == 0) {
       throw new NotFoundException("Aula nao encontrada");
     }
-    return newComment;
+    return Comment.toDTO(newComment);
 
   }
 }
