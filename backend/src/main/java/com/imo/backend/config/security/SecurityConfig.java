@@ -68,6 +68,8 @@ public class SecurityConfig {
             .requestMatchers(HttpMethod.POST, "/api/courses/create").authenticated()
             .requestMatchers(HttpMethod.POST, "/api/courses/create-many").authenticated()
             .requestMatchers(HttpMethod.PUT, "/api/courses/{courseId}").authenticated()
+            .requestMatchers(HttpMethod.PATCH, "/api/courses/{courseId}").authenticated()
+            .requestMatchers(HttpMethod.DELETE, "/api/courses/{courseId}/lesson/{lessonId}").authenticated()
             .anyRequest().permitAll()
         )
         .sessionManagement(
@@ -84,7 +86,7 @@ public class SecurityConfig {
     CorsConfiguration configuration = new CorsConfiguration();
     configuration.setAllowedOrigins(Arrays.asList(this.clientURL));
     configuration.setAllowedMethods(
-        Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS","PATCH"));
     configuration.setAllowCredentials(true);
     configuration.setAllowedHeaders(
         List.of("Authorization", "Cache-Control", "Content-Type"));
