@@ -1,43 +1,44 @@
 package com.imo.backend.models.course.services.delete;
 
-import org.springframework.stereotype.Service;
-import com.imo.backend.config.token.TokenService;
-import com.imo.backend.exceptions.custom.ForbiddenException;
 import com.imo.backend.exceptions.custom.NotFoundException;
-import com.imo.backend.models.course.Course;
 import com.imo.backend.models.course.CourseRepository;
 import com.imo.backend.models.course.services.delete.interfaces.DeleteLessonFromCourseService;
+import com.imo.backend.models.lessons.dtos.NoCommentsLesson;
+import org.springframework.stereotype.Service;
 
 @Service
 public class DeleteLessonFromCourseServiceImpl implements DeleteLessonFromCourseService {
 
     private final CourseRepository courseRepository;
-    private final TokenService tokenService;
 
-    public DeleteLessonFromCourseServiceImpl(CourseRepository courseRepository, TokenService tokenService) {
+    public DeleteLessonFromCourseServiceImpl(CourseRepository courseRepository) {
         this.courseRepository = courseRepository;
-        this.tokenService = tokenService;
     }
 
     @Override
-    public void execute(String token, String courseId, String lessonId) {
-       
-        String userId = tokenService.getSub(token).get("id");
+    public NoCommentsLesson execute(String lessonId) {
+            var existingCourse = courseRepository.findByLessonId(lessonId);
 
-            Course existingCourse = courseRepository.findById(courseId)
-                    .orElseThrow(() -> {
-                        return new NotFoundException("Curso não encontrado");
-                    });
-
-            if (!existingCourse.getContributorId().equals(userId)) {
-                throw new ForbiddenException("Você não tem permissão para atualizar este curso");
+            if (existingCourse == null) {
+              throw new NotFoundException("Aula não encontrada");
             }
 
-            if (existingCourse.getLessons().stream().noneMatch(lesson -> lesson.getId().equals(lessonId))) {
-                throw new NotFoundException("Aula não encontrada no curso");
+            var existingLesson = existingCourse.getLessons().stream()
+                .filter(lesson -> lesson.getId().equals(lessonId))
+                .findFirst();
+
+            assert existingLesson.isPresent();
+
+            var updatedCourse = courseRepository.deleteLessonFromCourse(existingLesson.get().getId());
+
+            if (updatedCourse == null) {
+                return null;
             }
 
-            courseRepository.deleteLessonFromCourse(userId, courseId, lessonId);
+            var deletedLesson = updatedCourse.getLessons().stream()
+                .filter(lesson -> lesson.getId().equals(lessonId)).findFirst().orElse(null);
+
+            return deletedLesson != null ? new NoCommentsLesson(deletedLesson) : null;
     }
 
 }
