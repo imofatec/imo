@@ -131,4 +131,26 @@ public class CustomCourseRepositoryImpl implements CustomCourseRepository {
         }
     }
 
+    @Override
+    public void updateCourseStatus(String userId, String courseId, boolean isActive) {
+        Query query = new Query(Criteria.where("_id").is(courseId)
+                .and("contributorId").is(userId));
+        Update update = new Update()
+                .set("active", isActive)
+                .currentDate("updatedAt");
+        mongoTemplate.updateFirst(query, update, Course.class);
+    }
+
+    @Override
+    public void deleteLessonFromCourse(String userId, String courseId, String lessonId) {
+        Query query = new Query(Criteria.where("_id").is(courseId)
+                .and("contributorId").is(userId));
+
+        Update update = new Update()
+                .pull("lessons", Query.query(Criteria.where("id").is(lessonId)))
+                .inc("totalLessons", -1)
+                .currentDate("updatedAt");
+
+        mongoTemplate.updateFirst(query, update, Course.class);
+    }
 }
