@@ -1,156 +1,177 @@
 package com.imo.backend.models.course.repositories;
 
+import com.imo.backend.models.course.Course;
+import com.imo.backend.models.course.dtos.FieldsToUpdateCourse;
+import com.imo.backend.models.course.dtos.FieldsToUpdateLesson;
+import com.imo.backend.models.lessons.Lesson;
+import com.imo.backend.models.lessons.dtos.CreateLessonDto;
+import org.bson.types.ObjectId;
+import org.springframework.data.mongodb.core.FindAndModifyOptions;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Repository;
-import com.imo.backend.models.course.Course;
-import com.imo.backend.models.course.dtos.FieldsToUpdateCourse;
-import com.imo.backend.models.lessons.Lesson;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.IntStream;
 
 @Repository
 public class CustomCourseRepositoryImpl implements CustomCourseRepository {
 
-    private final MongoTemplate mongoTemplate;
+  private final MongoTemplate mongoTemplate;
 
-    public CustomCourseRepositoryImpl(MongoTemplate mongoTemplate) {
-        this.mongoTemplate = mongoTemplate;
+  public CustomCourseRepositoryImpl(MongoTemplate mongoTemplate) {
+    this.mongoTemplate = mongoTemplate;
+  }
+
+  @Override
+  public Course updateCourseById(String courseId, FieldsToUpdateCourse fieldsToUpdateCourse) {
+    Query query = new Query(Criteria.where("_id").is(courseId));
+    Update update = new Update();
+
+    this.setFieldsToUpdateCourse(update, fieldsToUpdateCourse);
+
+    System.out.println(this.hasAnyFieldsToUpdate(update));
+
+    return this.hasAnyFieldsToUpdate(update)
+        ? this.mongoTemplate.findAndModify(query, update,
+        FindAndModifyOptions.options().returnNew(true), Course.class)
+        : null;
+  }
+
+  @Override
+  public Course updateLessonById(String lessonId, FieldsToUpdateLesson fieldsToUpdateLesson) {
+    Query query = new Query(Criteria.where("lessons._id").is(lessonId));
+    Update update = new Update();
+
+    this.setFieldsToUpdateLesson(update, fieldsToUpdateLesson);
+
+    return this.hasAnyFieldsToUpdate(update)
+        ? this.mongoTemplate.findAndModify(query, update,
+        FindAndModifyOptions.options().returnNew(true), Course.class)
+        : null;
+  }
+
+  @Override
+  public Course pushLesson(String courseId, List<CreateLessonDto> lessonsDto) {
+    Query query = new Query(Criteria.where("_id").is(courseId));
+    Update update = new Update();
+
+    Course course = this.mongoTemplate.findOne(query, Course.class);
+
+    assert course != null;
+
+    List<Lesson> lessons = IntStream
+        .range(0, lessonsDto.size())
+        .mapToObj(i -> {
+          var item = lessonsDto.get(i);
+          var lessonEntity = new Lesson();
+
+          lessonEntity.setId(new ObjectId().toString());
+          lessonEntity.setIndex(course.getTotalLessons() + i + 1);
+          lessonEntity.setTitle(item.getTitle());
+          lessonEntity.setDescription(item.getDescription());
+          lessonEntity.setYoutubeLink(item.getYoutubeLink());
+
+          return lessonEntity;
+        })
+        .toList();
+
+    lessons.forEach(lesson -> {
+      update.push("lessons", lesson);
+    });
+    update.set("totalLessons", course.getTotalLessons() + lessons.size());
+    return this.hasAnyFieldsToUpdate(update)
+        ? this.mongoTemplate.findAndModify(query, update,
+        FindAndModifyOptions.options().returnNew(true), Course.class)
+        : null;
+  }
+
+  private void setFieldsToUpdateCourse(Update update, FieldsToUpdateCourse fieldsToUpdateCourse) {
+    var declaredFields = fieldsToUpdateCourse.getClass().getDeclaredFields();
+    Arrays.stream(declaredFields).peek(field -> field.setAccessible(true))
+        .forEach(field -> {
+          try {
+            if (field.get(fieldsToUpdateCourse) == null) return;
+            update.set(field.getName(), field.get(fieldsToUpdateCourse));
+          } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+          }
+        });
+  }
+
+  private void setFieldsToUpdateLesson(Update update, FieldsToUpdateLesson fieldsToUpdateLesson) {
+    var declaredFields = fieldsToUpdateLesson.getClass().getDeclaredFields();
+    Arrays.stream(declaredFields).peek(field -> field.setAccessible(true))
+        .forEach(field -> {
+          try {
+            if (field.get(fieldsToUpdateLesson) == null) return;
+            update.set(String.format("lessons.$.%s", field.getName()),
+                field.get(fieldsToUpdateLesson));
+          } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+          }
+        });
+  }
+
+  private boolean hasAnyFieldsToUpdate(Update update) {
+    return !update.getUpdateObject().isEmpty();
+  }
+
+  @Override
+  public Course updateCourseStatus(String courseId, boolean isActive) {
+    Query query = new Query(Criteria.where("_id").is(courseId));
+
+    Update update = new Update()
+        .set("active", isActive)
+        .currentDate("updatedAt");
+
+    return mongoTemplate.findAndModify(query, update,
+        FindAndModifyOptions.options().returnNew(true), Course.class);
+  }
+
+  @Override
+  public Course deleteLessonFromCourse(String lessonId) {
+    Query query = new Query(Criteria.where("lessons._id").is(lessonId));
+
+    Update update = new Update()
+        .pull("lessons", Query.query(Criteria.where("_id").is(lessonId)))
+        .inc("totalLessons", -1)
+        .currentDate("updatedAt");
+
+    var updatedCourse = mongoTemplate.findAndModify(query, update,
+        FindAndModifyOptions.options().returnNew(false), Course.class);
+
+    if (updatedCourse == null) return null;
+
+    var updatedLessons = new ArrayList<>(updatedCourse.getLessons());
+    updatedLessons.removeIf(lesson -> lesson.getId().equals(lessonId));
+
+    if (updatedLessons.isEmpty()) {
+      return updatedCourse;
     }
 
-    @Override
-    public Course updateCourse(String token, String courseId, FieldsToUpdateCourse fieldsToUpdateCourse) {
+    this.reindexUpdatedLessons(updatedLessons);
 
-        Course existingCourse = findCourseById(courseId);
-        if (existingCourse == null) {
-            return null;
-        }
+    Query reindexQuery = new Query(Criteria.where("_id").is(updatedCourse.getId()));
+    Update reindexUpdate = new Update();
+    reindexUpdate.set("lessons", updatedLessons).currentDate("updatedAt");
 
-        Query query = createQueryForCourseUpdate(token, courseId);
-        Update update = new Update();
-        updateBasicCourseFields(update, fieldsToUpdateCourse);
+    mongoTemplate.updateFirst(reindexQuery, reindexUpdate, Course.class);
 
-        if (fieldsToUpdateCourse.getLessons() != null && !fieldsToUpdateCourse.getLessons().isEmpty()) {
-            updateCourseLessons(update, existingCourse.getLessons(), fieldsToUpdateCourse.getLessons());
-        }
+    System.out.println(updatedLessons);
 
-        update.currentDate("updatedAt");
+    return updatedCourse;
+  }
 
-        mongoTemplate.updateFirst(query, update, Course.class);
-
-        return mongoTemplate.findById(courseId, Course.class);
-    }
-
-    private Course findCourseById(String courseId) {
-        return mongoTemplate.findById(courseId, Course.class);
-    }
-
-    private Query createQueryForCourseUpdate(String token, String courseId) {
-        return new Query(Criteria.where("_id").is(courseId)
-                .and("contributorId").is(token));
-    }
-
-    private void updateBasicCourseFields(Update update, FieldsToUpdateCourse fieldsToUpdateCourse) {
-        if (fieldsToUpdateCourse.getName() != null && !fieldsToUpdateCourse.getName().trim().isEmpty()) {
-            update.set("name", fieldsToUpdateCourse.getName());
-        }
-
-        if (fieldsToUpdateCourse.getLevel() != null && !fieldsToUpdateCourse.getLevel().trim().isEmpty()) {
-            update.set("level", fieldsToUpdateCourse.getLevel());
-        }
-
-        if (fieldsToUpdateCourse.getCategory() != null && !fieldsToUpdateCourse.getCategory().trim().isEmpty()) {
-            update.set("category", fieldsToUpdateCourse.getCategory());
-        }
-
-        if (fieldsToUpdateCourse.getDescription() != null && !fieldsToUpdateCourse.getDescription().trim().isEmpty()) {
-            update.set("description", fieldsToUpdateCourse.getDescription());
-        }
-    }
-
-    private void updateCourseLessons(Update update, List<Lesson> existingLessons, List<Lesson> newLessons) {
-        List<Lesson> updatedLessons = processLessonsUpdate(existingLessons, newLessons);
-        update.set("lessons", updatedLessons);
-        update.set("totalLessons", updatedLessons.size());
-    }
-
-    private List<Lesson> processLessonsUpdate(List<Lesson> existingLessons, List<Lesson> newLessons) {
-        List<Lesson> updatedLessons = new ArrayList<>();
-
-        for (int i = 0; i < newLessons.size(); i++) {
-            Lesson newLesson = newLessons.get(i);
-            newLesson.setIndex(i);
-
-            findAndPreserveLessonId(newLesson, existingLessons, i);
-
-            updatedLessons.add(newLesson);
-        }
-        return updatedLessons;
-    }
-
-    private void findAndPreserveLessonId(Lesson newLesson, List<Lesson> existingLessons, int position) {
-        if (existingLessons == null || existingLessons.isEmpty()) {
-            return;
-        }
-
-        Lesson existingLesson = position < existingLessons.size()
-                ? existingLessons.get(position)
-                : existingLessons.stream()
-                        .filter(lesson -> lesson.getTitle() != null)
-                        .filter(lesson -> lesson.getTitle().equals(newLesson.getTitle()))
-                        .findFirst()
-                        .orElse(null);
-
-        if (existingLesson != null && existingLesson.getId() != null) {
-            newLesson.setId(existingLesson.getId());
-            preserveExistingFieldsIfNewAreEmpty(newLesson, existingLesson);
-        }
-    }
-
-    private void preserveExistingFieldsIfNewAreEmpty(Lesson newLesson, Lesson existingLesson) {
-        if (existingLesson == null)
-            return;
-
-        if (newLesson.getTitle() == null || newLesson.getTitle().trim().isEmpty()) {
-            newLesson.setTitle(existingLesson.getTitle());
-        }
-
-        if (newLesson.getDescription() == null || newLesson.getDescription().trim().isEmpty()) {
-            newLesson.setDescription(existingLesson.getDescription());
-        }
-
-        if (newLesson.getYoutubeLink() == null || newLesson.getYoutubeLink().trim().isEmpty()) {
-            newLesson.setYoutubeLink(existingLesson.getYoutubeLink());
-        }
-
-        if (existingLesson.getComments() != null && !existingLesson.getComments().isEmpty()) {
-            newLesson.setComments(existingLesson.getComments());
-        }
-    }
-
-    @Override
-    public void updateCourseStatus(String userId, String courseId, boolean isActive) {
-        Query query = new Query(Criteria.where("_id").is(courseId)
-                .and("contributorId").is(userId));
-        Update update = new Update()
-                .set("active", isActive)
-                .currentDate("updatedAt");
-        mongoTemplate.updateFirst(query, update, Course.class);
-    }
-
-    @Override
-    public void deleteLessonFromCourse(String userId, String courseId, String lessonId) {
-        Query query = new Query(Criteria.where("_id").is(courseId)
-                .and("contributorId").is(userId));
-
-        Update update = new Update()
-                .pull("lessons", Query.query(Criteria.where("id").is(lessonId)))
-                .inc("totalLessons", -1)
-                .currentDate("updatedAt");
-
-        mongoTemplate.updateFirst(query, update, Course.class);
-    }
+  private void reindexUpdatedLessons(List<Lesson> updatedLessons) {
+    updatedLessons.sort(Comparator.comparing(Lesson::getIndex));
+    IntStream.range(0, updatedLessons.size()).forEach(i -> {
+      updatedLessons.get(i).setIndex(i + 1);
+    });
+  }
 }
