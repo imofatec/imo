@@ -64,4 +64,6 @@ public interface CourseRepository extends MongoRepository<Course, String>, Custo
     @Query("{'lessons_id': ?0}")
     Course findByLessonId(String lessonId);
 
+    Course findCourseById(String courseId);
+
 }
