@@ -13,10 +13,10 @@ export default function SignIn() {
   const actionData = useActionData()
 
   useEffect(() => {
-      if (actionData) {
-        setError(actionData.error)
-        setIsLoading(false)
-      }
+    if (actionData) {
+      setError(actionData.error)
+      setIsLoading(false)
+    }
   }, [actionData])
 
   return (
@@ -49,6 +49,13 @@ export default function SignIn() {
               label="Senha"
             />
 
+            <div className="flex justify-end pt-0 mt-0">
+              <p className="text-custom-text-gray">
+                <Link to="/user/redefinir-senha" className="text-custom-text-gray hover:underline">
+                  Esqueceu a senha?
+                </Link>
+              </p>
+            </div>
             <SpinnerButton
               children="Entrar"
               isLoading={isLoading}
