@@ -17,7 +17,8 @@ export default function Modal({
   codigoAula,
   onStart,
   idCurso,
-  nameButton = "Comece Agora!"
+  nameButton = "Comece Agora!",
+  editButton = "Editar Curso"
 }) {
   return (
     <Dialog open={aberto} onOpenChange={fechado}>
@@ -36,13 +37,27 @@ export default function Modal({
               <p className="text-gray-400 text-sm ">
                 Quantidade de aulas: {qtd}
               </p>
+              <div className="flex gap-10 mt-8">
               <Link
                 to={`/cursos/${codigoCurso}/${codigoAula}`} /*rota por parametros para acessar o vídeo*/
                 className="underline mt-8 font-normal text-lg hover:scale-105 duration-200"
               >
                 {/* <button onClick={() => onStart(idCurso)}>{nameButton}</button> */}
-                <button>{nameButton}</button>
+                <button
+                  className="bg-[#00FFE8] text-black px-2 rounded font-bold"
+                >{nameButton}</button>
               </Link>
+              <Link
+                to={`/editar-curso/${idCurso}`}
+                className=" mt-8 font-normal text-lg hover:scale-105 duration-200"
+              >
+                <button
+                  className="bg-[#00FFE8] text-black px-2 rounded font-bold"
+                >{editButton}
+                </button>
+              
+              </Link>
+              </div>
             </div>
 
             <div className="flex flex-col p-6 ml-5">

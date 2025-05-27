@@ -7,7 +7,9 @@ import VerAula from '@/pages/VerAula'
 import { createCourse as createCourseRequest } from '@/requests/createCourse'
 import { updateUserRequest } from '@/requests/user/updateUserRequest'
 import { createComment } from '@/requests/courses/createComment'
+import { updateCourse as updateCourseRequest } from '@/requests/courses/updateCourse'
 import UserEmailConfirmation from '@/pages/UserEmailConfirmation'
+import EditCourse from '@/pages/EditCourse'
 
 const teste = {
   path: '/private',
@@ -18,6 +20,11 @@ const createCourse = {
   path: '/criar-curso',
   element: <CreateCourses />,
   action: createCourseRequest,
+}
+
+const updateCourse = {
+  path: '/editar-curso/:id',
+  element: <EditCourse />,
 }
 
 const lessons = {
@@ -58,6 +65,7 @@ const authRoutes = [
       myCourses,
       myCoursesRoute,
       userEmailConfirmation,
+      updateCourse
     ],
   },
 ]
