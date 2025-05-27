@@ -6,63 +6,67 @@ import { forgetPasswordRequest } from '@/requests/user/forgetPasswordRequest'
 import { Github, Linkedin } from 'lucide-react'
 
 export default function StepEmailForm({ onSuccess }) {
-    const [isLoading, setIsLoading] = useState(false)
-    const [error, setError] = useState(null)
-    const actionData = useActionData()
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState(null)
+  const actionData = useActionData()
 
-    useEffect(() => {
-        if (actionData?.user?.id) {
-            onSuccess(actionData.user.id)
-            setIsLoading(false)
-        } else if (actionData?.error) {
-            setError(actionData.error)
-            setIsLoading(false)
-        }
-    }, [actionData, onSuccess])
+  useEffect(() => {
+    if (actionData?.user?.id) {
+      onSuccess(actionData.user.id)
+      setIsLoading(false)
+    } else if (actionData?.error) {
+      setError(actionData.error)
+      setIsLoading(false)
+    }
+  }, [actionData, onSuccess])
 
-    console.log('actionData', actionData)
+  console.log('actionData', actionData)
 
-    return (
-        <div className="flex justify-center items-center bg-custom-dark-purple h-screen text-white">
-            <Form method="post" className="w-96 p-8 space-y-6" action={forgetPasswordRequest}>
-                <div className="flex flex-col items-center">
-                    <h1 className="text-xl font-bold text-center">Esqueci a senha</h1>
-                </div>
+  return (
+    <div className="flex justify-center bg-custom-dark-purple h-screen text-white">
+      <div className="h-screen mt-[3.125rem] text-white">
+        <Form
+          method="post"
+          className="w-96 p-8 space-y-6"
+          action={forgetPasswordRequest}
+        >
+          <div className="flex flex-col items-center">
+            <h1 className="text-xl font-bold text-center">Recuperar senha</h1>
+          </div>
 
-                <InputLabel type="text" id="email" name="email" placeholder="Email" label="Email" />
+          <InputLabel
+            type="text"
+            id="email"
+            name="email"
+            placeholder="Email"
+            label="Email"
+          />
 
-                <p className="text-custom-text-gray flex justify-center gap-2">
-                    Voltar ao <Link to="/login" className="text-white hover:underline">login</Link>
-                </p>
+          <SpinnerButton
+            children="Enviar código de recuperação"
+            isLoading={isLoading}
+            onClick={() => {
+              setIsLoading(true)
+              setError(null)
+            }}
+            className="w-full bg-custom-header-cyan text-black"
+          />
 
-                <SpinnerButton
-                    children="Enviar email"
-                    isLoading={isLoading}
-                    onClick={() => {
-                        setIsLoading(true)
-                        setError(null)
-                    }}
-                    className="w-full bg-custom-header-cyan text-black"
-                />
+          {error && <div className="h-1 text-center text-red-500">{error}</div>}
 
-                {error && <div className="h-1 text-center text-red-500">{error}</div>}
+          <div className="flex items-center justify-center h-8">
+            <div className="h-[1px] w-full bg-custom-border-gray"></div>
+          </div>
 
-                <div className="flex items-center justify-center h-8">
-                    <div className="h-[1px] w-12 bg-custom-border-gray"></div>
-                    <p className="text-custom-text-gray px-4">Entre com outras contas</p>
-                    <div className="h-[1px] w-12 bg-custom-border-gray"></div>
-                </div>
-
-                <div className="flex justify-center gap-3">
-                    <Github />
-                    <Linkedin />
-                </div>
-                <div className="flex justify-center ">
-                    <p className="text-custom-text-gray">
-                        Não tem uma conta? <Link to="/cadastro" className="text-white hover:underline">Cadastrar-se</Link>
-                    </p>
-                </div>
-            </Form>
-        </div>
-    )
+          <div className="flex justify-center ">
+            <p className="text-custom-text-gray">
+              <Link to="/login" className="text-white hover:underline">
+                Voltar à pagina de login
+              </Link>
+            </p>
+          </div>
+        </Form>
+      </div>
+    </div>
+  )
 }
