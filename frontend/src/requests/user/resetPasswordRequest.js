@@ -1,17 +1,27 @@
 import axiosInstance from '@/api/axiosInstance'
 import { safeAwait } from '@/lib/safeAwait'
-import { redirect } from 'react-router-dom'
 
-export async function resetPasswordRequest(formData) {
+import { resetPasswordSchema } from '@/schemas/resetPasswordSchema'
 
-  const code = formData.get('verificationcode')
-  const UserId = formData.get('userid')
-  const password = formData.get('newPassword')
-  const confPassword = formData.get('confirmPassword')
+export async function resetPasswordRequest({ password, confPassword, userId, verificationCode }) {
+  const validation = resetPasswordSchema.safeParse({
+    password,
+    confPassword,
+    userid: userId,
+    verificationcode: verificationCode
+  })
 
-  if (password !== confPassword) {
-    return { error: 'As senhas estão diferentes.' }
+  if (!validation.success) {
+    const fieldErrors = {}
+    validation.error.errors.forEach((error) => {
+      fieldErrors[error.path[0]] = error.message
+    })
+    return { fieldErrors }
   }
+
+  const code = verificationCode
+  const UserId = userId
+
   const user = { password }
 
   const [error, result] = await safeAwait(
@@ -19,12 +29,8 @@ export async function resetPasswordRequest(formData) {
   )
 
   if (error) {
-    return { error: error.response.data.message }
+    return { error: error.response?.data?.message || 'Erro ao redefinir senha' }
   }
 
-  if (result.status === 204) {
-    return { success: 204 }
-  }
-
-  return redirect(`/login`)
+  return { success: true }
 }
