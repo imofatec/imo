@@ -1,82 +1,141 @@
 <!DOCTYPE html>
 <html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
-  <head>
-    <meta charset="UTF-8" />
-    <title th:text="${documentTitle}">[TITLE]</title>
-    <style>
-      @font-face {
-        font-family: "Merriweather";
-        src: url("fonts/Merriweather-Regular.ttf") format('truetype');
-      }
-      body {
-        margin: 0;
-        padding: 0;
-        font-family: "Merriweather", Helvetica, sans-serif;
-        text-align: center;
-        background: url("images/background-certificate.jpeg") no-repeat center center;
-        background-size: cover;
-      }
-      .certificate-container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        width: 100%;
-        height: 100%;
-        padding: 0;
-        margin: 200px 0 0;
-        box-sizing: border-box;
-      }
-      .certificate-body {
-        font-size: 24px;
-        margin-bottom: 40px;
-      }
-      .certificate-info {
-        margin-top: 10px;
-        font-size: 16px;
-      }
-      .certificate-dates {
-        margin-top: 30px;
-        font-size: 12px;
-      }
-      .name {
-        font-size: 35px;
-      }
-      #nome-plataforma {
-        text-decoration: underline;
-      }
-    </style>
-  </head>
-  <body>
-    <div class="certificate-container">
-      <p class="certificate-body">
-        Certificamos que
-          <br /><br />
-          <span class="name" th:text="${name}">[NOME]</span>
-          <br />
-        concluiu com aproveitamento o curso
-        <span th:text="${courseName}">[NOME DO CURSO]</span>
-          <br />
-          no periodo de
-        <span th:text="${startedAt}">[DATA INÍCIO]</span> a
-        <span th:text="${finishedAt}">[DATA TÉRMINO]</span>.
-      </p>
 
-      <p class="certificate-info">
-          Certificado registrado em São Paulo sob n°
-        <span th:text="${certificateId}">[ID CERTIFICADO]</span>
-      </p>
+<head>
+  <meta charset="UTF-8" />
+  <title th:text="${documentTitle}">[TITLE]</title>
+  <style>
+    @font-face {
+      font-family: "JetBrainsMono";
+      src: url("fonts/JetBrainsMono-Regular.ttf") format('truetype');
+    }
 
-      <p class="certificate-dates">
-        IMO
-        <br />
-        <span id="nome-plataforma">Plataforma Gratuita de Cursos de TI</span>
-        <br /><br /><br /><br />
-        Brasil - São Paulo
-        <br />
-        Data de Emissão: <span th:text="${issuedAt}">[DATA EMISSÃO]</span>
-      </p>
+    @page {
+      size: A4 landscape;
+      margin: 0;
+      padding: 0;
+    }
 
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "JetBrainsMono", Helvetica, sans-serif;
+      text-align: center;
+      color: white;
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100vh;
+      background: url("images/certificate-background.jpg") no-repeat center center;
+      background-size: 100% 100%;
+      background-attachment: local;
+      -webkit-background-size: 100% 100%;
+      -moz-background-size: 100% 100%;
+      -o-background-size: 100% 100%;
+    }
+
+    .certificate-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100vh;
+      min-height: 100vh;
+      padding: 20px;
+      position: relative;
+      max-width: 100%;
+      max-height: 100vh;
+      margin-top: 65px;
+    }
+
+    .certificate-body {
+      font-size: 35px;
+      margin-bottom: 40px;
+    }
+
+    .certificate-info {
+      margin-top: 10px;
+      font-size: 15px;
+    }
+
+    .certificate-dates {
+      margin-top: 30px;
+      font-size: 15px;
+      margin-bottom: 10px;
+    }
+
+    .name {
+      font-size: 45px;
+      font-weight: bold;
+      margin-bottom: 40px;
+    }
+
+    .logo-imo {
+      width: 200px;
+      height: auto;
+      margin-bottom: 40px;
+    }
+
+    #nome-plataforma {
+      text-decoration: underline;
+    }
+
+    #nome-curso {
+      color: #2DEFD8;
+      font-size: 35px;
+      font-weight: bold;
+      margin-bottom: 40px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="certificate-container">
+
+    <div>
+      <img src="images/LogoIMO.svg" alt="" class="logo-imo">
     </div>
-  </body>
+
+    <p class="certificate-body"> CERTIFICADO DE CONCLUSÃO </p>
+
+    <p th:text="${courseName}" id="nome-curso">[NOME DO CURSO]</p>
+
+    <p class="name" th:text="${name}">[NOME]</p>
+
+    <p style="margin-bottom: 40px; font-size: 20px;"> Parabéns por mais um curso concluído na plataforma IMO! </p>
+
+    <p>
+      Inicio:
+      <span th:text="${startedAt}">[DATA INÍCIO]</span>
+      Termino:
+      <span th:text="${finishedAt}">[DATA TÉRMINO]</span>.
+    </p>
+
+    <p class="certificate-dates">
+      IMO
+      Brasil - São Paulo
+      <br /> <br />
+      Data de Emissão: <span th:text="${issuedAt}">[DATA EMISSÃO]</span>
+    </p>
+
+    <p class="certificate-info">
+      n°
+      <span th:text="${certificateId}">[ID CERTIFICADO]</span>
+    </p>
+
+  </div>
+</body>
+
 </html>
