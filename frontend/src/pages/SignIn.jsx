@@ -13,10 +13,10 @@ export default function SignIn() {
   const actionData = useActionData()
 
   useEffect(() => {
-      if (actionData) {
-        setError(actionData.error)
-        setIsLoading(false)
-      }
+    if (actionData) {
+      setError(actionData.error)
+      setIsLoading(false)
+    }
   }, [actionData])
 
   return (
@@ -77,8 +77,14 @@ export default function SignIn() {
               <Linkedin />
             </div>
             <div className="flex justify-center ">
-              <p className="text-custom-text-gray">
-                Não tem uma conta?{' '}
+              <p className="flex gap-x-2 text-custom-text-gray">
+                <Link
+                  to="/user/redefinir-senha"
+                  className="text-white hover:underline"
+                >
+                  Esqueceu a senha?
+                </Link>
+                {'•'}
                 <Link to="/cadastro" className="text-white hover:underline">
                   Cadastrar-se
                 </Link>

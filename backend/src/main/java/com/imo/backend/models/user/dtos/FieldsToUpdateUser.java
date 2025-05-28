@@ -3,9 +3,9 @@ package com.imo.backend.models.user.dtos;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
+import lombok.Data;
 
-@Getter
+@Data
 public class FieldsToUpdateUser {
 
     @Email(message = "Insira um email válido")

@@ -56,7 +56,7 @@ export default function DropdownHeader({ isLoggedIn }) {
                 <DropdownTriangle />
               </div>
               <div
-                className="absolute top-full right-[-2rem] mt-6 w-48 bg-custom-header-dark-purple border border-white rounded-lg shadow-lg"
+                className="absolute top-full right-[-2rem] mt-6 w-48 bg-custom-header-dark-purple border border-white rounded-lg shadow-lg z-50"
                 onMouseEnter={handleMouseEnter}
                 onMouseLeave={handleMouseLeave}
               >
