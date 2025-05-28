@@ -51,6 +51,8 @@ export default function MyCourses() {
 
   const tipoCurso = 'Meus Cursos'
 
+  console.log('cursos', sortedCourses)
+
   return (
     <>
       <Titulo titulo={`IMO / Meus Cursos`} />
@@ -100,6 +102,7 @@ export default function MyCourses() {
                   codAula={curso.courseOverview.firstLessonYoutubeId}
                   nameButton="Retomar curso"
                   //onStart={handleStartCourse}
+                  isEditing={ curso.status === 'FINISHED' ? true : false }
                 />
               ))}
           </div>

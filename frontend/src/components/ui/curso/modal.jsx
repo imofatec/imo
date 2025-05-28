@@ -18,7 +18,8 @@ export default function Modal({
   onStart,
   idCurso,
   nameButton = "Comece Agora!",
-  editButton = "Editar Curso"
+  editButton = "Editar Curso",
+  isEditing = false
 }) {
   return (
     <Dialog open={aberto} onOpenChange={fechado}>
@@ -38,25 +39,26 @@ export default function Modal({
                 Quantidade de aulas: {qtd}
               </p>
               <div className="flex gap-10 mt-8">
-              <Link
-                to={`/cursos/${codigoCurso}/${codigoAula}`} /*rota por parametros para acessar o vídeo*/
-                className="underline mt-8 font-normal text-lg hover:scale-105 duration-200"
-              >
-                {/* <button onClick={() => onStart(idCurso)}>{nameButton}</button> */}
-                <button
-                  className="bg-[#00FFE8] text-black px-2 rounded font-bold"
-                >{nameButton}</button>
-              </Link>
-              <Link
-                to={`/editar-curso/${idCurso}`}
-                className=" mt-8 font-normal text-lg hover:scale-105 duration-200"
-              >
-                <button
-                  className="bg-[#00FFE8] text-black px-2 rounded font-bold"
-                >{editButton}
-                </button>
-              
-              </Link>
+                <Link
+                  to={`/cursos/${codigoCurso}/${codigoAula}`} /*rota por parametros para acessar o vídeo*/
+                  className="underline mt-8 font-normal text-lg hover:scale-105 duration-200"
+                >
+                  {/* <button onClick={() => onStart(idCurso)}>{nameButton}</button> */}
+                  <button
+                    className="bg-[#00FFE8] text-black px-2 rounded font-bold"
+                  >{nameButton}</button>
+                </Link>
+                {isEditing &&
+                  <Link
+                    to={`/editar-curso/${idCurso}`}
+                    className=" mt-8 font-normal text-lg hover:scale-105 duration-200"
+                  >
+                    <button
+                      className="bg-[#00FFE8] text-black px-2 rounded font-bold"
+                    >{editButton}
+                    </button>
+                  </Link>
+                }
               </div>
             </div>
 

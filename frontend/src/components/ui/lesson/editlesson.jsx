@@ -1,18 +1,15 @@
 import { useLessonValidator } from '@/hooks/useLessonValidator'
 import { lessonSchema } from '@/schemas/createCourseSchema'
+import { useState } from 'react'
 import ColInputLabel from '../inputs/colinputlabel'
 import ColLargeInput from '../inputs/collargeinput'
-import Minus from '../minus'
-import { Plus } from '../plus'
-import { useEffect, useState, useRef } from 'react'
-import { Form, useActionData } from 'react-router-dom'
-import { updateLesson } from '@/requests/lesson/updateLessons'
-import { SpinnerButton } from '../spinnerButton'
-import { Disc } from 'lucide-react'
-import { safeAwait } from '@/lib/safeAwait'
-import authAxiosInstance from '@/api/authAxiosInstance'
+import { Save } from 'lucide-react';
+import { Trash } from 'lucide-react';
+import { useEditLessonLogic } from '@/hooks/useEditLessonLogic'
 
-export default function EditLesson({ lessonInfo }) {
+export default function EditLesson({ lessonInfo, refetchCourse }) {
+  const [confirmDelete, setConfirmDelete] = useState(false)
+
   const {
     formDataList,
     fieldErrorsList,
@@ -20,64 +17,19 @@ export default function EditLesson({ lessonInfo }) {
     removeLesson,
   } = useLessonValidator(lessonSchema)
 
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState(null)
-  const [formData, setFormData] = useState({
-    title: '',
-    descriptionC: '',
-    youtubeLink: '',
-  })
-
-  const updateLesson = async () => {
-    const fieldsToUpdate = Object.keys(formData).filter((key) => formData[key] != '')
-
-    if (!fieldsToUpdate) return
-
-    let requestBody = {}
-
-    fieldsToUpdate.forEach((field) => (
-      requestBody = { ...requestBody, [field]: formData[field] }
-    ))
-
-    const [error] = await safeAwait(
-      authAxiosInstance.put(`/api/courses/lessons/${lessonInfo.id}`, requestBody)
-    )
-
-    if (error) {
-      setError(error.response.data.message)
-      setIsLoading(false)
-      return
-    }
-
-    setFormData({
-      title: '',
-      descriptionC: '',
-      youtubeLink: '',
-    })
-    setError(null)
-    setIsLoading(false)
-  }
-
-  const handleUpdateChange = (e) => {
-    const { name, value } = e.target
-
-    const fieldName = name.split('-')[0]
-
-    const updatedLesson = {
-      ...formData,
-      [fieldName]: value
-    }
-
-    setFormData(updatedLesson)
-  }
+  const {
+    formData,
+    handleUpdateChange,
+    updateLesson,
+    deleteLesson,
+    isLoading,
+    error,
+  } = useEditLessonLogic(lessonInfo.id, refetchCourse)
 
   return (
     <>
       {formDataList.map((lesson, index) => (
-        <div
-          className="w-full border-white border rounded-xl p-6 px-10 my-6"
-          key={index}
-        >
+        <div className="w-full border-white border rounded-xl p-6 px-10 my-6" key={index}>
           <ColInputLabel
             label="Link da Aula"
             placeholder={lessonInfo.youtubeLink}
@@ -86,7 +38,7 @@ export default function EditLesson({ lessonInfo }) {
             value={lesson.youtubeLink ?? ''}
             onChange={(e) => {
               handleChange(index, e)
-              handleUpdateChange(index, e)
+              handleUpdateChange(e)
             }}
             error={fieldErrorsList[index]?.youtubeLink}
           />
@@ -99,7 +51,7 @@ export default function EditLesson({ lessonInfo }) {
             value={lesson.title ?? ''}
             onChange={(e) => {
               handleChange(index, e)
-              handleUpdateChange(index, e)
+              handleUpdateChange(e)
             }}
             error={fieldErrorsList[index]?.title}
           />
@@ -112,30 +64,44 @@ export default function EditLesson({ lessonInfo }) {
             value={lesson.descriptionC ?? ''}
             onChange={(e) => {
               handleChange(index, e)
-              handleUpdateChange(index, e)
+              handleUpdateChange(e)
             }}
             error={fieldErrorsList[index]?.descriptionC}
           />
 
           <div className="flex flex-row justify-between m-6">
-            <div
-              className="flex-row flex items-center cursor-pointer"
-              onClick={() => removeLesson(index)}
-            >
-              <Minus />
-              <label className="ml-6 text-white italic text-sm">
-                Clique no “-” para remover uma aula
-              </label>
-            </div>
-            <div
-              className="flex-row flex items-center text-white cursor-pointer"
-            >
+            {!confirmDelete ? (
+              <div
+                className="flex items-center text-red-500 cursor-pointer"
+                onClick={() => setConfirmDelete(true)}
+              >
+                <Trash className="w-5 h-5" />
+                <span className="ml-2 text-sm italic">Excluir aula</span>
+              </div>
+            ) : (
+              <div className="flex gap-3 items-center">
+                <button
+                  onClick={deleteLesson}
+                  className="bg-red-600 hover:bg-red-700 text-white text-sm px-4 py-1 rounded"
+                >
+                  Confirmar Exclusão
+                </button>
+                <button
+                  onClick={() => setConfirmDelete(false)}
+                  className="text-gray-400 hover:text-gray-200 text-sm"
+                >
+                  Cancelar
+                </button>
+              </div>
+            )}
 
-              <Disc onClick={() => {
-                updateLesson()
-              }} />
-
-              {error && error}
+            <div
+              className="flex-row flex items-center gap-2 text-white cursor-pointer"
+              onClick={updateLesson}
+            >
+              <Save className="w-5 h-5" />
+              Salvar Alterações
+              {error && <span className="text-red-500 text-sm ml-2">{error}</span>}
             </div>
           </div>
         </div>
