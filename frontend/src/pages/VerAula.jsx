@@ -221,7 +221,7 @@ export default function VerAula() {
                         indexLesson={item.index}
                         thumbLesson={`https://img.youtube.com/vi/${item.youtubeLink}/maxresdefault.jpg`}
                         title={item.title}
-                        lessonDuration="30:23"
+                        lessonDuration=""
                         author={item.author}
                         codeCourse={slugCourse}
                         codeLesson={item.youtubeLink}
