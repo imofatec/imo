@@ -1,51 +1,63 @@
-import { Form, useActionData, useNavigate, Link } from 'react-router-dom'
-import { useEffect, useState } from 'react'
+// components/StepNewPasswordForm.jsx
+import { Link, useNavigate } from 'react-router-dom'
 import { InputLabel } from '@/components/ui/inputs/inputlabel'
 import { SpinnerButton } from '@/components/ui/spinnerButton'
 import { resetPasswordRequest } from '@/requests/user/resetPasswordRequest'
+import { resetPasswordSchema } from '@/schemas/resetPasswordSchema'
+import { useState } from 'react'
+import { useFormValidator } from '@/hooks/useFormValidator'
 
 export default function StepNewPasswordForm({ userId, VerificationCode }) {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState(null)
-  const actionData = useActionData()
+  const navigate = useNavigate()
 
-  useEffect(() => {
-    if (actionData?.error) {
-      setError(actionData.error)
-      setIsLoading(false)
-    }
-  }, [actionData])
+  const {
+    formData,
+    fieldErrors,
+    handleChange,
+    setFieldErrors
+  } = useFormValidator(resetPasswordSchema)
 
   return (
     <div className="flex justify-center bg-custom-dark-purple h-screen text-white">
       <div className="h-screen mt-[3.125rem] text-white">
-        <Form
-          method="post"
-          className="w-96 p-8 space-y-6"
-          action={resetPasswordRequest}
-        >
+        <div className="w-96 p-8 space-y-6">
           <div className="flex flex-col items-center">
             <h1 className="text-xl font-bold text-center">Nova senha</h1>
           </div>
 
           <InputLabel
             type="password"
-            id="newPassword"
-            name="newPassword"
+            id="password"
+            name="password"
             placeholder="Digite sua nova senha"
             label="Nova senha"
+            value={formData.password || ''}
+            onChange={handleChange}
+            className={fieldErrors.password ? 'border-red-500 focus:border-red-500' : ''}
           />
+          {fieldErrors.password && (
+            <p className="text-sm text-red-500 !mt-0">{fieldErrors.password}</p>
+          )}
 
           <InputLabel
             type="password"
-            id="confirmPassword"
-            name="confirmPassword"
+            id="confPassword"
+            name="confPassword"
             placeholder="Confirme sua nova senha"
             label="Confirme sua nova senha"
+            value={formData.confPassword || ''}
+            onChange={handleChange}
+            className={fieldErrors.confPassword ? 'border-red-500 focus:border-red-500' : ''}
           />
+          {fieldErrors.confPassword && (
+            <p className="text-sm text-red-500 !mt-0">
+              {fieldErrors.confPassword === 'Required' ? 'Obrigatório' : fieldErrors.confPassword}
+            </p>
+          )}
 
           <input type="hidden" id="userid" name="userid" value={userId} />
-
           <input
             type="hidden"
             id="verificationcode"
@@ -54,14 +66,36 @@ export default function StepNewPasswordForm({ userId, VerificationCode }) {
           />
 
           <SpinnerButton
-            children="Redefinir senha"
+            type="submit"
             isLoading={isLoading}
-            onClick={() => {
+            className="w-full bg-custom-header-cyan text-black"
+            onClick={async () => {
               setIsLoading(true)
               setError(null)
+              setFieldErrors({})
+
+              const result = await resetPasswordRequest({
+                password: formData.password,
+                confPassword: formData.confPassword,
+                userId,
+                verificationCode: VerificationCode
+              })
+
+              if (result?.error) {
+                setError(result.error)
+                setIsLoading(false)
+              } else if (result?.fieldErrors) {
+                setFieldErrors(result.fieldErrors)
+                setIsLoading(false)
+              } else if (result?.success) {
+                navigate('/login')
+              } else {
+                setIsLoading(false)
+              }
             }}
-            className="w-full bg-custom-header-cyan text-black"
-          />
+          >
+            Redefinir senha
+          </SpinnerButton>
 
           {error && <div className="h-1 text-center text-red-500">{error}</div>}
 
@@ -69,14 +103,14 @@ export default function StepNewPasswordForm({ userId, VerificationCode }) {
             <div className="h-[1px] w-full bg-custom-border-gray"></div>
           </div>
 
-          <div className="flex justify-center ">
+          <div className="flex justify-center">
             <p className="text-custom-text-gray">
               <Link to="/login" className="text-white hover:underline">
-                Voltar à pagina de login
+                Voltar à página de login
               </Link>
             </p>
           </div>
-        </Form>
+        </div>
       </div>
     </div>
   )
