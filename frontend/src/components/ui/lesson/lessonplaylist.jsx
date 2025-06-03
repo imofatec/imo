@@ -35,6 +35,12 @@ export default function LessonPlaylist({
   return (
     <div className="flex flex-col px-2 py-2 overflow items-center">
       <div className="flex flex-row  items-center place-content-evenly">
+        <Link
+          to={`/cursos/${codeCourse}/${codeLesson}`}
+          className="object-contain p-3 rounded-xl"
+        >
+          <img className="rounded-xl" src={thumbLesson}></img>{' '}
+        </Link>
         <div
           className={` flex items-center justify-center w-6 h-6 ${isChecked ? 'bg-custom-header-cyan' : 'bg-transparent'}`}
         >
@@ -46,12 +52,6 @@ export default function LessonPlaylist({
             disabled={!isEnabled || isChecked}
           />
         </div>
-        <Link
-          to={`/cursos/${codeCourse}/${codeLesson}`}
-          className="object-contain p-3 rounded-xl"
-        >
-          <img className="rounded-xl" src={thumbLesson}></img>{' '}
-        </Link>
       </div>
 
       <div className="flex flex-row justify-between mx-4">

@@ -17,6 +17,7 @@ import { useLessonData } from '@/hooks/useLessonData'
 import { useLessonProgress } from '@/hooks/useLessonProgress'
 import buildCommentTree from '@/lib/builCommentTree'
 import { safeAwait } from '@/lib/safeAwait'
+import Spinner from '@/components/ui/spinner'
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 
@@ -86,6 +87,7 @@ export default function VerAula() {
     setIsLoading(false)
   }
 
+  console.log('Progress:' + progress?.lessonsWatched + ' / ' + progress?.totalLessons)
   return (
     <>
       <div className="max-w-full min-h-screen">
@@ -178,7 +180,7 @@ export default function VerAula() {
             >
               <button
                 onClick={() => setShowLessons(!showLessons)}
-                className="absolute top-4 left-4 z-10 bg-gray-700 hover:bg-gray-600 text-white p-2 rounded-md transition-colors duration-200"
+                className="absolute top-4 right-4 z-10 bg-gray-700 hover:bg-gray-600 text-white p-2 rounded-md transition-colors duration-200"
               >
                 {showLessons ? (
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
@@ -204,11 +206,19 @@ export default function VerAula() {
               </button>
 
               <div
-                className={`bg-custom-dark-blue p-6 max-h-[calc(100vh-4rem)] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-800 transition-opacity duration-300 ${
-                  showLessons ? 'opacity-100' : 'opacity-0 pointer-events-none'
-                }`}
+                className={`bg-custom-dark-blue p-6 max-h-[calc(100vh-4rem)] overflow-y-auto scrollbar-thin scrollbar-left scrollbar-thumb-gray-500 scrollbar-track-gray-800 transition-opacity duration-300 ${showLessons ? 'opacity-100' : 'opacity-0 pointer-events-none'
+                  }`}
               >
                 <h2 className="text-xl mb-6 text-center">Aulas do curso</h2>
+
+                <h3 className='text-center flex justify-center'>
+                  {loadingProgress ? (
+                    <Spinner className="text-center animate-spin" />
+                  ) : (
+                    `Progresso: ${progress?.lessonsWatched} / ${progress?.totalLessons}`
+                  )}
+                </h3>
+                
                 {loading &&
                   Array.from({ length: 4 }).map((_, index) => (
                     <SkeletonLoading key={index} />
@@ -235,11 +245,10 @@ export default function VerAula() {
                       isLoading={isLoading}
                       onClick={handleGetCertificate}
                       disabled={progress.lessonsWatched < lessonData.length}
-                      className={`w-full mt-4 px-4 py-2 rounded ${
-                        progress.lessonsWatched < lessonData.length || cansei
-                          ? 'bg-gray-500 cursor-not-allowed text-white'
-                          : 'bg-custom-header-cyan text-black'
-                      }`}
+                      className={`w-full mt-4 px-4 py-2 rounded ${progress.lessonsWatched < lessonData.length || cansei
+                        ? 'bg-gray-500 cursor-not-allowed text-white'
+                        : 'bg-custom-header-cyan text-black'
+                        }`}
                     >
                       Gerar certificado
                     </SpinnerButton>
