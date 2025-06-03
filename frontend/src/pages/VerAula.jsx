@@ -18,7 +18,7 @@ import { useLessonProgress } from '@/hooks/useLessonProgress'
 import buildCommentTree from '@/lib/builCommentTree'
 import { safeAwait } from '@/lib/safeAwait'
 import Spinner from '@/components/ui/spinner'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 
 export default function VerAula() {
@@ -28,6 +28,9 @@ export default function VerAula() {
   const { fetchProgress, progress, cansei, loadingProgress, updateProgress } =
     useLessonProgress(courseId ? courseId : null)
   const navigate = useNavigate()
+
+  const firstUnwatchedLesson = useRef(null)
+  const lessonsContainer = useRef(null)
 
   const { authLoading } = useAuth()
   const [showComments, setShowComments] = useState(true)
@@ -40,8 +43,6 @@ export default function VerAula() {
 
   const {
     commentsData,
-    error: commentsError,
-    loading: commentsLoading,
     refetchComments,
   } = useCommentsData(currentLesson?.id ?? null)
 
@@ -53,6 +54,17 @@ export default function VerAula() {
   useEffect(() => {
     if (!loading && error) {
       navigate('/404')
+    }
+    if (firstUnwatchedLesson.current && lessonsContainer.current) {
+      const container = lessonsContainer.current
+      const element = firstUnwatchedLesson.current
+      const elementTop = element.offsetTop
+      const scrollToPosition = elementTop - 50
+
+      container.scrollTo({
+        top: scrollToPosition,
+        behavior: 'smooth'
+      })
     }
   }, [loading, error, navigate, progress])
 
@@ -87,7 +99,6 @@ export default function VerAula() {
     setIsLoading(false)
   }
 
-  console.log('Progress:' + progress?.lessonsWatched + ' / ' + progress?.totalLessons)
   return (
     <>
       <div className="max-w-full min-h-screen">
@@ -206,6 +217,7 @@ export default function VerAula() {
               </button>
 
               <div
+                ref={lessonsContainer}
                 className={`bg-custom-dark-blue p-6 max-h-[calc(100vh-4rem)] overflow-y-auto scrollbar-thin scrollbar-left scrollbar-thumb-gray-500 scrollbar-track-gray-800 transition-opacity duration-300 ${showLessons ? 'opacity-100' : 'opacity-0 pointer-events-none'
                   }`}
               >
@@ -218,28 +230,32 @@ export default function VerAula() {
                     `Progresso: ${progress?.lessonsWatched} / ${progress?.totalLessons}`
                   )}
                 </h3>
-                
+
                 {loading &&
                   Array.from({ length: 4 }).map((_, index) => (
                     <SkeletonLoading key={index} />
                   ))}
                 {!loadingProgress && (
                   <>
-                    {lessonData.map((item, i) => (
-                      <LessonPlaylist
-                        key={i}
-                        indexLesson={item.index}
-                        thumbLesson={`https://img.youtube.com/vi/${item.youtubeLink}/maxresdefault.jpg`}
-                        title={item.title}
-                        lessonDuration=""
-                        author={item.author}
-                        codeCourse={slugCourse}
-                        codeLesson={item.youtubeLink}
-                        onFinished={handleFinishedLesson}
-                        progress={progress}
-                        loadingProgress={loadingProgress}
-                      />
-                    ))}
+                    {lessonData.map((item, i) => {
+                      const isUnwatched = i === progress.lessonsWatched
+                      return (
+                        <LessonPlaylist
+                          key={item.id}
+                          indexLesson={item.index}
+                          thumbLesson={`https://img.youtube.com/vi/${item.youtubeLink}/maxresdefault.jpg`}
+                          title={item.title}
+                          lessonDuration=""
+                          author={item.author}
+                          codeCourse={slugCourse}
+                          codeLesson={item.youtubeLink}
+                          onFinished={handleFinishedLesson}
+                          progress={progress}
+                          loadingProgress={loadingProgress}
+                          scrollRef={isUnwatched ? firstUnwatchedLesson : null}
+                        />
+                      )
+                    })}
 
                     <SpinnerButton
                       isLoading={isLoading}

@@ -12,7 +12,8 @@ export default function LessonPlaylist({
   onFinished,
   indexLesson,
   progress,
-  loadingProgress
+  loadingProgress,
+  scrollRef,
 }) {
   const [isEnabled, setIsEnabled] = useState()
   const [isChecked, setIsChecked] = useState()
@@ -33,7 +34,7 @@ export default function LessonPlaylist({
   }
 
   return (
-    <div className="flex flex-col px-2 py-2 overflow items-center">
+    <div ref={scrollRef} className="flex flex-col px-2 py-2 overflow items-center">
       <div className="flex flex-row  items-center place-content-evenly">
         <Link
           to={`/cursos/${codeCourse}/${codeLesson}`}
