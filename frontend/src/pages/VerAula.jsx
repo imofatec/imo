@@ -103,7 +103,7 @@ export default function VerAula() {
     <>
       <div className="max-w-full min-h-screen">
         <Titulo titulo={`IMO / ${currentLesson?.title}`}></Titulo>
-        {loading || authLoading ? (
+        {isLoading || loadingProgress || loading || authLoading ? (
           <SkeletonVerAula />
         ) : (
           <div className="flex flex-row">
