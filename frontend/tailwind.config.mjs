@@ -1,3 +1,5 @@
+const plugin = require('tailwindcss/plugin');
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   darkMode: ['class'],
@@ -86,5 +88,19 @@ module.exports = {
   plugins: [
     require('tailwindcss-animate'),
     require('tailwind-scrollbar')({ nocompatible: true }),
+    plugin(function ({ addUtilities }) {
+      addUtilities(
+        {
+          '.scrollbar-left': {
+            direction: 'rtl',
+            'text-align': 'left',
+          },
+          '.scrollbar-left *': {
+            direction: 'ltr',
+          },
+        },
+        ['responsive']
+      );
+    }),
   ],
 }
