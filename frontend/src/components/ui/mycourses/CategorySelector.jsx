@@ -4,10 +4,11 @@ export default function CategorySelector({
   selectedCategory,
   onCategorySelect,
   onShowAllCourses,
+  onShowContributions,
+  viewMode,
 }) {
   const categories = [
     { name: 'Finalizados', slug: 'finalizados' },
-    { name: 'Submissões', slug: 'submissoes' },
     { name: 'Em andamento', slug: 'em-andamento' },
   ]
   return (
@@ -17,7 +18,15 @@ export default function CategorySelector({
         label={'text-xl font-semibold'}
         conteudo={'Todos os cursos'}
         onShowAllCourses={onShowAllCourses}
-        isSelected={!selectedCategory}
+        isSelected={viewMode === 'courses' && !selectedCategory}
+      ></Seletor>
+      <div className='w-full h-[1px] bg-white'></div>
+      <Seletor
+        id="allContributions"
+        label={'text-xl font-semibold'}
+        conteudo={'Contribuições'}
+        onShowContributions={onShowContributions}
+        isSelected={viewMode === 'contributions' && !selectedCategory}
       ></Seletor>
       <Dropdown
         categorias={categories}
