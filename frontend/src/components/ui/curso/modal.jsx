@@ -45,7 +45,7 @@ export default function Modal({
                 >
                   {/* <button onClick={() => onStart(idCurso)}>{nameButton}</button> */}
                   <button
-                    className="bg-[#00FFE8] text-black px-2 rounded font-bold"
+                    className="underline mt-8 font-normal text-lg hover:scale-105 duration-200"
                   >{nameButton}</button>
                 </Link>
                 {isEditing &&
@@ -54,7 +54,7 @@ export default function Modal({
                     className=" mt-8 font-normal text-lg hover:scale-105 duration-200"
                   >
                     <button
-                      className="bg-[#00FFE8] text-black px-2 rounded font-bold"
+                      className="underline mt-8 font-normal text-lg hover:scale-105 duration-200"
                     >{editButton}
                     </button>
                   </Link>
