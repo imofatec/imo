@@ -51,33 +51,33 @@ public class SecurityConfig {
         .cors(Customizer.withDefaults())
         .csrf(AbstractHttpConfigurer::disable)
         .authorizeHttpRequests(auth -> auth
-            .requestMatchers(HttpMethod.PUT, "/api/user/profile-picture").authenticated()
-            .requestMatchers(HttpMethod.PUT, "/api/user").authenticated()
-            .requestMatchers(HttpMethod.PUT, "/api/user/progress/{courseId}").authenticated()
-            .requestMatchers(HttpMethod.PUT, "/api/user/confirm").authenticated()
-            .requestMatchers(HttpMethod.GET, "/api/user/profile").authenticated()
-            .requestMatchers(HttpMethod.GET, "/api/user/private").authenticated()
-            .requestMatchers(HttpMethod.GET, "/api/user/course/certificate/{courseId}").authenticated()
-            .requestMatchers(HttpMethod.GET, "/api/user/courses/progress").authenticated()
-            .requestMatchers(HttpMethod.GET, "/api/user/course/progress/{courseId}").authenticated()
-            .requestMatchers(HttpMethod.GET, "/api/user/course/overviews").authenticated()
-            .requestMatchers(HttpMethod.GET, "/api/user/contributions").authenticated()
-            .requestMatchers(HttpMethod.POST, "/api/courses").authenticated()
-            .requestMatchers(HttpMethod.POST, "/api/courses/many/courses").authenticated()
-            .requestMatchers(HttpMethod.POST, "/api/courses/comments/lessons/{lessonId}").authenticated()
-            .requestMatchers(HttpMethod.POST, "/api/courses/create").authenticated()
-            .requestMatchers(HttpMethod.POST, "/api/courses/create-many").authenticated()
-            .requestMatchers(HttpMethod.PUT, "/api/courses/{courseId}").authenticated()
-            .requestMatchers(HttpMethod.PATCH, "/api/courses/{courseId}").authenticated()
-            .requestMatchers(HttpMethod.DELETE, "/api/courses/{courseId}/lesson/{lessonId}").authenticated()
-            .anyRequest().permitAll()
-        )
-        .sessionManagement(
-            session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .requestMatchers(
+                HttpMethod.GET,
+                "/swagger-ui/**",
+                "/v3/api-docs/**",
+                "/swagger-resources/**",
+                "/webjars/**",
+                "/docs/**",
+                "/api/user/ids",
+                "/api/user/{id}",
+                "/api/user/forget-password/**",
+                "/api/course/{id}",
+                "/api/course/search",
+                "/api/course/search/details",
+                "/apí/course/categories",
+                "/api/comment/{lessonId}"
+            )
+            .permitAll()
+            .requestMatchers(HttpMethod.POST, "/api/user", "/api/user/login")
+            .permitAll()
+            .requestMatchers(HttpMethod.PATCH, "/api/user/{emailCode}/{userId}")
+            .permitAll()
+            .anyRequest()
+            .authenticated())
+        .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .oauth2ResourceServer(conf -> conf
             .jwt(Customizer.withDefaults())
-            .authenticationEntryPoint(new CustomAuthenticationEntryPoint())
-        )
+            .authenticationEntryPoint(new CustomAuthenticationEntryPoint()))
         .build();
   }
 
@@ -85,11 +85,16 @@ public class SecurityConfig {
   public CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration configuration = new CorsConfiguration();
     configuration.setAllowedOrigins(Arrays.asList(this.clientURL));
-    configuration.setAllowedMethods(
-        Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS","PATCH"));
+    configuration.setAllowedMethods(Arrays.asList(
+        "GET",
+        "POST",
+        "PUT",
+        "DELETE",
+        "OPTIONS",
+        "PATCH"
+    ));
     configuration.setAllowCredentials(true);
-    configuration.setAllowedHeaders(
-        List.of("Authorization", "Cache-Control", "Content-Type"));
+    configuration.setAllowedHeaders(List.of("Authorization", "Cache-Control", "Content-Type"));
     configuration.setExposedHeaders(List.of("Content-Disposition"));
     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
     source.registerCorsConfiguration("/**", configuration);
