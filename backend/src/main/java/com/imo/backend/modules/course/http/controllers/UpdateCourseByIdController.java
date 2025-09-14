@@ -1,0 +1,55 @@
+package com.imo.backend.modules.course.http.controllers;
+
+import com.imo.backend.modules.course.Course;
+import com.imo.backend.modules.course.actions.inputs.UpdateCourseInput;
+import com.imo.backend.modules.course.http.middlewares.ValidateUserCourseAccessService;
+import com.imo.backend.modules.course.services.UpdateCourseByIdService;
+import com.imo.backend.lib.token.TokenManager;
+import com.imo.backend.utils.MongoDB;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class UpdateCourseByIdController extends CourseController {
+  private final UpdateCourseByIdService updateCourseByIdService;
+
+  private final ValidateUserCourseAccessService validateUserCourseAccessService;
+
+  public UpdateCourseByIdController(
+      UpdateCourseByIdService updateCourseByIdService,
+      TokenManager tokenManager,
+      ValidateUserCourseAccessService validateUserCourseAccessService
+  ) {
+    this.updateCourseByIdService = updateCourseByIdService;
+    this.validateUserCourseAccessService = validateUserCourseAccessService;
+  }
+
+  @Operation(summary = "Update course fields by id")
+  @SecurityRequirement(name = "Authorization")
+  @PutMapping("/{id}")
+  public ResponseEntity<Course> handle(
+      @PathVariable
+      String id,
+      @Valid
+      @RequestBody
+      UpdateCourseInput dto
+  ) {
+    MongoDB.validateObjectId(id);
+    String userId = SecurityContextHolder.getContext().getAuthentication().getName();
+
+    this.validateUserCourseAccessService.execute(userId, id);
+
+    var updatedCourse = this.updateCourseByIdService.execute(id, dto);
+
+    return updatedCourse == null
+        ? ResponseEntity.noContent().build()
+        : ResponseEntity.ok(updatedCourse);
+  }
+}
