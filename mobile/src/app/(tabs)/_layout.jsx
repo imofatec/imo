@@ -15,7 +15,7 @@ export default function Layout() {
             }}
         >
             <Tabs.Screen
-                name="index"
+                name="home"
                 options={{
                     headerShown: false,
                     tabBarLabel: "Início",

@@ -3,7 +3,7 @@ import {View,Text} from "react-native";
 export default function CreateCourses() {
   return (
     <View className="bg-custom-primary flex-1 items-center justify-center">
-        <Text className="text-red-400">Create course page</Text>
+        <Text className="text-white">Create course page</Text>
     </View>
   );
 }
