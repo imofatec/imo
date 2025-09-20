@@ -92,11 +92,16 @@ public class CustomCourseRepositoryImpl implements CustomCourseRepository {
       MatchType matchType,
       CombineWith combineWith
   ) {
-    MatchOperation matchOperation = MongoDB.buildMatchOperation(
-        CourseSearchFilter.apply(searchParams), matchType, combineWith);
+    var filters = CourseSearchFilter.apply(searchParams);
+
+    List<AggregationOperation> operations = new ArrayList<>();
+
+    if (!filters.isEmpty()) {
+      operations.add(MongoDB.buildMatchOperation(filters, matchType, combineWith));
+    }
 
     return this.mongoTemplate
-        .aggregate(Aggregation.newAggregation(matchOperation), Course.class, Course.class)
+        .aggregate(Aggregation.newAggregation(operations), Course.class, Course.class)
         .getMappedResults();
   }
 
@@ -108,19 +113,21 @@ public class CustomCourseRepositoryImpl implements CustomCourseRepository {
       MatchType matchType,
       CombineWith combineWith
   ) {
-    MatchOperation matchOperation = MongoDB.buildMatchOperation(
-        CourseSearchFilter.apply(searchParams), matchType, combineWith);
+    var filters = CourseSearchFilter.apply(searchParams);
 
-    SortOperation sortOperation = Aggregation.sort(Sort.by(Sort.Direction.DESC, "createdAt"));
+    List<AggregationOperation> operations = new ArrayList<>();
 
-    return this.mongoTemplate.aggregate(
-        Aggregation.newAggregation(
-            matchOperation,
-            sortOperation,
-            Aggregation.skip((long) page * size),
-            Aggregation.limit(size)
-        ), Course.class, Course.class
-    ).getMappedResults();
+    if (!filters.isEmpty()) {
+      operations.add(MongoDB.buildMatchOperation(filters, matchType, combineWith));
+    }
+
+    operations.add(Aggregation.sort(Sort.by(Sort.Direction.DESC, "createdAt")));
+    operations.add(Aggregation.skip((long) page * size));
+    operations.add(Aggregation.limit(size));
+
+    return this.mongoTemplate
+        .aggregate(Aggregation.newAggregation(operations), Course.class, Course.class)
+        .getMappedResults();
   }
 
   @Override
