@@ -1,5 +1,6 @@
 package com.imo.backend.modules.course.actions.inputs;
 
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 public record UpdateCourseInput(
@@ -13,6 +14,11 @@ public record UpdateCourseInput(
     @Size(min = 10, max = 300, message = "A descrição do curso precisa ter de 10 a 300 caracteres")
     String description,
 
-    Integer lessonsCount
+    Integer lessonsCount,
+
+    @Pattern(regexp = "^(https://)?(www\\.)?(youtube\\.com/watch\\?v=)?[\\w-]{11}(&.*)?$", message =
+        "Preencha um link do youtube válido, "
+        + "Ou um código de video válido (aquilo que vem após watch?v=)")
+    String firstLessonYoutubeLink
 ) {
 }

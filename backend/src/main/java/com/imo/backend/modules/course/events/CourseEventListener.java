@@ -24,12 +24,20 @@ public class CourseEventListener {
   public void handle(UpdateCourseLessonsCountEvent event) {
     this.updateCourseByIdAction.execute(
         event.courseId(),
-        new UpdateCourseInput(null, null, null, null, event.newCount())
+        new UpdateCourseInput(null, null, null, null, event.newCount(), null)
     );
   }
 
   @ApplicationModuleListener
   public void handle(IncLessonsCountEvent event) {
     this.incLessonsCountByIdAction.execute(event.courseId());
+  }
+
+  @ApplicationModuleListener
+  public void handle(UpdateCourseFirstYoutubeLinkEvent event) {
+    this.updateCourseByIdAction.execute(
+        event.courseId(),
+        new UpdateCourseInput(null, null, null, null, null, event.newFirstYoutubeLink())
+    );
   }
 }
