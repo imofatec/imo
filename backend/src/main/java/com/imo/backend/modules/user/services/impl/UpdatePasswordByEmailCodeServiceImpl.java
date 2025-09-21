@@ -1,13 +1,13 @@
 package com.imo.backend.modules.user.services.impl;
 
 import com.imo.backend.exceptions.custom.NotFoundException;
+import com.imo.backend.modules.outbox.Outbox;
+import com.imo.backend.modules.outbox.OutboxEvent;
+import com.imo.backend.modules.outbox.OutboxStatus;
+import com.imo.backend.modules.outbox.repositories.OutboxRepository;
 import com.imo.backend.modules.user.User;
-import com.imo.backend.modules.user.http.dtos.auth.ForgetPassword;
+import com.imo.backend.modules.user.events.ForgetPasswordMessagePayload;
 import com.imo.backend.modules.user.services.UpdatePasswordByEmailCodeService;
-import com.imo.backend.outbox.Outbox;
-import com.imo.backend.outbox.OutboxEvent;
-import com.imo.backend.outbox.OutboxStatus;
-import com.imo.backend.outbox.repositories.OutboxRepository;
 import com.imo.backend.utils.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -16,12 +16,12 @@ import java.util.List;
 @Service
 public class UpdatePasswordByEmailCodeServiceImpl implements UpdatePasswordByEmailCodeService {
 
-  private final OutboxRepository<ForgetPassword> outboxRepository;
+  private final OutboxRepository<ForgetPasswordMessagePayload> outboxRepository;
 
   private final UpdatePasswordByIdServiceImpl updatePasswordByIdServiceImpl;
 
   public UpdatePasswordByEmailCodeServiceImpl(
-      OutboxRepository<ForgetPassword> outboxRepository,
+      OutboxRepository<ForgetPasswordMessagePayload> outboxRepository,
       UpdatePasswordByIdServiceImpl updatePasswordByIdServiceImpl
   ) {
     this.outboxRepository = outboxRepository;
@@ -35,7 +35,8 @@ public class UpdatePasswordByEmailCodeServiceImpl implements UpdatePasswordByEma
     do {
       var pageable = Pageable.fromPageSize(pageNumber, pageSize);
       var outboxes = this.outboxRepository
-          .findByStatusAndEvent(OutboxStatus.WAITING_TO_UPDATE_PASSWORD,
+          .findByStatusAndEvent(
+              OutboxStatus.WAITING_TO_UPDATE_PASSWORD,
               OutboxEvent.USER_FORGET_PASSWORD,
               pageable
           )
@@ -57,7 +58,11 @@ public class UpdatePasswordByEmailCodeServiceImpl implements UpdatePasswordByEma
   }
 
 
-  private boolean verifyPayload(List<Outbox<ForgetPassword>> outboxes, String userId, String code) {
+  private boolean verifyPayload(
+      List<Outbox<ForgetPasswordMessagePayload>> outboxes,
+      String userId,
+      String code
+  ) {
     return outboxes.stream().anyMatch(outbox -> {
       var payload = outbox.getPayload();
       if (!payload.userId().equals(userId) || !payload.code().equals(code)) {
