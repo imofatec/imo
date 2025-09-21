@@ -1,4 +1,4 @@
-package com.imo.backend.outbox;
+package com.imo.backend.modules.outbox;
 
 import com.imo.backend.modules.base.Entity;
 import lombok.AllArgsConstructor;
