@@ -1,8 +1,8 @@
-package com.imo.backend.outbox.repositories;
+package com.imo.backend.modules.outbox.repositories;
 
-import com.imo.backend.outbox.Outbox;
-import com.imo.backend.outbox.OutboxEvent;
-import com.imo.backend.outbox.OutboxStatus;
+import com.imo.backend.modules.outbox.Outbox;
+import com.imo.backend.modules.outbox.OutboxEvent;
+import com.imo.backend.modules.outbox.OutboxStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;

@@ -1,4 +1,4 @@
-package com.imo.backend.outbox;
+package com.imo.backend.modules.outbox;
 
 public enum OutboxStatus {
   PENDING,
