@@ -1,5 +1,6 @@
 package com.imo.backend.modules.lesson.services.impl;
 
+import com.imo.backend.modules.course.events.UpdateCourseFirstYoutubeLinkEvent;
 import com.imo.backend.modules.course.events.UpdateCourseLessonsCountEvent;
 import com.imo.backend.modules.lesson.Lesson;
 import com.imo.backend.modules.lesson.guards.GetLessonByIdGuard;
@@ -41,6 +42,12 @@ public class DeleteLessonByIdServiceImpl implements DeleteLessonByIdService {
 
     Lesson.sortLessonsByIndexInCourse(newSequenceOfLessons);
 
+    if (foundLesson.getIndexInCourse() == 1) {
+      this.applicationEventPublisher.publishEvent(new UpdateCourseFirstYoutubeLinkEvent(
+          foundLesson.getCourseId(),
+          (newSequenceOfLessons.isEmpty()) ? "" : newSequenceOfLessons.getFirst().getYoutubeLink()
+      ));
+    }
 
     this.applicationEventPublisher.publishEvent(new UpdateCourseLessonsCountEvent(
         foundLesson.getCourseId(),

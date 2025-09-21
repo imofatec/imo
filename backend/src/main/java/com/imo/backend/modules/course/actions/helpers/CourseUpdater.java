@@ -5,27 +5,32 @@ import com.imo.backend.modules.course.actions.inputs.UpdateCourseInput;
 import com.imo.backend.modules.course.value_objects.Category;
 import com.imo.backend.modules.course.value_objects.CourseName;
 import com.imo.backend.modules.course.value_objects.Level;
+import com.imo.backend.modules.lesson.Lesson;
 
 public class CourseUpdater {
-  public static void apply(Course course, UpdateCourseInput dto) {
-    if (dto.name() != null) {
-      course.setName(new CourseName(dto.name()));
+  public static void apply(Course course, UpdateCourseInput input) {
+    if (input.name() != null) {
+      course.setName(new CourseName(input.name()));
     }
 
-    if (dto.category() != null) {
-      course.setCategory(new Category(dto.category()));
+    if (input.category() != null) {
+      course.setCategory(new Category(input.category()));
     }
 
-    if (dto.level() != null) {
-      course.setLevel(new Level(dto.level()));
+    if (input.level() != null) {
+      course.setLevel(new Level(input.level()));
     }
 
-    if (dto.description() != null) {
-      course.setDescription(dto.description());
+    if (input.description() != null) {
+      course.setDescription(input.description());
     }
 
-    if (dto.lessonsCount() != null) {
-      course.setLessonsCount(dto.lessonsCount());
+    if (input.lessonsCount() != null) {
+      course.setLessonsCount(input.lessonsCount());
+    }
+
+    if (input.firstLessonYoutubeLink() != null) {
+      course.setFirstLessonYoutubeLink(Lesson.formatYoutubeLink(input.firstLessonYoutubeLink()));
     }
   }
 }
