@@ -11,6 +11,7 @@ import org.springframework.data.mongodb.core.aggregation.*;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -41,26 +42,45 @@ public class CustomProgressRepositoryImpl implements CustomProgressRepository {
     return Optional.ofNullable(mongoTemplate.findOne(query, Progress.class));
   }
 
+  @Override
+  public Optional<ProgressDetails> findDetailsByUserIdAndCourseId(String userId, String courseId) {
+    MatchOperation match = Aggregation.match(new Criteria().andOperator(Criteria
+        .where("userId")
+        .is(new ObjectId(userId))
+        .and("courseId")
+        .is(new ObjectId(courseId))));
+
+    Aggregation aggregation = this.buildAggregationProgressDetailsByUserId(match, null, null);
+    return Optional.ofNullable(this.mongoTemplate
+        .aggregate(aggregation, "progress", ProgressDetails.class)
+        .getMappedResults()
+        .getFirst());
+  }
+
   public List<ProgressDetails> findAllProgressDetailsByUserId(String userId) {
-    Aggregation aggregation = buildAggregationProgressDetailsByUserId(userId, null, null);
+    MatchOperation match = Aggregation.match(Criteria.where("userId").is(new ObjectId(userId)));
+
+    Aggregation aggregation = buildAggregationProgressDetailsByUserId(match, null, null);
     return mongoTemplate
         .aggregate(aggregation, "progress", ProgressDetails.class)
         .getMappedResults();
   }
 
   public List<ProgressDetails> findAllProgressDetailsByUserId(String userId, int page, int size) {
-    Aggregation aggregation = buildAggregationProgressDetailsByUserId(userId, page, size);
+    MatchOperation match = Aggregation.match(Criteria.where("userId").is(new ObjectId(userId)));
+
+    Aggregation aggregation = buildAggregationProgressDetailsByUserId(match, page, size);
     return mongoTemplate
         .aggregate(aggregation, "progress", ProgressDetails.class)
         .getMappedResults();
   }
 
   private Aggregation buildAggregationProgressDetailsByUserId(
-      String userId,
+      MatchOperation matchOperaion,
       Integer page,
       Integer size
   ) {
-    MatchOperation match = Aggregation.match(Criteria.where("userId").is(new ObjectId(userId)));
+    List<AggregationOperation> operations = new ArrayList<>();
     LookupOperation lookupUsers = Aggregation.lookup("users", "userId", "_id", "user");
 
     Document matchLessonStage = new Document(
@@ -94,36 +114,23 @@ public class CustomProgressRepositoryImpl implements CustomProgressRepository {
         .and("course")
         .as("course");
 
-    AggregationOptions.Builder optionsBuilder = AggregationOptions.builder();
+    operations.add(matchOperaion);
+    operations.add(lookupUsers);
+    operations.add(Aggregation.unwind("user"));
+    operations.add(lookupLessons);
+    operations.add(lookupCourses);
+    operations.add(Aggregation.unwind("course"));
 
-    Aggregation aggregation;
 
     if (page != null && size != null) {
       SortOperation sortOperation = Aggregation.sort(Sort.by(Sort.Direction.DESC, "createdAt"));
-      aggregation = Aggregation.newAggregation(
-          match,
-          lookupUsers,
-          Aggregation.unwind("user"),
-          lookupLessons,
-          lookupCourses,
-          Aggregation.unwind("course"),
-          sortOperation,
-          Aggregation.skip((long) page * size),
-          Aggregation.limit(size),
-          projection
-      );
-    } else {
-      aggregation = Aggregation.newAggregation(
-          match,
-          lookupUsers,
-          Aggregation.unwind("user"),
-          lookupLessons,
-          lookupCourses,
-          Aggregation.unwind("course"),
-          projection
-      );
+      operations.add(sortOperation);
+      operations.add(Aggregation.skip((long) page * size));
+      operations.add(Aggregation.limit(size));
     }
 
-    return aggregation;
+    operations.add(projection);
+
+    return Aggregation.newAggregation(operations);
   }
 }
