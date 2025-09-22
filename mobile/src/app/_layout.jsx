@@ -11,7 +11,9 @@ const statusBarHeight = Constants.statusBarHeight;
 export default function RootLayout() {
   const pathname = usePathname();
 
-  const hideHeader = ['/login', '/register'].includes(pathname);
+
+  const hiddenRoutes = ["/login", "/register"];
+  const hideHeader = hiddenRoutes.some(route => pathname.startsWith(route));
 
   return (
     <>
@@ -25,7 +27,7 @@ export default function RootLayout() {
         <Stack.Screen name="register" />
         <Stack.Screen name="(tabs)" />
       </Stack>
-      
+
     </>
   );
 }

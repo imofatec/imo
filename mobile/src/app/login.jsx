@@ -1,5 +1,6 @@
 import React from "react";
-import { View, Text, TextInput, Pressable } from "react-native";
+import { View, Text, Pressable } from "react-native";
+import InputText from "../components/inputs/inputText";
 import { router } from "expo-router";
 import { Ionicons } from '@expo/vector-icons';
 
@@ -8,26 +9,13 @@ export default function Login() {
   return (
     <View className="flex-1 justify-center px-6 bg-custom-primary">
 
-      <Text className='text-white text-6xl text-center mb-20'>
+      <Text className='text-white text-6xl text-center mb-10'>
         <Ionicons name="caret-forward-outline" size={56} color="white" />IMO
       </Text>
 
+      <InputText label="Email" placeholder="Email"/>
 
-      <Text className="text-white text-xl font-bold mb-2">Email</Text>
-      <TextInput
-        placeholder="joao@email.com"
-        placeholderTextColor="#aaa"
-        className="bg-white/20 text-white px-4 py-3 rounded-2xl mb-16"
-      />
-
-
-      <Text className="text-white text-xl font-bold mb-2">Senha</Text>
-      <TextInput
-        placeholder="Coxinha123@"
-        placeholderTextColor="#aaa"
-        secureTextEntry
-        className="bg-white/20 text-white px-4 py-3 rounded-2xl mb-16"
-      />
+      <InputText label="Senha" placeholder="Senha" secureTextEntry/>
 
       <Pressable className="bg-white py-3 rounded-full mb-6"
         onPress={() => router.replace("/home")}
