@@ -50,6 +50,11 @@ CLIENT_URL=http://localhost:5173
 
 ### Criptografia assimétrica
 > Necessário para JWT
+
+> Opção 1
+- Execute `./backend/gen-keys.sh`
+
+> Opção 2
 - Acesse o site: [RSA KEY GENERATOR](https://www.csfieldguide.org.nz/en/interactives/rsa-key-generator/)
 - **Selecione 2048 bits no Key Size**
 - **Selecione PKCS #8 (base64) no Format Scheme** e gere a public e private key
@@ -58,13 +63,20 @@ CLIENT_URL=http://localhost:5173
 - Crie o arquivo  **app.key** coloque nele a chave PRIVADA
 
 ### Spring Boot
+> Opção 1
 ```
 ./mvnw spring-boot:run
 ```
-### Swagger UI
-> Endpoints documentados e interface para testar a API http://localhost:8080/swagger-ui/index.html
+> Opção 2
+```
+./mvnw clean install -DskipTests \
+java -jar target/backend-0.0.1-SNAPSHOT.jar
+```
 
-![swagger ui](./assets/swagger-ui.png)
+### API docs
+Endpoints documentados e interface para testar a API
+- Scalar UI http://localhost:8080/docs
+- Swagger UI http://localhost:8080/swagger-ui/index.html
 
 
 ## Setup Front
