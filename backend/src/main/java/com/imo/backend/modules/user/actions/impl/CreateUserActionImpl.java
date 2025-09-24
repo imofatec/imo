@@ -42,7 +42,7 @@ public class CreateUserActionImpl implements CreateUserAction {
       throw new ConflictException("O email já existe");
     }
 
-    if (!createUserInput.confPassword().matches(createUserInput.password())) {
+    if (!createUserInput.confPassword().equals(createUserInput.password())) {
       throw new BadRequestException("As senhas não coincidem");
     }
   }
