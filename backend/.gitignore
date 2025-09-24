@@ -2,6 +2,9 @@
 src/main/resources/app.pub
 src/main/resources/app.key
 
+src/test/resources/test-private-key.pem
+src/test/resources/test-public-key.pem
+
 ### UPLOAD DIRECTORY ###
 src/main/resources/uploads/**
 
