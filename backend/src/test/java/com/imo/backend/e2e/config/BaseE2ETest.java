@@ -8,13 +8,11 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
-import org.testcontainers.containers.MongoDBContainer;
-import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import org.testcontainers.utility.DockerImageName;
+
+import com.imo.backend.e2e.config.singleton.SharedMongoDBContainer;
 
 import static io.restassured.RestAssured.given;
-
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Testcontainers
@@ -24,13 +22,13 @@ public abstract class BaseE2ETest {
   @LocalServerPort
   protected int port;
 
-  @Container
-  protected static final MongoDBContainer mongoDBContainer = new MongoDBContainer(DockerImageName.parse(
-      "mongo:7.0"));
+  static {
+    SharedMongoDBContainer.start();
+  }
 
   @DynamicPropertySource
   static void configureProperties(DynamicPropertyRegistry registry) {
-    registry.add("spring.data.mongodb.uri", mongoDBContainer::getReplicaSetUrl);
+    registry.add("spring.data.mongodb.uri", SharedMongoDBContainer::getReplicaSetUrl);
   }
 
   @BeforeEach
@@ -40,8 +38,7 @@ public abstract class BaseE2ETest {
     RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
   }
 
-
-  protected RequestSpecification givenBaseRequest() {
+  public static RequestSpecification givenBaseRequest() {
     return given().contentType("application/json").accept("application/json");
   }
 }
