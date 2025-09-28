@@ -1,4 +1,4 @@
-package com.imo.backend.e2e.testfactory;
+package com.imo.backend.e2e.factories;
 
 import com.imo.backend.e2e.utils.DataFakeFactory;
 import com.imo.backend.modules.user.actions.inputs.CreateUserInput;

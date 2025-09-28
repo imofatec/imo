@@ -1,7 +1,7 @@
 package com.imo.backend.e2e.domains.auth;
 
 import com.imo.backend.e2e.config.BaseE2ETest;
-import com.imo.backend.e2e.testfactory.UserTestFactory;
+import com.imo.backend.e2e.factories.UserTestFactory;
 import com.imo.backend.e2e.utils.JsonString;
 import com.imo.backend.modules.user.actions.inputs.CreateUserInput;
 import com.imo.backend.modules.user.http.dtos.auth.LoginRequestDTO;
