@@ -9,6 +9,20 @@ module.exports = {
         "custom-primary": "#0E0025",
         "custom-gray": "#1A1A2E"
       },
+      animation: {
+        'drawer-in': 'drawer-in 300ms ease-out',
+        'drawer-out': 'drawer-out 300ms ease-in',
+      },
+      keyframes: {
+        'drawer-in': {
+          '0%': { transform: 'translateX(-100%)', opacity: '0' },
+          '100%': { transform: 'translateX(0)', opacity: '1' },
+        },
+        'drawer-out': {
+          '0%': { transform: 'translateX(0)', opacity: '1' },
+          '100%': { transform: 'translateX(-100%)', opacity: '0' },
+        },
+      },
     },
   },
   plugins: [],
