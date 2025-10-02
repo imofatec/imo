@@ -1,11 +1,26 @@
 import React from "react";
 import { View, Text, Pressable } from "react-native";
-import InputText from "../components/inputs/inputText";
+import FormInput from "../components/inputs/formInput";
 import { router } from "expo-router";
 import { Ionicons } from '@expo/vector-icons';
+import { loginSchema } from "../schemas/login";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm, Controller } from "react-hook-form";
+
 
 
 export default function Login() {
+
+  const { control, handleSubmit } = useForm({
+    resolver: zodResolver(loginSchema)
+  })
+
+  function onSubmit(data) {
+    console.log(data);
+    router.replace("/home");
+  }
+
+
   return (
     <View className="flex-1 justify-center px-6 bg-custom-primary">
 
@@ -13,13 +28,13 @@ export default function Login() {
         <Ionicons name="caret-forward-outline" size={56} color="white" />IMO
       </Text>
 
-      <InputText label="Email" placeholder="Email"/>
+      <FormInput control={control} name="email" label="Email" placeholder="joaosilva@gmail.com" autoCapitalize="none" keyboardType="email-address"/>
+      <FormInput control={control} name="password" label="Senha" placeholder="batatinha123" autoCapitalize="none" secureTextEntry/>
 
-      <InputText label="Senha" placeholder="Senha" secureTextEntry/>
 
       <Pressable className="bg-white py-3 rounded-full mb-6"
-        onPress={() => router.replace("/home")}
-      >
+        onPress={handleSubmit(onSubmit)}>
+          
         <Text className="text-black text-2xl text-center font-bold">Entrar</Text>
       </Pressable>
 
