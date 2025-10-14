@@ -5,9 +5,7 @@ import com.imo.backend.e2e.helpers.E2EFlowHelper;
 import com.imo.backend.modules.course.http.dtos.CourseDetailsDTO;
 import io.restassured.http.ContentType;
 import lombok.extern.slf4j.Slf4j;
-import java.util.stream.Collectors;
 import static org.junit.Assert.assertEquals;
-import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -41,32 +39,14 @@ public class CreateProgressE2ETest extends BaseE2ETest {
   @Test
   @DisplayName("Deve iniciar e finalizar um progresso completo do curso")
   public void shouldInitAndFinishACourseProgress() {
+    
     String token = E2EFlowHelper.createAndAuthenticateUser();
     CourseDetailsDTO courseDetailsDTO = E2EFlowHelper.createCourseAndReturnDetails(token, 5);
-    List<String> lessonIds = courseDetailsDTO.lessons().stream()
-                              .map(l -> l.getId())
-                              .collect(Collectors.toList());
-
-    log.info("Id da primeira Aula: " + lessonIds.get(0));
-    log.info("Lessons ids: " + lessonIds);
-
-    var counter = 0;
-    for (String lessonId : lessonIds) {
-      var response = givenBaseRequest()
-          .header("Authorization", "Bearer " + token)
-          .when()
-          .put("/progress/" + lessonId)
-          .then()
-          .statusCode(HttpStatus.OK.value())
-          .extract()
-          .response();
-
-      String progressStatus = response.jsonPath().getString("status");
-      counter += 1;
-      log.info("Status do progresso para a aula " + lessonId + ": " + progressStatus);
-    }
-
-    assertEquals(counter, lessonIds.size());
+    String finalStatus = E2EFlowHelper.markAllLessonsAsWatched(token, courseDetailsDTO);
+    
+    log.info("Status final do progresso após marcar todas as aulas: {}", finalStatus);
+    
+    assertEquals("FINISHED", finalStatus);
   }
 
   @Test
