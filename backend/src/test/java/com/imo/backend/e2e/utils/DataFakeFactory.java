@@ -32,7 +32,7 @@ public class DataFakeFactory {
     }
 
     public static String generateValidDescription(){
-        return faker.educator().course();
+        return faker.educator().course() + " - " + faker.lorem().paragraph();
     }
 
     public static String generateValidYoutubeLink(){

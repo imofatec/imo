@@ -12,12 +12,12 @@ public class CourseTestFactory {
     public static CreateCourseRequest createValidCourseWithLessons(int index){
 
         List<CreateLessonInput> lessons = new ArrayList<>();
-        for(int i = 0 ; i<=index;i++){
-            var lesson = new CreateLessonInput(     
+        for(int i = 0 ; i<index;i++){
+            var lesson = new CreateLessonInput(
                 DataFakeFactory.generateValidTitle(),
-                DataFakeFactory.generateValidDescription(),
+                DataFakeFactory.generateValidDescription() + " - " + i,
                 DataFakeFactory.generateValidYoutubeLink()
-                );
+            );
             lessons.add(lesson);
         }
 

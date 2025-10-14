@@ -1,17 +1,14 @@
-
 package com.imo.backend.e2e.helpers;
 
 import com.imo.backend.e2e.factories.CourseTestFactory;
 import com.imo.backend.modules.course.http.dtos.CreateCourseRequest;
 import com.imo.backend.modules.course.http.dtos.CourseDetailsDTO;
-
 import com.imo.backend.e2e.factories.UserTestFactory;
 import com.imo.backend.e2e.utils.JsonString;
 import com.imo.backend.modules.user.actions.inputs.CreateUserInput;
 import com.imo.backend.modules.user.http.dtos.auth.LoginRequestDTO;
 import io.restassured.response.Response;
 import org.springframework.http.HttpStatus;
-
 import static com.imo.backend.e2e.config.BaseE2ETest.givenBaseRequest;
 import static org.hamcrest.Matchers.anyOf;
 import static org.hamcrest.Matchers.is;
