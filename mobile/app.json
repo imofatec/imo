@@ -30,6 +30,9 @@
     },
     "plugins": [
       "expo-router"
-    ]
+    ],
+    "extra": {
+      "API_URL": "http://ipv4:8080"
+    }
   }
 }
