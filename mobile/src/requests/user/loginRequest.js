@@ -12,6 +12,7 @@ export async function loginRequest(data) {
     apiFetch("/api/user/login", {
       method: "POST",
       body: JSON.stringify(submission),
+      skipAuth: true,
     })
   );
 

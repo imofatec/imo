@@ -2,7 +2,12 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { baseURL } from "./enviroment";
 
 export async function apiFetch(endpoint, options = {}) {
-  const token = await AsyncStorage.getItem("token");
+  const skipAuth = options.skipAuth || false;
+  let token = null;
+
+  if (!skipAuth) {
+    token = await AsyncStorage.getItem("token");
+  }
 
   const headers = {
     "Content-Type": "application/json",
