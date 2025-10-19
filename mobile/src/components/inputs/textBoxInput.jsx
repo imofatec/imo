@@ -8,13 +8,13 @@ export default function TextBoxInput({ control, name, label, className = "", ...
             control={control}
             name={name}
             render={({ field, fieldState }) => (
-                <View>
+                <View className="mb-4">
                     {label && (
                         <Text className="text-white text-xl font-bold mb-2">{label}</Text>
                     )}
                     <TextInput
                         placeholderTextColor="#aaa"
-                        className={`text-end min-h-32 bg-white/20 text-white px-4 py-3 rounded-2xl mb-4 
+                        className={`text-end min-h-32 bg-white/20 text-white px-4 py-3 rounded-2xl mb-2
                             border ${fieldState.error ? "border-red-500" : "border-transparent"
                             } ${className}`}
                         multiline={true}
