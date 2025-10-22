@@ -9,18 +9,29 @@ import LessonForm from "../../components/createCourse/lessonForm";
 import FormInput from "../../components/inputs/formInput";
 import SelectInput from "../../components/inputs/selectInput";
 import TextBoxInput from "../../components/inputs/textBoxInput";
+import { createCourseRequest } from "../../requests/courses/createCourseRequest";
 
 export default function CreateCourses() {
+  const [errorMessage, setErrorMessage] = useState(null);
   const [lessons, setLessons] = useState([0]);
-  const { control, handleSubmit, getValues, setValue } = useForm({
+  const { control, handleSubmit, getValues, setValue, reset } = useForm({
     resolver: zodResolver(createCourseSchema),
     defaultValues: {
       lessons: []
     }
   })
 
-  function onSubmit(data) {   
-    console.log("TENTANDO CADASTRAR!!!!!",data);
+  async function onSubmit(data) {
+    const response = await createCourseRequest(data);
+
+    if (!response.success) {
+      setErrorMessage(response.error);
+      return;
+    }
+    reset();
+    setLessons([0]);
+    setErrorMessage(null);
+    router.push("(tabs)/allCourses");
   }
 
   function addLesson() {
@@ -30,13 +41,13 @@ export default function CreateCourses() {
   function removeLesson() {
     if (lessons.length > 1) {
       const lastIndex = lessons.length - 1;
-      
+
       const currentLessons = getValues('lessons') || [];
-      
+
       const updatedLessons = currentLessons.slice(0, lastIndex);
-      
+
       setValue('lessons', updatedLessons, { shouldValidate: false });
-      
+
       setLessons((prevLessons) => prevLessons.slice(0, -1));
     }
   }
@@ -73,6 +84,10 @@ export default function CreateCourses() {
         <Pressable className="bg-white py-3 rounded-full mb-6" onPress={handleSubmit(onSubmit)}>
           <Text className="text-black text-2xl text-center font-bold">Criar Curso</Text>
         </Pressable>
+
+        {errorMessage && (
+          <Text className="text-red-500 text-center mb-4">{errorMessage}</Text>
+        )}
 
       </ScrollView>
     </KeyboardAvoidingView>
