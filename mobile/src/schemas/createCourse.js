@@ -2,7 +2,7 @@ import {z} from "zod";
 
 const lessonSchema = z.object({
   nameLesson: z.string({ message: "Nome da Aula é obrigatório" }).min(15, { message: "O nome deve ter no mínimo 15 caracteres" }),
-  link: z.string({ message: "A aula deve conter um link válido" }).min(12, { message: "Link muito curto" }),
+  link: z.string({ message: "A aula deve conter um link válido" }).min(11, { message: "Link muito curto" }),
   descriptionL: z.string({ message: "A aula deve conter uma descrição" }).min(25, { message: "Descrição muito curta" }),
 });
 

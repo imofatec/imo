@@ -18,7 +18,6 @@ export default function Login() {
   })
 
   async function onSubmit(data) {
-    console.log("Submitting login with data:", data);
     const response = await loginRequest(data);
 
     if (!response.success) {
