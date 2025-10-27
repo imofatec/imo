@@ -8,6 +8,7 @@
 - **Framework**: [Spring Boot](https://spring.io/projects/spring-boot)
 - **Autenticação**: [JWT](https://jwt.io/)
 - **Banco de dados**: [MongoDB](https://www.mongodb.com/)
+- **Message Broker**: [RabbitMQ](https://www.rabbitmq.com/)
 > Interface
 - **Linguagem**: [JavaScript](https://developer.mozilla.org/pt-BR/docs/Web/JavaScript)
 - **Frameworks**: [React](https://react.dev/) + [TailwindCSS](https://tailwindcss.com/)
@@ -17,7 +18,7 @@
 > Rodar o projeto na sua máquina para **desenvolver**
 - Java 21
 - MongoDB
-- Navegador internet
+- RabbitMQ
 
 ## Clone
 > Rode no terminal para baixar o projeto
@@ -46,6 +47,10 @@ Exemplo:
 ```
 MONGO_URI=mongodb://localhost:27017/imo
 CLIENT_URL=http://localhost:5173
+RABBITMQ_ADDRESS=amqp://localhost:5672
+EXCHANGE_NAME=imo.user
+ROUTING_KEY_CONFIRMATION_EMAIL=imo.user.confirmation_email
+ROUTING_KEY_FORGET_PASSWORD=imo.user.forget_password
 ```
 
 ### Criptografia assimétrica
