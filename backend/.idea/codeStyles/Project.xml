@@ -1,5 +1,6 @@
 <component name="ProjectCodeStyleConfiguration">
   <code_scheme name="Project" version="173">
+    <option name="AUTODETECT_INDENTS" value="false" />
     <JavaCodeStyleSettings>
       <option name="ANNOTATION_NEW_LINE_IN_RECORD_COMPONENT" value="true" />
       <option name="ENUM_FIELD_ANNOTATION_WRAP" value="5" />
