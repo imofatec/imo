@@ -9,10 +9,14 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.data.mongodb.repository.Update;
 
+import java.util.List;
 import java.util.Map;
 
 public interface OutboxRepository<T> extends MongoRepository<Outbox<T>, String> {
   Page<Outbox<T>> findByStatusAndEvent(OutboxStatus status, OutboxEvent event, Pageable pageable);
+
+  @Query("{'payload.userId':  ?0}")
+  List<Outbox<T>> findByUserId(String userId);
 
   @Query("{'_id' : ?0}")
   @Update("{ $set: ?1 }")
