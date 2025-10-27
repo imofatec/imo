@@ -6,7 +6,7 @@ import com.imo.backend.modules.outbox.OutboxEvent;
 import com.imo.backend.modules.outbox.OutboxStatus;
 import com.imo.backend.modules.outbox.repositories.OutboxRepository;
 import com.imo.backend.modules.user.User;
-import com.imo.backend.modules.user.events.ForgetPasswordMessagePayload;
+import com.imo.backend.modules.user.events.ForgetPasswordEvent;
 import com.imo.backend.modules.user.guards.GetUserByIdGuard;
 import com.imo.backend.modules.user.services.VerifyForgetPasswordCodeService;
 import com.imo.backend.utils.Pageable;
@@ -19,11 +19,11 @@ import java.util.Map;
 public class VerifyForgetPasswordCodeServiceImpl implements VerifyForgetPasswordCodeService {
   private final GetUserByIdGuard getUserByIdGuard;
 
-  private final OutboxRepository<ForgetPasswordMessagePayload> outboxRepository;
+  private final OutboxRepository<ForgetPasswordEvent> outboxRepository;
 
   public VerifyForgetPasswordCodeServiceImpl(
       GetUserByIdGuard getUserByIdGuard,
-      OutboxRepository<ForgetPasswordMessagePayload> outboxRepository
+      OutboxRepository<ForgetPasswordEvent> outboxRepository
   ) {
     this.getUserByIdGuard = getUserByIdGuard;
     this.outboxRepository = outboxRepository;
@@ -56,7 +56,7 @@ public class VerifyForgetPasswordCodeServiceImpl implements VerifyForgetPassword
   }
 
   private boolean verifyPayload(
-      List<Outbox<ForgetPasswordMessagePayload>> outboxes,
+      List<Outbox<ForgetPasswordEvent>> outboxes,
       String userId,
       String code
   ) {
