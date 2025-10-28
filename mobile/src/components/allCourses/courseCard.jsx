@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { Ionicons } from '@expo/vector-icons';
 import { router } from "expo-router";
 import { View, Text, Image, Dimensions, Pressable} from "react-native";
 import CourseModal from "./courseModal";
