@@ -13,6 +13,7 @@ export async function registerRequest(data) {
     apiFetch("/api/user", {
       method: "POST",
       body: JSON.stringify(submission),
+      skipAuth: true,
     })
   );
 
