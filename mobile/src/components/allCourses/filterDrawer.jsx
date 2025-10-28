@@ -2,10 +2,9 @@ import React, { useState } from "react";
 import { View, Text, Pressable, Modal } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useAllCategories } from "../../hooks/useAllCategories";
-
-export default function FilterDrawer() {
+import RadioButtonItem from "../inputs/radioButtonItem";
+export default function FilterDrawer({ selectedCategory, setSelectedCategory }) {
     const [isOpen, setIsOpen] = useState(false);
-    const [selectedCategory, setSelectedCategory] = useState(null);
     const { categories, loading, error } = useAllCategories();
 
     return (
@@ -15,10 +14,7 @@ export default function FilterDrawer() {
             </Pressable>
 
             <Modal transparent visible={isOpen} animationType="fade" onRequestClose={() => setIsOpen(false)}>
-                <Pressable
-                    onPress={() => setIsOpen(false)}
-                    className="flex-1 bg-black/30"
-                />
+                <Pressable onPress={() => setIsOpen(false)} className="flex-1 bg-black/30" />
 
                 <View className="absolute top-16 right-2 bg-custom-primary rounded-lg p-4 shadow-md w-72 h-4/5">
                     <View className="flex-row justify-between items-center mb-4">
@@ -35,32 +31,10 @@ export default function FilterDrawer() {
 
                     {!loading && !error && (
                         <>
-                            <Pressable
-                                className={`flex-row items-center py-2 px-3 mb-2 rounded-lg ${selectedCategory === null ? "bg-blue-600" : "bg-custom-secondary"}`}
-                                onPress={() => setSelectedCategory(null)}
-                            >
-                                <View className={`h-4 w-4 mr-3 rounded-full border-2 border-white flex items-center justify-center`}>
-                                    {selectedCategory === null && <View className="h-2 w-2 bg-white rounded-full" />}
-                                </View>
-                                <Text className="text-white">Todos os cursos</Text>
-                            </Pressable>
+                            <RadioButtonItem name="Todos os cursos" value={null} selectedValue={selectedCategory} onPress={() => {setSelectedCategory(null); setIsOpen(false);} } />
 
                             {categories.map((category) => (
-                                <Pressable
-                                    key={category.slug}
-                                    className={`flex-row items-center py-2 px-3 mb-2 rounded-lg ${selectedCategory === category.slug
-                                        ? "bg-blue-600"
-                                        : "bg-custom-secondary"
-                                        }`}
-                                    onPress={() => setSelectedCategory(category.slug)}
-                                >
-                                    <View className={`h-4 w-4 mr-3 rounded-full border-2 border-white flex items-center justify-center`}>
-                                        {selectedCategory === category.slug && (
-                                            <View className="h-2 w-2 bg-white rounded-full" />
-                                        )}
-                                    </View>
-                                    <Text className="text-white">{category.name}</Text>
-                                </Pressable>
+                                <RadioButtonItem key={category.slug} name={category.name} value={category.slug} selectedValue={selectedCategory} onPress={() => {setSelectedCategory(category.slug); setIsOpen(false);}} />
                             ))}
                         </>
                     )}
