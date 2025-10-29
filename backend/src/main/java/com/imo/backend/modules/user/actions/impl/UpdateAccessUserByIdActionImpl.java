@@ -22,6 +22,10 @@ public class UpdateAccessUserByIdActionImpl implements UpdateUserAccessByIdActio
         .findById(id)
         .orElseThrow(() -> new NotFoundException("Usuário não encontrado"));
 
+    if (foundUser.getIsConfirmed()) {
+      return foundUser;
+    }
+
     var user = this.userRepository.toggleAccessById(id, foundUser.getIsConfirmed());
 
     Boolean isActivated = user.getIsConfirmed();
