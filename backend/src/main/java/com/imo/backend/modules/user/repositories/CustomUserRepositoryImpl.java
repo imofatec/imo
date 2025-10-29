@@ -21,7 +21,7 @@ public class CustomUserRepositoryImpl implements CustomUserRepository {
   public User toggleAccessById(String id, Boolean isConfirmed) {
     var query = new Query(Criteria.where("_id").is(id));
     Update update = new Update();
-    update.set("isConfirmed", isConfirmed);
+    update.set("isConfirmed", !isConfirmed);
     return this.mongoTemplate.findAndModify(
         query,
         update,

@@ -15,9 +15,7 @@ public class UpdateUserAccessController extends UserController {
 
   private final UpdateUserAccessByIdAction updateUserAccessByIdAction;
 
-  public UpdateUserAccessController(
-      UpdateUserAccessByIdAction updateUserAccessByIdAction
-  ) {
+  public UpdateUserAccessController(UpdateUserAccessByIdAction updateUserAccessByIdAction) {
     this.updateUserAccessByIdAction = updateUserAccessByIdAction;
   }
 
@@ -26,7 +24,7 @@ public class UpdateUserAccessController extends UserController {
   @PutMapping("/confirm")
   public ResponseEntity<UserDTO> handle() {
     String userId = SecurityContextHolder.getContext().getAuthentication().getName();
-    var updatedUser = UserDTO.fromUser(updateUserAccessByIdAction.execute(userId));
+    var updatedUser = UserDTO.fromUser(this.updateUserAccessByIdAction.execute(userId));
     return ResponseEntity.ok(updatedUser);
   }
 }
