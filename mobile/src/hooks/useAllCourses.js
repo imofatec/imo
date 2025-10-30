@@ -2,7 +2,7 @@ import { useEffect, useState, useCallback } from "react";
 import { apiFetch } from "../api/apiFetch";
 import { safeAwait } from "../lib/safeAwait";
 
-export function useAllCourses({ matchType = "PERFECT", combineWith = "AND", page = 0, size = 10, categorySlug } = {}) {
+export function useAllCourses({ matchType = "PERFECT", combineWith = "AND", page = 0, size = 10, categorySlug, nameSlug } = {}) {
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -15,7 +15,8 @@ export function useAllCourses({ matchType = "PERFECT", combineWith = "AND", page
       combineWith,
       page,
       size,
-      ...(categorySlug ? { categorySlug } : {})
+      ...(categorySlug ? { categorySlug } : {}),
+      ...(nameSlug ? { nameSlug } : {})
     }).toString();
 
     const [err, data] = await safeAwait(
@@ -32,7 +33,7 @@ export function useAllCourses({ matchType = "PERFECT", combineWith = "AND", page
     setCourses(data || []);
     setError(null);
     setLoading(false);
-  }, [matchType, combineWith, page, size, categorySlug]);
+  }, [matchType, combineWith, page, size, categorySlug, nameSlug]);
 
   useEffect(() => {
     fetchCourses();
