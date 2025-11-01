@@ -6,7 +6,7 @@ import com.imo.backend.modules.outbox.OutboxEvent;
 import com.imo.backend.modules.outbox.OutboxStatus;
 import com.imo.backend.modules.outbox.repositories.OutboxRepository;
 import com.imo.backend.modules.user.User;
-import com.imo.backend.modules.user.events.ForgetPasswordMessagePayload;
+import com.imo.backend.modules.user.events.ForgetPasswordEvent;
 import com.imo.backend.modules.user.services.UpdatePasswordByEmailCodeService;
 import com.imo.backend.utils.Pageable;
 import org.springframework.stereotype.Service;
@@ -16,12 +16,12 @@ import java.util.List;
 @Service
 public class UpdatePasswordByEmailCodeServiceImpl implements UpdatePasswordByEmailCodeService {
 
-  private final OutboxRepository<ForgetPasswordMessagePayload> outboxRepository;
+  private final OutboxRepository<ForgetPasswordEvent> outboxRepository;
 
   private final UpdatePasswordByIdServiceImpl updatePasswordByIdServiceImpl;
 
   public UpdatePasswordByEmailCodeServiceImpl(
-      OutboxRepository<ForgetPasswordMessagePayload> outboxRepository,
+      OutboxRepository<ForgetPasswordEvent> outboxRepository,
       UpdatePasswordByIdServiceImpl updatePasswordByIdServiceImpl
   ) {
     this.outboxRepository = outboxRepository;
@@ -59,7 +59,7 @@ public class UpdatePasswordByEmailCodeServiceImpl implements UpdatePasswordByEma
 
 
   private boolean verifyPayload(
-      List<Outbox<ForgetPasswordMessagePayload>> outboxes,
+      List<Outbox<ForgetPasswordEvent>> outboxes,
       String userId,
       String code
   ) {
@@ -69,7 +69,11 @@ public class UpdatePasswordByEmailCodeServiceImpl implements UpdatePasswordByEma
         return false;
       }
 
-      this.outboxRepository.deleteById(outbox.getId());
+      var outboxesFromUser = this.outboxRepository.findByUserId(userId);
+
+      outboxesFromUser.forEach(outboxFromUser -> {
+        this.outboxRepository.deleteById(outboxFromUser.getId());
+      });
       return true;
     });
   }
