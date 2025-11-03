@@ -45,20 +45,27 @@ public class LessonSearchController extends LessonController {
       @RequestParam(required = false)
       Integer size
   ) {
+
+    CourseSearchParams searchParams = new CourseSearchParams(
+        lessonSearchParams.courseName(),
+        lessonSearchParams.courseNameSlug(),
+        null,
+        null,
+        null
+    );
+
     List<Lesson> lessons = (page == null || size == null)
-        ? this.courseRepository.searchDetails(
-        new CourseSearchParams(lessonSearchParams.courseNameSlug(), null, null, null),
-        matchType,
-        combineWith
-    ).stream().flatMap(courseDetails -> courseDetails.lessons().stream()).toList()
-        : this.courseRepository.searchDetails(
-            new CourseSearchParams(lessonSearchParams.courseNameSlug(), null, null, null),
-            page,
-            size,
-            matchType,
-            combineWith
-        ).stream().flatMap(courseDetails -> courseDetails.lessons().stream()).toList();
-    
+        ? this.courseRepository
+        .searchDetails(searchParams, matchType, combineWith)
+        .stream()
+        .flatMap(courseDetails -> courseDetails.lessons().stream())
+        .toList()
+        : this.courseRepository
+            .searchDetails(searchParams, page, size, matchType, combineWith)
+            .stream()
+            .flatMap(courseDetails -> courseDetails.lessons().stream())
+            .toList();
+
     return ResponseEntity.ok(lessons);
   }
 }
