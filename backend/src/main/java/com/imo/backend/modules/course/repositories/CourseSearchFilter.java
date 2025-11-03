@@ -9,6 +9,10 @@ import java.util.Map;
 public class CourseSearchFilter {
   public static Map<String, Object> apply(CourseSearchParams searchParams) {
     Map<String, Object> filters = new HashMap<>();
+    if (searchParams.name() != null) {
+      filters.put("name.name", searchParams.name());
+    }
+
     if (searchParams.nameSlug() != null) {
       filters.put("name.slug", searchParams.nameSlug());
     }
