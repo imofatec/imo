@@ -1,5 +1,6 @@
 package com.imo.backend.modules.progress.actions.impl;
 
+import com.imo.backend.modules.course.guards.GetCourseByIdGuard;
 import com.imo.backend.modules.progress.Progress;
 import com.imo.backend.modules.progress.actions.CreateProgressAction;
 import com.imo.backend.modules.progress.repositories.ProgressRepository;
@@ -14,18 +15,32 @@ import java.util.List;
 public class CreateProgressActionImpl implements CreateProgressAction {
   private final ProgressRepository progressRepository;
 
-  public CreateProgressActionImpl(ProgressRepository progressRepository) {
+  private final GetCourseByIdGuard getCourseByIdGuard;
+
+  public CreateProgressActionImpl(
+      ProgressRepository progressRepository,
+      GetCourseByIdGuard getCourseByIdGuard
+  ) {
     this.progressRepository = progressRepository;
+    this.getCourseByIdGuard = getCourseByIdGuard;
   }
 
   @Override
   public Progress execute(String userId, String courseId, List<String> lessonsWatched) {
+
+
+    var course = this.getCourseByIdGuard.execute(courseId);
+
+    ProgressStatus status = course.getLessonsCount() == lessonsWatched.size()
+        ? ProgressStatus.FINISHED
+        : ProgressStatus.IN_PROGRESS;
+
     Progress progress = new Progress(
         userId,
         courseId,
         lessonsWatched,
         new ProgressPeriod(LocalDateTime.now(), null),
-        ProgressStatus.IN_PROGRESS
+        status
     );
 
     return this.progressRepository.save(progress);
