@@ -13,9 +13,9 @@ export default function AllCourses() {
   const params = useLocalSearchParams();
   const searchTerm = params.search || "";
 
-  const nameSlugToFetch = selectedCategory ? undefined : searchTerm;
+  const nameToFetch = selectedCategory ? undefined : searchTerm;
 
-  const { courses, loading, error, refetch } = useAllCourses({ page, size, categorySlug: selectedCategory || undefined, nameSlug: nameSlugToFetch, matchType: nameSlugToFetch ? "CONTAINS" : "PERFECT", });
+  const { courses, loading, error, refetch } = useAllCourses({ page, size, categorySlug: selectedCategory || undefined, name: nameToFetch, matchType: nameToFetch ? "CONTAINS" : "PERFECT", });
 
   useEffect(() => {
     setPage(0);
@@ -69,6 +69,8 @@ export default function AllCourses() {
           renderItem={({ item }) => (
             <CourseCard
               nome={item.name.name}
+              courseID={item.id}
+              nomeSlug={item.name.slug}
               idImg={item.firstLessonYoutubeLink}
               descricao={item.description}
             />
