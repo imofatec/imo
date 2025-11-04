@@ -1,84 +1,77 @@
-import React, { useState, useCallback, useMemo } from "react";
+import React, { useState } from "react";
 import { View, Text, TextInput, Pressable, ActivityIndicator } from "react-native";
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { commentSchema } from "../../schemas/comment";
+import { createCommentRequest } from "../../requests/comment/createCommentRequest";
 
-export default function CommentInput({
-  onSubmit,
-  placeholder = "Adicionar comentário...",
-  minLength = 2,
-  maxLength = 500,
-  autoFocus = false,
-  onFocusInput,
-}) {
-  const [text, setText] = useState("");
+export default function CommentInput({ lessonId, parentId = null, onSuccess }) {
   const [sending, setSending] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(null);
 
-  const len = text.trim().length;
+  const { control, handleSubmit, reset, formState: { errors } } = useForm({
+    resolver: zodResolver(commentSchema),
+    defaultValues: { content: "" },
+  });
 
-  const error =
-    len > 0 && len < minLength
-      ? `Mínimo de ${minLength} caracteres`
-      : len > maxLength
-      ? `Máximo de ${maxLength} caracteres`
-      : null;
-
-  const canSend = useMemo(() => {
-    return !sending && len >= minLength && len <= maxLength;
-  }, [sending, len, minLength, maxLength]);
-
-  const handleSend = useCallback(async () => {
-    const value = text.trim();
-    if (!canSend || !value) return;
-
+  const onSubmit = async (data) => {
     try {
       setSending(true);
-      await onSubmit?.(value);
-      setText("");
+      setErrorMessage(null);
+
+      const response = await createCommentRequest({
+        lessonId,
+        parentId,
+        content: data.content,
+      });
+      if (!response.success) {
+        setErrorMessage(response.error);
+        return;
+      }
+      reset();
+      onSuccess?.();
+    } catch (err) {
+      setErrorMessage(err?.message);
     } finally {
       setSending(false);
     }
-  }, [canSend, onSubmit, text]);
+  };
 
   return (
     <View className="px-2 pt-2 pb-4 bg-white/0">
-      <View className="bg-white/5 border border-white/10 rounded-2xl p-3">
-        <TextInput
-          multiline
-          autoFocus={autoFocus}
-          value={text}
-          onChangeText={setText}
-          placeholder={placeholder}
-          placeholderTextColor="#A3A3A3"
-          className="text-white text-base"
-          maxLength={maxLength + 10}
-          onFocus={onFocusInput}
-        />
-
-        <View className="mt-2 flex-row items-center justify-between">
-          <Text className={`text-xs ${error ? "text-red-400" : "text-white/60"}`}>
-            {error ? error : "Comentários são vigiados pela moderação!"}
-          </Text>
-
-          <Text className={`text-xs ${len > maxLength ? "text-red-400" : "text-white/60"}`}>
-            {len}/{maxLength}
-          </Text>
-        </View>
-      </View>
+      <Controller
+        control={control}
+        name="content"
+        render={({ field: { onChange, value } }) => (
+          <View className="bg-white/5 border border-white/10 rounded-2xl p-3">
+            <TextInput
+              multiline
+              value={value}
+              onChangeText={onChange}
+              placeholder="Adicionar comentário..."
+              placeholderTextColor="#A3A3A3"
+              className="text-white text-base"
+            />
+            {errors.content && (
+              <Text className="text-red-400 text-xs mt-1">{errors.content.message}</Text>
+            )}
+          </View>
+        )}
+      />
 
       <Pressable
-        onPress={handleSend}
-        disabled={!canSend}
-        className={`mt-3 py-3 rounded-full items-center ${
-          canSend ? "bg-green-400" : "bg-white/10"
-        }`}
+        onPress={handleSubmit(onSubmit)}
+        disabled={sending}
+        className={`mt-3 py-3 rounded-full items-center ${sending ? "bg-white/10" : "bg-green-400"}`}
       >
         {sending ? (
           <ActivityIndicator />
         ) : (
-          <Text className={`text-lg font-bold ${canSend ? "text-black" : "text-white/70"}`}>
-            Comentar
-          </Text>
+          <Text className="text-lg font-bold text-black">Comentar</Text>
         )}
       </Pressable>
+
+      {errorMessage && <Text className="text-red-400 text-center mt-2">{errorMessage}</Text>}
     </View>
   );
 }
