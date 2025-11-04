@@ -60,15 +60,6 @@ export default function Layout() {
                         <Ionicons name="settings-sharp" color={color} size={size} />
                     ),
                 }} />
-            <Tabs.Screen
-                name="watch"
-                options={{
-                    headerShown: false,
-                    tabBarLabel: "watch",
-                    tabBarIcon: ({ color, size }) => (
-                        <Ionicons name="settings-sharp" color={color} size={size} />
-                    ),
-                }} />
         </Tabs>
     )
 }
