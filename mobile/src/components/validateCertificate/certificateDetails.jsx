@@ -11,8 +11,9 @@ export function CertificateDetails({ certificateData, onBack }) {
                 {Object.entries({
                     "Nome do Aluno": certificateData.authorName,
                     "Nome do Curso": certificateData.courseName,
-                    "Data de Início": certificateData.IniciationDate,
-                    "Data de Conclusão": certificateData.completionDate,
+                    "Data de Início": certificateData.courseStartedAt,
+                    "Data de Conclusão": certificateData.courseFinishedAt,
+                    "Data de Emissão": certificateData.issuedAt,
                 }).map(([label, value]) => (
                     <View key={label} className="bg-white/5 rounded-2xl p-4 mb-3 border border-white/10">
                         <Text className="text-white/70 text-sm">{label}</Text>

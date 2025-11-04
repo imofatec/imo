@@ -1,7 +1,7 @@
 import { View, Text, Pressable } from "react-native";
 import FormInput from "../inputs/formInput";
 
-export function CertificateCodeForm({ control, onSubmit }) {
+export function CertificateCodeForm({ control, onSubmit, errorMessage }) {
     return (
         <View className="flex-1 bg-custom-primary px-6 justify-center">
             <Text className="text-white text-center text-lg font-semibold mb-8">Informe o codigo do certificado para verificar sua integridade</Text>
@@ -12,6 +12,9 @@ export function CertificateCodeForm({ control, onSubmit }) {
                     onPress={onSubmit}>
                     <Text className="text-black text-2xl text-center font-bold">Validar</Text>
                 </Pressable>
+                {errorMessage && (
+          <Text className="text-red-500 text-center mb-4">{errorMessage}</Text>
+        )}
             </View>
         </View>
     );
