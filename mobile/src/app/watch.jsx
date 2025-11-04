@@ -1,5 +1,5 @@
-import React, { useState, useMemo, useRef } from "react";
-import {router} from "expo-router";
+import React, { useState, useEffect, useMemo, useRef } from "react";
+import { router, useLocalSearchParams } from "expo-router";
 import { View, Text, ScrollView, Pressable, Alert, KeyboardAvoidingView, Platform } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import PlayerHeader from "../components/watch/playerHeader";
@@ -8,10 +8,45 @@ import CertificateButton from "../components/watch/certificateButton";
 import CommentsList from "../components/watch/commentList";
 import CommentsPreview from "../components/watch/commentPreview";
 import CommentInput from "../components/watch/commentInput";
+import { useLessons } from "../hooks/useLessons";
+import { useLessonComments } from "../hooks/useLessonComments";
 
 export default function Watch() {
   const scrollRef = useRef(null);
+  const params = useLocalSearchParams();
+  const courseID = params.courseID;
+  const courseSlug = params.courseSlug;
+
+  const { lessons, loading, error, refetch } = useLessons({ courseNameSlug: courseSlug });
+
   const [commentInputY, setCommentInputY] = useState(0);
+  const [currentLesson, setCurrentLesson] = useState(lessons[0]);
+  const [watched, setWatched] = useState(new Set());
+  const [tab, setTab] = useState("lessons");
+
+  const { comments, refetch: refetchComments } = useLessonComments(currentLesson ? { lessonId: currentLesson.id } : {});
+
+
+  const [commentsMap, setCommentsMap] = useState({});
+
+
+  useEffect(() => {
+    if (lessons.length > 0 && !currentLesson) {
+      setCurrentLesson(lessons[0]);
+    }
+  }, [lessons]);
+
+  useEffect(() => {
+    if (!comments || !currentLesson) return;
+
+    setCommentsMap((prev) => ({
+      ...prev,
+      [currentLesson.id]: comments,
+    }));
+  }, [comments, currentLesson]);
+
+  const watchedCount = watched.size;
+  const allWatched = watchedCount === lessons.length;
 
   const scrollToComment = () => {
     requestAnimationFrame(() => {
@@ -21,30 +56,6 @@ export default function Watch() {
       });
     });
   };
-  const lessons = [
-    { id: "l1", title: "Introdução ao Curso", description: "Visão geral do curso.", youtubeId: "8vm3Tkv43jw" },
-    { id: "l2", title: "Conceitos Fundamentais", description: "Fundamentos essenciais.", youtubeId: "7QU1nvuxaMA" },
-    { id: "l3", title: "Prática e Exercícios", description: "Aplicação prática.", youtubeId: "8vm3Tkv43jw" },
-    { id: "l4", title: "Aprofundamento", description: "Tópicos avançados.", youtubeId: "fWvKvOViM3g" },
-  ];
-
-  const initialCommentsMap = {
-    l1: [
-      { id: "c1", authorName: "Vastobode", text: "Ótima aula, muito obrigado!! 😍" },
-      { id: "c2", authorName: "Danielzinho", text: "Gostei muito, mas nao entendi direito... nao sobra nada pro betinha" },
-    ],
-    l2: [],
-    l3: [{ id: "c3", authorName: "Montemor", text: "A explicação ficou massa 👏" }],
-    l4: [],
-  };
-  const [commentsMap, setCommentsMap] = useState(initialCommentsMap);
-
-  const [currentLesson, setCurrentLesson] = useState(lessons[0]);
-  const [watched, setWatched] = useState(new Set());
-  const [tab, setTab] = useState("lessons");
-
-  const watchedCount = watched.size;
-  const allWatched = watchedCount === lessons.length;
 
   const handleToggleWatched = (lessonId) => {
     setWatched((prev) => {
@@ -67,7 +78,7 @@ export default function Watch() {
     return Math.round((watchedCount / lessons.length) * 100);
   }, [watchedCount, lessons.length]);
 
-  const currentComments = commentsMap[currentLesson.id] ?? [];
+  const currentComments = commentsMap[currentLesson?.id] ?? [];
   const latest = currentComments[0] || null;
 
   return (
@@ -77,7 +88,7 @@ export default function Watch() {
       keyboardVerticalOffset={Platform.OS === "android" ? 80 : -20}
     >
       <View className="flex-1 bg-custom-primary">
-        
+
         <View className="px-6 pt-4 pb-4 flex-row items-center justify-between">
           <View className="flex-row items-center">
             <Pressable onPress={() => router.push("(tabs)/myCourses")} className="mr-3">
@@ -94,12 +105,17 @@ export default function Watch() {
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
         >
-          <PlayerHeader
-            youtubeId={currentLesson.youtubeId}
-            title={currentLesson.title}
-            description={currentLesson.description}
-          />
+          {/* player do youtube */}
 
+          {currentLesson && (
+            <PlayerHeader
+              youtubeId={currentLesson.youtubeLink}
+              title={currentLesson.title}
+              description={currentLesson.description}
+            />
+          )}
+
+          {/* abas de aulas e comentários */}
           <View className="mt-2 px-2 flex-row gap-2">
             <Pressable
               onPress={() => setTab("lessons")}
@@ -119,6 +135,7 @@ export default function Watch() {
             </Pressable>
           </View>
 
+          {/* preview dos comentários */}
           <CommentsPreview
             latest={latest}
             count={currentComments.length}
@@ -136,13 +153,14 @@ export default function Watch() {
             </View>
           )}
 
+          {/* lista de aulas ou comentários */}
           <View className="mt-6">
             {tab === "lessons" ? (
               <>
                 <Text className="text-white text-xl font-bold mb-3">Aulas do Curso</Text>
                 <LessonList
                   lessons={lessons}
-                  currentId={currentLesson.id}
+                  currentId={currentLesson?.id}
                   onSelect={(lesson) => {
                     setCurrentLesson(lesson);
                     setTab("lessons");
@@ -168,22 +186,12 @@ export default function Watch() {
           {tab === "comments" && (
             <View onLayout={(e) => setCommentInputY(e.nativeEvent.layout.y)}>
               <CommentInput
-                onSubmit={async (text) => {
-                  setCommentsMap((prev) => ({
-                    ...prev,
-                    [currentLesson.id]: [
-                      {
-                        id: String(Date.now()),
-                        authorName: "Você",
-                        text,
-                      },
-                      ...(prev[currentLesson.id] || []),
-                    ],
-                  }));
+                lessonId={currentLesson?.id}
+                parentId={null}
+                onSuccess={async () => {
+                  await refetchComments();
+                  scrollToComment();
                 }}
-                onFocusInput={scrollToComment}
-                minLength={2}
-                maxLength={500}
               />
             </View>
           )}
