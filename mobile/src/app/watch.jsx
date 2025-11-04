@@ -1,12 +1,13 @@
 import React, { useState, useMemo, useRef } from "react";
+import {router} from "expo-router";
 import { View, Text, ScrollView, Pressable, Alert, KeyboardAvoidingView, Platform } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import PlayerHeader from "../../components/watch/playerHeader";
-import LessonList from "../../components/watch/lessonList";
-import CertificateButton from "../../components/watch/certificateButton";
-import CommentsList from "../../components/watch/commentList";
-import CommentsPreview from "../../components/watch/commentPreview";
-import CommentInput from "../../components/watch/commentInput";
+import PlayerHeader from "../components/watch/playerHeader";
+import LessonList from "../components/watch/lessonList";
+import CertificateButton from "../components/watch/certificateButton";
+import CommentsList from "../components/watch/commentList";
+import CommentsPreview from "../components/watch/commentPreview";
+import CommentInput from "../components/watch/commentInput";
 
 export default function Watch() {
   const scrollRef = useRef(null);
@@ -76,9 +77,10 @@ export default function Watch() {
       keyboardVerticalOffset={Platform.OS === "android" ? 80 : -20}
     >
       <View className="flex-1 bg-custom-primary">
-        <View className="px-6 pt-10 pb-4 flex-row items-center justify-between">
+        
+        <View className="px-6 pt-4 pb-4 flex-row items-center justify-between">
           <View className="flex-row items-center">
-            <Pressable onPress={() => console.log("voltar")} className="mr-3">
+            <Pressable onPress={() => router.push("(tabs)/myCourses")} className="mr-3">
               <Ionicons name="arrow-back-outline" size={26} color="white" />
             </Pressable>
             <Text className="text-white text-3xl font-bold">Assistir Aula</Text>
