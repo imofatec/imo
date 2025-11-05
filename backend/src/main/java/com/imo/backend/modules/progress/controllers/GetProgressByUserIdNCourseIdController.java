@@ -2,6 +2,7 @@ package com.imo.backend.modules.progress.controllers;
 
 import com.imo.backend.modules.progress.ProgressDetails;
 import com.imo.backend.modules.progress.guards.GetProgressDetailsByUserIdAndCourseIdGuard;
+import com.imo.backend.utils.MongoDB;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +26,7 @@ public class GetProgressByUserIdNCourseIdController extends ProgressController {
       @PathVariable
       String courseId
   ) {
-
+    MongoDB.validateObjectId(courseId);
     var userId = SecurityContextHolder.getContext().getAuthentication().getName();
     return ResponseEntity.ok(this.getProgressDetailsByUserIdAndCourseIdGuard.execute(
         userId,
