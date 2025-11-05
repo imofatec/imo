@@ -12,6 +12,7 @@ import { useLessons } from "../hooks/useLessons";
 import { useLessonComments } from "../hooks/useLessonComments";
 import { useProgressByCourseId } from "../hooks/useProgressByCourseId";
 import { markLessonAsWatchedRequest } from "../requests/courses/markLessonAsWatchedRequest";
+import { downloadCertificate } from "../utils/downloadCertificate";
 
 export default function Watch() {
   const scrollRef = useRef(null);
@@ -29,6 +30,7 @@ export default function Watch() {
   }, [progress]);
 
   const [commentInputY, setCommentInputY] = useState(0);
+  const [isCertificateLoading, setIsCertificateLoading] = useState(false);
   const [currentLesson, setCurrentLesson] = useState(lessons[0]);
   const [watched, setWatched] = useState(new Set());
   const [tab, setTab] = useState("lessons");
@@ -78,14 +80,6 @@ export default function Watch() {
     } catch (error) {
       Alert.alert("Erro", "Não foi possível marcar a aula como assistida. Tente novamente mais tarde.");
     }
-  };
-
-  const handleGenerateCertificate = () => {
-    if (!allWatched) {
-      Alert.alert("Atenção", "Você precisa assistir todas as aulas para gerar o certificado.");
-      return;
-    }
-    Alert.alert("Sucesso", "Certificado gerado.");
   };
 
   const progressPercent = useMemo(() => {
@@ -194,7 +188,7 @@ export default function Watch() {
 
           {tab === "lessons" && (
             <View className="px-2 mt-6 mb-8">
-              <CertificateButton disabled={!allWatched} onPress={handleGenerateCertificate} />
+              <CertificateButton disabled={!allWatched} loading={isCertificateLoading} onPress={() => downloadCertificate(courseID, setIsCertificateLoading)} />
             </View>
           )}
 
