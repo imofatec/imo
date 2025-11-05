@@ -51,10 +51,12 @@ public class CustomProgressRepositoryImpl implements CustomProgressRepository {
         .is(new ObjectId(courseId))));
 
     Aggregation aggregation = this.buildAggregationProgressDetailsByUserId(match, null, null);
-    return Optional.ofNullable(this.mongoTemplate
+
+    var results = this.mongoTemplate
         .aggregate(aggregation, "progress", ProgressDetails.class)
-        .getMappedResults()
-        .getFirst());
+        .getMappedResults();
+
+    return Optional.ofNullable(results.isEmpty() ? null : results.getFirst());
   }
 
   public List<ProgressDetails> findAllProgressDetailsByUserId(String userId) {
