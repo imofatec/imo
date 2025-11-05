@@ -10,6 +10,8 @@ import CommentsPreview from "../components/watch/commentPreview";
 import CommentInput from "../components/watch/commentInput";
 import { useLessons } from "../hooks/useLessons";
 import { useLessonComments } from "../hooks/useLessonComments";
+import { useProgressByCourseId } from "../hooks/useProgressByCourseId";
+import { markLessonAsWatchedRequest } from "../requests/courses/markLessonAsWatchedRequest";
 
 export default function Watch() {
   const scrollRef = useRef(null);
@@ -18,6 +20,13 @@ export default function Watch() {
   const courseSlug = params.courseSlug;
 
   const { lessons, loading, error, refetch } = useLessons({ courseNameSlug: courseSlug });
+  const { progress, refetch: refetchProgress } = useProgressByCourseId(courseID);
+
+  useEffect(() => {
+    if (progress?.lessonsWatched?.length) {
+      setWatched(new Set(progress.lessonsWatched));
+    }
+  }, [progress]);
 
   const [commentInputY, setCommentInputY] = useState(0);
   const [currentLesson, setCurrentLesson] = useState(lessons[0]);
@@ -57,13 +66,18 @@ export default function Watch() {
     });
   };
 
-  const handleToggleWatched = (lessonId) => {
-    setWatched((prev) => {
-      const next = new Set(prev);
-      if (next.has(lessonId)) next.delete(lessonId);
-      else next.add(lessonId);
-      return next;
-    });
+  const handleToggleWatched = async (lessonId) => {
+    try {
+      if (progress?.lessonsWatched?.includes(lessonId)) {
+        return;
+      }
+      await markLessonAsWatchedRequest(lessonId);
+
+      setWatched((prev) => new Set(prev).add(lessonId));
+      await refetchProgress();
+    } catch (error) {
+      Alert.alert("Erro", "Não foi possível marcar a aula como assistida. Tente novamente mais tarde.");
+    }
   };
 
   const handleGenerateCertificate = () => {
@@ -167,6 +181,7 @@ export default function Watch() {
                   }}
                   watchedSet={watched}
                   onToggleWatched={handleToggleWatched}
+                  disabledLessons={new Set(progress?.lessonsWatched || [])}
                 />
               </>
             ) : (
