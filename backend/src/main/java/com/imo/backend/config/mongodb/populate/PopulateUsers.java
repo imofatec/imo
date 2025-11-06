@@ -33,7 +33,7 @@ public class PopulateUsers {
     this.updateUserByIdService = updateUserByIdService;
   }
 
-  public void execute(int qty) {
+  public User execute(int qty) {
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
 
     WeightedRandom<AvailableTimePerDay> availableTimeGenerator = new WeightedRandom<>(
@@ -44,6 +44,10 @@ public class PopulateUsers {
             AvailableTimePerDay.MORE_THAN_FOUR_HOURS
         ), List.of(0.2, 0.4, 0.3, 0.1)
     );
+
+    CreateUserInput adminInput = new CreateUserInput("admin", "admin@admin.com", "admin", "admin");
+    User adminUser = this.createUserAction.execute(adminInput);
+
 
     for (int i = 0; i < qty; i++) {
       String password = faker.internet().password(8, 16, true, true);
@@ -90,6 +94,8 @@ public class PopulateUsers {
 
       this.updateUserByIdService.execute(user.getId(), fieldsToUpdate);
     }
+
+    return adminUser;
   }
 
   private int generateBiasedAge(int min, int max) {
