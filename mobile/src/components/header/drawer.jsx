@@ -19,9 +19,7 @@ export default function Drawer() {
         { icon: 'search', label: 'Todos os cursos', route: '(tabs)/allCourses' },
         { icon: 'add-circle', label: 'Criar curso', route: '(tabs)/createCourse' },
         { icon: 'create', label: 'Editar curso', route: '(tabs)/home' },
-        { icon: 'checkmark', label: 'Validar Cetificado', route: './validateCertificate' },
-        { icon: 'checkmark', label: 'Assistir Aula', route: './watch' },
-        
+        { icon: 'checkmark', label: 'Validar Cetificado', route: './validateCertificate' }, 
     ];
 
     return (
