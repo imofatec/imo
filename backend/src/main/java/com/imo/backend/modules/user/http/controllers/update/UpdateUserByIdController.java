@@ -1,9 +1,9 @@
 package com.imo.backend.modules.user.http.controllers.update;
 
-import com.imo.backend.modules.user.actions.inputs.UpdateBaseCredentialsInput;
 import com.imo.backend.modules.user.http.controllers.UserController;
+import com.imo.backend.modules.user.http.dtos.UpdateUserByIdRequest;
 import com.imo.backend.modules.user.http.dtos.UserDTO;
-import com.imo.backend.modules.user.services.UpdateBaseCredentialsService;
+import com.imo.backend.modules.user.services.UpdateUserByIdService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
@@ -19,13 +19,13 @@ import java.util.stream.Stream;
 
 @Slf4j
 @RestController
-public class UpdateUserBaseCredentialsController extends UserController {
-  private final UpdateBaseCredentialsService updateBaseCredentialsService;
+public class UpdateUserByIdController extends UserController {
+  private final UpdateUserByIdService updateUserByIdService;
 
-  public UpdateUserBaseCredentialsController(
-      UpdateBaseCredentialsService updateBaseCredentialsService
+  public UpdateUserByIdController(
+      UpdateUserByIdService updateUserByIdService
   ) {
-    this.updateBaseCredentialsService = updateBaseCredentialsService;
+    this.updateUserByIdService = updateUserByIdService;
   }
 
   @Operation(summary = "Update the user's credentials")
@@ -34,22 +34,20 @@ public class UpdateUserBaseCredentialsController extends UserController {
   public ResponseEntity<UserDTO> handle(
       @Valid
       @RequestBody
-      UpdateBaseCredentialsInput fieldsToUpdateUser
+      UpdateUserByIdRequest fieldsToUpdateUser
   ) {
 
     String userId = SecurityContextHolder.getContext().getAuthentication().getName();
 
     return checkNoContent(fieldsToUpdateUser)
         ? ResponseEntity.noContent().build()
-        : ResponseEntity.ok(UserDTO.fromUser(this.updateBaseCredentialsService.execute(
+        : ResponseEntity.ok(UserDTO.fromUser(this.updateUserByIdService.execute(
             userId,
             fieldsToUpdateUser
         )));
   }
 
-  private static boolean checkNoContent(UpdateBaseCredentialsInput fieldsToUpdateUser) {
-    return Stream
-        .of(fieldsToUpdateUser.name(), fieldsToUpdateUser.password(), fieldsToUpdateUser.email())
-        .allMatch(Objects::isNull);
+  private static boolean checkNoContent(UpdateUserByIdRequest fieldsToUpdateUser) {
+    return Stream.of(fieldsToUpdateUser).allMatch(Objects::isNull);
   }
 }

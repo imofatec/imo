@@ -26,7 +26,7 @@ public class UpdatePasswordByIdServiceImpl implements UpdatePasswordByIdService 
 
     return this.updateUserByIdAction.execute(
         userId,
-        new UpdateUserByIdInput(null, null, hashedPassword, null)
+        new UpdateUserByIdInput(null, null, hashedPassword, null, null, null, null, null, null)
     );
   }
 }

@@ -20,5 +20,25 @@ public class UserUpdater {
     if (dto.profilePicturePath() != null && !dto.profilePicturePath().isEmpty()) {
       user.setProfilePicturePath(dto.profilePicturePath());
     }
+
+    if (dto.birthDate() != null) {
+      user.setBirthDate(dto.birthDate());
+    }
+
+    if (dto.availableTimePerDay() != null) {
+      user.setAvailableTimePerDay(dto.availableTimePerDay());
+    }
+
+    if (dto.academicDegree() != null) {
+      user.setAcademicDegree(dto.academicDegree());
+    }
+
+    if (dto.experienceLevel() != null) {
+      user.setExperienceLevel(dto.experienceLevel());
+    }
+
+    if (dto.categoriesOfInterest() != null) {
+      user.setCategoriesOfInterest(dto.categoriesOfInterest());
+    }
   }
 }
