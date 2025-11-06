@@ -1,8 +1,10 @@
 package com.imo.backend.modules.course.http.dtos;
 
+import com.imo.backend.modules.course.value_objects.Categories;
 import com.imo.backend.modules.lesson.actions.inputs.CreateLessonInput;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 import java.util.List;
@@ -12,8 +14,8 @@ public record CreateCourseRequest(
     @Size(min = 10, max = 100, message = "O nome do curso precisa ter de 10 a 100 caracteres")
     String name,
 
-    @NotBlank(message = "Preencha a categoria do curso")
-    String category,
+    @NotNull(message = "Preencha a categoria do curso")
+    Categories category,
 
     @NotBlank(message = "Preencha o nível do curso")
     String level,
