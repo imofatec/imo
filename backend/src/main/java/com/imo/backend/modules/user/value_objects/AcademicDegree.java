@@ -9,10 +9,10 @@ public enum AcademicDegree {
   ASSOCIATE("Técnologo"),
   BACHELOR("Bacharelado"),
   LICENTIATE("Licenciatura"),
-  LATO_SENSU("Especialização lato sensu"),
+  MBA("MBA"),
   MASTER("Mestrado"),
   DOCTORAL("Doutorado"),
-  POSTDOCTORATE("Pós-doutorado");
+  POSTDOC("Pós-doutorado");
 
 
   private final String value;
