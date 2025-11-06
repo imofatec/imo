@@ -1,10 +1,10 @@
 package com.imo.backend.modules.course.http.controllers;
 
+import com.imo.backend.lib.token.TokenManager;
 import com.imo.backend.modules.course.Course;
-import com.imo.backend.modules.course.actions.inputs.UpdateCourseInput;
+import com.imo.backend.modules.course.http.dtos.UpdateCourseByIdRequest;
 import com.imo.backend.modules.course.http.middlewares.ValidateUserCourseAccessService;
 import com.imo.backend.modules.course.services.UpdateCourseByIdService;
-import com.imo.backend.lib.token.TokenManager;
 import com.imo.backend.utils.MongoDB;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -39,7 +39,7 @@ public class UpdateCourseByIdController extends CourseController {
       String id,
       @Valid
       @RequestBody
-      UpdateCourseInput dto
+      UpdateCourseByIdRequest dto
   ) {
     MongoDB.validateObjectId(id);
     String userId = SecurityContextHolder.getContext().getAuthentication().getName();

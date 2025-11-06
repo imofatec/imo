@@ -1,5 +1,6 @@
 package com.imo.backend.e2e.utils;
 
+import com.imo.backend.modules.course.value_objects.Categories;
 import net.datafaker.Faker;
 
 public class DataFakeFactory {
@@ -44,8 +45,8 @@ public class DataFakeFactory {
         return faker.book().title();
     }
 
-    public static String generateValidCourseCategory(){
-        return faker.educator().course();
+    public static Categories generateValidCourseCategory(){
+        return faker.options().option(Categories.class);
     }
 
     public static String generateValidCourseLevel(){

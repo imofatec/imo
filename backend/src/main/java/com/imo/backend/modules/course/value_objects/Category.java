@@ -3,10 +3,10 @@ package com.imo.backend.modules.course.value_objects;
 import com.imo.backend.utils.Slug;
 
 public record Category(
-    String name,
+    Categories name,
     String slug
 ) {
-  public Category(String name) {
-    this(name, Slug.create(name));
+  public Category(Categories name) {
+    this(name, Slug.create(name.getValue()));
   }
 }
