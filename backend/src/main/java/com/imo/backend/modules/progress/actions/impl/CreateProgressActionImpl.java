@@ -31,17 +31,16 @@ public class CreateProgressActionImpl implements CreateProgressAction {
 
     var course = this.getCourseByIdGuard.execute(courseId);
 
-    ProgressStatus status = course.getLessonsCount() == lessonsWatched.size()
-        ? ProgressStatus.FINISHED
-        : ProgressStatus.IN_PROGRESS;
+    boolean isFinished = course.getLessonsCount() == lessonsWatched.size();
 
-    Progress progress = new Progress(
-        userId,
-        courseId,
-        lessonsWatched,
-        new ProgressPeriod(LocalDateTime.now(), null),
-        status
-    );
+    ProgressStatus status = isFinished ? ProgressStatus.FINISHED : ProgressStatus.IN_PROGRESS;
+
+    ProgressPeriod progressPeriod = isFinished ? new ProgressPeriod(
+        LocalDateTime.now(),
+        LocalDateTime.now()
+    ) : new ProgressPeriod(LocalDateTime.now(), null);
+
+    Progress progress = new Progress(userId, courseId, lessonsWatched, progressPeriod, status);
 
     return this.progressRepository.save(progress);
   }
