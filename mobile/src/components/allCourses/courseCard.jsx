@@ -3,7 +3,7 @@ import { router } from "expo-router";
 import { View, Text, Image, Dimensions, Pressable} from "react-native";
 import CourseModal from "./courseModal";
 
-export default function CourseCard({ nome, idImg, descricao,nomeSlug,courseID }) {
+export default function CourseCard({ nome, idImg, descricao,nomeSlug,courseID,canEdit }) {
     const [modalVisible, setModalVisible] = useState(false);
     const { width } = Dimensions.get("window");
     const imageWidth = width / 2 - 24;
@@ -15,6 +15,15 @@ export default function CourseCard({ nome, idImg, descricao,nomeSlug,courseID })
             pathname:  '/watch',
             params: {
                 courseID: courseID,
+                courseSlug: nomeSlug,
+            },
+        });
+    }
+    function handleEditClick() {
+        setModalVisible(false);
+        router.push({
+            pathname:  '/editCourse',
+            params: {
                 courseSlug: nomeSlug,
             },
         });
@@ -41,7 +50,7 @@ export default function CourseCard({ nome, idImg, descricao,nomeSlug,courseID })
                 {nome}
             </Text>
 
-            <CourseModal visible={modalVisible} onClose={() => setModalVisible(false)} nome={nome} idImg={idImg} descricao={descricao} onHandleClick={handleClick}/>
+            <CourseModal visible={modalVisible} onClose={() => setModalVisible(false)} nome={nome} idImg={idImg} descricao={descricao} onHandleClick={handleClick} onHandleEditClick={handleEditClick} canEdit={canEdit}/>
                 
         </View>
     );
