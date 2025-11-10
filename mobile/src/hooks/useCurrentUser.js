@@ -3,7 +3,7 @@ import { apiFetch } from "../api/apiFetch";
 import { safeAwait } from "../lib/safeAwait";
 import { baseURL } from "../api/enviroment";
 
-export function useUserById(userId) {
+export function useCurrentUser() {
     const [user, setUser] = useState(null);
     const [urlImage, setUrlImage] = useState('');
     const [loading, setLoading] = useState(true);
@@ -12,15 +12,17 @@ export function useUserById(userId) {
     const fetchUser = useCallback(async () => {
         setLoading(true);
         const [err, data] = await safeAwait(
-            apiFetch(`/api/user/${userId}`, {
+            apiFetch(`/api/user/profile`, {
                 method: "GET",
             })
         );
+
         if (err) {
             setError(err.message);
             setLoading(false);
             return;
         }
+
         setUser(data || null);
         setError(null);
         setLoading(false);
@@ -30,7 +32,7 @@ export function useUserById(userId) {
         }
         setUrlImage(`${baseURL}/uploads/${data.profilePicturePath}`)
 
-    }, [userId]);
+    }, []);
     useEffect(() => {
         fetchUser();
     }, [fetchUser]);
