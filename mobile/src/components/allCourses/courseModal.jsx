@@ -2,7 +2,7 @@ import React from "react";
 import { View, Text, Image, Dimensions, Pressable, Modal } from "react-native";
 import { Ionicons } from '@expo/vector-icons';
 
-export default function CourseModal({ visible, onClose, nome, idImg, descricao,onHandleClick }) {
+export default function CourseModal({ visible, onClose, nome, idImg, descricao, onHandleClick, onHandleEditClick, canEdit = false }) {
     const { width } = Dimensions.get("window");
     const imageWidth = width / 2 - 24;
     const imageHeight = imageWidth * 9 / 16;
@@ -31,6 +31,16 @@ export default function CourseModal({ visible, onClose, nome, idImg, descricao,o
                         resizeMode="cover"
                     />
                     <Text className="mb-4 text-gray-200">{descricao}</Text>
+
+                    {canEdit && (
+                        <Pressable
+                            className="bg-white rounded-full px-4 py-2 w-full"
+                            onPress={onHandleEditClick}
+                        >
+                            <Text className="text-black text-center">Editar</Text>
+                        </Pressable>
+                    )}
+
                     <Pressable
                         className="bg-white rounded-full px-4 py-2 w-full"
                         onPress={onHandleClick}

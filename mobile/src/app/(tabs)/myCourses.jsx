@@ -70,6 +70,7 @@ export default function AllCourses() {
                 nomeSlug={course.name.slug}
                 idImg={course.firstLessonYoutubeLink}
                 descricao={course.description}
+                canEdit={selectedCategory === "contributions"}
               />
             );
           }}
