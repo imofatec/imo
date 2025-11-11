@@ -24,6 +24,7 @@ export default function CourseCard({ nome, idImg, descricao,nomeSlug,courseID,ca
         router.push({
             pathname:  '/editCourse',
             params: {
+                courseID: courseID,
                 courseSlug: nomeSlug,
             },
         });
