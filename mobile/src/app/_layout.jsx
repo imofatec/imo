@@ -4,6 +4,7 @@ import { View } from "react-native";
 import Constants from "expo-constants";
 import Header from "./outlet/header";
 import { useAuthRedirect } from "../hooks/useAuthRedirect";
+import Toast from "react-native-toast-message";
 
 const statusBarHeight = Constants.statusBarHeight;
 
@@ -27,6 +28,8 @@ export default function RootLayout() {
         <Stack.Screen name="(tabs)" />
         <Stack.Screen name="watch" />
       </Stack>
+
+      <Toast />
     </>
   );
 }

@@ -7,22 +7,24 @@ import { loginSchema } from "../schemas/login";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, Controller } from "react-hook-form";
 import { loginRequest } from "../requests/user/loginRequest";
+import Toast from "react-native-toast-message";
 
 
 
 export default function Login() {
-  const [errorMessage, setErrorMessage] = useState(null);
-
   const { control, handleSubmit } = useForm({
     resolver: zodResolver(loginSchema)
   })
 
   async function onSubmit(data) {
-    console.log("Submitting login with data:", data);
     const response = await loginRequest(data);
-
     if (!response.success) {
-      setErrorMessage(response.error);
+      Toast.show({
+        type: "error",
+        text1: "Erro ao fazer login",
+        text2: response.error,
+        position: "bottom",
+      });
       return;
     }
     router.push("/home");
@@ -39,9 +41,6 @@ export default function Login() {
       <FormInput control={control} name="email" label="Email" placeholder="joaosilva@gmail.com" autoCapitalize="none" keyboardType="email-address" />
       <FormInput control={control} name="password" label="Senha" placeholder="batatinha123" autoCapitalize="none" secureTextEntry />
 
-      {errorMessage && (
-        <Text className="text-red-500 text-center mb-4">{errorMessage}</Text>
-      )}
       <Pressable className="bg-white py-3 rounded-full mb-6"
         onPress={handleSubmit(onSubmit)}>
 
