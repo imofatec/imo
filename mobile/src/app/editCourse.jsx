@@ -1,72 +1,106 @@
 import React, { useState } from "react";
+import { useRouter } from "expo-router";
 import { Text, Pressable, KeyboardAvoidingView, Platform, View, ScrollView, Alert } from "react-native";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { createCourseSchema } from "../schemas/createCourse";
-import FormInput from "../components/inputs/formInput";
-import SelectInput from "../components/inputs/selectInput";
-import TextBoxInput from "../components/inputs/textBoxInput";
+import { editCourseSchema } from "../schemas/editCourse";
+import { useLocalSearchParams } from "expo-router";
+import { useAllCourses } from "../hooks/useAllCourses";
+import { useLessons } from "../hooks/useLessons";
+import LessonformEdit from "../components/editCourse/lessonformEdit";
+import CourseFormEdit from "../components/editCourse/courseFormEdit";
 import LessonForm from "../components/createCourse/lessonForm";
+import { editCourseRequest } from "../requests/courses/editCourseRequest";
+import { editLessonRequest } from "../requests/courses/editLessonRequest";
+import { createNewLessonRequest } from "../requests/courses/createNewLessonRequest";
+import { deleteLessonRequest } from "../requests/courses/deleteLessonRequest";
+import { deleteCourseRequest } from "../requests/courses/deleteCourseRequest";
+import { Ionicons } from '@expo/vector-icons';
 
 export default function EditCourse() {
-    const [errorMessage, setErrorMessage] = useState(null);
-    const [lessonsIdx, setLessonsIdx] = useState([0]);
+    const params = useLocalSearchParams();
+    const router = useRouter();
+    const { courseSlug, courseID } = params;
+    const { courses, loading, error, refetch } = useAllCourses({ nameSlug: courseSlug, size: 1, page: 0 });
+    const { lessons, loading: loadingLesson, error: errorLesson, refetch: refetchLesson } = useLessons({ courseNameSlug: courseSlug });
 
-    const { control, handleSubmit, getValues, setValue, reset } = useForm({
-        resolver: zodResolver(createCourseSchema),
-        defaultValues: {
-            nameCourse: "", category: "", level: "", description: "", lessons: [
-                { nameLesson: "", link: "", descriptionL: "" },
-            ],
-        },
+    const [errorMessage, setErrorMessage] = useState(null);
+    const [newLessonVisible, setNewLessonVisible] = useState(false);
+
+    const showNewLessonForm = () => setNewLessonVisible(true);
+    const hideNewLessonForm = () => setNewLessonVisible(false);
+
+    const { control, handleSubmit, reset } = useForm({
+        resolver: zodResolver(editCourseSchema)
     });
 
-    function addLesson() {
-        setLessonsIdx((prev) => [...prev, prev.length]);
-        const current = getValues("lessons") ?? [];
-        setValue("lessons", [...current, { nameLesson: "", link: "", descriptionL: "" }], {
-            shouldValidate: false,
-        });
+    const courseReady = !loading && courses.length > 0;
+
+    async function onEditCourse(data) {
+        const response = await editCourseRequest(courseID, data);
+        if (!response.success) {
+            setErrorMessage(response.error);
+            return;
+        }
+        await refetch();
+        setErrorMessage(null)
+        reset();
     }
 
-    function removeLessonAt(idx) {
-        const current = getValues("lessons") ?? [];
-        if (current.length <= 1) return;
-        const next = [...current];
-        next.splice(idx, 1);
-        setValue("lessons", next, { shouldValidate: true, shouldDirty: true });
-        setLessonsIdx(Array.from({ length: next.length }, (_, i) => i));
+    async function onEditLesson(lessonId, data) {
+        const response = await editLessonRequest(lessonId, data);
+        if (!response.success) {
+            console.log("error", response.error)
+            setErrorMessage(response.error);
+            return;
+        }
+        await refetchLesson();
+        setErrorMessage(null)
+        reset();
     }
 
-    function confirmRemoveLesson(idx) {
-        Alert.alert(
-            "Remover aula",
-            "Tem certeza que deseja remover esta aula?",
-            [
-                { text: "Cancelar", style: "cancel" },
-                { text: "Remover", style: "destructive", onPress: () => removeLessonAt(idx) },
-            ]
-        );
+    async function onCreateLesson(data) {
+        const lessonData = data.lessons[courses[0]?.lessonsCount];
+        const submission = {
+            title: lessonData.nameLesson,
+            description: lessonData.descriptionL,
+            youtubeLink: lessonData.link,
+        };
+        const response = await createNewLessonRequest(courseID, submission);
+
+        if (!response.success) {
+            setErrorMessage(response.error);
+            return;
+        }
+
+        await refetch();
+        await refetchLesson();
+        setErrorMessage(null);
+        hideNewLessonForm();
+        reset()
     }
 
-
-    function confirmRemoveLastLesson() {
-        if (lessonsIdx.length <= 1) return;
-        Alert.alert(
-            "Remover última aula",
-            "Deseja remover a última aula adicionada?",
-            [
-                { text: "Cancelar", style: "cancel" },
-                { text: "Remover", style: "destructive", onPress: () => removeLessonAt(lessonsIdx.length - 1) },
-            ]
-        );
-    }
-
-    async function onSubmit(data) {
-        console.log("Curso editado com sucesso:", data);
-        Alert.alert("Sucesso", "As alterações foram salvas (simulação).");
+    async function onDeleteLesson(lessonId) {
+        const response = await deleteLessonRequest(lessonId);
+        if (!response.success) {
+            setErrorMessage(response.error);
+            return;
+        }
+        await refetchLesson();
+        await refetch();
         setErrorMessage(null);
     }
+
+    async function onDeleteCourse() {
+        const response = await deleteCourseRequest(courseID);
+        if (response.success) {
+            Alert.alert("Sucesso", "O curso foi excluído.");
+            router.push("(tabs)/home");
+        } else {
+            Alert.alert("Erro", response.error || "Não foi possível excluir o curso.");
+        }
+    }
+
 
     return (
         <KeyboardAvoidingView
@@ -78,65 +112,91 @@ export default function EditCourse() {
                 keyboardShouldPersistTaps="handled"
                 contentContainerStyle={{ justifyContent: "center", flexGrow: 1 }}
             >
-                <Text className="text-white text-4xl text-center py-4">Editar Curso</Text>
+                {!courseReady && <Text className="text-white mt-2">Carregando curso...</Text>}
 
-                <FormInput control={control} name="nameCourse" label="Nome do curso" placeholder="Curso de Python" />
-                <FormInput control={control} name="category" label="Categoria" placeholder="e.g., design, python, excel" />
-                <SelectInput control={control} name="level" label="Nível" />
-                <TextBoxInput control={control} name="description" label="Descrição" placeholder="Descrição do curso..." />
+                {courseReady && (
+                    <>
+                        <Text className="text-white text-2xl text-center py-4">Editar Curso</Text>
 
-                <View className="mt-6 mb-2">
-                    <Text className="text-white text-2xl text-center font-bold">Editar aulas</Text>
-                </View>
+                        <CourseFormEdit control={control} courses={courses[0]} onEditCourse={handleSubmit(onEditCourse)} />
 
-                {lessonsIdx.map((_, index) => (
-                    <LessonForm key={index} control={control} index={index} canRemove={lessonsIdx.length > 1} onRemove={() => confirmRemoveLesson(index)} />
-                ))}
+                        <View className="mt-6 mb-2">
+                            <Text className="text-white text-2xl text-center font-bold">Editar aulas</Text>
+                        </View>
 
-                <View className="flex-row justify-around mt-4">
-                    <Pressable className="border border-white px-6 py-3 rounded-full mb-6" onPress={confirmRemoveLastLesson}>
-                        <Text className="text-white text-xl font-bold">Remover aula</Text>
-                    </Pressable>
+                        {lessons.map((item, index) => (
+                            <LessonformEdit
+                                key={item.id}
+                                control={control}
+                                index={index}
+                                namePlaceholder={item.title}
+                                LinkPlaceholder={item.youtubeLink}
+                                descPlaceholder={item.description}
+                                onEditLesson={handleSubmit((data) => {
+                                    const lessonData = data.lessons[index];
+                                    onEditLesson(item.id, lessonData);
+                                })}
+                                onDeleteLesson={() => {
+                                    Alert.alert(
+                                        "Excluir aula",
+                                        "Tem certeza de que deseja excluir esta aula?\nEssa ação não poderá ser desfeita.",
+                                        [
+                                            { text: "Cancelar", style: "cancel" },
+                                            { text: "Excluir", style: "destructive", onPress: () => onDeleteLesson(item.id) },
+                                        ]
+                                    );
+                                }}
+                            />
+                        ))}
 
-                    <Pressable className="bg-white px-6 py-3 rounded-full mb-6" onPress={addLesson}>
-                        <Text className="text-black text-xl font-bold">Adicionar aula</Text>
-                    </Pressable>
-                </View>
 
-                <Pressable
-                    className="bg-white py-3 rounded-full mb-6"
-                    onPress={handleSubmit(onSubmit)}
-                >
-                    <Text className="text-black text-2xl text-center font-bold">Salvar alterações</Text>
-                </Pressable>
+                        {newLessonVisible && (
+                            <>
+                                <LessonForm control={control} index={courses[0]?.lessonsCount} />
+                                <View className="flex-1 flex-row justify-between mb-6">
+                                    <Pressable className="flex-row items-center gap-4"
+                                        onPress={hideNewLessonForm}>
+                                        <Ionicons name="trash-outline" size={20} color="red" />
+                                        <Text className="text-red-500 text-lg">Cancelar</Text>
+                                    </Pressable>
+                                    <Pressable className="flex-row items-center gap-4"
+                                        onPress={handleSubmit((data) => onCreateLesson(data))}>
+                                        <Ionicons name="download-outline" size={20} color="green" />
+                                        <Text className="text-green-500 text-lg">Criar aula</Text>
+                                    </Pressable>
+                                </View>
+                            </>
+                        )}
 
-                {errorMessage && (
-                    <Text className="text-red-500 text-center mb-4">{errorMessage}</Text>
+                        <Pressable className="bg-white py-3 rounded-full mb-6" onPress={showNewLessonForm}>
+                            <Text className="text-black text-2xl text-center font-bold">Adicionar aula</Text>
+                        </Pressable>
+
+                        <Pressable
+                            className="bg-red-600 py-3 rounded-full mb-10"
+                            onPress={() => {
+                                Alert.alert(
+                                    "Excluir curso",
+                                    "Tem certeza de que deseja excluir este curso? Essa ação não poderá ser desfeita.",
+                                    [
+                                        { text: "Cancelar", style: "cancel" },
+                                        { text: "Excluir", style: "destructive", onPress: onDeleteCourse },
+                                    ]
+                                );
+                            }}
+                        >
+                            <Text className="text-white text-2xl text-center font-bold">
+                                Excluir curso
+                            </Text>
+                        </Pressable>
+
+
+                        {errorMessage && (
+                            <Text className="text-red-500 text-center mb-4">{errorMessage}</Text>
+                        )}
+                    </>
                 )}
-                <Pressable
-                    className="bg-red-600 py-3 rounded-full mb-10"
-                    onPress={() => {
-                        Alert.alert(
-                            "Excluir curso",
-                            "Tem certeza de que deseja excluir este curso? Essa ação não poderá ser desfeita.",
-                            [
-                                { text: "Cancelar", style: "cancel" },
-                                {
-                                    text: "Excluir",
-                                    style: "destructive",
-                                    onPress: () => {
-                                        console.log("Curso excluído");
-                                        Alert.alert("Sucesso", "O curso foi excluído.");
-                                    }
-                                },
-                            ]
-                        );
-                    }}
-                >
-                    <Text className="text-white text-2xl text-center font-bold">
-                        Excluir curso
-                    </Text>
-                </Pressable>
+
             </ScrollView>
         </KeyboardAvoidingView>
     );
