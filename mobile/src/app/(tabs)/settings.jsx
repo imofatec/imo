@@ -11,9 +11,9 @@ import { Ionicons } from '@expo/vector-icons'
 import { useCurrentUser } from "../../hooks/useCurrentUser"
 import { editUserRequest } from "../../requests/user/editUserRequest";
 import { editUserPfpRequest } from "../../requests/user/editUserPfpRequest";
+import Toast from "react-native-toast-message";
 
 export default function settings() {
-  const [errorMessage, setErrorMessage] = useState(null);
   const [imageUri, setImageUri] = useState(null);
 
   const { user, urlImage, loading, error, refetch } = useCurrentUser();
@@ -23,10 +23,16 @@ export default function settings() {
   })
 
   async function onEditUser(data) {
-    console.log("data", data)
     const response = await editUserRequest(data);
-    if (!response.success) return setErrorMessage(response.error);
-    setErrorMessage(null);
+    if (!response.success) {
+      Toast.show({
+        type: "error",
+        text1: "Erro ao editar o usuario",
+        text2: response.error,
+        position: "bottom",
+      });
+      return;
+    }
     await refetch();
     reset();
   }
@@ -35,9 +41,14 @@ export default function settings() {
     if (!imageUri) return alert("Selecione uma imagem primeiro!");
     const response = await editUserPfpRequest(imageUri);
     if (!response.success) {
-      return setErrorMessage(response.error);
+      Toast.show({
+        type: "error",
+        text1: "Erro ao enviar uma foto",
+        text2: response.error,
+        position: "bottom",
+      });
+      return;
     }
-    setErrorMessage(null);
     await refetch();
     setImageUri(null);
     alert("Foto de perfil atualizada com sucesso!");
@@ -80,10 +91,6 @@ export default function settings() {
             <Text className="text-black text-2xl text-center font-bold">Confirmar</Text>
           </Pressable>
         </View>
-
-        {errorMessage && (
-          <Text className="text-red-500 text-center mb-4">{errorMessage}</Text>
-        )}
 
       </ScrollView>
     </KeyboardAvoidingView>

@@ -10,9 +10,9 @@ import FormInput from "../../components/inputs/formInput";
 import SelectInput from "../../components/inputs/selectInput";
 import TextBoxInput from "../../components/inputs/textBoxInput";
 import { createCourseRequest } from "../../requests/courses/createCourseRequest";
+import Toast from "react-native-toast-message";
 
 export default function CreateCourses() {
-  const [errorMessage, setErrorMessage] = useState(null);
   const [lessons, setLessons] = useState([0]);
   const { control, handleSubmit, getValues, setValue, reset } = useForm({
     resolver: zodResolver(createCourseSchema),
@@ -25,12 +25,16 @@ export default function CreateCourses() {
     const response = await createCourseRequest(data);
 
     if (!response.success) {
-      setErrorMessage(response.error);
+      Toast.show({
+        type: "error",
+        text1: "Erro ao criar o curso",
+        text2: response.error,
+        position: "bottom",
+      });
       return;
     }
     reset();
     setLessons([0]);
-    setErrorMessage(null);
     router.push("(tabs)/allCourses");
   }
 
@@ -84,10 +88,6 @@ export default function CreateCourses() {
         <Pressable className="bg-white py-3 rounded-full mb-6" onPress={handleSubmit(onSubmit)}>
           <Text className="text-black text-2xl text-center font-bold">Criar Curso</Text>
         </Pressable>
-
-        {errorMessage && (
-          <Text className="text-red-500 text-center mb-4">{errorMessage}</Text>
-        )}
 
       </ScrollView>
     </KeyboardAvoidingView>
