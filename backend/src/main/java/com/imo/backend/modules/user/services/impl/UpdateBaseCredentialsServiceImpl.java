@@ -16,8 +16,7 @@ public class UpdateBaseCredentialsServiceImpl implements UpdateBaseCredentialsSe
 
   public UpdateBaseCredentialsServiceImpl(
       UpdateUserByIdAction updateUserByIdAction,
-      UpdatePasswordByIdService updatePasswordByIdService
-  ) {
+      UpdatePasswordByIdService updatePasswordByIdService) {
     this.updateUserByIdAction = updateUserByIdAction;
     this.updatePasswordByIdService = updatePasswordByIdService;
   }
@@ -29,7 +28,6 @@ public class UpdateBaseCredentialsServiceImpl implements UpdateBaseCredentialsSe
 
     return this.updateUserByIdAction.execute(
         id,
-        new UpdateUserByIdInput(fieldsToUpdateUser.name(), fieldsToUpdateUser.email(), null, null)
-    );
+        new UpdateUserByIdInput(fieldsToUpdateUser.email(), fieldsToUpdateUser.name(), null, null));
   }
 }
