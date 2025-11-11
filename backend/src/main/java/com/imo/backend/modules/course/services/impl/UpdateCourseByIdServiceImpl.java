@@ -32,10 +32,13 @@ public class UpdateCourseByIdServiceImpl implements UpdateCourseByIdService {
   public Course execute(String courseId, UpdateCourseInput fieldsToUpdateCourse) {
     Course course = this.getCourseByIdGuard.execute(courseId);
 
-    this.checkConflictContributorCourse(
-        course.getContributorId(),
-        Slug.create(fieldsToUpdateCourse.name())
-    );
+    if (fieldsToUpdateCourse.name() != null) {
+      this.checkConflictContributorCourse(
+          course.getContributorId(),
+          Slug.create(fieldsToUpdateCourse.name())
+      );
+    }
+
     return this.updateCourseByIdAction.execute(courseId, fieldsToUpdateCourse);
   }
 
