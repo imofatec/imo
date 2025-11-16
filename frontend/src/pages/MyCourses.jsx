@@ -1,19 +1,22 @@
 import CardCurso from '@/components/ui/curso/cardcurso'
-import CategorySelector from '@/components/ui/mycourses/CategorySelector'
-import { useMyCourses } from '@/hooks/useMyCourses'
 import SkeletonLoading from '@/components/ui/curso/skeletonLoading'
 import { DropdownSelect } from '@/components/ui/dropdownselect'
+import CategorySelector from '@/components/ui/mycourses/CategorySelector'
 import Pagination from '@/components/ui/pagination'
 import StatusMessage from '@/components/ui/statusMessage'
 import { Titulo } from '@/components/ui/titulo'
-import { useState } from 'react'
+import { useAuth } from '@/context/useAuth'
+import { useMyCourses } from '@/hooks/useMyCourses'
 import { useSortedCourses } from '@/hooks/useSortedCourses'
+import { useUserContributions } from '@/hooks/useUserContributions'
+import { useState } from 'react'
 
 export default function MyCourses() {
   const size = 8
   const [selectedCategory, setSelectedCategory] = useState(null)
   const [page, setPage] = useState(0)
   const [order, setOrder] = useState(null)
+  const [viewMode, setViewMode] = useState('courses')
   const { myCourses, loading, error, hasMoreCourses } = useMyCourses(
     selectedCategory,
     page,
@@ -21,10 +24,22 @@ export default function MyCourses() {
   )
   const sortedCourses = useSortedCourses(myCourses, order)
 
+  const contributions = useUserContributions(page, size)
+
+  const { authLoading } = useAuth()
+
   const handleShowAllCourses = () => {
     setSelectedCategory(null)
     setPage(0)
+    setViewMode('courses')
     window.history.pushState({}, '', '/user/cursos')
+  }
+
+  const handleShowContributions = () => {
+    setSelectedCategory(null)
+    setPage(0)
+    setViewMode('contributions')
+    window.history.pushState({}, '', '/user/cursos/submissoes')
   }
 
   const handleCategorySelect = (slug) => {
@@ -46,8 +61,6 @@ export default function MyCourses() {
     setOrder(order)
   }
 
-  const tipoCurso = 'Meus Cursos'
-
   return (
     <>
       <Titulo titulo={`IMO / Meus Cursos`} />
@@ -57,6 +70,8 @@ export default function MyCourses() {
             selectedCategory={selectedCategory}
             onCategorySelect={handleCategorySelect}
             onShowAllCourses={handleShowAllCourses}
+            onShowContributions={handleShowContributions}
+            viewMode={viewMode}
           />
         </div>
 
@@ -64,7 +79,7 @@ export default function MyCourses() {
           <div className="flex flex-row w-full">
             <div className="flex flex-col w-1/2">
               <h5 className="font-semibold text-xl mb-10 text-white">
-                {tipoCurso}
+                {viewMode === 'courses' ? 'Meus Cursos' : 'Minhas Contribuições'}
               </h5>
             </div>
             <div className="flex flex-col w-1/2 items-end">
@@ -76,13 +91,11 @@ export default function MyCourses() {
 
           <div className="flex flex-row flex-wrap p-18 w-auto max-w-full">
             <StatusMessage error={error} />
-            {loading && (
+            {(loading || authLoading) &&
               Array.from({ length: size }).map((index) => (
                 <SkeletonLoading key={index} />
-              ))
-            )}
-            {!loading &&
-              !error &&
+              ))}
+            {viewMode === 'courses' && !loading && !error &&
               sortedCourses.map((curso) => (
                 <CardCurso
                   key={curso.courseOverview.id}
@@ -97,7 +110,26 @@ export default function MyCourses() {
                   codigo={curso.courseOverview.slugCourse}
                   codAula={curso.courseOverview.firstLessonYoutubeId}
                   nameButton="Retomar curso"
-                  //onStart={handleStartCourse}
+                  isEditing={false}
+                />
+              ))}
+
+            {viewMode === 'contributions' && !loading && !error &&
+              contributions.map((curso) => (
+                <CardCurso
+                  key={curso.id}
+                  idCurso={curso.id}
+                  nomeCurso={curso.name}
+                  notaCurso="5.0"
+                  avaliacoesCurso="80"
+                  fotoCurso={`https://img.youtube.com/vi/${curso.lessons[0]?.youtubeLink}/maxresdefault.jpg`}
+                  descricaoCurso={curso.description}
+                  conteudo={curso.name}
+                  quantidade={curso.totalLessons}
+                  codigo={curso.slugCourse}
+                  codAula={curso.lessons[0]?.youtubeLink}
+                  nameButton="Ver Contribuição"
+                  isEditing={true}
                 />
               ))}
           </div>

@@ -1,6 +1,6 @@
-import { useState, useEffect, useCallback } from 'react'
+import authAxiosInstance from '@/api/authAxiosInstance'
 import { safeAwait } from '@/lib/safeAwait'
-import api from '@/api/api'
+import { useCallback, useEffect, useState } from 'react'
 
 export const useLessonProgress = (courseId) => {
   const [progress, setProgress] = useState([])
@@ -11,7 +11,7 @@ export const useLessonProgress = (courseId) => {
     if (!courseId) return
 
     const [error] = await safeAwait(
-      api.put(`/api/user/update-progress/${courseId}`),
+      authAxiosInstance.put(`/api/user/progress/${courseId}`),
     )
 
     if (error) {
@@ -25,7 +25,7 @@ export const useLessonProgress = (courseId) => {
     if (!courseId) return
 
     const [error, result] = await safeAwait(
-      api.get(`/api/user/course-progress/${courseId}`),
+      authAxiosInstance.get(`/api/user/course/progress/${courseId}`),
     )
 
     if (error?.status === 404) {

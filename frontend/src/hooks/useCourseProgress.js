@@ -1,4 +1,4 @@
-import api from '@/api/api'
+import authAxiosInstance from '@/api/authAxiosInstance'
 import { safeAwait } from '@/lib/safeAwait'
 import { useState } from 'react'
 
@@ -11,7 +11,7 @@ export const useCoursesProgress = () => {
     setLoading(true)
 
     const [error, result] = await safeAwait(
-      api.get(`/api/user/courses-progress`),
+      authAxiosInstance.get(`/api/user/courses/progress`),
     )
     if (error) {
       setError(true)
@@ -24,7 +24,7 @@ export const useCoursesProgress = () => {
     const courseProgress = progressList.find((progress) => progress.id === id)
     //Se o curso não estiver em andamento, inicia ele
     if (!courseProgress) {
-      await api.put(`/api/user/update-progress/${id}`)
+      await authAxiosInstance.put(`/api/user/progress/${id}`)
     }
 
     setLoading(false)

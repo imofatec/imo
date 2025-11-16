@@ -1,8 +1,8 @@
+import axiosInstance from '@/api/axiosInstance'
 import { Input } from '@/components/ui/inputs/input'
-import { Search } from 'lucide-react'
-import axios from 'axios'
 import { safeAwait } from '@/lib/safeAwait'
-import { useRef, useState, useEffect } from 'react'
+import { Search } from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 
 export default function DropdownSearch() {
@@ -24,8 +24,8 @@ export default function DropdownSearch() {
 
     setTimeout(async () => {
       const [error, result] = await safeAwait(
-        axios.get(
-          `/api/courses/pagination/get-all/overviews/cn/${courseName}?page=0&size=10`,
+        axiosInstance.get(
+          `/api/courses/pagination/overviews/course/name/${courseName}?page=0&size=10`,
         ),
       )
       if (result?.data) {

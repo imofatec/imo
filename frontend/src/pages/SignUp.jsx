@@ -6,24 +6,38 @@ import { Titulo } from '@/components/ui/titulo'
 import { SpinnerButton } from '@/components/ui/spinnerButton'
 import { useEffect, useState } from 'react'
 import { registerRequest } from '@/requests/user/registerRequest'
+import { registerSchema } from '@/schemas/userRegisterSchema'
+import { useFormValidator } from '@/hooks/useFormValidator'
 
 export default function SignUp() {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState(null)
   const actionData = useActionData()
 
+  const {
+    formData,
+    fieldErrors,
+    handleChange,
+    setFieldErrors
+  } = useFormValidator(registerSchema)
+
   useEffect(() => {
-    setTimeout(() => {
-      if (actionData) {
-        setError(actionData.error)
-        setIsLoading(false)
+    if (actionData) {
+      if (actionData.fieldErrors) {
+        setFieldErrors(actionData.fieldErrors)
       }
-    }, 400)
+  
+      if (actionData.error) {
+        setError(actionData.error)
+      }
+  
+      setIsLoading(false)
+    }
   }, [actionData])
 
   return (
     <>
-      <Titulo titulo={'Cadastro / IMO'}></Titulo>
+      <Titulo titulo={'Cadastro / IMO'} />
 
       <div className="flex justify-center items-center bg-custom-dark-purple pb-8">
         <div className="h-screen mt-[3.125rem] text-white">
@@ -42,7 +56,13 @@ export default function SignUp() {
               name="email"
               placeholder="Email"
               label="Email"
+              value={formData.email || ''}
+              onChange={handleChange}
+              className={fieldErrors.email ? 'border-red-500 focus:border-red-500' : ''}
             />
+            {fieldErrors.email && (
+              <p className="text-sm text-red-500 !mt-0">{fieldErrors.email}</p>
+            )}
 
             <InputLabel
               type="text"
@@ -50,7 +70,13 @@ export default function SignUp() {
               name="name"
               placeholder="Nome"
               label="Nome"
+              value={formData.name || ''}
+              onChange={handleChange}
+              className={fieldErrors.name ? 'border-red-500 focus:border-red-500' : ''}
             />
+            {fieldErrors.name && (
+              <p className="text-sm text-red-500 !mt-0">{fieldErrors.name}</p>
+            )}
 
             <InputLabel
               type="password"
@@ -58,34 +84,42 @@ export default function SignUp() {
               name="password"
               placeholder="Senha"
               label="Senha"
+              value={formData.password || ''}
+              onChange={handleChange}
+              className={fieldErrors.password ? 'border-red-500 focus:border-red-500' : ''}
             />
+            {fieldErrors.password && (
+              <p className="text-sm text-red-500 !mt-0">{fieldErrors.password}</p>
+            )}
 
             <InputLabel
               type="password"
-              id="password-confirm"
-              name="password-confirm"
+              id="confPassword"
+              name="confPassword"
               placeholder="Confirmar senha"
               label="Confirmar senha"
+              value={formData.confPassword || ''}
+              onChange={handleChange}
+              className={fieldErrors.confPassword ? 'border-red-500 focus:border-red-500' : ''}
             />
+            {fieldErrors.confPassword && (
+              <p className="text-sm text-red-500 !mt-0">{fieldErrors.confPassword}</p>
+            )}
 
             <SpinnerButton
               children="Cadastrar"
               isLoading={isLoading}
               onClick={() => {
-                setIsLoading(true), setError(null)
+                setIsLoading(true)
+                setError(null)
               }}
               className="w-full bg-custom-header-cyan text-black"
             />
 
-            {error ? (
-              <div className="h-6 text-center text-red-500">{error}</div>
-            ) : (
-              <div className="h-6"></div>
-            )}
 
             <div className="flex items-center justify-center h-8">
               <div className="h-[1px] w-12 bg-custom-border-gray"></div>
-              <p className="text-custom-text-gray pl-4 pr-4">
+              <p className="text-custom-text-gray px-4">
                 Entre com outras contas
               </p>
               <div className="h-[1px] w-12 bg-custom-border-gray"></div>
@@ -95,14 +129,15 @@ export default function SignUp() {
               <Github />
               <Linkedin />
             </div>
-            <div className="flex justify-center ">
+
+            <div className="flex justify-center">
               <p className="text-custom-text-gray">
-                Ja tem uma conta?{' '}
+                Já tem uma conta?{' '}
                 <Link to="/login" className="text-white hover:underline">
                   Fazer login
                 </Link>
               </p>
-            </div>
+            </div>  
           </Form>
         </div>
       </div>

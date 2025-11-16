@@ -1,4 +1,4 @@
-import api from '@/api/api'
+import authAxiosInstance from '@/api/authAxiosInstance'
 import { safeAwait } from '@/lib/safeAwait'
 import { redirect } from 'react-router-dom'
 
@@ -20,18 +20,19 @@ export async function createCourse({ request }) {
     name: data.get('name'),
     description: data.get('description'),
     category: data.get('category'),
+    level: data.get('level'),
     lessons: lessons,
   }
 
   const [error, result] = await safeAwait(
-    api.post('/api/courses/create', course, {
+    authAxiosInstance.post('/api/courses', course, {
       headers: {
         'Content-Type': 'application/json',
       },
     }),
   )
   if (error) {
-    return { error: error.response.data.message || 'Erro ao criar curso'}
+    return { error: error.response.data.message || 'Erro ao criar curso' }
   }
   return redirect('/categorias')
 }

@@ -1,4 +1,4 @@
-import api from '@/api/api'
+import authAxiosInstance from '@/api/authAxiosInstance'
 import { safeAwait } from '@/lib/safeAwait'
 import { useEffect, useState } from 'react'
 
@@ -21,7 +21,7 @@ export const useMyCourses = (selectedCategory, page, size) => {
             : null
 
       const [error, result] = await safeAwait(
-        api.get('/api/user/course-overviews', {
+        authAxiosInstance.get('/api/user/course/overviews', {
           params: { page, size },
         }),
       )

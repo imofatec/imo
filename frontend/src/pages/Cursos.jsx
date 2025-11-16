@@ -5,6 +5,7 @@ import StatusMessage from '@/components/ui/statusMessage'
 import { Dropdown } from '@/components/ui/dropdown/dropdown'
 import { Titulo } from '@/components/ui/titulo'
 import { useState, useEffect } from 'react'
+import FilterSelect from '@/components/ui/inputs/filterselect'
 import SkeletonLoading from '@/components/ui/curso/skeletonLoading'
 import { useCoursesData } from '@/hooks/useCoursesData'
 import { useCoursesProgress } from '@/hooks/useCourseProgress'
@@ -14,8 +15,10 @@ const tipoCurso = 'Todos os cursos'
 
 export default function Cursos() {
   const { slug } = useParams()
+  const { level } = useParams()
   const [page, setPage] = useState(0)
   const [selectedCategory, setSelectedCategory] = useState(null)
+  const [selectedLevel, setSelectedLevel] = useState(null);
   const size = 8
   const {
     categories,
@@ -25,21 +28,35 @@ export default function Cursos() {
     error,
     fetchData,
     setCurrentSlug,
-  } = useCoursesData(slug, page, size, setPage)
+    setCurrentLevel,
+  } = useCoursesData(slug, level, page, size, setPage)
   const { fetchStartCourse } = useCoursesProgress()
 
   const handleShowAllCourses = () => {
     setSelectedCategory(null)
+    setSelectedLevel(null)
     setCurrentSlug(null)
+    setCurrentLevel(null)
     setPage(0)
     window.history.pushState({}, '', '/categorias')
   }
 
   const handleCategorySelect = (slug) => {
     setSelectedCategory(slug)
+    setCurrentLevel(null)
+    setCurrentSlug(slug)
     setPage(0)
     window.history.pushState({}, '', `/categorias/${slug}`)
   }
+
+  const handleLevelSelect = (level) => {
+    setSelectedLevel(level);
+    setCurrentSlug(null);
+    setSelectedCategory(null)
+    setCurrentLevel(level);
+    setPage(0);
+    window.history.pushState({}, '', `/categorias/n/${level}`);
+  };
 
   const handleStartCourse = (id) => {
     console.log('ID: ', id)
@@ -67,11 +84,18 @@ export default function Cursos() {
         <div className="w-1/3 p-12">
           <Seletor
             id="allLessons"
-            label={'text-xl font-semibold'}
+            label={'font-semibold'}
             conteudo={'Todos os cursos'}
             onShowAllCourses={handleShowAllCourses}
             isSelected={!selectedCategory}
           ></Seletor>
+          <FilterSelect
+            label="Dificuldade"
+            placeholder="Selecione um nível"
+            idInput="level-select"
+            onChange={(e) => handleLevelSelect(e.target.value)}
+            value={selectedLevel}
+          />
           <Dropdown
             categorias={categories}
             onCategorySelect={handleCategorySelect}

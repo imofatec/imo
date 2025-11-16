@@ -14,7 +14,8 @@ export default function CardCurso({
   codAula,
   onStart,
   idCurso,
-  nameButton
+  nameButton,
+  isEditing = false
 }) {
   const [aberto, setAberto] = useState(false)
   const abrir = () => setAberto(true)
@@ -48,6 +49,7 @@ export default function CardCurso({
         onStart={onStart}
         idCurso={idCurso}
         nameButton={nameButton}
+        isEditing={isEditing}
       />
     </>
   )

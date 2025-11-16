@@ -1,4 +1,4 @@
-import api from '@/api/api'
+import authAxiosInstance from '@/api/authAxiosInstance'
 import { safeAwait } from '@/lib/safeAwait'
 
 export async function updateUserRequest({ request }) {
@@ -7,7 +7,7 @@ export async function updateUserRequest({ request }) {
   const name = data.get('name')
   const email = data.get('email')
   const password = data.get('password')
-  const confPassword = data.get('password-confirm')
+  const confPassword = data.get('confPassword')
 
   if (password !== confPassword) {
     return { error: 'As senhas estão diferentes.' }
@@ -18,7 +18,9 @@ export async function updateUserRequest({ request }) {
   if (email) user.email = email
   if (password) user.password = password
 
-  const [error, result] = await safeAwait(api.put(`/api/user/update`, user))
+  const [error, result] = await safeAwait(
+    authAxiosInstance.put(`/api/user`, user),
+  )
 
   if (error) {
     return { error: error.response.data.message }
