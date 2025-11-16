@@ -100,6 +100,8 @@ public class CustomCourseRepositoryImpl implements CustomCourseRepository {
       operations.add(MongoDB.buildMatchOperation(filters, matchType, combineWith));
     }
 
+    operations.add(Aggregation.sort(Sort.by(Sort.Direction.DESC, "createdAt")));
+
     return this.mongoTemplate
         .aggregate(Aggregation.newAggregation(operations), Course.class, Course.class)
         .getMappedResults();
