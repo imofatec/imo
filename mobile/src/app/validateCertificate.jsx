@@ -6,11 +6,13 @@ import { CertificateCodeForm } from '../components/validateCertificate/certifica
 import { CertificateDetails } from '../components/validateCertificate/certificateDetails';
 import { certificateRequest } from '../requests/certificate/certificateRequest';
 import { formatDateTime } from "../utils/date";
+import { set } from 'zod';
 
 export default function ValidateCertificate() {
     const [errorMessage, setErrorMessage] = useState(null);
     const [current, setCurrent] = useState('code');
     const [certificateData, setCertificateData] = useState(null);
+    const [loading, setLoading] = useState(false);
 
     const { control, handleSubmit } = useForm({
         resolver: zodResolver(certificateSchema)
@@ -18,7 +20,9 @@ export default function ValidateCertificate() {
 
     async function onSubmit(data) {
         setErrorMessage(null);
+        setLoading(true);
         const response = await certificateRequest(data.id);
+        setLoading(false);
         if (!response.success) {
             setErrorMessage(response.error);
             return;
@@ -40,6 +44,7 @@ export default function ValidateCertificate() {
             control={control}
             onSubmit={handleSubmit(onSubmit)}
             errorMessage={errorMessage}
+            isloading={loading}
         />
     ) : (
         <CertificateDetails

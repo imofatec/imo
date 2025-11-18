@@ -1,5 +1,5 @@
 import react, { useState } from "react";
-import { Text, Pressable, KeyboardAvoidingView, Platform, View } from "react-native";
+import { Text, Pressable, KeyboardAvoidingView, Platform, View, ActivityIndicator } from "react-native";
 import { createCourseSchema } from "../../schemas/createCourse";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -13,6 +13,7 @@ import { createCourseRequest } from "../../requests/courses/createCourseRequest"
 import Toast from "react-native-toast-message";
 
 export default function CreateCourses() {
+  const [loading, setLoading] = useState(false);
   const [lessons, setLessons] = useState([0]);
   const { control, handleSubmit, getValues, setValue, reset } = useForm({
     resolver: zodResolver(createCourseSchema),
@@ -22,7 +23,9 @@ export default function CreateCourses() {
   })
 
   async function onSubmit(data) {
+    setLoading(true);
     const response = await createCourseRequest(data);
+    setLoading(false);
 
     if (!response.success) {
       Toast.show({
@@ -86,7 +89,11 @@ export default function CreateCourses() {
         </View>
 
         <Pressable className="bg-white py-3 rounded-full mb-6" onPress={handleSubmit(onSubmit)}>
-          <Text className="text-black text-2xl text-center font-bold">Criar Curso</Text>
+          {loading ? (
+            <ActivityIndicator size="small" color="#000" />
+          ) : (
+            <Text className="text-black text-2xl text-center font-bold">Criar Curso</Text>
+          )}
         </Pressable>
 
       </ScrollView>
