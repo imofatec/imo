@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { KeyboardAvoidingView, Text, Pressable, Platform, View } from "react-native";
+import { KeyboardAvoidingView, Text, Pressable, Platform, View, ActivityIndicator } from "react-native";
 import FormInput from "../../components/inputs/formInput";
 import { router } from "expo-router";
 import { editUserSchema } from "../../schemas/editUser";
@@ -14,16 +14,20 @@ import { editUserPfpRequest } from "../../requests/user/editUserPfpRequest";
 import Toast from "react-native-toast-message";
 
 export default function settings() {
+  const [loading, setLoading] = useState(false);
   const [imageUri, setImageUri] = useState(null);
 
-  const { user, urlImage, loading, error, refetch } = useCurrentUser();
+  const { user, urlImage, loading: userLoading, error, refetch } = useCurrentUser();
 
   const { control, handleSubmit, reset } = useForm({
     resolver: zodResolver(editUserSchema)
   })
 
   async function onEditUser(data) {
+    setLoading(true);
     const response = await editUserRequest(data);
+    setLoading(false);
+
     if (!response.success) {
       Toast.show({
         type: "error",
@@ -54,8 +58,6 @@ export default function settings() {
     alert("Foto de perfil atualizada com sucesso!");
   }
 
-
-
   return (
     <KeyboardAvoidingView
       className="flex-1 bg-custom-primary"
@@ -85,10 +87,12 @@ export default function settings() {
           <FormInput control={control} name="user" label="Usuário" placeholder={user?.name} autoCapitalize="none" />
           <FormInput control={control} name="password" label="Senha" placeholder="*********" autoCapitalize="none" secureTextEntry />
           <FormInput control={control} name="confirmPassword" label="Confirmar senha" placeholder="*********" autoCapitalize="none" secureTextEntry />
-          <Pressable className="bg-white py-3 rounded-full mt-6"
-            onPress={handleSubmit(onEditUser)}>
-
-            <Text className="text-black text-2xl text-center font-bold">Confirmar</Text>
+          <Pressable className="bg-white py-3 rounded-full mt-6" onPress={handleSubmit(onEditUser)}>
+            {loading ? (
+              <ActivityIndicator size="small" color="#000" />
+            ) : (
+              <Text className="text-black text-2xl text-center font-bold">Confirmar</Text>
+            )}
           </Pressable>
         </View>
 
