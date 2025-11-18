@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, Pressable } from "react-native";
+import { View, Text, Pressable, ActivityIndicator } from "react-native";
 import FormInput from "../components/inputs/formInput";
 import { router } from "expo-router";
 import { Ionicons } from '@expo/vector-icons';
@@ -12,12 +12,15 @@ import Toast from "react-native-toast-message";
 
 
 export default function Login() {
+  const [loading, setLoading] = useState(false);
   const { control, handleSubmit } = useForm({
     resolver: zodResolver(loginSchema)
   })
 
   async function onSubmit(data) {
+    setLoading(true);
     const response = await loginRequest(data);
+    setLoading(false);
     if (!response.success) {
       Toast.show({
         type: "error",
@@ -41,10 +44,12 @@ export default function Login() {
       <FormInput control={control} name="email" label="Email" placeholder="joaosilva@gmail.com" autoCapitalize="none" keyboardType="email-address" />
       <FormInput control={control} name="password" label="Senha" placeholder="batatinha123" autoCapitalize="none" secureTextEntry />
 
-      <Pressable className="bg-white py-3 rounded-full mb-6"
-        onPress={handleSubmit(onSubmit)}>
-
-        <Text className="text-black text-2xl text-center font-bold">Entrar</Text>
+      <Pressable className="bg-white py-3 rounded-full mb-6" onPress={handleSubmit(onSubmit)}>
+        {loading ? (
+          <ActivityIndicator size="small" color="#000" />
+        ) : (
+          <Text className="text-black text-2xl text-center font-bold">Entrar</Text>
+        )}
       </Pressable>
 
       <Pressable onPress={() => router.push("/register")}>
