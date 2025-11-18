@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { View, Text, FlatList } from "react-native";
 import { useAllCourses } from "../../hooks/useAllCourses";
 import CourseCard from "../../components/allCourses/courseCard";
+import SkeletonCourseCard from "../../components/skeletonScreens/skeletonCourseCard";
 import FilterDrawer from "../../components/allCourses/filterDrawer";
 import PaginationControls from "../../components/allCourses/paginationControls";
 
@@ -60,7 +61,19 @@ export default function AllCourses() {
         <FilterDrawer selectedCategory={selectedCategory} setSelectedCategory={setSelectedCategory} />
       </View>
 
-      {loading && <Text className="text-white mt-2">Carregando categorias...</Text>}
+      {loading && (
+        <FlatList
+          data={Array.from({ length: size })}
+          keyExtractor={(_, index) => index.toString()}
+          renderItem={() => <SkeletonCourseCard />}
+          numColumns={2}
+          columnWrapperStyle={{
+            justifyContent: "space-between",
+            paddingHorizontal: 16,
+          }}
+          contentContainerStyle={{ paddingBottom: 16 }}
+        />
+      )}
 
       {!loading && !error && (
         <FlatList

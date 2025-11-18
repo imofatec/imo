@@ -6,6 +6,7 @@ import { useCurrentUser } from "../../hooks/useCurrentUser";
 import { useDisplayedCourses } from "../../hooks/useDisplayedCourses";
 import FilterDrawer from "../../components/myCourses/filterDrawer";
 import CourseCard from "../../components/allCourses/courseCard";
+import SkeletonCourseCard from "../../components/skeletonScreens/skeletonCourseCard";
 import PaginationControls from "../../components/allCourses/paginationControls";
 import EmptyCoursesMessage from "../../components/myCourses/emptyCoursesMessage";
 
@@ -55,7 +56,19 @@ export default function AllCourses() {
         <FilterDrawer selectedCategory={selectedCategory} setSelectedCategory={setSelectedCategory} />
       </View>
 
-      {loading && <Text className="text-white mt-2">Carregando Cursos...</Text>}
+      {loading && (
+        <FlatList
+          data={Array.from({ length: size })}
+          keyExtractor={(_, index) => index.toString()}
+          renderItem={() => <SkeletonCourseCard />}
+          numColumns={2}
+          columnWrapperStyle={{
+            justifyContent: "space-between",
+            paddingHorizontal: 16,
+          }}
+          contentContainerStyle={{ paddingBottom: 16 }}
+        />
+      )}
 
       {!loading && !error && displayedCourses.length > 0 ? (
         <FlatList
