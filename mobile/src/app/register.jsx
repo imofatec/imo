@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, Pressable } from "react-native";
+import { View, Text, Pressable, ActivityIndicator } from "react-native";
 import FormInput from "../components/inputs/formInput";
 import { registerSchema } from "../schemas/register";
 import { router } from "expo-router";
@@ -12,6 +12,7 @@ import { set } from "zod";
 
 
 export default function Register() {
+  const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
 
   const { control, handleSubmit } = useForm({
@@ -19,7 +20,9 @@ export default function Register() {
   })
 
   async function onSubmit(data) {
+    setLoading(true);
     const response = await registerRequest(data);
+    setLoading(false);
 
     if (!response.success) {
       setErrorMessage(response.error);
@@ -43,11 +46,12 @@ export default function Register() {
       {errorMessage && (
         <Text className="text-red-500 text-center mb-4">{errorMessage}</Text>
       )}
-      <Pressable
-        className="bg-white py-3 rounded-full mb-6"
-        onPress={handleSubmit(onSubmit)}
-      >
-        <Text className="text-black text-2xl text-center font-bold">Cadastrar</Text>
+      <Pressable className="bg-white py-3 rounded-full mb-6" onPress={handleSubmit(onSubmit)}>
+        {loading ? (
+          <ActivityIndicator size="small" color="#000" />
+        ) : (
+          <Text className="text-black text-2xl text-center font-bold">Cadastrar</Text>
+        )}
       </Pressable>
 
       <Pressable onPress={() => router.push("/login")}>
