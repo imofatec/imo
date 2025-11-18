@@ -12,6 +12,7 @@ import { useLessonComments } from "../hooks/useLessonComments";
 import { useProgressByCourseId } from "../hooks/useProgressByCourseId";
 import { markLessonAsWatchedRequest } from "../requests/courses/markLessonAsWatchedRequest";
 import { downloadCertificate } from "../utils/downloadCertificate";
+import SkeletonPlayerHeader from "../components/skeletonScreens/skeletonPlayerHeader";
 
 export default function Watch() {
   const scrollRef = useRef(null);
@@ -88,14 +89,16 @@ export default function Watch() {
       <View className="flex-1 bg-custom-primary">
         <WatchHeader />
 
+        {loading || !currentLesson ? (
+          <SkeletonPlayerHeader />
+        ) : (
+          <PlayerHeader
+            youtubeId={currentLesson.youtubeLink}
+            title={currentLesson.title}
+            description={currentLesson.description}
+          />
+        )}
         <ScrollView ref={scrollRef} className="flex-1 px-4" keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
-          {currentLesson && (
-            <PlayerHeader
-              youtubeId={currentLesson.youtubeLink}
-              title={currentLesson.title}
-              description={currentLesson.description}
-            />
-          )}
 
           <WatchTabs
             tab={tab}
@@ -112,6 +115,7 @@ export default function Watch() {
           {tab === "lessons" ? (
             <LessonTabContent
               lessons={lessons}
+              isloading={loading}
               currentLesson={currentLesson}
               watched={watched}
               watchedCount={watched.size}
