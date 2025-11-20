@@ -3,8 +3,8 @@ package com.imo.backend.config.mongodb.populate;
 import com.imo.backend.modules.course.value_objects.Categories;
 import com.imo.backend.modules.user.User;
 import com.imo.backend.modules.user.actions.CreateUserAction;
-import com.imo.backend.modules.user.actions.inputs.CreateUserInput;
 import com.imo.backend.modules.user.http.dtos.UpdateUserByIdRequest;
+import com.imo.backend.modules.user.repositories.UserRepository;
 import com.imo.backend.modules.user.services.UpdateUserByIdService;
 import com.imo.backend.modules.user.value_objects.AcademicDegree;
 import com.imo.backend.modules.user.value_objects.AvailableTimePerDay;
@@ -23,13 +23,16 @@ import java.util.concurrent.ThreadLocalRandom;
 public class PopulateUsers {
   private final Faker faker = new Faker();
   private final CreateUserAction createUserAction;
+  private final UserRepository userRepository;
   private final UpdateUserByIdService updateUserByIdService;
 
   public PopulateUsers(
       CreateUserAction createUserAction,
+      UserRepository userRepository,
       UpdateUserByIdService updateUserByIdService
   ) {
     this.createUserAction = createUserAction;
+    this.userRepository = userRepository;
     this.updateUserByIdService = updateUserByIdService;
   }
 
@@ -45,20 +48,19 @@ public class PopulateUsers {
         ), List.of(0.2, 0.4, 0.3, 0.1)
     );
 
-    CreateUserInput adminInput = new CreateUserInput("admin", "admin@admin.com", "admin", "admin");
-    User adminUser = this.createUserAction.execute(adminInput);
-
+    User admin = new User("admin", "admin@admin.com", "admin", true);
+    this.userRepository.save(admin);
 
     for (int i = 0; i < qty; i++) {
       String password = faker.internet().password(8, 16, true, true);
-      CreateUserInput input = new CreateUserInput(
+      User input = new User(
           faker.name().firstName(),
           faker.internet().emailAddress(),
           password,
-          password
+          false
       );
 
-      User user = this.createUserAction.execute(input);
+      User newUser = this.userRepository.save(input);
 
       int age = generateBiasedAge(18, 60);
       Date birthDate = getBirthDateFromAge(age);
@@ -92,10 +94,10 @@ public class PopulateUsers {
           categoriesOfInterest
       );
 
-      this.updateUserByIdService.execute(user.getId(), fieldsToUpdate);
+      this.updateUserByIdService.execute(newUser.getId(), fieldsToUpdate);
     }
 
-    return adminUser;
+    return admin;
   }
 
   private int generateBiasedAge(int min, int max) {
