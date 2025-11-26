@@ -1,4 +1,16 @@
 # IMO - Plataforma para cursos de TI
+Este projeto está sendo desenvolvido na FATEC Diadema como parte do curso Desenvolvimento de Software Multiplataforma (DSM)
+
+# Integrantes
+- [Abner Bispo Cerqueira](https://github.com/AbnerCerqueira)
+- [Daniel de Azevedo Cordeiro](https://github.com/DanielDeAzevedoCordeiro1)
+- [Guilherme Ferreira Monteiro](https://github.com/frrr04)
+- [Marcus Antonio da Rocha Filho](https://github.com/4mxi)
+- [Matheus Nicolas Mariano](https://github.com/MathNicolas)
+- [Nikolas da Palma Cruz](https://github.com/Vastobode)
+
+# Slide Apresentação 5º Semestre
+[Canva](https://www.canva.com/design/DAG4iddbOpE/UivgeUHadNnixAJjMDzzYQ/edit?utm_content=DAG4iddbOpE&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)
 
 [Informações sobre o projeto](https://github.com/imofatec/imo/wiki/IMO-%E2%80%90-Plataforma-para-cursos-de-TI)
 
