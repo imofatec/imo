@@ -4,7 +4,7 @@ import com.imo.backend.exceptions.custom.NotFoundException;
 import com.imo.backend.modules.course.Course;
 import com.imo.backend.modules.course.actions.UpdateCourseByIdAction;
 import com.imo.backend.modules.course.actions.helpers.CourseUpdater;
-import com.imo.backend.modules.course.actions.inputs.UpdateCourseInput;
+import com.imo.backend.modules.course.actions.inputs.UpdateCourseByIdInput;
 import com.imo.backend.modules.course.repositories.CourseRepository;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +17,7 @@ public class UpdateCourseByIdActionImpl implements UpdateCourseByIdAction {
   }
 
   @Override
-  public Course execute(String courseId, UpdateCourseInput fieldsToUpdateCourse) {
+  public Course execute(String courseId, UpdateCourseByIdInput fieldsToUpdateCourse) {
     Course course = courseRepository
         .findById(courseId)
         .orElseThrow(() -> new NotFoundException("Curso não encontrado"));

@@ -1,14 +1,14 @@
 package com.imo.backend.modules.course.actions.helpers;
 
 import com.imo.backend.modules.course.Course;
-import com.imo.backend.modules.course.actions.inputs.UpdateCourseInput;
+import com.imo.backend.modules.course.actions.inputs.UpdateCourseByIdInput;
 import com.imo.backend.modules.course.value_objects.Category;
 import com.imo.backend.modules.course.value_objects.CourseName;
 import com.imo.backend.modules.course.value_objects.Level;
 import com.imo.backend.modules.lesson.Lesson;
 
 public class CourseUpdater {
-  public static void apply(Course course, UpdateCourseInput input) {
+  public static void apply(Course course, UpdateCourseByIdInput input) {
     if (input.name() != null) {
       course.setName(new CourseName(input.name()));
     }
