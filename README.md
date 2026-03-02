@@ -83,7 +83,13 @@ ROUTING_KEY_FORGET_PASSWORD=imo.user.forget_password
 > Opção 1
 ```
 ./mvnw spring-boot:run
+
 ```
+> Opção 1 populando o banco
+```
+./mvnw spring-boot:run -Dspring-boot.run.arguments="--seed=true --users=100 --courses=15"
+```
+
 > Opção 2
 ```
 ./mvnw clean install -DskipTests \
