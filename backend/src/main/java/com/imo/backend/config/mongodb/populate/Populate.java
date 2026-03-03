@@ -1,6 +1,6 @@
 package com.imo.backend.config.mongodb.populate;
 
-import com.imo.backend.modules.user.User;
+import com.imo.backend.contexts.identity.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;

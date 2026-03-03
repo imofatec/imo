@@ -1,12 +1,12 @@
 package com.imo.backend.config.mongodb.populate;
 
-import com.imo.backend.modules.course.Course;
-import com.imo.backend.modules.course.repositories.CourseRepository;
-import com.imo.backend.modules.lesson.Lesson;
-import com.imo.backend.modules.lesson.repositories.LessonRepository;
-import com.imo.backend.modules.progress.orchestrators.WatchLessonByIdOrchestratorImpl;
-import com.imo.backend.modules.user.User;
-import com.imo.backend.modules.user.repositories.UserRepository;
+import com.imo.backend.contexts.catalog.course.Course;
+import com.imo.backend.contexts.catalog.course.repositories.CourseRepository;
+import com.imo.backend.contexts.catalog.lesson.Lesson;
+import com.imo.backend.contexts.catalog.lesson.repositories.LessonRepository;
+import com.imo.backend.contexts.identity.User;
+import com.imo.backend.contexts.identity.repositories.UserRepository;
+import com.imo.backend.contexts.journey_tracking.orchestrators.WatchLessonByIdOrchestratorImpl;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;

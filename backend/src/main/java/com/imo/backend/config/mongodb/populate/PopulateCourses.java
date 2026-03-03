@@ -1,9 +1,9 @@
 package com.imo.backend.config.mongodb.populate;
 
-import com.imo.backend.modules.course.http.dtos.CreateCourseRequest;
-import com.imo.backend.modules.course.orchestrators.CreateCourseOrchestrator;
-import com.imo.backend.modules.course.value_objects.Categories;
-import com.imo.backend.modules.lesson.actions.inputs.CreateLessonInput;
+import com.imo.backend.contexts.catalog.course.http.dtos.CreateCourseRequest;
+import com.imo.backend.contexts.catalog.course.orchestrators.CreateCourseOrchestrator;
+import com.imo.backend.contexts.catalog.course.value_objects.Categories;
+import com.imo.backend.contexts.catalog.lesson.actions.inputs.CreateLessonInput;
 import net.datafaker.Faker;
 import org.springframework.stereotype.Service;
 

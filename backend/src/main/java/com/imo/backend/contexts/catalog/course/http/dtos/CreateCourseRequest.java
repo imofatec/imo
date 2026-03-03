@@ -1,0 +1,31 @@
+package com.imo.backend.contexts.catalog.course.http.dtos;
+
+import com.imo.backend.contexts.catalog.course.value_objects.Categories;
+import com.imo.backend.contexts.catalog.lesson.actions.inputs.CreateLessonInput;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+
+import java.util.List;
+
+public record CreateCourseRequest(
+    @NotBlank(message = "Preencha o nome do curso")
+    @Size(min = 10, max = 100, message = "O nome do curso precisa ter de 10 a 100 caracteres")
+    String name,
+
+    @NotNull(message = "Preencha a categoria do curso")
+    Categories category,
+
+    @NotBlank(message = "Preencha o nível do curso")
+    String level,
+
+    @NotBlank(message = "Preencha a descrição do curso")
+    @Size(min = 10, max = 300, message = "A descrição do curso precisa ter de 10 a 300 caracteres")
+    String description,
+
+    @Size(min = 1, max = 100, message = "Um curso pode ter no mínimo 1 e no máximo 100 aulas")
+    @Valid
+    List<CreateLessonInput> lessons
+) {
+}

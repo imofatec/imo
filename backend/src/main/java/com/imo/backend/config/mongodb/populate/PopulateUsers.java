@@ -1,14 +1,14 @@
 package com.imo.backend.config.mongodb.populate;
 
-import com.imo.backend.modules.course.value_objects.Categories;
-import com.imo.backend.modules.user.User;
-import com.imo.backend.modules.user.actions.CreateUserAction;
-import com.imo.backend.modules.user.http.dtos.UpdateUserByIdRequest;
-import com.imo.backend.modules.user.repositories.UserRepository;
-import com.imo.backend.modules.user.services.UpdateUserByIdService;
-import com.imo.backend.modules.user.value_objects.AcademicDegree;
-import com.imo.backend.modules.user.value_objects.AvailableTimePerDay;
-import com.imo.backend.modules.user.value_objects.ExperienceLevel;
+import com.imo.backend.contexts.catalog.course.value_objects.Categories;
+import com.imo.backend.contexts.identity.User;
+import com.imo.backend.contexts.identity.actions.CreateUserAction;
+import com.imo.backend.contexts.identity.http.dtos.UpdateUserByIdRequest;
+import com.imo.backend.contexts.identity.repositories.UserRepository;
+import com.imo.backend.contexts.identity.services.UpdateUserByIdService;
+import com.imo.backend.contexts.identity.value_objects.AcademicDegree;
+import com.imo.backend.contexts.identity.value_objects.AvailableTimePerDay;
+import com.imo.backend.contexts.identity.value_objects.ExperienceLevel;
 import net.datafaker.Faker;
 import org.springframework.stereotype.Service;
 
@@ -48,7 +48,13 @@ public class PopulateUsers {
         ), List.of(0.2, 0.4, 0.3, 0.1)
     );
 
-    User admin = new User("admin", "admin@admin.com", "admin", true);
+    // senha = admin
+    User admin = new User(
+        "admin",
+        "admin@admin.com",
+        "$2a$12$q2.hFPm72fMWRfxSvm1JRu.C3L6gxzDR3BjpKCXtD3cTED.6iXiha",
+        true
+    );
     this.userRepository.save(admin);
 
     for (int i = 0; i < qty; i++) {
