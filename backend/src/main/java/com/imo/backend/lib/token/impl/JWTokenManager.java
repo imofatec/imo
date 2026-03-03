@@ -1,7 +1,7 @@
 package com.imo.backend.lib.token.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.imo.backend.modules.user.http.dtos.auth.LoginResponseDTO;
+import com.imo.backend.contexts.identity.http.dtos.auth.LoginResponseDTO;
 import com.imo.backend.lib.token.TokenManager;
 import org.springframework.security.oauth2.jwt.*;
 import org.springframework.stereotype.Service;

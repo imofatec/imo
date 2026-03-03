@@ -1,9 +1,9 @@
 package com.imo.backend.e2e.domains.user;
 
+import com.imo.backend.contexts.identity.actions.inputs.CreateUserInput;
 import com.imo.backend.e2e.config.BaseE2ETest;
 import com.imo.backend.e2e.factories.UserTestFactory;
 import com.imo.backend.e2e.utils.JsonString;
-import com.imo.backend.modules.user.actions.inputs.CreateUserInput;
 import io.restassured.http.ContentType;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
