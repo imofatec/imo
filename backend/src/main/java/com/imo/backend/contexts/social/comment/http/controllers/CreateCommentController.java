@@ -1,9 +1,10 @@
 package com.imo.backend.contexts.social.comment.http.controllers;
 
 import com.imo.backend.contexts.social.comment.Comment;
-import com.imo.backend.contexts.social.comment.actions.CreateCommentAction;
-import com.imo.backend.contexts.social.comment.actions.inputs.CreateCommentInput;
 import com.imo.backend.contexts.common.MongoDB;
+import com.imo.backend.contexts.social.comment.http.dtos.CreateCommentRequest;
+import com.imo.backend.contexts.social.comment.use_cases.CreateCommentUseCase;
+import com.imo.backend.contexts.social.comment.use_cases.commands.CreateCommentCommand;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
@@ -18,10 +19,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class CreateCommentController extends CommentController {
 
-  private final CreateCommentAction createCommentAction;
+  private final CreateCommentUseCase createCommentUseCase;
 
-  public CreateCommentController(CreateCommentAction createCommentAction) {
-    this.createCommentAction = createCommentAction;
+  public CreateCommentController(CreateCommentUseCase createCommentUseCase) {
+    this.createCommentUseCase = createCommentUseCase;
   }
 
   @Operation(summary = "Add comment in a lesson")
@@ -32,12 +33,17 @@ public class CreateCommentController extends CommentController {
       String lessonId,
       @Valid
       @RequestBody
-      CreateCommentInput createCommentInput
+      CreateCommentRequest request
   ) {
     MongoDB.validateObjectId(lessonId);
     String userId = SecurityContextHolder.getContext().getAuthentication().getName();
 
-    Comment newComment = this.createCommentAction.execute(createCommentInput, userId, lessonId);
+    CreateCommentCommand command = new CreateCommentCommand(
+        request.content(),
+        request.parentId()
+    );
+
+    Comment newComment = this.createCommentUseCase.execute(command, userId, lessonId);
 
     return ResponseEntity.status(HttpStatus.CREATED).body(newComment);
   }
