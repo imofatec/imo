@@ -1,16 +1,14 @@
-package com.imo.backend.contexts.certification.orchestrators;
+package com.imo.backend.contexts.certification.use_cases;
 
-import com.imo.backend.contexts.certification.Certificate;
-import com.imo.backend.contexts.certification.CertificateDetails;
-import com.imo.backend.contexts.certification.events.CertificateIssuedEvent;
-import com.imo.backend.contexts.certification.repositories.CertificateRepository;
-import com.imo.backend.contexts.certification.services.CreateCertificateService;
-import com.imo.backend.contexts.certification.services.IssueCertificateService;
-import org.springframework.context.ApplicationEventPublisher;
+import java.util.Optional;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
+import com.imo.backend.contexts.certification.CertificateDetails;
+import com.imo.backend.contexts.certification.repositories.CertificateRepository;
+import com.imo.backend.contexts.certification.services.CreateCertificateService;
+import com.imo.backend.contexts.certification.services.IssueCertificateService;
 
 @Service
 public class IssueCertificateUseCase {
@@ -20,18 +18,14 @@ public class IssueCertificateUseCase {
 
   private final IssueCertificateService issueCertificateService;
 
-  private final ApplicationEventPublisher applicationEventPublisher;
-
   public IssueCertificateUseCase(
       CreateCertificateService createCertificateService,
       CertificateRepository certificateRepository,
-      IssueCertificateService issueCertificateService,
-      ApplicationEventPublisher applicationEventPublisher
+      IssueCertificateService issueCertificateService
   ) {
     this.createCertificateService = createCertificateService;
     this.certificateRepository = certificateRepository;
     this.issueCertificateService = issueCertificateService;
-    this.applicationEventPublisher = applicationEventPublisher;
   }
 
   @Transactional
@@ -42,13 +36,7 @@ public class IssueCertificateUseCase {
     );
 
     if (certificateDetails.isEmpty()) {
-      Certificate createdCertificate = this.createCertificateService.execute(userId, courseId);
-      this.applicationEventPublisher.publishEvent(new CertificateIssuedEvent(
-          createdCertificate.getId(),
-          createdCertificate.getUserId(),
-          createdCertificate.getCourseId(),
-          createdCertificate.getIssuedAt()
-      ));
+      this.createCertificateService.execute(userId, courseId);
     }
 
     CertificateDetails foundCertificateDetails = this.certificateRepository
