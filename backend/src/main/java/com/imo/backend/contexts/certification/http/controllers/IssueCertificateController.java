@@ -1,10 +1,5 @@
 package com.imo.backend.contexts.certification.http.controllers;
 
-import com.imo.backend.contexts.certification.orchestrators.IssueCertificateOrchestrator;
-import com.imo.backend.contexts.common.MongoDB;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -13,25 +8,33 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.imo.backend.contexts.certification.use_cases.IssueCertificateUseCase;
+import com.imo.backend.contexts.common.MongoDB;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+
 @RestController
 public class IssueCertificateController extends CertificateController {
-  private final IssueCertificateOrchestrator issueCertificateOrchestrator;
+  private final IssueCertificateUseCase issueCertificateUseCase;
 
-  public IssueCertificateController(IssueCertificateOrchestrator issueCertificateOrchestrator) {
-    this.issueCertificateOrchestrator = issueCertificateOrchestrator;
+  public IssueCertificateController(IssueCertificateUseCase issueCertificateUseCase) {
+    this.issueCertificateUseCase = issueCertificateUseCase;
   }
 
   @Operation(summary = "Issue certificate by course id")
   @SecurityRequirement(name = "Authorization")
   @GetMapping("/issue/{courseId}")
   public ResponseEntity<byte[]> handle(
-      @PathVariable
-      String courseId, HttpServletRequest request
+      @PathVariable String courseId
   ) {
     MongoDB.validateObjectId(courseId);
-    HttpHeaders headers = new HttpHeaders();
     String userId = SecurityContextHolder.getContext().getAuthentication().getName();
-    byte[] pdf = this.issueCertificateOrchestrator.execute(userId, courseId, headers);
-    return ResponseEntity.ok().headers(headers).contentType(MediaType.APPLICATION_PDF).body(pdf);
+    IssueCertificateUseCase.IssueCertificateResult result = this.issueCertificateUseCase.execute(userId, courseId);
+    String contentDisposition = String.format("attachment; filename=%s.pdf", result.filename());
+    return ResponseEntity.ok()
+        .header(HttpHeaders.CONTENT_DISPOSITION, contentDisposition)
+        .contentType(MediaType.APPLICATION_PDF)
+        .body(result.pdf());
   }
 }
