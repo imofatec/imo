@@ -1,8 +1,8 @@
-package com.imo.backend.contexts.certification.services.impl;
+package com.imo.backend.contexts.certification.actions.impl;
 
 import com.imo.backend.contexts.certification.Certificate;
+import com.imo.backend.contexts.certification.actions.CreateCertificateAction;
 import com.imo.backend.contexts.certification.repositories.CertificateRepository;
-import com.imo.backend.contexts.certification.services.CreateCertificateService;
 import com.imo.backend.contexts.certification.values_objects.CertificatePeriod;
 import com.imo.backend.contexts.journey_tracking.Progress;
 import com.imo.backend.contexts.journey_tracking.repositories.ProgressRepository;
@@ -14,12 +14,12 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 
 @Service
-public class CreateCertificateServiceImpl implements CreateCertificateService {
+public class CreateCertificateActionImpl implements CreateCertificateAction {
   private final ProgressRepository progressRepository;
 
   private final CertificateRepository certificateRepository;
 
-  public CreateCertificateServiceImpl(
+  public CreateCertificateActionImpl(
       ProgressRepository progressRepository,
       CertificateRepository certificateRepository
   ) {
