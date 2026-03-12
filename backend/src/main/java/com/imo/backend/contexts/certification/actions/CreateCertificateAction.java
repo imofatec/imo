@@ -1,7 +1,7 @@
-package com.imo.backend.contexts.certification.services;
+package com.imo.backend.contexts.certification.actions;
 
 import com.imo.backend.contexts.certification.Certificate;
 
-public interface CreateCertificateService {
+public interface CreateCertificateAction {
   Certificate execute(String userId, String courseId);
 }
