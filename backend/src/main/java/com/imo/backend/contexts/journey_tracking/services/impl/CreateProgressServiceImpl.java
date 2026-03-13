@@ -1,6 +1,6 @@
 package com.imo.backend.contexts.journey_tracking.services.impl;
 
-import com.imo.backend.contexts.catalog.course.guards.GetCourseByIdGuard;
+import com.imo.backend.contexts.catalog.course.repositories.CourseRepository;
 import com.imo.backend.contexts.journey_tracking.Progress;
 import com.imo.backend.contexts.journey_tracking.actions.CreateProgressAction;
 import com.imo.backend.contexts.journey_tracking.guards.GetProgressByUserIdAndCourseIdGuard;
@@ -13,25 +13,25 @@ import java.util.List;
 
 @Service
 public class CreateProgressServiceImpl implements CreateProgressService {
-  private final GetCourseByIdGuard getCourseByIdGuard;
-
   private final GetProgressByUserIdAndCourseIdGuard getProgressByUserIdAndCourseIdGuard;
 
   private final CreateProgressAction createProgressAction;
 
+  private final CourseRepository courseRepository;
+
   public CreateProgressServiceImpl(
-      GetCourseByIdGuard getCourseByIdGuard,
       GetProgressByUserIdAndCourseIdGuard getProgressByUserIdAndCourseIdGuard,
-      CreateProgressAction createProgressAction
+      CreateProgressAction createProgressAction,
+      CourseRepository courseRepository
   ) {
-    this.getCourseByIdGuard = getCourseByIdGuard;
     this.getProgressByUserIdAndCourseIdGuard = getProgressByUserIdAndCourseIdGuard;
     this.createProgressAction = createProgressAction;
+    this.courseRepository = courseRepository;
   }
 
   @Override
   public Progress execute(String userId, String courseId, List<String> lessonsWatched) {
-    this.getCourseByIdGuard.execute(courseId);
+    this.courseRepository.findByIdOrThrow(courseId);
 
     try {
       this.getProgressByUserIdAndCourseIdGuard.execute(userId, courseId);

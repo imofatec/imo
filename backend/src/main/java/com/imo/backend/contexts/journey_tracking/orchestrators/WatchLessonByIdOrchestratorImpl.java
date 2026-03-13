@@ -1,9 +1,9 @@
 package com.imo.backend.contexts.journey_tracking.orchestrators;
 
 import com.imo.backend.contexts.catalog.course.Course;
-import com.imo.backend.contexts.catalog.course.guards.GetCourseByLessonIdGuard;
+import com.imo.backend.contexts.catalog.course.repositories.CourseRepository;
 import com.imo.backend.contexts.catalog.lesson.Lesson;
-import com.imo.backend.contexts.catalog.lesson.guards.GetLessonByIdGuard;
+import com.imo.backend.contexts.catalog.lesson.repositories.LessonRepository;
 import com.imo.backend.contexts.common.exceptions.custom.NotFoundException;
 import com.imo.backend.contexts.journey_tracking.Progress;
 import com.imo.backend.contexts.journey_tracking.actions.UpdateProgressByIdAction;
@@ -25,22 +25,22 @@ public class WatchLessonByIdOrchestratorImpl implements WatchLessonByIdOrchestra
 
   private final UpdateProgressByIdAction updateProgressByIdAction;
 
-  private final GetCourseByLessonIdGuard getCourseByLessonIdGuard;
+  private final CourseRepository courseRepository;
 
-  private final GetLessonByIdGuard getLessonByIdGuard;
+  private final LessonRepository lessonRepository;
 
   public WatchLessonByIdOrchestratorImpl(
       GetProgressByUserIdAndCourseIdGuard getProgressByUserIdAndCourseIdGuard,
       CreateProgressService createProgressService,
       UpdateProgressByIdAction updateProgressByIdAction,
-      GetCourseByLessonIdGuard getCourseByLessonIdGuard,
-      GetLessonByIdGuard getLessonByIdGuard
+      CourseRepository courseRepository,
+      LessonRepository lessonRepository
   ) {
     this.getProgressByUserIdAndCourseIdGuard = getProgressByUserIdAndCourseIdGuard;
     this.createProgressService = createProgressService;
     this.updateProgressByIdAction = updateProgressByIdAction;
-    this.getCourseByLessonIdGuard = getCourseByLessonIdGuard;
-    this.getLessonByIdGuard = getLessonByIdGuard;
+    this.courseRepository = courseRepository;
+    this.lessonRepository = lessonRepository;
   }
 
   @Override
@@ -49,8 +49,10 @@ public class WatchLessonByIdOrchestratorImpl implements WatchLessonByIdOrchestra
 
     Course existingCourse = null;
 
+    existingCourse = this.courseRepository.findByLessonIdOrThrow(lessonId);
+
     try {
-      existingCourse = this.getCourseByLessonIdGuard.execute(lessonId);
+   
       currentProgress = this.getProgressByUserIdAndCourseIdGuard.execute(
           userId,
           existingCourse.getId()
@@ -61,7 +63,7 @@ public class WatchLessonByIdOrchestratorImpl implements WatchLessonByIdOrchestra
     assert existingCourse != null;
 
     if (currentProgress == null) {
-      Lesson lesson = this.getLessonByIdGuard.execute(lessonId);
+      Lesson lesson = this.lessonRepository.findByIdOrThrow(lessonId);
       List<String> lessonsIds = new ArrayList<>();
       lessonsIds.add(lesson.getId());
       return ProgressDTO.fromProgress(this.createProgressService.execute(

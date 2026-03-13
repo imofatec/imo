@@ -1,7 +1,7 @@
 package com.imo.backend.contexts.catalog.lesson.http.controllers;
 
-import com.imo.backend.contexts.catalog.course.guards.GetCourseByLessonIdGuard;
 import com.imo.backend.contexts.catalog.course.http.middlewares.ValidateUserCourseAccessService;
+import com.imo.backend.contexts.catalog.course.repositories.CourseRepository;
 import com.imo.backend.contexts.catalog.lesson.Lesson;
 import com.imo.backend.contexts.catalog.lesson.services.DeleteLessonByIdService;
 import com.imo.backend.contexts.common.MongoDB;
@@ -20,16 +20,16 @@ public class DeleteLessonByIdController extends LessonController {
 
   private final ValidateUserCourseAccessService validateUserCourseAccessService;
 
-  private final GetCourseByLessonIdGuard getCourseByLessonIdGuard;
+  private final CourseRepository courseRepository;
 
   public DeleteLessonByIdController(
       DeleteLessonByIdService deleteLessonByIdService,
       ValidateUserCourseAccessService validateUserCourseAccessService,
-      GetCourseByLessonIdGuard getCourseByLessonIdGuard
+      CourseRepository courseRepository
   ) {
     this.deleteLessonByIdService = deleteLessonByIdService;
     this.validateUserCourseAccessService = validateUserCourseAccessService;
-    this.getCourseByLessonIdGuard = getCourseByLessonIdGuard;
+    this.courseRepository = courseRepository;
   }
 
   @Operation(summary = "Delete lesson by id")
@@ -40,7 +40,7 @@ public class DeleteLessonByIdController extends LessonController {
       String id
   ) {
     MongoDB.validateObjectId(id);
-    var existingCourse = this.getCourseByLessonIdGuard.execute(id);
+    var existingCourse = this.courseRepository.findByLessonIdOrThrow(id);
     String userId = SecurityContextHolder.getContext().getAuthentication().getName();
 
     this.validateUserCourseAccessService.execute(userId, existingCourse.getId());

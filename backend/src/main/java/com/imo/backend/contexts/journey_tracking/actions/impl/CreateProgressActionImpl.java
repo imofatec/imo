@@ -1,6 +1,6 @@
 package com.imo.backend.contexts.journey_tracking.actions.impl;
 
-import com.imo.backend.contexts.catalog.course.guards.GetCourseByIdGuard;
+import com.imo.backend.contexts.catalog.course.repositories.CourseRepository;
 import com.imo.backend.contexts.journey_tracking.Progress;
 import com.imo.backend.contexts.journey_tracking.actions.CreateProgressAction;
 import com.imo.backend.contexts.journey_tracking.repositories.ProgressRepository;
@@ -15,21 +15,21 @@ import java.util.List;
 public class CreateProgressActionImpl implements CreateProgressAction {
   private final ProgressRepository progressRepository;
 
-  private final GetCourseByIdGuard getCourseByIdGuard;
+  private final CourseRepository courseRepository;
 
   public CreateProgressActionImpl(
       ProgressRepository progressRepository,
-      GetCourseByIdGuard getCourseByIdGuard
+      CourseRepository courseRepository
   ) {
     this.progressRepository = progressRepository;
-    this.getCourseByIdGuard = getCourseByIdGuard;
+    this.courseRepository = courseRepository;
   }
 
   @Override
   public Progress execute(String userId, String courseId, List<String> lessonsWatched) {
 
 
-    var course = this.getCourseByIdGuard.execute(courseId);
+    var course = this.courseRepository.findByIdOrThrow(courseId);
 
     boolean isFinished = course.getLessonsCount() == lessonsWatched.size();
 

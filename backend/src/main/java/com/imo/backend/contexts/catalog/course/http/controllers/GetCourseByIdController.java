@@ -2,7 +2,7 @@ package com.imo.backend.contexts.catalog.course.http.controllers;
 
 
 import com.imo.backend.contexts.catalog.course.Course;
-import com.imo.backend.contexts.catalog.course.guards.GetCourseByIdGuard;
+import com.imo.backend.contexts.catalog.course.repositories.CourseRepository;
 import com.imo.backend.contexts.common.MongoDB;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.ResponseEntity;
@@ -13,10 +13,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class GetCourseByIdController extends CourseController {
 
-  private final GetCourseByIdGuard getCourseByIdGuard;
-
-  public GetCourseByIdController(GetCourseByIdGuard getCourseByIdGuard) {
-    this.getCourseByIdGuard = getCourseByIdGuard;
+  private final CourseRepository courseRepository; 
+  public GetCourseByIdController(CourseRepository courseRepository) {
+    this.courseRepository = courseRepository;
   }
 
   @Operation(summary = "Get course by id")
@@ -26,6 +25,7 @@ public class GetCourseByIdController extends CourseController {
       String id
   ) {
     MongoDB.validateObjectId(id);
-    return ResponseEntity.ok(getCourseByIdGuard.execute(id));
+    var course = this.courseRepository.findByIdOrThrow(id);
+    return ResponseEntity.ok(course);
   }
 }
