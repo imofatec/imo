@@ -3,7 +3,6 @@ package com.imo.backend.contexts.catalog.lesson.services.impl;
 import com.imo.backend.contexts.catalog.course.events.UpdateCourseFirstYoutubeLinkEvent;
 import com.imo.backend.contexts.catalog.course.events.UpdateCourseLessonsCountEvent;
 import com.imo.backend.contexts.catalog.lesson.Lesson;
-import com.imo.backend.contexts.catalog.lesson.guards.GetLessonByIdGuard;
 import com.imo.backend.contexts.catalog.lesson.repositories.LessonRepository;
 import com.imo.backend.contexts.catalog.lesson.services.DeleteLessonByIdService;
 import com.imo.backend.contexts.journey_tracking.events.ReevaluateProgressEvent;
@@ -14,24 +13,20 @@ import java.util.List;
 
 @Service
 public class DeleteLessonByIdServiceImpl implements DeleteLessonByIdService {
-  private final GetLessonByIdGuard getLessonByIdGuard;
-
   private final LessonRepository lessonRepository;
 
   private final ApplicationEventPublisher applicationEventPublisher;
 
   public DeleteLessonByIdServiceImpl(
-      GetLessonByIdGuard getLessonByIdGuard,
       LessonRepository lessonRepository,
       ApplicationEventPublisher applicationEventPublisher
   ) {
-    this.getLessonByIdGuard = getLessonByIdGuard;
     this.lessonRepository = lessonRepository;
     this.applicationEventPublisher = applicationEventPublisher;
   }
 
   public Lesson execute(String lessonId) {
-    Lesson foundLesson = this.getLessonByIdGuard.execute(lessonId);
+    Lesson foundLesson = this.lessonRepository.findByIdOrThrow(lessonId);
 
     this.lessonRepository.deleteById(lessonId);
 

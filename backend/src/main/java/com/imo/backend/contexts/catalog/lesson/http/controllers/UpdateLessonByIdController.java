@@ -1,7 +1,7 @@
 package com.imo.backend.contexts.catalog.lesson.http.controllers;
 
-import com.imo.backend.contexts.catalog.course.guards.GetCourseByLessonIdGuard;
 import com.imo.backend.contexts.catalog.course.http.middlewares.ValidateUserCourseAccessService;
+import com.imo.backend.contexts.catalog.course.repositories.CourseRepository;
 import com.imo.backend.contexts.catalog.lesson.Lesson;
 import com.imo.backend.contexts.catalog.lesson.actions.inputs.UpdateLessonInput;
 import com.imo.backend.contexts.catalog.lesson.services.UpdateLessonByIdService;
@@ -20,18 +20,18 @@ import org.springframework.web.bind.annotation.RestController;
 public class UpdateLessonByIdController extends LessonController {
   private final ValidateUserCourseAccessService validateUserCourseAccessService;
 
-  private final GetCourseByLessonIdGuard getCourseByLessonIdGuard;
-
   private final UpdateLessonByIdService updateLessonByIdService;
+
+  private final CourseRepository courseRepository;
 
   public UpdateLessonByIdController(
       ValidateUserCourseAccessService validateUserCourseAccessService,
-      GetCourseByLessonIdGuard getCourseByLessonIdGuard,
-      UpdateLessonByIdService updateLessonByIdService
+      UpdateLessonByIdService updateLessonByIdService,
+      CourseRepository courseRepository
   ) {
     this.validateUserCourseAccessService = validateUserCourseAccessService;
-    this.getCourseByLessonIdGuard = getCourseByLessonIdGuard;
     this.updateLessonByIdService = updateLessonByIdService;
+    this.courseRepository = courseRepository;
   }
 
   @Operation(summary = "Update lesson by id")
@@ -46,7 +46,7 @@ public class UpdateLessonByIdController extends LessonController {
   ) {
     MongoDB.validateObjectId(id);
     String userId = SecurityContextHolder.getContext().getAuthentication().getName();
-    var existingCourse = this.getCourseByLessonIdGuard.execute(id);
+    var existingCourse = this.courseRepository.findByLessonIdOrThrow(id);
     this.validateUserCourseAccessService.execute(userId, existingCourse.getId());
 
     var updatedLesson = this.updateLessonByIdService.execute(id, dto);
