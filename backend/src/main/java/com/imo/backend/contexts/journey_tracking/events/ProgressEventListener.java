@@ -6,7 +6,7 @@ import com.imo.backend.contexts.common.Entity;
 import com.imo.backend.contexts.journey_tracking.Progress;
 import com.imo.backend.contexts.journey_tracking.actions.UpdateProgressByIdAction;
 import com.imo.backend.contexts.journey_tracking.actions.inputs.UpdateProgressInput;
-import com.imo.backend.contexts.journey_tracking.guards.GetProgressByCourseIdGuard;
+import com.imo.backend.contexts.journey_tracking.repositories.ProgressRepository;
 import com.imo.backend.contexts.journey_tracking.value_objects.ProgressPeriod;
 import com.imo.backend.contexts.journey_tracking.value_objects.ProgressStatus;
 import org.springframework.modulith.events.ApplicationModuleListener;
@@ -21,17 +21,17 @@ import java.util.stream.Collectors;
 public class ProgressEventListener {
   private final LessonRepository lessonRepository;
 
-  private final GetProgressByCourseIdGuard getProgressByCourseIdGuard;
+  private final ProgressRepository progressRepository;
 
   private final UpdateProgressByIdAction updateProgressByIdAction;
 
   public ProgressEventListener(
       LessonRepository lessonRepository,
-      GetProgressByCourseIdGuard getProgressByCourseIdGuard,
+      ProgressRepository progressRepository,
       UpdateProgressByIdAction updateProgressByIdAction
   ) {
     this.lessonRepository = lessonRepository;
-    this.getProgressByCourseIdGuard = getProgressByCourseIdGuard;
+    this.progressRepository = progressRepository;
     this.updateProgressByIdAction = updateProgressByIdAction;
   }
 
@@ -43,7 +43,7 @@ public class ProgressEventListener {
 
     var courseId = event.courseId();
     do {
-      progressList = this.getProgressByCourseIdGuard.execute(courseId, page, size);
+      progressList = this.progressRepository.findProgressByCourseId(courseId, page, size);
 
       progressList.forEach(progress -> {
         List<Lesson> existingLessons = this.lessonRepository.findAllByCourseId(courseId);
