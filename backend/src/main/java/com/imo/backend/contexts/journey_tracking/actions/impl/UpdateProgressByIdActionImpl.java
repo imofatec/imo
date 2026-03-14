@@ -3,7 +3,7 @@ package com.imo.backend.contexts.journey_tracking.actions.impl;
 import com.imo.backend.contexts.journey_tracking.Progress;
 import com.imo.backend.contexts.journey_tracking.actions.UpdateProgressByIdAction;
 import com.imo.backend.contexts.journey_tracking.actions.helpers.ProgressUpdater;
-import com.imo.backend.contexts.journey_tracking.actions.inputs.UpdateProgressInput;
+import com.imo.backend.contexts.journey_tracking.commands.UpdateProgressCommand;
 import com.imo.backend.contexts.journey_tracking.repositories.ProgressRepository;
 import org.springframework.stereotype.Service;
 
@@ -16,14 +16,14 @@ public class UpdateProgressByIdActionImpl implements UpdateProgressByIdAction {
   }
 
   @Override
-  public Progress execute(String id, UpdateProgressInput input) {
+  public Progress execute(String id, UpdateProgressCommand cmd) {
     var currentProgress = this.progressRepository.findById(id).orElse(null);
 
     if (currentProgress == null) {
       return null;
     }
 
-    ProgressUpdater.apply(currentProgress, input);
+    ProgressUpdater.apply(currentProgress, cmd);
 
     return this.progressRepository.save(currentProgress);
   }

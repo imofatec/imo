@@ -7,7 +7,7 @@ import com.imo.backend.contexts.catalog.lesson.repositories.LessonRepository;
 import com.imo.backend.contexts.common.exceptions.custom.NotFoundException;
 import com.imo.backend.contexts.journey_tracking.Progress;
 import com.imo.backend.contexts.journey_tracking.actions.UpdateProgressByIdAction;
-import com.imo.backend.contexts.journey_tracking.actions.inputs.UpdateProgressInput;
+import com.imo.backend.contexts.journey_tracking.commands.UpdateProgressCommand;
 import com.imo.backend.contexts.journey_tracking.controllers.dtos.ProgressDTO;
 import com.imo.backend.contexts.journey_tracking.repositories.ProgressRepository;
 import com.imo.backend.contexts.journey_tracking.services.CreateProgressService;
@@ -74,7 +74,7 @@ public class WatchLessonByIdOrchestratorImpl implements WatchLessonByIdOrchestra
     currentProgress.watchLesson(lessonId, existingCourse.getLessonsCount());
 
     var updatedProgress = this.updateProgressByIdAction.execute(
-        currentProgress.getId(), new UpdateProgressInput(
+        currentProgress.getId(), new UpdateProgressCommand(
             currentProgress.getProgressPeriod(),
             currentProgress.getStatus(),
             currentProgress.getLessonsWatched()));

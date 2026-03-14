@@ -1,20 +1,20 @@
 package com.imo.backend.contexts.journey_tracking.actions.helpers;
 
 import com.imo.backend.contexts.journey_tracking.Progress;
-import com.imo.backend.contexts.journey_tracking.actions.inputs.UpdateProgressInput;
+import com.imo.backend.contexts.journey_tracking.commands.UpdateProgressCommand;
 
 public class ProgressUpdater {
-  public static void apply(Progress progress, UpdateProgressInput dto) {
-    if (dto.progressPeriod() != null) {
-      progress.setProgressPeriod(dto.progressPeriod());
+  public static void apply(Progress progress, UpdateProgressCommand cmd) {
+    if (cmd.progressPeriod() != null) {
+      progress.setProgressPeriod(cmd.progressPeriod());
     }
 
-    if (dto.status() != null) {
-      progress.setStatus(dto.status());
+    if (cmd.status() != null) {
+      progress.setStatus(cmd.status());
     }
 
-    if (dto.lessonsWatched() != null) {
-      progress.setLessonsWatched(dto.lessonsWatched());
+    if (cmd.lessonsWatched() != null) {
+      progress.setLessonsWatched(cmd.lessonsWatched());
     }
   }
 }
