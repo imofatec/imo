@@ -5,7 +5,7 @@ import com.imo.backend.contexts.catalog.lesson.repositories.LessonRepository;
 import com.imo.backend.contexts.common.Entity;
 import com.imo.backend.contexts.journey_tracking.Progress;
 import com.imo.backend.contexts.journey_tracking.actions.UpdateProgressByIdAction;
-import com.imo.backend.contexts.journey_tracking.actions.inputs.UpdateProgressInput;
+import com.imo.backend.contexts.journey_tracking.commands.UpdateProgressCommand;
 import com.imo.backend.contexts.journey_tracking.repositories.ProgressRepository;
 import com.imo.backend.contexts.journey_tracking.value_objects.ProgressPeriod;
 import com.imo.backend.contexts.journey_tracking.value_objects.ProgressStatus;
@@ -56,12 +56,12 @@ public class ProgressEventListener {
         boolean hasMissingLessons = progress.getLessonsWatched().size() < existingLessons.size();
 
         if (isFinished && hasMissingLessons) {
-          var input = new UpdateProgressInput(
+          var cmd = new UpdateProgressCommand(
               new ProgressPeriod(progress.getProgressPeriod().startedAt(), null),
               ProgressStatus.IN_PROGRESS,
               null
           );
-          this.updateProgressByIdAction.execute(progress.getId(), input);
+          this.updateProgressByIdAction.execute(progress.getId(), cmd);
           return;
         }
 
@@ -78,18 +78,18 @@ public class ProgressEventListener {
               .filter(existingLessonsIds::contains)
               .toList();
 
-          var input = new UpdateProgressInput(null, null, filteredWatchedLessons);
-          this.updateProgressByIdAction.execute(progress.getId(), input);
+          var cmd = new UpdateProgressCommand(null, null, filteredWatchedLessons);
+          this.updateProgressByIdAction.execute(progress.getId(), cmd);
           return;
         }
 
         if (!isFinished && progress.getLessonsWatched().size() == existingLessons.size()) {
-          var input = new UpdateProgressInput(
+          var cmd = new UpdateProgressCommand(
               new ProgressPeriod(progress.getProgressPeriod().startedAt(), LocalDateTime.now()),
               ProgressStatus.FINISHED,
               existingLessonsIds.stream().toList()
           );
-          this.updateProgressByIdAction.execute(progress.getId(), input);
+          this.updateProgressByIdAction.execute(progress.getId(), cmd);
         }
       });
 
