@@ -6,7 +6,6 @@ import com.imo.backend.contexts.catalog.lesson.Lesson;
 import com.imo.backend.contexts.catalog.lesson.repositories.LessonRepository;
 import com.imo.backend.contexts.common.exceptions.custom.NotFoundException;
 import com.imo.backend.contexts.journey_tracking.Progress;
-import com.imo.backend.contexts.journey_tracking.actions.UpdateProgressByIdAction;
 import com.imo.backend.contexts.journey_tracking.commands.UpdateProgressCommand;
 import com.imo.backend.contexts.journey_tracking.controllers.dtos.ProgressDTO;
 import com.imo.backend.contexts.journey_tracking.repositories.ProgressRepository;
@@ -20,23 +19,15 @@ public class WatchLessonByIdOrchestratorImpl implements WatchLessonByIdOrchestra
 
   private final CreateProgressService createProgressService;
 
-  private final UpdateProgressByIdAction updateProgressByIdAction;
-
   private final CourseRepository courseRepository;
-
-  private final LessonRepository lessonRepository;
 
   public WatchLessonByIdOrchestratorImpl(
       ProgressRepository progressRepository,
       CreateProgressService createProgressService,
-      UpdateProgressByIdAction updateProgressByIdAction,
-      CourseRepository courseRepository,
-      LessonRepository lessonRepository) {
+      CourseRepository courseRepository) {
     this.progressRepository = progressRepository;
     this.createProgressService = createProgressService;
-    this.updateProgressByIdAction = updateProgressByIdAction;
     this.courseRepository = courseRepository;
-    this.lessonRepository = lessonRepository;
   }
 
   @Override
@@ -67,11 +58,12 @@ public class WatchLessonByIdOrchestratorImpl implements WatchLessonByIdOrchestra
 
     currentProgress.watchLesson(lessonId, existingCourse.getLessonsCount());
 
-    var updatedProgress = this.updateProgressByIdAction.execute(
-        currentProgress.getId(), new UpdateProgressCommand(
+    currentProgress.progressUpdater(
+        new UpdateProgressCommand(
             currentProgress.getProgressPeriod(),
             currentProgress.getStatus(),
             currentProgress.getLessonsWatched()));
+    var updatedProgress = this.progressRepository.save(currentProgress);
 
     return ProgressDTO.fromProgress(updatedProgress);
   }
