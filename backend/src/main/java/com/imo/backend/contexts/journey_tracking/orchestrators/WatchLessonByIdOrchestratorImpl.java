@@ -14,9 +14,6 @@ import com.imo.backend.contexts.journey_tracking.services.CreateProgressService;
 import com.imo.backend.contexts.journey_tracking.value_objects.ProgressStatus;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Service
 public class WatchLessonByIdOrchestratorImpl implements WatchLessonByIdOrchestrator {
   private final ProgressRepository progressRepository;
@@ -52,19 +49,16 @@ public class WatchLessonByIdOrchestratorImpl implements WatchLessonByIdOrchestra
 
     try {
       currentProgress = this.progressRepository.findByUserIdAndCourseIdOrThrow(userId, existingCourse.getId());
-    } catch (NotFoundException e) {
+    } catch (NotFoundException ignored) {
     }
 
     assert existingCourse != null;
 
     if (currentProgress == null) {
-      Lesson lesson = this.lessonRepository.findByIdOrThrow(lessonId);
-      List<String> lessonsIds = new ArrayList<>();
-      lessonsIds.add(lesson.getId());
       return ProgressDTO.fromProgress(this.createProgressService.execute(
           userId,
           existingCourse.getId(),
-          lessonsIds));
+          lessonId));
     }
 
     if (currentProgress.getStatus() == ProgressStatus.FINISHED) {
