@@ -2,41 +2,34 @@ package com.imo.backend.contexts.journey_tracking.services.impl;
 
 import com.imo.backend.contexts.catalog.course.repositories.CourseRepository;
 import com.imo.backend.contexts.journey_tracking.Progress;
-import com.imo.backend.contexts.journey_tracking.actions.CreateProgressAction;
+import com.imo.backend.contexts.journey_tracking.policies.ProgressPolicy;
 import com.imo.backend.contexts.journey_tracking.repositories.ProgressRepository;
 import com.imo.backend.contexts.journey_tracking.services.CreateProgressService;
-import com.imo.backend.contexts.common.exceptions.custom.ConflictException;
-import com.imo.backend.contexts.common.exceptions.custom.NotFoundException;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class CreateProgressServiceImpl implements CreateProgressService {
   private final ProgressRepository progressRepository;
 
-  private final CreateProgressAction createProgressAction;
+  private final ProgressPolicy startProgressPolicy;
 
   private final CourseRepository courseRepository;
 
   public CreateProgressServiceImpl(
       CourseRepository courseRepository,
       ProgressRepository progressRepository,
-      CreateProgressAction createProgressAction) {
+      ProgressPolicy startProgressPolicy) {
     this.progressRepository = progressRepository;
-    this.createProgressAction = createProgressAction;
+    this.startProgressPolicy = startProgressPolicy;
     this.courseRepository = courseRepository;
   }
 
   @Override
-  public Progress execute(String userId, String courseId, List<String> lessonsWatched) {
+  public Progress execute(String userId, String courseId, String firstLessonId) {
     this.courseRepository.findByIdOrThrow(courseId);
+    this.startProgressPolicy.execute(userId, courseId);
 
-    try {
-      this.progressRepository.findByUserIdAndCourseIdOrThrow(userId, courseId);
-      throw new ConflictException("Progresso ja foi inicado");
-    } catch (NotFoundException ignored) {
-      return this.createProgressAction.execute(userId, courseId, lessonsWatched);
-    }
+    Progress progress = Progress.assertStartWithFirstLesson(userId, courseId, firstLessonId);
+    return this.progressRepository.save(progress);
   }
 }

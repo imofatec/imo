@@ -1,38 +1,25 @@
 package com.imo.backend.contexts.journey_tracking.events;
 
-import com.imo.backend.contexts.catalog.lesson.Lesson;
-import com.imo.backend.contexts.catalog.lesson.repositories.LessonRepository;
-import com.imo.backend.contexts.common.Entity;
 import com.imo.backend.contexts.journey_tracking.Progress;
-import com.imo.backend.contexts.journey_tracking.actions.UpdateProgressByIdAction;
-import com.imo.backend.contexts.journey_tracking.commands.UpdateProgressCommand;
+import com.imo.backend.contexts.journey_tracking.policies.ProgressPolicy;
 import com.imo.backend.contexts.journey_tracking.repositories.ProgressRepository;
-import com.imo.backend.contexts.journey_tracking.value_objects.ProgressPeriod;
-import com.imo.backend.contexts.journey_tracking.value_objects.ProgressStatus;
 import org.springframework.modulith.events.ApplicationModuleListener;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Component
 public class ProgressEventListener {
-  private final LessonRepository lessonRepository;
-
   private final ProgressRepository progressRepository;
 
-  private final UpdateProgressByIdAction updateProgressByIdAction;
+  private final ProgressPolicy progressPolicy;
 
   public ProgressEventListener(
-      LessonRepository lessonRepository,
       ProgressRepository progressRepository,
-      UpdateProgressByIdAction updateProgressByIdAction
+      ProgressPolicy progressPolicy
   ) {
-    this.lessonRepository = lessonRepository;
     this.progressRepository = progressRepository;
-    this.updateProgressByIdAction = updateProgressByIdAction;
+    this.progressPolicy = progressPolicy;
   }
 
   @ApplicationModuleListener
@@ -46,50 +33,10 @@ public class ProgressEventListener {
       progressList = this.progressRepository.findProgressByCourseId(courseId, page, size);
 
       progressList.forEach(progress -> {
-        List<Lesson> existingLessons = this.lessonRepository.findAllByCourseId(courseId);
-        Set<String> existingLessonsIds = existingLessons
-            .stream()
-            .map(Entity::getId)
-            .collect(Collectors.toSet());
+        boolean changed = this.progressPolicy.reevaluate(progress);
 
-        boolean isFinished = progress.getStatus() == ProgressStatus.FINISHED;
-        boolean hasMissingLessons = progress.getLessonsWatched().size() < existingLessons.size();
-
-        if (isFinished && hasMissingLessons) {
-          var cmd = new UpdateProgressCommand(
-              new ProgressPeriod(progress.getProgressPeriod().startedAt(), null),
-              ProgressStatus.IN_PROGRESS,
-              null
-          );
-          this.updateProgressByIdAction.execute(progress.getId(), cmd);
-          return;
-        }
-
-        boolean hasWatchedLessonDeleted = progress
-            .getLessonsWatched()
-            .stream()
-            .anyMatch(watchedLesson -> !existingLessonsIds.contains(watchedLesson));
-
-
-        if (!isFinished && hasWatchedLessonDeleted) {
-          List<String> filteredWatchedLessons = progress
-              .getLessonsWatched()
-              .stream()
-              .filter(existingLessonsIds::contains)
-              .toList();
-
-          var cmd = new UpdateProgressCommand(null, null, filteredWatchedLessons);
-          this.updateProgressByIdAction.execute(progress.getId(), cmd);
-          return;
-        }
-
-        if (!isFinished && progress.getLessonsWatched().size() == existingLessons.size()) {
-          var cmd = new UpdateProgressCommand(
-              new ProgressPeriod(progress.getProgressPeriod().startedAt(), LocalDateTime.now()),
-              ProgressStatus.FINISHED,
-              existingLessonsIds.stream().toList()
-          );
-          this.updateProgressByIdAction.execute(progress.getId(), cmd);
+        if (changed) {
+          this.progressRepository.save(progress);
         }
       });
 

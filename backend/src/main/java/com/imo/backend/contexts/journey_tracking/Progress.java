@@ -10,8 +10,10 @@ import lombok.EqualsAndHashCode;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.ArrayList;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 @EqualsAndHashCode(callSuper = true)
 @Document("progress")
@@ -64,11 +66,36 @@ public class Progress extends Entity {
   }
 
   public void setLessonsWatched(List<String> lessonsWatched) {
-    this.lessonsWatched = lessonsWatched.stream().map(ObjectId::new).toList();
+    this.lessonsWatched = new ArrayList<>(lessonsWatched.stream().map(ObjectId::new).toList());
   }
 
   public List<String> getLessonsWatched() {
     return this.lessonsWatched.stream().map(ObjectId::toString).toList();
+  }
+
+  public static Progress assertStartWithFirstLesson(String userId, String courseId, String lessonId) {
+    return new Progress(
+        new ObjectId(userId),
+        new ObjectId(courseId),
+        new ArrayList<>(List.of(new ObjectId(lessonId))),
+        new ProgressPeriod(LocalDateTime.now(), null),
+        ProgressStatus.IN_PROGRESS
+    );
+  }
+
+  public static Progress create(String userId, String courseId, List<String> lessonsWatched, int totalLessons) {
+    boolean isFinished = totalLessons == lessonsWatched.size();
+    LocalDateTime now = LocalDateTime.now();
+
+    ProgressPeriod progressPeriod = isFinished
+        ? new ProgressPeriod(now, now)
+        : new ProgressPeriod(now, null);
+
+    ProgressStatus status = isFinished
+        ? ProgressStatus.FINISHED
+        : ProgressStatus.IN_PROGRESS;
+
+    return new Progress(userId, courseId, lessonsWatched, progressPeriod, status);
   }
 
   public void watchLesson(String lessonToWatch, int totalLessons) {
@@ -90,5 +117,37 @@ public class Progress extends Entity {
 
       this.status = ProgressStatus.FINISHED;
     }
+  }
+
+  public boolean assertReevaluateStructure(List<String> existingLessonsIds) {
+    boolean changed = false;
+    Set<String> existingLessonsIdsSet = Set.copyOf(existingLessonsIds);
+
+    List<String> filteredWatchedLessons = this.getLessonsWatched()
+        .stream()
+        .filter(existingLessonsIdsSet::contains)
+        .toList();
+
+    if (filteredWatchedLessons.size() != this.lessonsWatched.size()) {
+      this.setLessonsWatched(filteredWatchedLessons);
+      changed = true;
+    }
+
+    int totalLessons = existingLessonsIds.size();
+    boolean shouldBeFinished = totalLessons > 0 && this.lessonsWatched.size() == totalLessons;
+
+    if (shouldBeFinished && this.status != ProgressStatus.FINISHED) {
+      this.progressPeriod = new ProgressPeriod(this.progressPeriod.startedAt(), LocalDateTime.now());
+      this.status = ProgressStatus.FINISHED;
+      changed = true;
+    }
+
+    if (!shouldBeFinished && this.status == ProgressStatus.FINISHED) {
+      this.progressPeriod = new ProgressPeriod(this.progressPeriod.startedAt(), null);
+      this.status = ProgressStatus.IN_PROGRESS;
+      changed = true;
+    }
+
+    return changed;
   }
 }
