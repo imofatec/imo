@@ -9,7 +9,7 @@ import com.imo.backend.contexts.journey_tracking.Progress;
 import com.imo.backend.contexts.journey_tracking.commands.UpdateProgressCommand;
 import com.imo.backend.contexts.journey_tracking.controllers.dtos.ProgressDTO;
 import com.imo.backend.contexts.journey_tracking.repositories.ProgressRepository;
-import com.imo.backend.contexts.journey_tracking.services.CreateProgressService;
+import com.imo.backend.contexts.journey_tracking.usecases.CreateProgressUseCase;
 import com.imo.backend.contexts.journey_tracking.value_objects.ProgressStatus;
 import org.springframework.stereotype.Service;
 
@@ -17,16 +17,16 @@ import org.springframework.stereotype.Service;
 public class WatchLessonByIdOrchestratorImpl implements WatchLessonByIdOrchestrator {
   private final ProgressRepository progressRepository;
 
-  private final CreateProgressService createProgressService;
+  private final CreateProgressUseCase createProgressUseCase;
 
   private final CourseRepository courseRepository;
 
   public WatchLessonByIdOrchestratorImpl(
       ProgressRepository progressRepository,
-      CreateProgressService createProgressService,
+      CreateProgressUseCase createProgressUseCase,
       CourseRepository courseRepository) {
     this.progressRepository = progressRepository;
-    this.createProgressService = createProgressService;
+    this.createProgressUseCase = createProgressUseCase;
     this.courseRepository = courseRepository;
   }
 
@@ -46,7 +46,7 @@ public class WatchLessonByIdOrchestratorImpl implements WatchLessonByIdOrchestra
     assert existingCourse != null;
 
     if (currentProgress == null) {
-      return ProgressDTO.fromProgress(this.createProgressService.execute(
+      return ProgressDTO.fromProgress(this.createProgressUseCase.execute(
           userId,
           existingCourse.getId(),
           lessonId));
