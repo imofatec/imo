@@ -4,6 +4,7 @@ import com.imo.backend.contexts.common.Entity;
 import com.imo.backend.contexts.journey_tracking.value_objects.ProgressPeriod;
 import com.imo.backend.contexts.journey_tracking.value_objects.ProgressStatus;
 import com.imo.backend.contexts.common.exceptions.custom.ConflictException;
+import com.imo.backend.contexts.journey_tracking.commands.UpdateProgressCommand;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -96,6 +97,20 @@ public class Progress extends Entity {
         : ProgressStatus.IN_PROGRESS;
 
     return new Progress(userId, courseId, lessonsWatched, progressPeriod, status);
+  }
+
+  public void progressUpdater(UpdateProgressCommand cmd) {
+    if (cmd.progressPeriod() != null) {
+      this.progressPeriod = cmd.progressPeriod();
+    }
+
+    if (cmd.status() != null) {
+      this.status = cmd.status();
+    }
+
+    if (cmd.lessonsWatched() != null) {
+      this.setLessonsWatched(cmd.lessonsWatched());
+    }
   }
 
   public void watchLesson(String lessonToWatch, int totalLessons) {
