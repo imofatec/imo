@@ -43,18 +43,16 @@ public class CourseDetailsSearchController extends CourseController {
       @RequestParam(required = false)
       Integer size
   ) {
-    var dto = (page == null || size == null)
-        ? this.courseRepository
-        .searchDetails(courseSearchParams, matchType, combineWith)
-        .stream()
-        .map(CourseDetailsDTO::fromCourseDetails)
-        .toList()
-        : this.courseRepository
-            .searchDetails(courseSearchParams, page, size, matchType, combineWith)
-            .stream()
-            .map(CourseDetailsDTO::fromCourseDetails)
-            .toList();
 
-    return ResponseEntity.ok(dto);
+    var details = (page == null || size == null)
+      ? this.courseRepository.searchDetails(courseSearchParams, matchType, combineWith)
+      : this.courseRepository.searchDetails(courseSearchParams, page, size, matchType, combineWith);
+
+    var response = details.stream()
+      .map(CourseDetailsDTO::fromCourseDetails)
+      .toList();
+
+    return ResponseEntity.ok(response);
+
   }
 }

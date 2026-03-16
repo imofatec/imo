@@ -1,6 +1,6 @@
 package com.imo.backend.contexts.catalog.course.http.controllers;
 
-import com.imo.backend.contexts.catalog.course.Course;
+import com.imo.backend.contexts.catalog.course.http.dtos.CourseResponseDTO;
 import com.imo.backend.contexts.catalog.course.repositories.CourseRepository;
 import com.imo.backend.contexts.catalog.course.repositories.CourseSearchParams;
 import com.imo.backend.contexts.common.CombineWith;
@@ -25,7 +25,7 @@ public class CourseSearchController extends CourseController {
 
   @Operation(summary = "Search course")
   @GetMapping("/search")
-  public ResponseEntity<List<Course>> handle(
+  public ResponseEntity<List<CourseResponseDTO>> handle(
       @Parameter(description = "Query params to search", example = "slugCategory=dev-web")
       @ParameterObject
       CourseSearchParams courseSearchParams,
@@ -42,12 +42,16 @@ public class CourseSearchController extends CourseController {
       @RequestParam(required = false)
       Integer size
   ) {
-    var dto = (page == null || size == null) ? this.courseRepository.search(
+    var courses = (page == null || size == null) ? this.courseRepository.search(
         courseSearchParams,
         matchType,
         combineWith
     ) : this.courseRepository.search(courseSearchParams, page, size, matchType, combineWith);
 
-    return ResponseEntity.ok(dto);
+    var response = courses.stream()
+      .map(CourseResponseDTO::fromEntity)
+      .toList();
+
+    return ResponseEntity.ok(response);
   }
 }

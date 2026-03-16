@@ -1,6 +1,6 @@
 package com.imo.backend.contexts.catalog.course.http.controllers;
 
-import com.imo.backend.contexts.catalog.course.Course;
+import com.imo.backend.contexts.catalog.course.http.dtos.CourseResponseDTO;
 import com.imo.backend.contexts.catalog.course.http.dtos.UpdateCourseByIdRequest;
 import com.imo.backend.contexts.catalog.course.http.middlewares.ValidateUserCourseAccessService;
 import com.imo.backend.contexts.catalog.course.services.UpdateCourseByIdService;
@@ -34,7 +34,7 @@ public class UpdateCourseByIdController extends CourseController {
   @Operation(summary = "Update course fields by id")
   @SecurityRequirement(name = "Authorization")
   @PutMapping("/{id}")
-  public ResponseEntity<Course> handle(
+  public ResponseEntity<CourseResponseDTO> handle(
       @PathVariable
       String id,
       @Valid
@@ -50,6 +50,6 @@ public class UpdateCourseByIdController extends CourseController {
 
     return updatedCourse == null
         ? ResponseEntity.noContent().build()
-        : ResponseEntity.ok(updatedCourse);
+        : ResponseEntity.ok(CourseResponseDTO.fromEntity(updatedCourse));
   }
 }
