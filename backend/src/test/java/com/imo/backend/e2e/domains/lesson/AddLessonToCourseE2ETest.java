@@ -22,7 +22,7 @@ public class AddLessonToCourseE2ETest extends BaseE2ETest {
   void shouldAddLessonToExistingCourse() {
     String token = E2EFlowHelper.createAndAuthenticateUser();
     CourseDetailsDTO details = E2EFlowHelper.createCourseAndReturnDetails(token, 5);
-    String courseId = details.course().getId();
+    String courseId = details.course().id();
 
     CreateLessonInput lessonInput = new CreateLessonInput(
         "Curso de Rust",
@@ -33,8 +33,7 @@ public class AddLessonToCourseE2ETest extends BaseE2ETest {
     log.info(
         "Course ID: {}\nCourse details:\n\nContributor Id: {}\nDescription: {}\n{}",
         courseId,
-        details.course().getContributorId(),
-        details.course().getDescription()
+        details.course().description()
     );
 
     givenBaseRequest()

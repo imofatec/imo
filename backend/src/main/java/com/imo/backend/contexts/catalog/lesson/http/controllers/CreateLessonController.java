@@ -1,8 +1,8 @@
 package com.imo.backend.contexts.catalog.lesson.http.controllers;
 
 import com.imo.backend.contexts.catalog.course.http.middlewares.ValidateUserCourseAccessService;
-import com.imo.backend.contexts.catalog.lesson.Lesson;
 import com.imo.backend.contexts.catalog.lesson.actions.inputs.CreateLessonInput;
+import com.imo.backend.contexts.catalog.lesson.http.dtos.LessonResponseDTO;
 import com.imo.backend.contexts.catalog.lesson.services.CreateLessonService;
 import com.imo.backend.contexts.common.MongoDB;
 import io.swagger.v3.oas.annotations.Operation;
@@ -36,7 +36,7 @@ public class CreateLessonController extends LessonController {
   @Operation(summary = "Add new lesson in a course")
   @SecurityRequirement(name = "Authorization")
   @PostMapping("/{courseId}")
-  public ResponseEntity<Lesson> handle(
+  public ResponseEntity<LessonResponseDTO> handle(
       HttpServletRequest request,
       @PathVariable
       String courseId,
@@ -50,6 +50,6 @@ public class CreateLessonController extends LessonController {
 
     var newLesson = this.createLessonService.execute(dto, courseId);
 
-    return new ResponseEntity<>(newLesson, HttpStatus.CREATED);
+    return new ResponseEntity<>(LessonResponseDTO.fromEntity(newLesson), HttpStatus.CREATED);
   }
 }

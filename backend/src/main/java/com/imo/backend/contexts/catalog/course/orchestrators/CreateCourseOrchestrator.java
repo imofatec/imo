@@ -3,6 +3,7 @@ package com.imo.backend.contexts.catalog.course.orchestrators;
 import com.imo.backend.contexts.catalog.course.actions.CreateCourseAction;
 import com.imo.backend.contexts.catalog.course.actions.inputs.CreateCourseInput;
 import com.imo.backend.contexts.catalog.course.http.dtos.CourseDetailsDTO;
+import com.imo.backend.contexts.catalog.course.http.dtos.CourseResponseDTO;
 import com.imo.backend.contexts.catalog.course.http.dtos.CreateCourseRequest;
 import com.imo.backend.contexts.catalog.course.repositories.CourseRepository;
 import com.imo.backend.contexts.catalog.lesson.services.CreateLessonService;
@@ -48,7 +49,10 @@ public class CreateCourseOrchestrator {
         newCourse.getId()
     );
 
-    return new CourseDetailsDTO(newCourse, newLessons);
+    return new CourseDetailsDTO(
+      CourseResponseDTO.fromEntity(newCourse), 
+      newLessons
+    );
   }
 
   private void checkConflictContributorCourse(String contributorId, String potentialNewSlugCourse) {

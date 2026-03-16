@@ -1,7 +1,6 @@
 package com.imo.backend.contexts.catalog.course.http.controllers;
 
-
-import com.imo.backend.contexts.catalog.course.Course;
+import com.imo.backend.contexts.catalog.course.http.dtos.CourseResponseDTO;
 import com.imo.backend.contexts.catalog.course.repositories.CourseRepository;
 import com.imo.backend.contexts.common.MongoDB;
 import io.swagger.v3.oas.annotations.Operation;
@@ -20,12 +19,12 @@ public class GetCourseByIdController extends CourseController {
 
   @Operation(summary = "Get course by id")
   @GetMapping("/{id}")
-  public ResponseEntity<Course> execute(
+  public ResponseEntity<CourseResponseDTO> execute(
       @PathVariable
       String id
   ) {
     MongoDB.validateObjectId(id);
     var course = this.courseRepository.findByIdOrThrow(id);
-    return ResponseEntity.ok(course);
+    return ResponseEntity.ok(CourseResponseDTO.fromEntity(course));
   }
 }
