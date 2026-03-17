@@ -2,7 +2,7 @@ package com.imo.backend.contexts.certification.orchestrators;
 
 import com.imo.backend.contexts.common.exceptions.custom.NotFoundException;
 import com.imo.backend.contexts.certification.actions.CreateCertificateAction;
-import com.imo.backend.contexts.certification.guards.GetCertificateDetailsByUserIdAndCourseIdGuard;
+import com.imo.backend.contexts.certification.repositories.CertificateRepository;
 import com.imo.backend.contexts.certification.CertificateDetails;
 import com.imo.backend.contexts.certification.services.IssueCertificateService;
 import org.springframework.http.HttpHeaders;
@@ -13,31 +13,28 @@ import org.springframework.stereotype.Service;
 public class IssueCertificateOrchestrator {
   private final CreateCertificateAction createCertificateAction;
 
-  private final GetCertificateDetailsByUserIdAndCourseIdGuard getCertificateDetailsByUserIdAndCourseId;
+  private final CertificateRepository certificateRepository;
 
   private final IssueCertificateService issueCertificateService;
 
   public IssueCertificateOrchestrator(
       CreateCertificateAction createCertificateAction,
-      GetCertificateDetailsByUserIdAndCourseIdGuard getCertificateDetailsByUserIdAndCourseId,
+      CertificateRepository certificateRepository,
       IssueCertificateService issueCertificateService
   ) {
     this.createCertificateAction = createCertificateAction;
-    this.getCertificateDetailsByUserIdAndCourseId = getCertificateDetailsByUserIdAndCourseId;
+    this.certificateRepository = certificateRepository;
     this.issueCertificateService = issueCertificateService;
   }
 
   public byte[] execute(String userId, String courseId, HttpHeaders headers) {
-    CertificateDetails certificateDetails = null;
-
-    try {
-      certificateDetails = this.getCertificateDetailsByUserIdAndCourseId.execute(userId, courseId);
-    } catch (NotFoundException ignored) {
-    }
+    CertificateDetails certificateDetails = this.certificateRepository
+        .findDetailsByUserIdAndCourseId(userId, courseId).orElse(null);
 
     if (certificateDetails == null) {
       this.createCertificateAction.execute(userId, courseId);
-      certificateDetails = this.getCertificateDetailsByUserIdAndCourseId.execute(userId, courseId);
+      certificateDetails = this.certificateRepository
+          .findDetailsByUserIdAndCourseId(userId, courseId).orElseThrow(() -> new NotFoundException("Certificado não encontrado"));
     }
 
     this.manageHeaders(certificateDetails, headers);
