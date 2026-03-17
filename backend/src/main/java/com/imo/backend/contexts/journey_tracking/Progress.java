@@ -74,31 +74,6 @@ public class Progress extends Entity {
     return this.lessonsWatched.stream().map(ObjectId::toString).toList();
   }
 
-  public static Progress assertStartWithFirstLesson(String userId, String courseId, String lessonId) {
-    return new Progress(
-        new ObjectId(userId),
-        new ObjectId(courseId),
-        new ArrayList<>(List.of(new ObjectId(lessonId))),
-        new ProgressPeriod(LocalDateTime.now(), null),
-        ProgressStatus.IN_PROGRESS
-    );
-  }
-
-  public static Progress create(String userId, String courseId, List<String> lessonsWatched, int totalLessons) {
-    boolean isFinished = totalLessons == lessonsWatched.size();
-    LocalDateTime now = LocalDateTime.now();
-
-    ProgressPeriod progressPeriod = isFinished
-        ? new ProgressPeriod(now, now)
-        : new ProgressPeriod(now, null);
-
-    ProgressStatus status = isFinished
-        ? ProgressStatus.FINISHED
-        : ProgressStatus.IN_PROGRESS;
-
-    return new Progress(userId, courseId, lessonsWatched, progressPeriod, status);
-  }
-
   public void progressUpdater(UpdateProgressCommand cmd) {
     if (cmd.progressPeriod() != null) {
       this.progressPeriod = cmd.progressPeriod();
