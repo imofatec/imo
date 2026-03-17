@@ -1,19 +1,20 @@
 package com.imo.backend.contexts.certification.http.controllers;
 
 import com.imo.backend.contexts.certification.CertificateDetails;
-import com.imo.backend.contexts.certification.guards.GetCertificateDetailsByIdGuard;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
+import com.imo.backend.contexts.certification.repositories.CertificateRepository;
+import com.imo.backend.contexts.common.MongoDB;
 
 @RestController
 public class GetCertificateByIdController extends CertificateController {
-  private final GetCertificateDetailsByIdGuard getCertificateDetailsByIdGuard;
+  private final CertificateRepository certificateRepository;
 
-  public GetCertificateByIdController(GetCertificateDetailsByIdGuard getCertificateDetailsByIdGuard) {
-    this.getCertificateDetailsByIdGuard = getCertificateDetailsByIdGuard;
+  public GetCertificateByIdController(CertificateRepository certificateRepository) {
+    this.certificateRepository = certificateRepository;
   }
 
   @Operation(summary = "Get certificate details by id")
@@ -22,6 +23,7 @@ public class GetCertificateByIdController extends CertificateController {
       @PathVariable
       String id
   ) {
-    return ResponseEntity.ok(this.getCertificateDetailsByIdGuard.execute(id));
+    MongoDB.validateObjectId(id);
+    return ResponseEntity.ok(this.certificateRepository.findByIdOrThrow(id));
   }
 }
