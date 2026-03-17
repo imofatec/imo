@@ -6,7 +6,7 @@ import com.imo.backend.contexts.catalog.lesson.Lesson;
 import com.imo.backend.contexts.catalog.lesson.repositories.LessonRepository;
 import com.imo.backend.contexts.identity.User;
 import com.imo.backend.contexts.identity.repositories.UserRepository;
-import com.imo.backend.contexts.journey_tracking.orchestrators.WatchLessonByIdOrchestratorImpl;
+import com.imo.backend.contexts.journey_tracking.usecases.WatchLessonByIdUseCase;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -19,18 +19,18 @@ public class PopulateProgress {
   private final UserRepository userRepository;
   private final CourseRepository courseRepository;
   private final LessonRepository lessonRepository;
-  private final WatchLessonByIdOrchestratorImpl watchLessonByIdOrchestrator;
+  private final WatchLessonByIdUseCase watchLessonByIdUseCase;
 
   public PopulateProgress(
       UserRepository userRepository,
       CourseRepository courseRepository,
       LessonRepository lessonRepository,
-      WatchLessonByIdOrchestratorImpl watchLessonByIdOrchestrator
+      WatchLessonByIdUseCase watchLessonByIdUseCase
   ) {
     this.userRepository = userRepository;
     this.courseRepository = courseRepository;
     this.lessonRepository = lessonRepository;
-    this.watchLessonByIdOrchestrator = watchLessonByIdOrchestrator;
+    this.watchLessonByIdUseCase = watchLessonByIdUseCase;
   }
 
   public void execute() {
@@ -79,7 +79,7 @@ public class PopulateProgress {
 
         for (int j = 0; j < lessonsWatched; j++) {
           String lessonId = lessons.get(j).getId();
-          watchLessonByIdOrchestrator.execute(lessonId, user.getId());
+          watchLessonByIdUseCase.execute(lessonId, user.getId());
         }
       }
     }
