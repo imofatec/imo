@@ -1,7 +1,7 @@
 package com.imo.backend.contexts.catalog.course.http.controllers;
 
+import com.imo.backend.contexts.catalog.course.http.dtos.CategoryResponseDTO;
 import com.imo.backend.contexts.catalog.course.repositories.CourseRepository;
-import com.imo.backend.contexts.catalog.course.value_objects.Category;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +21,7 @@ public class GetCategoriesController extends CourseController {
 
   @Operation(summary = "Get categories")
   @GetMapping("/categories")
-  public ResponseEntity<List<Category>> handle(
+  public ResponseEntity<List<CategoryResponseDTO>> handle(
       @Parameter(description = "Page number to retrieve", example = "0", required = false)
       @RequestParam(required = false)
       Integer page,
@@ -29,8 +29,15 @@ public class GetCategoriesController extends CourseController {
       @RequestParam(required = false)
       Integer size
   ) {
-    return ResponseEntity.ok((page == null || size == null)
-        ? this.courseRepository.findAllCategories()
-        : this.courseRepository.findAllCategories(page, size));
+
+    var categories = (page == null || size == null)
+      ? this.courseRepository.findAllCategories()
+      : this.courseRepository.findAllCategories(page, size); 
+
+    var response = categories.stream()
+      .map(CategoryResponseDTO::fromVO)
+      .toList();
+
+    return ResponseEntity.ok(response);
   }
 }

@@ -1,7 +1,7 @@
 package com.imo.backend.contexts.catalog.course.http.controllers;
 
-import com.imo.backend.contexts.catalog.course.Course;
 import com.imo.backend.contexts.catalog.course.actions.ToggleCourseStatusByIdAction;
+import com.imo.backend.contexts.catalog.course.http.dtos.CourseResponseDTO;
 import com.imo.backend.contexts.catalog.course.http.middlewares.ValidateUserCourseAccessService;
 import com.imo.backend.contexts.common.MongoDB;
 import io.swagger.v3.oas.annotations.Operation;
@@ -30,7 +30,7 @@ public class ToggleCourseStatusByIdController extends CourseController {
   @Operation(summary = "Toggle course status")
   @SecurityRequirement(name = "Authorization")
   @PatchMapping("/{id}")
-  public ResponseEntity<Course> handle(
+  public ResponseEntity<CourseResponseDTO> handle(
       @PathVariable
       String id
   ) {
@@ -42,7 +42,7 @@ public class ToggleCourseStatusByIdController extends CourseController {
     var updatedCourse = toggleCourseStatusByIdAction.execute(id);
 
     return updatedCourse != null
-        ? ResponseEntity.ok(updatedCourse)
+        ? ResponseEntity.ok(CourseResponseDTO.fromEntity(updatedCourse))
         : ResponseEntity.noContent().build();
   }
 }
