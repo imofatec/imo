@@ -1,7 +1,8 @@
 package com.imo.backend.contexts.journey_tracking.events;
 
 import com.imo.backend.contexts.journey_tracking.Progress;
-import com.imo.backend.contexts.journey_tracking.policies.ProgressPolicy;
+import com.imo.backend.contexts.common.Entity;
+import com.imo.backend.contexts.catalog.lesson.repositories.LessonRepository;
 import com.imo.backend.contexts.journey_tracking.repositories.ProgressRepository;
 import org.springframework.modulith.events.ApplicationModuleListener;
 import org.springframework.stereotype.Component;
@@ -12,14 +13,14 @@ import java.util.List;
 public class ProgressEventListener {
   private final ProgressRepository progressRepository;
 
-  private final ProgressPolicy progressPolicy;
+  private final LessonRepository lessonRepository;
 
   public ProgressEventListener(
       ProgressRepository progressRepository,
-      ProgressPolicy progressPolicy
+      LessonRepository lessonRepository
   ) {
     this.progressRepository = progressRepository;
-    this.progressPolicy = progressPolicy;
+    this.lessonRepository = lessonRepository;
   }
 
   @ApplicationModuleListener
@@ -33,7 +34,12 @@ public class ProgressEventListener {
       progressList = this.progressRepository.findProgressByCourseId(courseId, page, size);
 
       progressList.forEach(progress -> {
-        boolean changed = this.progressPolicy.reevaluate(progress);
+         List<String> existingLessonsIds = this.lessonRepository.findAllByCourseId(progress.getCourseId())
+        .stream()
+        .map(Entity::getId)
+        .toList();
+        
+        boolean changed = progress.assertReevaluateStructure(existingLessonsIds);
 
         if (changed) {
           this.progressRepository.save(progress);
