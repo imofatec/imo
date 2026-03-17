@@ -3,9 +3,8 @@ package com.imo.backend.contexts.catalog.course.services.impl;
 import com.imo.backend.contexts.catalog.course.Course;
 import com.imo.backend.contexts.catalog.course.actions.UpdateCourseByIdAction;
 import com.imo.backend.contexts.catalog.course.actions.inputs.UpdateCourseByIdInput;
-import com.imo.backend.contexts.catalog.course.guards.GetCourseByIdGuard;
-import com.imo.backend.contexts.catalog.course.guards.GetCoursesByContributorIdGuard;
 import com.imo.backend.contexts.catalog.course.http.dtos.UpdateCourseByIdRequest;
+import com.imo.backend.contexts.catalog.course.repositories.CourseRepository;
 import com.imo.backend.contexts.catalog.course.services.UpdateCourseByIdService;
 import com.imo.backend.contexts.common.Slug;
 import com.imo.backend.contexts.common.exceptions.custom.ConflictException;
@@ -15,23 +14,19 @@ import org.springframework.stereotype.Service;
 public class UpdateCourseByIdServiceImpl implements UpdateCourseByIdService {
   private final UpdateCourseByIdAction updateCourseByIdAction;
 
-  private final GetCourseByIdGuard getCourseByIdGuard;
-
-  private final GetCoursesByContributorIdGuard getCoursesByContributorIdGuard;
+  private final CourseRepository courseRepository;
 
   public UpdateCourseByIdServiceImpl(
       UpdateCourseByIdAction updateCourseByIdAction,
-      GetCourseByIdGuard getCourseByIdGuard,
-      GetCoursesByContributorIdGuard getCoursesByContributorIdGuard
+      CourseRepository courseRepository
   ) {
     this.updateCourseByIdAction = updateCourseByIdAction;
-    this.getCourseByIdGuard = getCourseByIdGuard;
-    this.getCoursesByContributorIdGuard = getCoursesByContributorIdGuard;
+    this.courseRepository = courseRepository;
   }
 
   @Override
   public Course execute(String courseId, UpdateCourseByIdRequest fieldsToUpdateCourse) {
-    Course course = this.getCourseByIdGuard.execute(courseId);
+    Course course = this.courseRepository.findByIdOrThrow(courseId);
 
     if (fieldsToUpdateCourse.name() != null) {
       this.checkConflictContributorCourse(
@@ -57,8 +52,7 @@ public class UpdateCourseByIdServiceImpl implements UpdateCourseByIdService {
       String contributorId,
       String maybeNewSlug
   ) {
-    var existingContributorCourse = this.getCoursesByContributorIdGuard
-        .execute(contributorId)
+    var existingContributorCourse = this.courseRepository.findAllByContributorId(contributorId)
         .stream()
         .anyMatch(course -> course.getName().slug().equals(maybeNewSlug) && !course
             .getId()

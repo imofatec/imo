@@ -19,7 +19,7 @@ public class GetCertificateE2ETest extends BaseE2ETest {
 
     String token = E2EFlowHelper.createAndAuthenticateUser();
     CourseDetailsDTO courseDetailsDTO = E2EFlowHelper.createCourseAndReturnDetails(token, 5);
-    String courseId = courseDetailsDTO.course().getId();
+    String courseId = courseDetailsDTO.course().id();
 
     log.info("Curso criado com ID: {} e {} aulas", courseId, courseDetailsDTO.lessons().size());
 

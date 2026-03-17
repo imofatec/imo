@@ -1,7 +1,7 @@
 package com.imo.backend.contexts.journey_tracking.controllers;
 
-import com.imo.backend.contexts.journey_tracking.ProgressDetails;
-import com.imo.backend.contexts.journey_tracking.guards.GetProgressDetailsByUserIdAndCourseIdGuard;
+import com.imo.backend.contexts.journey_tracking.controllers.dtos.ProgressDetailsDTO;
+import com.imo.backend.contexts.journey_tracking.repositories.ProgressRepository;
 import com.imo.backend.contexts.common.MongoDB;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -13,24 +13,22 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class GetProgressByUserIdNCourseIdController extends ProgressController {
-  private final GetProgressDetailsByUserIdAndCourseIdGuard getProgressDetailsByUserIdAndCourseIdGuard;
+  private final ProgressRepository progressRepository;
 
-  public GetProgressByUserIdNCourseIdController(GetProgressDetailsByUserIdAndCourseIdGuard getProgressDetailsByUserIdAndCourseIdGuard) {
-    this.getProgressDetailsByUserIdAndCourseIdGuard = getProgressDetailsByUserIdAndCourseIdGuard;
+  public GetProgressByUserIdNCourseIdController(ProgressRepository progressRepository) {
+    this.progressRepository = progressRepository;
   }
 
   @Operation(summary = "Get progress details of a course by logged user")
   @SecurityRequirement(name = "Authorization")
   @GetMapping("/details/{courseId}")
-  public ResponseEntity<ProgressDetails> handle(
+  public ResponseEntity<ProgressDetailsDTO> handle(
       @PathVariable
       String courseId
   ) {
     MongoDB.validateObjectId(courseId);
     var userId = SecurityContextHolder.getContext().getAuthentication().getName();
-    return ResponseEntity.ok(this.getProgressDetailsByUserIdAndCourseIdGuard.execute(
-        userId,
-        courseId
-    ));
+    var progressDetails = this.progressRepository.findProgressDetailsOrThrow(userId, courseId);
+    return ResponseEntity.ok(ProgressDetailsDTO.fromProgressDetails(progressDetails));
   }
 }
