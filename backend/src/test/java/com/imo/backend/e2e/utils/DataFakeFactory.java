@@ -56,4 +56,8 @@ public class DataFakeFactory {
     return faker.lorem().characters(10, 300);
   }
 
+  public static String generateValidId() {
+    return faker.internet().uuid();
+  }
+
 }

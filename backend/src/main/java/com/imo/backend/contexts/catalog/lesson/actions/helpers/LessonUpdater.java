@@ -1,20 +1,19 @@
 package com.imo.backend.contexts.catalog.lesson.actions.helpers;
 
 import com.imo.backend.contexts.catalog.lesson.Lesson;
-import com.imo.backend.contexts.catalog.lesson.actions.inputs.UpdateLessonInput;
-
+import com.imo.backend.contexts.catalog.lesson.actions.commands.UpdateLessonCommand;
 public class LessonUpdater {
-  public static void apply(Lesson lesson, UpdateLessonInput dto) {
-    if (dto.title() != null) {
-      lesson.setTitle(dto.title());
+  public static void apply(Lesson lesson, UpdateLessonCommand command) {
+    if (command.title() != null) {
+      lesson.setTitle(command.title());
     }
 
-    if (dto.youtubeLink() != null) {
-      lesson.setYoutubeLink(Lesson.formatYoutubeLink(dto.youtubeLink()));
+    if (command.youtubeLink() != null) {
+      lesson.setYoutubeLink(Lesson.formatYoutubeLink(command.youtubeLink()));
     }
 
-    if (dto.description() != null) {
-      lesson.setDescription(dto.description());
+    if (command.description() != null) {
+      lesson.setDescription(command.description());
     }
   }
 }

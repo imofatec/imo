@@ -2,7 +2,7 @@ package com.imo.backend.contexts.catalog.course.services.impl;
 
 import com.imo.backend.contexts.catalog.course.Course;
 import com.imo.backend.contexts.catalog.course.actions.UpdateCourseByIdAction;
-import com.imo.backend.contexts.catalog.course.actions.inputs.UpdateCourseByIdInput;
+import com.imo.backend.contexts.catalog.course.actions.commands.UpdateCourseByIdCommand;
 import com.imo.backend.contexts.catalog.course.http.dtos.UpdateCourseByIdRequest;
 import com.imo.backend.contexts.catalog.course.repositories.CourseRepository;
 import com.imo.backend.contexts.catalog.course.services.UpdateCourseByIdService;
@@ -36,15 +36,9 @@ public class UpdateCourseByIdServiceImpl implements UpdateCourseByIdService {
       );
     }
 
-    UpdateCourseByIdInput input = new UpdateCourseByIdInput(
-        fieldsToUpdateCourse.name(),
-        fieldsToUpdateCourse.category(),
-        fieldsToUpdateCourse.level(),
-        fieldsToUpdateCourse.description(),
-        null,
-        null
-    );
-    return this.updateCourseByIdAction.execute(courseId, input);
+    UpdateCourseByIdCommand command = fieldsToUpdateCourse.toCommand(courseId);
+
+    return this.updateCourseByIdAction.execute(command);
   }
 
   private void checkConflictContributorCourse(

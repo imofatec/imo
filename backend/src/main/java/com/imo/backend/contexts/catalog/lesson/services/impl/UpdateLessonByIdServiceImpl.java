@@ -3,7 +3,7 @@ package com.imo.backend.contexts.catalog.lesson.services.impl;
 import com.imo.backend.contexts.common.exceptions.custom.ConflictException;
 import com.imo.backend.contexts.catalog.lesson.Lesson;
 import com.imo.backend.contexts.catalog.lesson.actions.UpdateLessonByIdAction;
-import com.imo.backend.contexts.catalog.lesson.actions.inputs.UpdateLessonInput;
+import com.imo.backend.contexts.catalog.lesson.actions.commands.UpdateLessonCommand;
 import com.imo.backend.contexts.catalog.lesson.repositories.LessonRepository;
 import com.imo.backend.contexts.catalog.lesson.services.UpdateLessonByIdService;
 import org.springframework.stereotype.Service;
@@ -25,8 +25,8 @@ public class UpdateLessonByIdServiceImpl implements UpdateLessonByIdService {
   }
 
   @Override
-  public Lesson execute(String lessonId, UpdateLessonInput input) {
-    Lesson foundLesson = this.lessonRepository.findByIdOrThrow(lessonId);
+  public Lesson execute(UpdateLessonCommand command) {
+    Lesson foundLesson = this.lessonRepository.findByIdOrThrow(command.lessonId());
     List<Lesson> lessons = this.lessonRepository.findAllByCourseId(foundLesson.getCourseId());
 
     lessons.forEach(existingLesson -> {
@@ -34,15 +34,15 @@ public class UpdateLessonByIdServiceImpl implements UpdateLessonByIdService {
         return;
       }
 
-      if (existingLesson.getTitle().equals(input.title())) {
+      if (existingLesson.getTitle().equals(command.title())) {
         throw new ConflictException("Já existe uma aula com esse título");
       }
 
-      if (existingLesson.getYoutubeLink().equals(input.youtubeLink())) {
+      if (existingLesson.getYoutubeLink().equals(command.youtubeLink())) {
         throw new ConflictException("Já existe uma aula com este link de vídeo");
       }
     });
 
-    return this.updateLessonByIdAction.execute(lessonId, input);
+    return this.updateLessonByIdAction.execute(command);
   }
 }

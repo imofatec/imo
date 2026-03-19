@@ -1,7 +1,7 @@
 package com.imo.backend.contexts.catalog.lesson.http.controllers;
 
 import com.imo.backend.contexts.catalog.course.http.middlewares.ValidateUserCourseAccessService;
-import com.imo.backend.contexts.catalog.lesson.actions.inputs.CreateLessonInput;
+import com.imo.backend.contexts.catalog.lesson.http.dtos.CreateLessonRequest;
 import com.imo.backend.contexts.catalog.lesson.http.dtos.LessonResponseDTO;
 import com.imo.backend.contexts.catalog.lesson.services.CreateLessonService;
 import com.imo.backend.contexts.common.MongoDB;
@@ -42,13 +42,13 @@ public class CreateLessonController extends LessonController {
       String courseId,
       @Valid
       @RequestBody
-      CreateLessonInput dto
+      CreateLessonRequest dto
   ) {
     MongoDB.validateObjectId(courseId);
     String userId = SecurityContextHolder.getContext().getAuthentication().getName();
     this.validateUserCourseAccessService.execute(userId, courseId);
 
-    var newLesson = this.createLessonService.execute(dto, courseId);
+    var newLesson = this.createLessonService.execute(dto.toCommand(), courseId);
 
     return new ResponseEntity<>(LessonResponseDTO.fromEntity(newLesson), HttpStatus.CREATED);
   }

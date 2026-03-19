@@ -2,7 +2,7 @@ package com.imo.backend.contexts.catalog.course.events;
 
 import com.imo.backend.contexts.catalog.course.actions.IncLessonsCountByIdAction;
 import com.imo.backend.contexts.catalog.course.actions.UpdateCourseByIdAction;
-import com.imo.backend.contexts.catalog.course.actions.inputs.UpdateCourseByIdInput;
+import com.imo.backend.contexts.catalog.course.actions.commands.UpdateCourseByIdCommand;
 import org.springframework.modulith.events.ApplicationModuleListener;
 import org.springframework.stereotype.Component;
 
@@ -23,9 +23,14 @@ public class CourseEventListener {
   @ApplicationModuleListener
   public void handle(UpdateCourseLessonsCountEvent event) {
     this.updateCourseByIdAction.execute(
+      new UpdateCourseByIdCommand(
         event.courseId(),
-        new UpdateCourseByIdInput(null, null, null, null, event.newCount(), null)
+        null, null, null, null,
+        event.newCount(),
+        null
+      )
     );
+        
   }
 
   @ApplicationModuleListener
@@ -36,8 +41,11 @@ public class CourseEventListener {
   @ApplicationModuleListener
   public void handle(UpdateCourseFirstYoutubeLinkEvent event) {
     this.updateCourseByIdAction.execute(
+      new UpdateCourseByIdCommand(
         event.courseId(),
-        new UpdateCourseByIdInput(null, null, null, null, null, event.newFirstYoutubeLink())
-    );
+        null, null, null, null, null,
+        event.newFirstYoutubeLink()
+      )
+    );        
   }
 }

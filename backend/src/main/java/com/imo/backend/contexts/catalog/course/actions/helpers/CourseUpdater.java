@@ -1,36 +1,36 @@
 package com.imo.backend.contexts.catalog.course.actions.helpers;
 
 import com.imo.backend.contexts.catalog.course.Course;
-import com.imo.backend.contexts.catalog.course.actions.inputs.UpdateCourseByIdInput;
+import com.imo.backend.contexts.catalog.course.actions.commands.UpdateCourseByIdCommand;
 import com.imo.backend.contexts.catalog.course.value_objects.Category;
 import com.imo.backend.contexts.catalog.course.value_objects.CourseName;
 import com.imo.backend.contexts.catalog.course.value_objects.Level;
 import com.imo.backend.contexts.catalog.lesson.Lesson;
 
 public class CourseUpdater {
-  public static void apply(Course course, UpdateCourseByIdInput input) {
-    if (input.name() != null) {
-      course.setName(new CourseName(input.name()));
+  public static void apply(Course course, UpdateCourseByIdCommand command) {
+    if (command.name() != null) {
+      course.setName(new CourseName(command.name()));
     }
 
-    if (input.category() != null) {
-      course.setCategory(new Category(input.category()));
+    if (command.category() != null) {
+      course.setCategory(new Category(command.category()));
     }
 
-    if (input.level() != null) {
-      course.setLevel(new Level(input.level()));
+    if (command.level() != null) {
+      course.setLevel(new Level(command.level()));
     }
 
-    if (input.description() != null) {
-      course.setDescription(input.description());
+    if (command.description() != null) {
+      course.setDescription(command.description());
     }
 
-    if (input.lessonsCount() != null) {
-      course.setLessonsCount(input.lessonsCount());
+    if (command.lessonsCount() != null) {
+      course.setLessonsCount(command.lessonsCount());
     }
 
-    if (input.firstLessonYoutubeLink() != null) {
-      course.setFirstLessonYoutubeLink(Lesson.formatYoutubeLink(input.firstLessonYoutubeLink()));
+    if (command.firstLessonYoutubeLink() != null) {
+      course.setFirstLessonYoutubeLink(Lesson.formatYoutubeLink(command.firstLessonYoutubeLink()));
     }
   }
 }

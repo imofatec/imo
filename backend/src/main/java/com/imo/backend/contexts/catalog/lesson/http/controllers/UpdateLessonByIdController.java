@@ -2,8 +2,8 @@ package com.imo.backend.contexts.catalog.lesson.http.controllers;
 
 import com.imo.backend.contexts.catalog.course.http.middlewares.ValidateUserCourseAccessService;
 import com.imo.backend.contexts.catalog.course.repositories.CourseRepository;
-import com.imo.backend.contexts.catalog.lesson.actions.inputs.UpdateLessonInput;
 import com.imo.backend.contexts.catalog.lesson.http.dtos.LessonResponseDTO;
+import com.imo.backend.contexts.catalog.lesson.http.dtos.UpdateLessonRequest;
 import com.imo.backend.contexts.catalog.lesson.services.UpdateLessonByIdService;
 import com.imo.backend.contexts.common.MongoDB;
 import io.swagger.v3.oas.annotations.Operation;
@@ -42,14 +42,14 @@ public class UpdateLessonByIdController extends LessonController {
       String id,
       @Valid
       @RequestBody
-      UpdateLessonInput dto
+      UpdateLessonRequest dto
   ) {
     MongoDB.validateObjectId(id);
     String userId = SecurityContextHolder.getContext().getAuthentication().getName();
     var existingCourse = this.courseRepository.findByLessonIdOrThrow(id);
     this.validateUserCourseAccessService.execute(userId, existingCourse.getId());
 
-    var updatedLesson = this.updateLessonByIdService.execute(id, dto);
+    var updatedLesson = this.updateLessonByIdService.execute(dto.toCommand(id));
 
     return updatedLesson != null
         ? ResponseEntity.ok(LessonResponseDTO.fromEntity(updatedLesson))

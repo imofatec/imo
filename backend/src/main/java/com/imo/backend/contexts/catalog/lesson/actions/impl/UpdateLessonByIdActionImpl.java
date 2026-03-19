@@ -3,8 +3,8 @@ package com.imo.backend.contexts.catalog.lesson.actions.impl;
 import com.imo.backend.contexts.common.exceptions.custom.NotFoundException;
 import com.imo.backend.contexts.catalog.lesson.Lesson;
 import com.imo.backend.contexts.catalog.lesson.actions.UpdateLessonByIdAction;
+import com.imo.backend.contexts.catalog.lesson.actions.commands.UpdateLessonCommand;
 import com.imo.backend.contexts.catalog.lesson.actions.helpers.LessonUpdater;
-import com.imo.backend.contexts.catalog.lesson.actions.inputs.UpdateLessonInput;
 import com.imo.backend.contexts.catalog.lesson.repositories.LessonRepository;
 import org.springframework.stereotype.Service;
 
@@ -19,12 +19,12 @@ public class UpdateLessonByIdActionImpl implements UpdateLessonByIdAction {
   }
 
   @Override
-  public Lesson execute(String id, UpdateLessonInput fieldsToUpdateLesson) {
+  public Lesson execute(UpdateLessonCommand command) {
     Lesson lesson = this.lessonRepository
-        .findById(id)
+        .findById(command.lessonId())
         .orElseThrow(() -> new NotFoundException("Aula não encontrada"));
 
-    LessonUpdater.apply(lesson, fieldsToUpdateLesson);
+    LessonUpdater.apply(lesson, command);
 
     return this.lessonRepository.save(lesson);
   }

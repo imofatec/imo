@@ -3,8 +3,8 @@ package com.imo.backend.contexts.catalog.course.actions.impl;
 import com.imo.backend.contexts.common.exceptions.custom.NotFoundException;
 import com.imo.backend.contexts.catalog.course.Course;
 import com.imo.backend.contexts.catalog.course.actions.UpdateCourseByIdAction;
+import com.imo.backend.contexts.catalog.course.actions.commands.UpdateCourseByIdCommand;
 import com.imo.backend.contexts.catalog.course.actions.helpers.CourseUpdater;
-import com.imo.backend.contexts.catalog.course.actions.inputs.UpdateCourseByIdInput;
 import com.imo.backend.contexts.catalog.course.repositories.CourseRepository;
 import org.springframework.stereotype.Service;
 
@@ -17,11 +17,11 @@ public class UpdateCourseByIdActionImpl implements UpdateCourseByIdAction {
   }
 
   @Override
-  public Course execute(String courseId, UpdateCourseByIdInput fieldsToUpdateCourse) {
+  public Course execute(UpdateCourseByIdCommand command) {
     Course course = courseRepository
-        .findById(courseId)
+        .findById(command.id())
         .orElseThrow(() -> new NotFoundException("Curso não encontrado"));
-    CourseUpdater.apply(course, fieldsToUpdateCourse);
+    CourseUpdater.apply(course, command);
     return this.courseRepository.save(course);
   }
 }

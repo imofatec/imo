@@ -3,7 +3,8 @@ package com.imo.backend.config.mongodb.populate;
 import com.imo.backend.contexts.catalog.course.http.dtos.CreateCourseRequest;
 import com.imo.backend.contexts.catalog.course.orchestrators.CreateCourseOrchestrator;
 import com.imo.backend.contexts.catalog.course.value_objects.Categories;
-import com.imo.backend.contexts.catalog.lesson.actions.inputs.CreateLessonInput;
+import com.imo.backend.contexts.catalog.lesson.http.dtos.CreateLessonRequest;
+
 import net.datafaker.Faker;
 import org.springframework.stereotype.Service;
 
@@ -23,13 +24,13 @@ public class PopulateCourses {
 
   public void execute(String contributorId, int qyt) {
     for (int i = 0; i < qyt; i++) {
-      List<CreateLessonInput> lessons = new ArrayList<>();
+      List<CreateLessonRequest> lessons = new ArrayList<>();
 
       for (int j = 0; j < this.generateBiasedLessonsQty(3, 10); j++) {
         String videoId = faker.regexify("[\\w-]{11}");
         var youtubeLink = "https://www.youtube.com/watch?v=" + videoId;
 
-        CreateLessonInput createLessonInput = new CreateLessonInput(
+        CreateLessonRequest createLessonInput = new CreateLessonRequest(
             faker
                 .lorem()
                 .characters(10, 50), faker.lorem().characters(10, 300), youtubeLink
@@ -42,7 +43,8 @@ public class PopulateCourses {
           faker.options().option(Categories.class),
           faker.options().option("Iniciante", "Intermediário", "Avançado"),
           faker.lorem().characters(10, 300),
-          lessons
+          lessons,
+          contributorId
       );
 
       this.createCourseOrchestrator.execute(createCourseRequest, contributorId);

@@ -1,7 +1,7 @@
 package com.imo.backend.contexts.catalog.course.orchestrators;
 
 import com.imo.backend.contexts.catalog.course.actions.CreateCourseAction;
-import com.imo.backend.contexts.catalog.course.actions.inputs.CreateCourseInput;
+import com.imo.backend.contexts.catalog.course.actions.commands.CreateCourseCommand;
 import com.imo.backend.contexts.catalog.course.http.dtos.CourseDetailsDTO;
 import com.imo.backend.contexts.catalog.course.http.dtos.CourseResponseDTO;
 import com.imo.backend.contexts.catalog.course.http.dtos.CreateCourseRequest;
@@ -35,18 +35,13 @@ public class CreateCourseOrchestrator {
     var potentialNewSlugCourse = Slug.create(createCourseRequest.name());
     this.checkConflictContributorCourse(contributorId, potentialNewSlugCourse);
 
-    var newCourse = this.createCourseAction.execute(new CreateCourseInput(
-        createCourseRequest.name(),
-        createCourseRequest.category(),
-        createCourseRequest.level(),
-        createCourseRequest.description(),
-        createCourseRequest.lessons(),
-        contributorId
-    ));
+    CreateCourseCommand courseCommand = createCourseRequest.toCommand(contributorId);
+
+    var newCourse = this.createCourseAction.execute(courseCommand);
 
     var newLessons = this.createLessonService.execute(
-        createCourseRequest.lessons(),
-        newCourse.getId()
+          courseCommand.lessons(),
+          newCourse.getId()
     );
 
     return new CourseDetailsDTO(

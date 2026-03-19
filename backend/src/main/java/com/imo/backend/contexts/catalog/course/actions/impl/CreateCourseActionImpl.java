@@ -2,7 +2,7 @@ package com.imo.backend.contexts.catalog.course.actions.impl;
 
 import com.imo.backend.contexts.catalog.course.Course;
 import com.imo.backend.contexts.catalog.course.actions.CreateCourseAction;
-import com.imo.backend.contexts.catalog.course.actions.inputs.CreateCourseInput;
+import com.imo.backend.contexts.catalog.course.actions.commands.CreateCourseCommand;
 import com.imo.backend.contexts.catalog.course.factories.CourseFactory;
 import com.imo.backend.contexts.catalog.course.repositories.CourseRepository;
 import org.springframework.stereotype.Service;
@@ -16,7 +16,7 @@ public class CreateCourseActionImpl implements CreateCourseAction {
   }
 
   @Override
-  public Course execute(CreateCourseInput input) {
-    return this.courseRepository.save(CourseFactory.createCourse(input));
+  public Course execute(CreateCourseCommand command) {
+    return this.courseRepository.save(CourseFactory.createCourse(command));
   }
 }

@@ -1,8 +1,7 @@
 package com.imo.backend.contexts.catalog.lesson.actions;
 
 import com.imo.backend.contexts.catalog.lesson.Lesson;
-import com.imo.backend.contexts.catalog.lesson.actions.inputs.UpdateLessonInput;
-
+import com.imo.backend.contexts.catalog.lesson.actions.commands.UpdateLessonCommand;
 public interface UpdateLessonByIdAction {
-  Lesson execute(String id, UpdateLessonInput fieldsToUpdateLesson);
+  Lesson execute(UpdateLessonCommand command);
 }
