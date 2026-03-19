@@ -1,5 +1,6 @@
 package com.imo.backend.contexts.catalog.lesson;
 
+import com.imo.backend.contexts.catalog.lesson.actions.commands.UpdateLessonCommand;
 import com.imo.backend.contexts.common.Entity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -78,5 +79,19 @@ public class Lesson extends Entity {
 
   public static void sortLessonsByIndexInCourse(List<Lesson> lessons) {
     lessons.sort(Comparator.comparing(Lesson::getIndexInCourse));
+  }
+
+  public static void applyUpdate(Lesson lesson, UpdateLessonCommand command) {
+    if (command.title() != null) {
+      lesson.setTitle(command.title());
+    }
+
+    if (command.youtubeLink() != null) {
+      lesson.setYoutubeLink(command.youtubeLink());
+    }
+
+    if (command.description() != null) {
+      lesson.setDescription(command.description());
+    }
   }
 }

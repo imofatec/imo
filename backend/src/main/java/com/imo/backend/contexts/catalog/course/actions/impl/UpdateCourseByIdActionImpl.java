@@ -4,8 +4,8 @@ import com.imo.backend.contexts.common.exceptions.custom.NotFoundException;
 import com.imo.backend.contexts.catalog.course.Course;
 import com.imo.backend.contexts.catalog.course.actions.UpdateCourseByIdAction;
 import com.imo.backend.contexts.catalog.course.actions.commands.UpdateCourseByIdCommand;
-import com.imo.backend.contexts.catalog.course.actions.helpers.CourseUpdater;
 import com.imo.backend.contexts.catalog.course.repositories.CourseRepository;
+
 import org.springframework.stereotype.Service;
 
 @Service
@@ -21,7 +21,8 @@ public class UpdateCourseByIdActionImpl implements UpdateCourseByIdAction {
     Course course = courseRepository
         .findById(command.id())
         .orElseThrow(() -> new NotFoundException("Curso não encontrado"));
-    CourseUpdater.apply(course, command);
+        
+    Course.applyUpdate(course, command);
     return this.courseRepository.save(course);
   }
 }
