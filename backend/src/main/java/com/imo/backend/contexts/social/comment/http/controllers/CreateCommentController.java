@@ -1,6 +1,7 @@
 package com.imo.backend.contexts.social.comment.http.controllers;
 
 import com.imo.backend.contexts.social.comment.Comment;
+import com.imo.backend.contexts.social.comment.http.dtos.CommentDTO;
 import com.imo.backend.contexts.social.comment.actions.CreateCommentAction;
 import com.imo.backend.contexts.social.comment.actions.inputs.CreateCommentInput;
 import com.imo.backend.contexts.common.MongoDB;
@@ -27,7 +28,7 @@ public class CreateCommentController extends CommentController {
   @Operation(summary = "Add comment in a lesson")
   @SecurityRequirement(name = "Authorization")
   @PostMapping("/{lessonId}")
-  public ResponseEntity<Comment> handle(
+  public ResponseEntity<CommentDTO> handle(
       @PathVariable
       String lessonId,
       @Valid
@@ -39,7 +40,7 @@ public class CreateCommentController extends CommentController {
 
     Comment newComment = this.createCommentAction.execute(createCommentInput, userId, lessonId);
 
-    return ResponseEntity.status(HttpStatus.CREATED).body(newComment);
+    return ResponseEntity.status(HttpStatus.CREATED).body(CommentDTO.fromEntity(newComment));
   }
 
 }
