@@ -2,8 +2,9 @@ package com.imo.backend.contexts.social.comment.actions.impl;
 
 import com.imo.backend.contexts.social.comment.Comment;
 import com.imo.backend.contexts.social.comment.actions.CreateCommentAction;
-import com.imo.backend.contexts.social.comment.actions.inputs.CreateCommentInput;
+import com.imo.backend.contexts.social.comment.commands.CreateCommentCommand;
 import com.imo.backend.contexts.social.comment.repositories.CommentRepository;
+
 import org.springframework.stereotype.Service;
 
 @Service
@@ -15,12 +16,12 @@ public class CreateCommentActionImpl implements CreateCommentAction {
   }
 
   @Override
-  public Comment execute(CreateCommentInput createCommentInput, String userId, String lessonId) {
+  public Comment execute(CreateCommentCommand createCommentCommand, String userId, String lessonId) {
     Comment comment = new Comment(
         userId,
         lessonId,
-        createCommentInput.parentId(),
-        createCommentInput.content()
+        createCommentCommand.parentId(),
+        createCommentCommand.content()
     );
 
     return this.commentRepository.save(comment);

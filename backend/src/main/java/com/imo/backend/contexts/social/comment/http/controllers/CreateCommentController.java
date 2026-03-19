@@ -2,8 +2,9 @@ package com.imo.backend.contexts.social.comment.http.controllers;
 
 import com.imo.backend.contexts.social.comment.Comment;
 import com.imo.backend.contexts.social.comment.http.dtos.CommentDTO;
+import com.imo.backend.contexts.social.comment.http.dtos.CreateCommentRequest;
 import com.imo.backend.contexts.social.comment.actions.CreateCommentAction;
-import com.imo.backend.contexts.social.comment.actions.inputs.CreateCommentInput;
+import com.imo.backend.contexts.social.comment.commands.CreateCommentCommand;
 import com.imo.backend.contexts.common.MongoDB;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -33,12 +34,16 @@ public class CreateCommentController extends CommentController {
       String lessonId,
       @Valid
       @RequestBody
-      CreateCommentInput createCommentInput
+      CreateCommentRequest createCommentRequest
   ) {
     MongoDB.validateObjectId(lessonId);
     String userId = SecurityContextHolder.getContext().getAuthentication().getName();
 
-    Comment newComment = this.createCommentAction.execute(createCommentInput, userId, lessonId);
+    Comment newComment = this.createCommentAction.execute(
+        new CreateCommentCommand(createCommentRequest.content(), createCommentRequest.parentId()),
+        userId,
+        lessonId
+    );
 
     return ResponseEntity.status(HttpStatus.CREATED).body(CommentDTO.fromEntity(newComment));
   }
