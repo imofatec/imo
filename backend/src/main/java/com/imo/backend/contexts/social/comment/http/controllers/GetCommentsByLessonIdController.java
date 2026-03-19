@@ -1,6 +1,6 @@
 package com.imo.backend.contexts.social.comment.http.controllers;
 
-import com.imo.backend.contexts.social.comment.Comment;
+import com.imo.backend.contexts.social.comment.http.dtos.CommentDTO;
 import com.imo.backend.contexts.common.MongoDB;
 import com.imo.backend.contexts.common.Pageable;
 import com.imo.backend.contexts.social.comment.repositories.CommentRepository;
@@ -26,7 +26,7 @@ public class GetCommentsByLessonIdController extends CommentController {
 
   @Operation(summary = "Get all comments by lessonId")
   @GetMapping("/{lessonId}")
-  public ResponseEntity<List<Comment>> handle(
+  public ResponseEntity<List<CommentDTO>> handle(
       @PathVariable
       String lessonId,
       @RequestParam(required = false)
@@ -40,6 +40,10 @@ public class GetCommentsByLessonIdController extends CommentController {
         ? this.commentRepository.findAllByLessonId(lessonId, Pageable.fromPageSize(page, size))
         : this.commentRepository.findAllByLessonId(lessonId);
 
-    return new ResponseEntity<>(comments, HttpStatus.OK);
+    var commentsDTO = comments.stream()
+        .map(CommentDTO::fromEntity)
+        .toList();
+
+    return new ResponseEntity<>(commentsDTO, HttpStatus.OK);
   }
 }
