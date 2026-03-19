@@ -1,6 +1,6 @@
 package com.imo.backend.contexts.certification.http.controllers;
 
-import com.imo.backend.contexts.certification.orchestrators.IssueCertificateOrchestrator;
+import com.imo.backend.contexts.certification.usecases.IssueCertificateUseCase;
 import com.imo.backend.contexts.common.MongoDB;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -15,10 +15,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class IssueCertificateController extends CertificateController {
-  private final IssueCertificateOrchestrator issueCertificateOrchestrator;
+  private final IssueCertificateUseCase issueCertificateUseCase;
 
-  public IssueCertificateController(IssueCertificateOrchestrator issueCertificateOrchestrator) {
-    this.issueCertificateOrchestrator = issueCertificateOrchestrator;
+  public IssueCertificateController(IssueCertificateUseCase issueCertificateUseCase) {
+    this.issueCertificateUseCase = issueCertificateUseCase;
   }
 
   @Operation(summary = "Issue certificate by course id")
@@ -31,7 +31,7 @@ public class IssueCertificateController extends CertificateController {
     MongoDB.validateObjectId(courseId);
     HttpHeaders headers = new HttpHeaders();
     String userId = SecurityContextHolder.getContext().getAuthentication().getName();
-    byte[] pdf = this.issueCertificateOrchestrator.execute(userId, courseId, headers);
+    byte[] pdf = this.issueCertificateUseCase.execute(userId, courseId, headers);
     return ResponseEntity.ok().headers(headers).contentType(MediaType.APPLICATION_PDF).body(pdf);
   }
 }

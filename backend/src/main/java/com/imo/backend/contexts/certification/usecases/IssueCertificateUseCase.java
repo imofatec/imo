@@ -1,10 +1,10 @@
-package com.imo.backend.contexts.certification.orchestrators;
+package com.imo.backend.contexts.certification.usecases;
 
 import com.imo.backend.contexts.certification.Certificate;
 import com.imo.backend.contexts.certification.CertificateDetails;
 import com.imo.backend.contexts.certification.CertificatePolicies;
+import com.imo.backend.contexts.certification.lib.PdfManager;
 import com.imo.backend.contexts.certification.repositories.CertificateRepository;
-import com.imo.backend.contexts.certification.services.IssueCertificateService;
 import com.imo.backend.contexts.certification.values_objects.CertificatePeriod;
 import com.imo.backend.contexts.common.exceptions.custom.NotFoundException;
 import com.imo.backend.contexts.journey_tracking.Progress;
@@ -14,19 +14,19 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 
 @Service
-public class IssueCertificateOrchestrator {
+public class IssueCertificateUseCase {
   private final CertificateRepository certificateRepository;
   private final CertificatePolicies certificatePolicies;
-  private final IssueCertificateService issueCertificateService;
+  private final PdfManager pdfManager;
 
-  public IssueCertificateOrchestrator(
+  public IssueCertificateUseCase(
       CertificateRepository certificateRepository,
       CertificatePolicies certificatePolicies,
-      IssueCertificateService issueCertificateService
+      PdfManager pdfManager
   ) {
     this.certificateRepository = certificateRepository;
     this.certificatePolicies = certificatePolicies;
-    this.issueCertificateService = issueCertificateService;
+    this.pdfManager = pdfManager;
   }
 
   public byte[] execute(String userId, String courseId, HttpHeaders headers) {
@@ -53,7 +53,7 @@ public class IssueCertificateOrchestrator {
     }
 
     this.manageHeaders(certificateDetails, headers);
-    return this.issueCertificateService.execute(certificateDetails);
+    return this.pdfManager.execute(certificateDetails);
   }
 
   private void manageHeaders(CertificateDetails certificateDetails, HttpHeaders headers) {
