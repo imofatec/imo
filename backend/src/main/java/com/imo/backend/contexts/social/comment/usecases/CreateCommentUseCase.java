@@ -1,21 +1,19 @@
-package com.imo.backend.contexts.social.comment.actions.impl;
-
-import com.imo.backend.contexts.social.comment.Comment;
-import com.imo.backend.contexts.social.comment.actions.CreateCommentAction;
-import com.imo.backend.contexts.social.comment.commands.CreateCommentCommand;
-import com.imo.backend.contexts.social.comment.repositories.CommentRepository;
+package com.imo.backend.contexts.social.comment.usecases;
 
 import org.springframework.stereotype.Service;
 
+import com.imo.backend.contexts.social.comment.Comment;
+import com.imo.backend.contexts.social.comment.commands.CreateCommentCommand;
+import com.imo.backend.contexts.social.comment.repositories.CommentRepository;
+
 @Service
-public class CreateCommentActionImpl implements CreateCommentAction {
+public class CreateCommentUseCase {
   private final CommentRepository commentRepository;
 
-  public CreateCommentActionImpl(CommentRepository commentRepository) {
+  public CreateCommentUseCase(CommentRepository commentRepository) {
     this.commentRepository = commentRepository;
   }
 
-  @Override
   public Comment execute(CreateCommentCommand createCommentCommand, String userId, String lessonId) {
     Comment comment = new Comment(
         userId,
