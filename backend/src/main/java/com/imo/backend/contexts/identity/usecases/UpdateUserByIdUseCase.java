@@ -1,31 +1,29 @@
-package com.imo.backend.contexts.identity.services.impl;
+package com.imo.backend.contexts.identity.usecases;
 
 import com.imo.backend.contexts.identity.User;
 import com.imo.backend.contexts.identity.commands.UpdateUserByIdCommand;
 import com.imo.backend.contexts.identity.http.dtos.UpdateUserByIdRequest;
 import com.imo.backend.contexts.identity.repositories.UserRepository;
-import com.imo.backend.contexts.identity.services.UpdatePasswordByIdService;
-import com.imo.backend.contexts.identity.services.UpdateUserByIdService;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UpdateUserByIdServiceImpl implements UpdateUserByIdService {
+public class UpdateUserByIdUseCase {
 
-  private final UpdatePasswordByIdService updatePasswordByIdService;
+  private final UpdatePasswordByIdUseCase updatePasswordByIdUseCase;
 
   private final UserRepository userRepository;
 
-  public UpdateUserByIdServiceImpl(
-      UpdatePasswordByIdService updatePasswordByIdService,
+  public UpdateUserByIdUseCase(
+      UpdatePasswordByIdUseCase updatePasswordByIdUseCase,
       UserRepository userRepository
   ) {
-    this.updatePasswordByIdService = updatePasswordByIdService;
+    this.updatePasswordByIdUseCase = updatePasswordByIdUseCase;
     this.userRepository = userRepository;
   }
 
   public User execute(String id, UpdateUserByIdRequest fieldsToUpdateUser) {
     if (fieldsToUpdateUser.password() != null) {
-      this.updatePasswordByIdService.execute(id, fieldsToUpdateUser.password());
+      this.updatePasswordByIdUseCase.execute(id, fieldsToUpdateUser.password());
     }
 
     UpdateUserByIdCommand cmd = new UpdateUserByIdCommand(

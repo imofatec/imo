@@ -1,4 +1,4 @@
-package com.imo.backend.contexts.identity.services.impl;
+package com.imo.backend.contexts.identity.usecases;
 
 import com.imo.backend.contexts.apagar_dps.Outbox;
 import com.imo.backend.contexts.apagar_dps.OutboxEvent;
@@ -8,51 +8,54 @@ import com.imo.backend.contexts.common.Pageable;
 import com.imo.backend.contexts.common.exceptions.custom.NotFoundException;
 import com.imo.backend.contexts.identity.User;
 import com.imo.backend.contexts.identity.events.ForgetPasswordEvent;
-import com.imo.backend.contexts.identity.repositories.UserRepository;
-import com.imo.backend.contexts.identity.services.VerifyForgetPasswordCodeService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Map;
 
 @Service
-public class VerifyForgetPasswordCodeServiceImpl implements VerifyForgetPasswordCodeService {
+public class UpdatePasswordByEmailCodeUseCase {
 
-  private final UserRepository userRepository;
   private final OutboxRepository<ForgetPasswordEvent> outboxRepository;
 
-  public VerifyForgetPasswordCodeServiceImpl( UserRepository userRepository,
-      OutboxRepository<ForgetPasswordEvent> outboxRepository
+  private final UpdatePasswordByIdUseCase updatePasswordByIdUseCase;
+
+  public UpdatePasswordByEmailCodeUseCase(
+      OutboxRepository<ForgetPasswordEvent> outboxRepository,
+      UpdatePasswordByIdUseCase updatePasswordByIdUseCase
   ) {
-    this.userRepository = userRepository;
     this.outboxRepository = outboxRepository;
+    this.updatePasswordByIdUseCase = updatePasswordByIdUseCase;
   }
 
-  public User execute(String userId, String code) {
-    var foundUser = this.userRepository.findByIdOrThrow(userId);
-
+  public User execute(String emailCode, String userId, String newPassword) {
     var pageNumber = 0;
     var pageSize = 10;
 
     do {
       var pageable = Pageable.fromPageSize(pageNumber, pageSize);
       var outboxes = this.outboxRepository
-          .findByStatusAndEvent(OutboxStatus.SENT, OutboxEvent.USER_FORGET_PASSWORD, pageable)
+          .findByStatusAndEvent(
+              OutboxStatus.WAITING_TO_UPDATE_PASSWORD,
+              OutboxEvent.USER_FORGET_PASSWORD,
+              pageable
+          )
           .getContent();
 
       if (outboxes.isEmpty()) {
-        throw new NotFoundException(String.format("Código %s inválido", code));
+        throw new NotFoundException(String.format("Código %s inválido", emailCode));
       }
 
-      boolean verified = this.verifyPayload(outboxes, userId, code);
+      boolean verified = this.verifyPayload(outboxes, userId, emailCode);
 
       if (verified) {
-        return foundUser;
+        return this.updatePasswordByIdUseCase.execute(userId, newPassword);
       }
 
       pageNumber++;
+
     } while (true);
   }
+
 
   private boolean verifyPayload(
       List<Outbox<ForgetPasswordEvent>> outboxes,
@@ -65,10 +68,11 @@ public class VerifyForgetPasswordCodeServiceImpl implements VerifyForgetPassword
         return false;
       }
 
-      this.outboxRepository.updateById(
-          outbox.getId(),
-          Map.of("status", OutboxStatus.WAITING_TO_UPDATE_PASSWORD)
-      );
+      var outboxesFromUser = this.outboxRepository.findByUserId(userId);
+
+      outboxesFromUser.forEach(outboxFromUser -> {
+        this.outboxRepository.deleteById(outboxFromUser.getId());
+      });
       return true;
     });
   }

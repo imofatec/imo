@@ -1,4 +1,4 @@
-package com.imo.backend.contexts.identity.services.impl;
+package com.imo.backend.contexts.identity.usecases;
 
 import com.imo.backend.contexts.identity.User;
 import com.imo.backend.contexts.identity.UserPolicies;
@@ -6,13 +6,12 @@ import com.imo.backend.contexts.identity.commands.CreateUserCommand;
 import com.imo.backend.contexts.identity.events.SendEmailConfirmationEvent;
 import com.imo.backend.contexts.identity.http.dtos.UserDTO;
 import com.imo.backend.contexts.identity.repositories.UserRepository;
-import com.imo.backend.contexts.identity.services.CreateUserService;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
-public class CreateUserServiceImpl implements CreateUserService {
+public class CreateUserUseCase {
 
   private final ApplicationEventPublisher publisher;
 
@@ -22,7 +21,7 @@ public class CreateUserServiceImpl implements CreateUserService {
 
   private final PasswordEncoder passwordEncoder;
 
-  public CreateUserServiceImpl(
+  public CreateUserUseCase(
       ApplicationEventPublisher publisher,
       UserPolicies userPolicies,
       UserRepository userRepository,
@@ -30,25 +29,23 @@ public class CreateUserServiceImpl implements CreateUserService {
   ) {
     this.publisher = publisher;
     this.userPolicies = userPolicies;
-    this.userRepository = null;
-    this.passwordEncoder = null;
+    this.userRepository = userRepository;
+    this.passwordEncoder = passwordEncoder;
   }
 
-  @Override
-  public User execute(CreateUserCommand createUserCommand) {
-
-        this.userPolicies.assertCanRegister(createUserCommand);
+  public User execute(CreateUserCommand cmd) {
+    this.userPolicies.assertCanRegister(cmd);
 
     var potentialNewUser = new User(
-        createUserCommand.name(),
-        createUserCommand.email(),
-        createUserCommand.password(),
+        cmd.name(),
+        cmd.email(),
+        cmd.password(),
         false
     );
 
-    potentialNewUser.setPassword(passwordEncoder.encode(potentialNewUser.getPassword()));
+    potentialNewUser.setPassword(this.passwordEncoder.encode(potentialNewUser.getPassword()));
 
-    User newUser = userRepository.save(potentialNewUser);
+    User newUser = this.userRepository.save(potentialNewUser);
     this.publisher.publishEvent(new SendEmailConfirmationEvent(UserDTO.fromUser(newUser)));
 
     return newUser;

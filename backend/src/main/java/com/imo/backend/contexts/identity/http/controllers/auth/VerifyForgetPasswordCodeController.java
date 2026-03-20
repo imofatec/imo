@@ -2,7 +2,7 @@ package com.imo.backend.contexts.identity.http.controllers.auth;
 
 import com.imo.backend.contexts.identity.http.controllers.UserController;
 import com.imo.backend.contexts.identity.http.dtos.UserDTO;
-import com.imo.backend.contexts.identity.services.VerifyForgetPasswordCodeService;
+import com.imo.backend.contexts.identity.usecases.VerifyForgetPasswordCodeUseCase;
 import com.imo.backend.contexts.common.MongoDB;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.ResponseEntity;
@@ -12,10 +12,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class VerifyForgetPasswordCodeController extends UserController {
-  private final VerifyForgetPasswordCodeService verifyForgetPasswordCodeService;
+  private final VerifyForgetPasswordCodeUseCase verifyForgetPasswordCodeUseCase;
 
-  public VerifyForgetPasswordCodeController(VerifyForgetPasswordCodeService verifyForgetPasswordCodeService) {
-    this.verifyForgetPasswordCodeService = verifyForgetPasswordCodeService;
+  public VerifyForgetPasswordCodeController(VerifyForgetPasswordCodeUseCase verifyForgetPasswordCodeUseCase) {
+    this.verifyForgetPasswordCodeUseCase = verifyForgetPasswordCodeUseCase;
   }
 
   @Operation(summary = "Verify the code sent to the user's email")
@@ -28,7 +28,7 @@ public class VerifyForgetPasswordCodeController extends UserController {
   ) {
     MongoDB.validateObjectId(userId);
 
-    var user = UserDTO.fromUser(this.verifyForgetPasswordCodeService.execute(userId, code));
+    var user = UserDTO.fromUser(this.verifyForgetPasswordCodeUseCase.execute(userId, code));
     return ResponseEntity.ok(user);
   }
 }
