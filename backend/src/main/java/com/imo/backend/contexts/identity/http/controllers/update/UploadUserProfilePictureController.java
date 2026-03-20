@@ -1,9 +1,8 @@
 package com.imo.backend.contexts.identity.http.controllers.update;
 
-import com.imo.backend.contexts.identity.actions.UploadUserProfilePictureAction;
 import com.imo.backend.contexts.identity.http.controllers.UserController;
 import com.imo.backend.contexts.identity.http.dtos.UserDTO;
-import com.imo.backend.lib.token.TokenManager;
+import com.imo.backend.contexts.identity.usecases.UploadUserProfilePictureUseCase;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.http.MediaType;
@@ -17,14 +16,11 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 public class UploadUserProfilePictureController extends UserController {
 
-  private final UploadUserProfilePictureAction uploadUserProfilePictureAction;
+private final UploadUserProfilePictureUseCase useCase;
 
-  public UploadUserProfilePictureController(
-      UploadUserProfilePictureAction uploadUserProfilePictureAction,
-      TokenManager tokenManager
-  ) {
-    this.uploadUserProfilePictureAction = uploadUserProfilePictureAction;
-  }
+  public UploadUserProfilePictureController(UploadUserProfilePictureUseCase useCase) {
+  this.useCase = useCase;
+}
 
   @Operation(summary = "Upload a profile picture", description = "Allow users to upload a new profile picture")
   @SecurityRequirement(name = "Authorization")
@@ -35,7 +31,7 @@ public class UploadUserProfilePictureController extends UserController {
   ) {
     String userId = SecurityContextHolder.getContext().getAuthentication().getName();
 
-    var updatedUser = UserDTO.fromUser(this.uploadUserProfilePictureAction.execute(userId, file));
+    var updatedUser = UserDTO.fromUser(this.useCase.execute(userId, file));
 
     return ResponseEntity.ok(updatedUser);
   }

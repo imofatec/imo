@@ -1,32 +1,38 @@
 package com.imo.backend.contexts.identity.services.impl;
 
 import com.imo.backend.contexts.identity.User;
-import com.imo.backend.contexts.identity.actions.UpdateUserByIdAction;
-import com.imo.backend.contexts.identity.actions.inputs.UpdateUserByIdInput;
+import com.imo.backend.contexts.identity.commands.UpdateUserByIdCommand;
+import com.imo.backend.contexts.identity.repositories.UserRepository;
 import com.imo.backend.contexts.identity.services.UpdatePasswordByIdService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 public class UpdatePasswordByIdServiceImpl implements UpdatePasswordByIdService {
-  private final UpdateUserByIdAction updateUserByIdAction;
+
+  private final UserRepository userRepository;
 
   private final PasswordEncoder passwordEncoder;
 
   public UpdatePasswordByIdServiceImpl(
-      UpdateUserByIdAction updateUserByIdAction,
-      PasswordEncoder passwordEncoder
+      PasswordEncoder passwordEncoder,
+      UserRepository userRepository
   ) {
-    this.updateUserByIdAction = updateUserByIdAction;
+    this.userRepository = userRepository;
     this.passwordEncoder = passwordEncoder;
   }
 
   public User execute(String userId, String newPassword) {
     var hashedPassword = passwordEncoder.encode(newPassword);
 
-    return this.updateUserByIdAction.execute(
-        userId,
-        new UpdateUserByIdInput(null, null, hashedPassword, null, null, null, null, null, null)
-    );
+    var foundUser = userRepository.findById(userId).orElse(null);
+
+    if (foundUser == null) {
+      return null;
+    }
+
+    User.applyUpdate(foundUser, new UpdateUserByIdCommand(null, null, hashedPassword, null, null, null, null, null, null));
+
+    return this.userRepository.save(foundUser);
   }
 }

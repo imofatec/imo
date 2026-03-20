@@ -1,5 +1,6 @@
 package com.imo.backend.contexts.identity.repositories;
 
+import com.imo.backend.contexts.common.exceptions.custom.NotFoundException;
 import com.imo.backend.contexts.identity.User;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
@@ -14,4 +15,9 @@ public interface UserRepository extends MongoRepository<User, String>, CustomUse
 
   @Query("{ '_id': { $in: ?0 } }")
   List<User> findByIds(List<String> ids);
+
+  default User findByIdOrThrow(String id){
+      return this.findById(id)
+      .orElseThrow(() -> new NotFoundException("Usuário não encontrado"));
+  }
 }

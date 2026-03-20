@@ -1,6 +1,6 @@
 package com.imo.backend.contexts.identity.http.controllers.create;
 
-import com.imo.backend.contexts.identity.actions.inputs.CreateUserInput;
+import com.imo.backend.contexts.identity.commands.CreateUserCommand;
 import com.imo.backend.contexts.identity.http.controllers.UserController;
 import com.imo.backend.contexts.identity.http.dtos.UserDTO;
 import com.imo.backend.contexts.identity.services.CreateUserService;
@@ -28,9 +28,9 @@ public class CreateUserController extends UserController {
   public ResponseEntity<UserDTO> handle(
       @Valid
       @RequestBody
-      CreateUserInput createUserInput
+      CreateUserCommand createUserRequest
   ) {
-    var newUser = UserDTO.fromUser(this.createUserService.execute(createUserInput));
+    var newUser = UserDTO.fromUser(this.createUserService.execute(new CreateUserCommand(createUserRequest.name(), createUserRequest.email(), createUserRequest.password(), createUserRequest.confPassword())));
 
     return new ResponseEntity<>(newUser, HttpStatus.CREATED);
   }

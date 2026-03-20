@@ -2,7 +2,6 @@ package com.imo.backend.config.mongodb.populate;
 
 import com.imo.backend.contexts.catalog.course.value_objects.Categories;
 import com.imo.backend.contexts.identity.User;
-import com.imo.backend.contexts.identity.actions.CreateUserAction;
 import com.imo.backend.contexts.identity.http.dtos.UpdateUserByIdRequest;
 import com.imo.backend.contexts.identity.repositories.UserRepository;
 import com.imo.backend.contexts.identity.services.UpdateUserByIdService;
@@ -22,16 +21,13 @@ import java.util.concurrent.ThreadLocalRandom;
 @Service
 public class PopulateUsers {
   private final Faker faker = new Faker();
-  private final CreateUserAction createUserAction;
   private final UserRepository userRepository;
   private final UpdateUserByIdService updateUserByIdService;
 
   public PopulateUsers(
-      CreateUserAction createUserAction,
       UserRepository userRepository,
       UpdateUserByIdService updateUserByIdService
   ) {
-    this.createUserAction = createUserAction;
     this.userRepository = userRepository;
     this.updateUserByIdService = updateUserByIdService;
   }

@@ -1,6 +1,6 @@
 package com.imo.backend.e2e.domains.user;
 
-import com.imo.backend.contexts.identity.actions.inputs.CreateUserInput;
+import com.imo.backend.contexts.identity.commands.CreateUserCommand;
 import com.imo.backend.e2e.config.BaseE2ETest;
 import com.imo.backend.e2e.factories.UserTestFactory;
 import com.imo.backend.e2e.utils.JsonString;
@@ -22,7 +22,7 @@ public class UserRegistrationE2ETest extends BaseE2ETest {
   @DisplayName("Cria um user via POST /api/user")
   void shouldCreateValidUserViaHTTP() {
 
-    CreateUserInput validUser = UserTestFactory.mountValidUser();
+    CreateUserCommand validUser = UserTestFactory.mountValidUser();
 
     String jsonBody = this.jsonString.fromObj(validUser);
     log.info("JSON enviado teste sucesso: {}", jsonBody);
@@ -43,7 +43,7 @@ public class UserRegistrationE2ETest extends BaseE2ETest {
   @DisplayName("Tenta criar um user invalido via POST /api/user")
   void shouldCreateInvalidUserViaHTTP() {
 
-    CreateUserInput invalidUser = UserTestFactory.mountInvalidUser();
+    CreateUserCommand invalidUser = UserTestFactory.mountInvalidUser();
 
     String jsonBody = this.jsonString.fromObj(invalidUser);
     log.info("JSON enviado no Teste de erro: {}", jsonBody);
