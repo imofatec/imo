@@ -1,7 +1,7 @@
 package com.imo.backend.contexts.identity.http.controllers.update;
 
-import com.imo.backend.contexts.identity.actions.inputs.UpdatePasswordInput;
 import com.imo.backend.contexts.identity.http.controllers.UserController;
+import com.imo.backend.contexts.identity.http.dtos.UpdatePasswordRequest;
 import com.imo.backend.contexts.identity.http.dtos.UserDTO;
 import com.imo.backend.contexts.identity.services.UpdatePasswordByEmailCodeService;
 import com.imo.backend.contexts.common.MongoDB;
@@ -30,7 +30,7 @@ public class UpdateUserPasswordByEmailCodeController extends UserController {
       String userId,
       @Valid
       @RequestBody
-      UpdatePasswordInput dto
+      UpdatePasswordRequest dto
   ) {
     MongoDB.validateObjectId(userId);
 

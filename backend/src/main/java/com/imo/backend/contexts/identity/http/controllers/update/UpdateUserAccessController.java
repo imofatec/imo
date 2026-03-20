@@ -1,8 +1,10 @@
 package com.imo.backend.contexts.identity.http.controllers.update;
 
-import com.imo.backend.contexts.identity.actions.UpdateUserAccessByIdAction;
+
 import com.imo.backend.contexts.identity.http.controllers.UserController;
 import com.imo.backend.contexts.identity.http.dtos.UserDTO;
+import com.imo.backend.contexts.identity.usecases.UpdateUserAccessByIdUseCase;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.http.ResponseEntity;
@@ -13,10 +15,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class UpdateUserAccessController extends UserController {
 
-  private final UpdateUserAccessByIdAction updateUserAccessByIdAction;
+  private final UpdateUserAccessByIdUseCase accessByIdUseCase;
 
-  public UpdateUserAccessController(UpdateUserAccessByIdAction updateUserAccessByIdAction) {
-    this.updateUserAccessByIdAction = updateUserAccessByIdAction;
+  public UpdateUserAccessController(UpdateUserAccessByIdUseCase accessByIdUseCase) {
+    this.accessByIdUseCase = accessByIdUseCase;
+
   }
 
   @Operation(summary = "Confirm user registration")
@@ -24,7 +27,9 @@ public class UpdateUserAccessController extends UserController {
   @PutMapping("/confirm")
   public ResponseEntity<UserDTO> handle() {
     String userId = SecurityContextHolder.getContext().getAuthentication().getName();
-    var updatedUser = UserDTO.fromUser(this.updateUserAccessByIdAction.execute(userId));
+
+
+    var updatedUser = UserDTO.fromUser(accessByIdUseCase.execute(userId));
     return ResponseEntity.ok(updatedUser);
   }
 }

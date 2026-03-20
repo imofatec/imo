@@ -1,25 +1,26 @@
 package com.imo.backend.contexts.identity.services.impl;
 
 import com.imo.backend.contexts.identity.User;
-import com.imo.backend.contexts.identity.actions.UpdateUserByIdAction;
-import com.imo.backend.contexts.identity.actions.inputs.UpdateUserByIdInput;
+import com.imo.backend.contexts.identity.commands.UpdateUserByIdCommand;
 import com.imo.backend.contexts.identity.http.dtos.UpdateUserByIdRequest;
+import com.imo.backend.contexts.identity.repositories.UserRepository;
 import com.imo.backend.contexts.identity.services.UpdatePasswordByIdService;
 import com.imo.backend.contexts.identity.services.UpdateUserByIdService;
 import org.springframework.stereotype.Service;
 
 @Service
 public class UpdateUserByIdServiceImpl implements UpdateUserByIdService {
-  private final UpdateUserByIdAction updateUserByIdAction;
 
   private final UpdatePasswordByIdService updatePasswordByIdService;
 
+  private final UserRepository userRepository;
+
   public UpdateUserByIdServiceImpl(
-      UpdateUserByIdAction updateUserByIdAction,
-      UpdatePasswordByIdService updatePasswordByIdService
+      UpdatePasswordByIdService updatePasswordByIdService,
+      UserRepository userRepository
   ) {
-    this.updateUserByIdAction = updateUserByIdAction;
     this.updatePasswordByIdService = updatePasswordByIdService;
+    this.userRepository = userRepository;
   }
 
   public User execute(String id, UpdateUserByIdRequest fieldsToUpdateUser) {
@@ -27,7 +28,7 @@ public class UpdateUserByIdServiceImpl implements UpdateUserByIdService {
       this.updatePasswordByIdService.execute(id, fieldsToUpdateUser.password());
     }
 
-    UpdateUserByIdInput input = new UpdateUserByIdInput(
+    UpdateUserByIdCommand cmd = new UpdateUserByIdCommand(
         fieldsToUpdateUser.email(),
         fieldsToUpdateUser.name(),
         null,
@@ -38,6 +39,15 @@ public class UpdateUserByIdServiceImpl implements UpdateUserByIdService {
         fieldsToUpdateUser.experienceLevel(),
         fieldsToUpdateUser.categoriesOfInterest()
     );
-    return this.updateUserByIdAction.execute(id, input);
+
+    var foundUser = userRepository.findById(id).orElse(null);
+
+    if (foundUser == null) {
+      return null;
+    }
+
+    User.applyUpdate(foundUser, cmd);
+
+    return this.userRepository.save(foundUser);
   }
 }
