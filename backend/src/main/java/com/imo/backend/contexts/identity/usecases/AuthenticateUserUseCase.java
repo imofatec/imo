@@ -1,22 +1,22 @@
-package com.imo.backend.contexts.identity.services.impl;
+package com.imo.backend.contexts.identity.usecases;
 
 import com.imo.backend.contexts.identity.UserPolicies;
 import com.imo.backend.contexts.identity.http.dtos.auth.LoginRequestDTO;
 import com.imo.backend.contexts.identity.http.dtos.auth.LoginResponseDTO;
+import com.imo.backend.contexts.identity.lib.TokenManager;
 import com.imo.backend.contexts.identity.repositories.UserRepository;
-import com.imo.backend.contexts.identity.services.AuthenticateUserService;
-import com.imo.backend.lib.token.TokenManager;
+
 import org.springframework.stereotype.Service;
 
 @Service
-public class AuthenticateUserServiceImpl implements AuthenticateUserService {
+public class AuthenticateUserUseCase {
   private final UserRepository userRepository;
 
   private final UserPolicies policies;
 
   private final TokenManager tokenManager;
 
-  public AuthenticateUserServiceImpl(
+  public AuthenticateUserUseCase(
       UserRepository userRepository,
       TokenManager tokenManager,
       UserPolicies policies

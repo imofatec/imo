@@ -3,7 +3,7 @@ package com.imo.backend.contexts.identity.http.controllers.update;
 import com.imo.backend.contexts.identity.http.controllers.UserController;
 import com.imo.backend.contexts.identity.http.dtos.UpdatePasswordRequest;
 import com.imo.backend.contexts.identity.http.dtos.UserDTO;
-import com.imo.backend.contexts.identity.services.UpdatePasswordByEmailCodeService;
+import com.imo.backend.contexts.identity.usecases.UpdatePasswordByEmailCodeUseCase;
 import com.imo.backend.contexts.common.MongoDB;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
@@ -15,10 +15,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class UpdateUserPasswordByEmailCodeController extends UserController {
-  private final UpdatePasswordByEmailCodeService updatePasswordByEmailCodeService;
+  private final UpdatePasswordByEmailCodeUseCase updatePasswordByEmailCodeUseCase;
 
-  public UpdateUserPasswordByEmailCodeController(UpdatePasswordByEmailCodeService updatePasswordByEmailCodeService) {
-    this.updatePasswordByEmailCodeService = updatePasswordByEmailCodeService;
+  public UpdateUserPasswordByEmailCodeController(UpdatePasswordByEmailCodeUseCase updatePasswordByEmailCodeUseCase) {
+    this.updatePasswordByEmailCodeUseCase = updatePasswordByEmailCodeUseCase;
   }
 
   @Operation(summary = "Update user password by email code")
@@ -34,7 +34,7 @@ public class UpdateUserPasswordByEmailCodeController extends UserController {
   ) {
     MongoDB.validateObjectId(userId);
 
-    var updatedUser = this.updatePasswordByEmailCodeService.execute(
+    var updatedUser = this.updatePasswordByEmailCodeUseCase.execute(
         emailCode,
         userId,
         dto.getPassword()

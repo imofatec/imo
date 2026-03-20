@@ -1,9 +1,8 @@
-package com.imo.backend.contexts.identity.services.impl;
+package com.imo.backend.contexts.identity.usecases;
 
 import com.imo.backend.contexts.identity.User;
 import com.imo.backend.contexts.identity.events.ForgetPasswordEvent;
 import com.imo.backend.contexts.identity.repositories.UserRepository;
-import com.imo.backend.contexts.identity.services.SendForgetPasswordCodeService;
 import com.imo.backend.contexts.common.exceptions.custom.NotFoundException;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -11,12 +10,12 @@ import org.springframework.stereotype.Service;
 import java.util.Random;
 
 @Service
-public class SendForgetPasswordCodeServiceImpl implements SendForgetPasswordCodeService {
+public class SendForgetPasswordCodeUseCase {
   private final UserRepository userRepository;
 
   private final ApplicationEventPublisher applicationEventPublisher;
 
-  public SendForgetPasswordCodeServiceImpl(
+  public SendForgetPasswordCodeUseCase(
       UserRepository userRepository,
       ApplicationEventPublisher applicationEventPublisher
   ) {

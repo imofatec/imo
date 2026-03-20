@@ -1,20 +1,19 @@
-package com.imo.backend.contexts.identity.services.impl;
+package com.imo.backend.contexts.identity.usecases;
 
 import com.imo.backend.contexts.identity.User;
 import com.imo.backend.contexts.identity.commands.UpdateUserByIdCommand;
 import com.imo.backend.contexts.identity.repositories.UserRepository;
-import com.imo.backend.contexts.identity.services.UpdatePasswordByIdService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UpdatePasswordByIdServiceImpl implements UpdatePasswordByIdService {
+public class UpdatePasswordByIdUseCase {
 
   private final UserRepository userRepository;
 
   private final PasswordEncoder passwordEncoder;
 
-  public UpdatePasswordByIdServiceImpl(
+  public UpdatePasswordByIdUseCase(
       PasswordEncoder passwordEncoder,
       UserRepository userRepository
   ) {
