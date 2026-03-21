@@ -1,4 +1,4 @@
-package com.imo.backend.contexts.identity.services.impl;
+package com.imo.backend.contexts.identity.usecases;
 
 import com.imo.backend.contexts.apagar_dps.Outbox;
 import com.imo.backend.contexts.apagar_dps.OutboxEvent;
@@ -8,29 +8,28 @@ import com.imo.backend.contexts.common.Pageable;
 import com.imo.backend.contexts.common.exceptions.custom.NotFoundException;
 import com.imo.backend.contexts.identity.User;
 import com.imo.backend.contexts.identity.events.ForgetPasswordEvent;
-import com.imo.backend.contexts.identity.guards.GetUserByIdGuard;
-import com.imo.backend.contexts.identity.services.VerifyForgetPasswordCodeService;
+import com.imo.backend.contexts.identity.repositories.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
 
 @Service
-public class VerifyForgetPasswordCodeServiceImpl implements VerifyForgetPasswordCodeService {
-  private final GetUserByIdGuard getUserByIdGuard;
+public class VerifyForgetPasswordCodeUseCase {
 
+  private final UserRepository userRepository;
   private final OutboxRepository<ForgetPasswordEvent> outboxRepository;
 
-  public VerifyForgetPasswordCodeServiceImpl(
-      GetUserByIdGuard getUserByIdGuard,
+  public VerifyForgetPasswordCodeUseCase(
+      UserRepository userRepository,
       OutboxRepository<ForgetPasswordEvent> outboxRepository
   ) {
-    this.getUserByIdGuard = getUserByIdGuard;
+    this.userRepository = userRepository;
     this.outboxRepository = outboxRepository;
   }
 
   public User execute(String userId, String code) {
-    var foundUser = this.getUserByIdGuard.execute(userId);
+    var foundUser = this.userRepository.findByIdOrThrow(userId);
 
     var pageNumber = 0;
     var pageSize = 10;

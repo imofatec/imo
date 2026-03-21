@@ -1,4 +1,4 @@
-package com.imo.backend.contexts.identity.actions.inputs;
+package com.imo.backend.contexts.identity.http.dtos;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 
 @Getter
-public class UpdatePasswordInput {
+public class UpdatePasswordRequest {
 
   @NotBlank(message = "Preencha a senha")
   @Pattern(regexp = "^(?=.*[A-Z])(?=.*\\d).+$", message = "A senha precisa ter no mínimo uma letra maiúscula e 1 número")

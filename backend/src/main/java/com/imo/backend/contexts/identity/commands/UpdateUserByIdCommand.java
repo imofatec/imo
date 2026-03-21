@@ -1,4 +1,4 @@
-package com.imo.backend.contexts.identity.actions.inputs;
+package com.imo.backend.contexts.identity.commands;
 
 import com.imo.backend.contexts.identity.value_objects.AcademicDegree;
 import com.imo.backend.contexts.identity.value_objects.AvailableTimePerDay;
@@ -8,7 +8,7 @@ import com.imo.backend.contexts.catalog.course.value_objects.Categories;
 import java.time.LocalDate;
 import java.util.List;
 
-public record UpdateUserByIdInput(
+public record UpdateUserByIdCommand(
     String email,
     String name,
     String password,

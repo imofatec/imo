@@ -1,11 +1,11 @@
-package com.imo.backend.contexts.identity.actions.inputs;
+package com.imo.backend.contexts.identity.http.dtos;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
-public record CreateUserInput(
+public record CreateUserRequest(
     @NotBlank(message = "Preencha o seu nome")
     @Size(min = 5, max = 20, message = "O seu nome precisa ter no mínimo 5 caracteres")
     String name,

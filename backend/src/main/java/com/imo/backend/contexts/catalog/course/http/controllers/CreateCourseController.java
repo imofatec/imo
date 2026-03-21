@@ -3,7 +3,8 @@ package com.imo.backend.contexts.catalog.course.http.controllers;
 import com.imo.backend.contexts.catalog.course.http.dtos.CourseDetailsDTO;
 import com.imo.backend.contexts.catalog.course.http.dtos.CreateCourseRequest;
 import com.imo.backend.contexts.catalog.course.orchestrators.CreateCourseOrchestrator;
-import com.imo.backend.lib.token.TokenManager;
+import com.imo.backend.contexts.identity.lib.TokenManager;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;

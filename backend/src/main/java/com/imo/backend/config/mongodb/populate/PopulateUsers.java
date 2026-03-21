@@ -2,10 +2,9 @@ package com.imo.backend.config.mongodb.populate;
 
 import com.imo.backend.contexts.catalog.course.value_objects.Categories;
 import com.imo.backend.contexts.identity.User;
-import com.imo.backend.contexts.identity.actions.CreateUserAction;
 import com.imo.backend.contexts.identity.http.dtos.UpdateUserByIdRequest;
 import com.imo.backend.contexts.identity.repositories.UserRepository;
-import com.imo.backend.contexts.identity.services.UpdateUserByIdService;
+import com.imo.backend.contexts.identity.usecases.UpdateUserByIdUseCase;
 import com.imo.backend.contexts.identity.value_objects.AcademicDegree;
 import com.imo.backend.contexts.identity.value_objects.AvailableTimePerDay;
 import com.imo.backend.contexts.identity.value_objects.ExperienceLevel;
@@ -22,18 +21,15 @@ import java.util.concurrent.ThreadLocalRandom;
 @Service
 public class PopulateUsers {
   private final Faker faker = new Faker();
-  private final CreateUserAction createUserAction;
   private final UserRepository userRepository;
-  private final UpdateUserByIdService updateUserByIdService;
+  private final UpdateUserByIdUseCase updateUserByIdUseCase;
 
   public PopulateUsers(
-      CreateUserAction createUserAction,
       UserRepository userRepository,
-      UpdateUserByIdService updateUserByIdService
+      UpdateUserByIdUseCase updateUserByIdUseCase
   ) {
-    this.createUserAction = createUserAction;
     this.userRepository = userRepository;
-    this.updateUserByIdService = updateUserByIdService;
+    this.updateUserByIdUseCase = updateUserByIdUseCase;
   }
 
   public User execute(int qty) {
@@ -100,7 +96,7 @@ public class PopulateUsers {
           categoriesOfInterest
       );
 
-      this.updateUserByIdService.execute(newUser.getId(), fieldsToUpdate);
+      this.updateUserByIdUseCase.execute(newUser.getId(), fieldsToUpdate);
     }
 
     return admin;
