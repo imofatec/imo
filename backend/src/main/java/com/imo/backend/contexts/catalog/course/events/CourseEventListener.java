@@ -3,7 +3,8 @@ package com.imo.backend.contexts.catalog.course.events;
 import com.imo.backend.contexts.catalog.course.actions.IncLessonsCountByIdAction;
 import com.imo.backend.contexts.catalog.course.actions.UpdateCourseByIdAction;
 import com.imo.backend.contexts.catalog.course.actions.inputs.UpdateCourseByIdInput;
-import org.springframework.modulith.events.ApplicationModuleListener;
+import org.springframework.context.event.EventListener;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -20,7 +21,8 @@ public class CourseEventListener {
     this.incLessonsCountByIdAction = incLessonsCountByIdAction;
   }
 
-  @ApplicationModuleListener
+  @Async
+  @EventListener
   public void handle(UpdateCourseLessonsCountEvent event) {
     this.updateCourseByIdAction.execute(
         event.courseId(),
@@ -28,12 +30,14 @@ public class CourseEventListener {
     );
   }
 
-  @ApplicationModuleListener
+  @Async
+  @EventListener
   public void handle(IncLessonsCountEvent event) {
     this.incLessonsCountByIdAction.execute(event.courseId());
   }
 
-  @ApplicationModuleListener
+  @Async
+  @EventListener
   public void handle(UpdateCourseFirstYoutubeLinkEvent event) {
     this.updateCourseByIdAction.execute(
         event.courseId(),

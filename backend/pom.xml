@@ -27,7 +27,6 @@
         <springdoc.version>2.8.16</springdoc.version>
         <html2pdf.version>5.0.5</html2pdf.version>
         <lombok.version>1.18.36</lombok.version>
-        <modulith.version>1.4.8</modulith.version>
     </properties>
 
     <dependencyManagement>
@@ -37,15 +36,6 @@
                 <groupId>org.testcontainers</groupId>
                 <artifactId>testcontainers-bom</artifactId>
                 <version>${testcontainers.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-
-            <!-- Spring Modulith BOM -->
-            <dependency>
-                <groupId>org.springframework.modulith</groupId>
-                <artifactId>spring-modulith-bom</artifactId>
-                <version>${modulith.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -85,19 +75,6 @@
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
         </dependency>
 
-        <!-- ==================== MODULITH ==================== -->
-        <dependency>
-            <groupId>org.springframework.modulith</groupId>
-            <artifactId>spring-modulith-events-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.modulith</groupId>
-            <artifactId>spring-modulith-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.modulith</groupId>
-            <artifactId>spring-modulith-starter-core</artifactId>
-        </dependency>
 
         <!-- ==================== UTILITIES ==================== -->
         <dependency>
@@ -186,6 +163,7 @@
             <artifactId>rabbitmq</artifactId>
             <scope>test</scope>
         </dependency>
+
     </dependencies>
 
     <build>

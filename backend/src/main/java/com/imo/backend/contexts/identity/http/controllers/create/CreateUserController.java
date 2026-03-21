@@ -9,7 +9,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,7 +22,6 @@ public class CreateUserController extends UserController {
     this.createUserUseCase = createUserUseCase;
   }
 
-  @Transactional
   @Operation(summary = "Register user")
   @PostMapping()
   public ResponseEntity<UserDTO> handle(
@@ -31,7 +29,12 @@ public class CreateUserController extends UserController {
       @RequestBody
       CreateUserRequest createUserRequest
   ) {
-    var newUser = UserDTO.fromUser(this.createUserUseCase.execute(new CreateUserCommand(createUserRequest.name(), createUserRequest.email(), createUserRequest.password(), createUserRequest.confPassword())));
+    var newUser = UserDTO.fromUser(this.createUserUseCase.execute(new CreateUserCommand(
+        createUserRequest.name(),
+        createUserRequest.email(),
+        createUserRequest.password(),
+        createUserRequest.confPassword()
+    )));
 
     return new ResponseEntity<>(newUser, HttpStatus.CREATED);
   }

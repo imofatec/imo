@@ -9,7 +9,8 @@ import com.imo.backend.contexts.apagar_dps.services.CreateOutboxService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.modulith.events.ApplicationModuleListener;
+import org.springframework.context.event.EventListener;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 @Slf4j
@@ -35,7 +36,8 @@ public class UserEventListener {
     this.outboxService = outboxService;
   }
 
-  @ApplicationModuleListener
+  @Async
+  @EventListener
   public void handle(SendEmailConfirmationEvent event) {
     try {
       String json = this.objectMapper.writeValueAsString(event.user());
@@ -49,7 +51,8 @@ public class UserEventListener {
     }
   }
 
-  @ApplicationModuleListener
+  @Async
+  @EventListener
   public void handle(ForgetPasswordEvent event) {
     try {
       var newOutbox = this.outboxService.execute(new Outbox<>(
