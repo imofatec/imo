@@ -41,7 +41,7 @@ public class SecurityConfig {
   @Value("${jwt.private.key}")
   private RSAPrivateKey privateKey;
 
-  @Value("${client.url}")
+  @Value("${frontend.client.url}")
   private String clientURL;
 
 

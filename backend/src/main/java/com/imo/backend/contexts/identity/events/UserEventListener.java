@@ -1,7 +1,6 @@
 package com.imo.backend.contexts.identity.events;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.imo.backend.config.Envs;
 import com.imo.backend.contexts.apagar_dps.Outbox;
 import com.imo.backend.contexts.apagar_dps.OutboxEvent;
 import com.imo.backend.contexts.apagar_dps.OutboxStatus;
@@ -9,6 +8,7 @@ import com.imo.backend.contexts.apagar_dps.services.CreateOutboxService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
@@ -16,21 +16,26 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 public class UserEventListener {
-  private final Envs envs;
-
   private final ObjectMapper objectMapper;
 
   private final RabbitTemplate rabbitTemplate;
 
   private final CreateOutboxService<ForgetPasswordEvent> outboxService;
 
+  @Value("${rabbitmq.identity.exchange}")
+  private String identityExchangeName;
+
+  @Value("${rabbitmq.routing.confirm_email}")
+  private String routingKeyConfirmEmail;
+
+  @Value("${rabbitmq.routing.forget_password}")
+  private String routingKeyForgetPassword;
+
   public UserEventListener(
-      Envs envs,
       ObjectMapper objectMapper,
       RabbitTemplate rabbitTemplate,
       CreateOutboxService<ForgetPasswordEvent> outboxService
   ) {
-    this.envs = envs;
     this.objectMapper = objectMapper;
     this.rabbitTemplate = rabbitTemplate;
     this.outboxService = outboxService;
@@ -39,16 +44,15 @@ public class UserEventListener {
   @Async
   @EventListener
   public void handle(SendEmailConfirmationEvent event) {
-    try {
-      String json = this.objectMapper.writeValueAsString(event.user());
-      this.rabbitTemplate.convertAndSend(
-          this.envs.EXCHANGE_NAME,
-          this.envs.ROUTING_KEY_CONFIRM_EMAIL,
-          new Message(json.getBytes())
-      );
-    } catch (Exception e) {
-      log.error(e.getMessage(), e);
-    }
+    log.debug(
+        "SEND_EMAIL_CONFIRMATION_EVENT: enviando mensagem pro broker {}",
+        event.user().email()
+    );
+    this.rabbitTemplate.convertAndSend(
+        this.identityExchangeName,
+        this.routingKeyConfirmEmail,
+        event.user()
+    );
   }
 
   @Async
@@ -71,8 +75,8 @@ public class UserEventListener {
       String json = this.objectMapper.writeValueAsString(payload);
 
       this.rabbitTemplate.convertAndSend(
-          this.envs.EXCHANGE_NAME,
-          this.envs.ROUTING_KEY_FORGET_PASSWORD,
+          this.identityExchangeName,
+          this.routingKeyForgetPassword,
           new Message(json.getBytes())
       );
 
