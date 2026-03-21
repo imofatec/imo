@@ -1,8 +1,8 @@
 package com.imo.backend.contexts.catalog.course.http.controllers;
 
-import com.imo.backend.contexts.catalog.course.actions.ToggleCourseStatusByIdAction;
 import com.imo.backend.contexts.catalog.course.http.dtos.CourseResponseDTO;
 import com.imo.backend.contexts.catalog.course.http.middlewares.ValidateUserCourseAccessService;
+import com.imo.backend.contexts.catalog.course.usecases.ToggleCourseStatusByIdUseCase;
 import com.imo.backend.contexts.common.MongoDB;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -15,12 +15,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class ToggleCourseStatusByIdController extends CourseController {
 
-  private final ToggleCourseStatusByIdAction toggleCourseStatusByIdAction;
+  private final ToggleCourseStatusByIdUseCase toggleCourseStatusByIdAction;
 
   private final ValidateUserCourseAccessService validateUserCourseAccessService;
 
   public ToggleCourseStatusByIdController(
-      ToggleCourseStatusByIdAction toggleCourseStatusByIdAction,
+      ToggleCourseStatusByIdUseCase toggleCourseStatusByIdAction,
       ValidateUserCourseAccessService validateUserCourseAccessService
   ) {
     this.toggleCourseStatusByIdAction = toggleCourseStatusByIdAction;

@@ -1,14 +1,15 @@
-package com.imo.backend.contexts.catalog.course.actions.impl;
+package com.imo.backend.contexts.catalog.course.usecases.impl;
 
-import com.imo.backend.contexts.catalog.course.actions.IncLessonsCountByIdAction;
 import com.imo.backend.contexts.catalog.course.repositories.CourseRepository;
+import com.imo.backend.contexts.catalog.course.usecases.IncLessonsCountByIdUseCase;
+
 import org.springframework.stereotype.Service;
 
 @Service
-public class IncLessonsCountByIdActionImpl implements IncLessonsCountByIdAction {
+public class IncLessonsCountByIdUseCaseImpl implements IncLessonsCountByIdUseCase {
   private final CourseRepository courseRepository;
 
-  public IncLessonsCountByIdActionImpl(CourseRepository courseRepository) {
+  public IncLessonsCountByIdUseCaseImpl(CourseRepository courseRepository) {
     this.courseRepository = courseRepository;
   }
 

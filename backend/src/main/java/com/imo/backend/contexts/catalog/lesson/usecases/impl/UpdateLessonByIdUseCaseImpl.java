@@ -2,8 +2,8 @@ package com.imo.backend.contexts.catalog.lesson.usecases.impl;
 
 import com.imo.backend.contexts.common.exceptions.custom.ConflictException;
 import com.imo.backend.contexts.catalog.lesson.Lesson;
-import com.imo.backend.contexts.catalog.lesson.actions.UpdateLessonByIdAction;
 import com.imo.backend.contexts.catalog.lesson.actions.commands.UpdateLessonCommand;
+import com.imo.backend.contexts.catalog.lesson.http.dtos.UpdateLessonRequest;
 import com.imo.backend.contexts.catalog.lesson.repositories.LessonRepository;
 import com.imo.backend.contexts.catalog.lesson.usecases.UpdateLessonByIdUseCase;
 
@@ -13,16 +13,18 @@ import java.util.List;
 
 @Service
 public class UpdateLessonByIdUseCaseImpl implements UpdateLessonByIdUseCase {
-  private final UpdateLessonByIdAction updateLessonByIdAction;
 
   private final LessonRepository lessonRepository;
 
   public UpdateLessonByIdUseCaseImpl(
-      UpdateLessonByIdAction updateLessonByIdAction,
       LessonRepository lessonRepository
   ) {
-    this.updateLessonByIdAction = updateLessonByIdAction;
     this.lessonRepository = lessonRepository;
+  }
+  @Override
+  public Lesson execute(String lessonId, UpdateLessonRequest request) {
+    UpdateLessonCommand command = request.toCommand(lessonId);
+    return this.execute(command);
   }
 
   @Override
@@ -44,6 +46,7 @@ public class UpdateLessonByIdUseCaseImpl implements UpdateLessonByIdUseCase {
       }
     });
 
-    return this.updateLessonByIdAction.execute(command);
+    Lesson.applyUpdate(foundLesson, command);
+    return this.lessonRepository.save(foundLesson);
   }
 }

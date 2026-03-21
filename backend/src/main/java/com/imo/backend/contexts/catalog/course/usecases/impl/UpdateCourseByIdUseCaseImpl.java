@@ -1,26 +1,24 @@
 package com.imo.backend.contexts.catalog.course.usecases.impl;
 
 import com.imo.backend.contexts.catalog.course.Course;
-import com.imo.backend.contexts.catalog.course.actions.UpdateCourseByIdAction;
 import com.imo.backend.contexts.catalog.course.actions.commands.UpdateCourseByIdCommand;
 import com.imo.backend.contexts.catalog.course.http.dtos.UpdateCourseByIdRequest;
 import com.imo.backend.contexts.catalog.course.repositories.CourseRepository;
 import com.imo.backend.contexts.catalog.course.usecases.UpdateCourseByIdUseCase;
 import com.imo.backend.contexts.common.Slug;
 import com.imo.backend.contexts.common.exceptions.custom.ConflictException;
+import com.imo.backend.contexts.common.exceptions.custom.NotFoundException;
+
 import org.springframework.stereotype.Service;
 
 @Service
 public class UpdateCourseByIdUseCaseImpl implements UpdateCourseByIdUseCase {
-  private final UpdateCourseByIdAction updateCourseByIdAction;
 
   private final CourseRepository courseRepository;
 
   public UpdateCourseByIdUseCaseImpl(
-      UpdateCourseByIdAction updateCourseByIdAction,
       CourseRepository courseRepository
   ) {
-    this.updateCourseByIdAction = updateCourseByIdAction;
     this.courseRepository = courseRepository;
   }
 
@@ -38,8 +36,17 @@ public class UpdateCourseByIdUseCaseImpl implements UpdateCourseByIdUseCase {
 
     UpdateCourseByIdCommand command = fieldsToUpdateCourse.toCommand(courseId);
 
-    return this.updateCourseByIdAction.execute(command);
+    return this.execute(command);
   }
+  @Override 
+  public Course execute(UpdateCourseByIdCommand command) {
+    Course course = this.courseRepository
+      .findById(command.id())
+      .orElseThrow(() -> new NotFoundException("Curso não encontrado"));
+  
+      Course.applyUpdate(course, command);
+      return this.courseRepository.save(course);
+    }
 
   private void checkConflictContributorCourse(
       String courseId,

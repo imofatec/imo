@@ -1,17 +1,18 @@
-package com.imo.backend.contexts.catalog.course.actions.impl;
+package com.imo.backend.contexts.catalog.course.usecases.impl;
 
 import com.imo.backend.contexts.common.exceptions.custom.NotFoundException;
 import com.imo.backend.contexts.catalog.course.Course;
-import com.imo.backend.contexts.catalog.course.actions.ToggleCourseStatusByIdAction;
 import com.imo.backend.contexts.catalog.course.repositories.CourseRepository;
+import com.imo.backend.contexts.catalog.course.usecases.ToggleCourseStatusByIdUseCase;
+
 import org.springframework.stereotype.Service;
 
 @Service
-public class ToggleCourseStatusByIdActionImpl implements ToggleCourseStatusByIdAction {
+public class ToggleCourseStatusByIdUseCaseImpl implements ToggleCourseStatusByIdUseCase {
 
   private final CourseRepository courseRepository;
 
-  public ToggleCourseStatusByIdActionImpl(CourseRepository courseRepository) {
+  public ToggleCourseStatusByIdUseCaseImpl(CourseRepository courseRepository) {
     this.courseRepository = courseRepository;
   }
 
@@ -20,6 +21,8 @@ public class ToggleCourseStatusByIdActionImpl implements ToggleCourseStatusByIdA
     var foundCourse = courseRepository
         .findById(id)
         .orElseThrow(() -> new NotFoundException("Curso não encontrado"));
-    return this.courseRepository.toggleStatusById(id, foundCourse.isActive());
+    
+    foundCourse.toggleStatus();
+    return this.courseRepository.save(foundCourse);   
   }
 }

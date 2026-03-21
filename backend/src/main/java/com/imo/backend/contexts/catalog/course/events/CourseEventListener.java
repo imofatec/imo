@@ -1,28 +1,29 @@
 package com.imo.backend.contexts.catalog.course.events;
 
-import com.imo.backend.contexts.catalog.course.actions.IncLessonsCountByIdAction;
-import com.imo.backend.contexts.catalog.course.actions.UpdateCourseByIdAction;
+import com.imo.backend.contexts.catalog.course.usecases.UpdateCourseByIdUseCase;
+import com.imo.backend.contexts.catalog.course.usecases.IncLessonsCountByIdUseCase;
 import com.imo.backend.contexts.catalog.course.actions.commands.UpdateCourseByIdCommand;
+
 import org.springframework.modulith.events.ApplicationModuleListener;
 import org.springframework.stereotype.Component;
 
 @Component
 public class CourseEventListener {
-  private final UpdateCourseByIdAction updateCourseByIdAction;
 
-  private final IncLessonsCountByIdAction incLessonsCountByIdAction;
+  private final UpdateCourseByIdUseCase updateCourseByIdUseCase;
+  private final IncLessonsCountByIdUseCase incLessonsCountByIdUseCase;
 
   public CourseEventListener(
-      UpdateCourseByIdAction updateCourseByIdAction,
-      IncLessonsCountByIdAction incLessonsCountByIdAction
+      UpdateCourseByIdUseCase updateCourseByIdUseCase,
+      IncLessonsCountByIdUseCase incLessonsCountByIdUseCase
   ) {
-    this.updateCourseByIdAction = updateCourseByIdAction;
-    this.incLessonsCountByIdAction = incLessonsCountByIdAction;
+    this.updateCourseByIdUseCase = updateCourseByIdUseCase;
+    this.incLessonsCountByIdUseCase = incLessonsCountByIdUseCase;
   }
 
   @ApplicationModuleListener
   public void handle(UpdateCourseLessonsCountEvent event) {
-    this.updateCourseByIdAction.execute(
+    this.updateCourseByIdUseCase.execute(
       new UpdateCourseByIdCommand(
         event.courseId(),
         null, null, null, null,
@@ -30,17 +31,16 @@ public class CourseEventListener {
         null
       )
     );
-        
   }
 
   @ApplicationModuleListener
   public void handle(IncLessonsCountEvent event) {
-    this.incLessonsCountByIdAction.execute(event.courseId());
+    this.incLessonsCountByIdUseCase.execute(event.courseId());
   }
 
   @ApplicationModuleListener
   public void handle(UpdateCourseFirstYoutubeLinkEvent event) {
-    this.updateCourseByIdAction.execute(
+    this.updateCourseByIdUseCase.execute(
       new UpdateCourseByIdCommand(
         event.courseId(),
         null, null, null, null, null,
