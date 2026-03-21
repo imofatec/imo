@@ -3,7 +3,7 @@ package com.imo.backend.contexts.catalog.lesson.http.controllers;
 import com.imo.backend.contexts.catalog.course.http.middlewares.ValidateUserCourseAccessService;
 import com.imo.backend.contexts.catalog.lesson.http.dtos.CreateLessonRequest;
 import com.imo.backend.contexts.catalog.lesson.http.dtos.LessonResponseDTO;
-import com.imo.backend.contexts.catalog.lesson.services.CreateLessonService;
+import com.imo.backend.contexts.catalog.lesson.usecases.CreateLessonUseCase;
 import com.imo.backend.contexts.common.MongoDB;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -23,11 +23,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class CreateLessonController extends LessonController {
   private final ValidateUserCourseAccessService validateUserCourseAccessService;
 
-  private final CreateLessonService createLessonService;
+  private final CreateLessonUseCase createLessonService;
 
   public CreateLessonController(
       ValidateUserCourseAccessService validateUserCourseAccessService,
-      CreateLessonService createLessonService
+      CreateLessonUseCase createLessonService
   ) {
     this.validateUserCourseAccessService = validateUserCourseAccessService;
     this.createLessonService = createLessonService;

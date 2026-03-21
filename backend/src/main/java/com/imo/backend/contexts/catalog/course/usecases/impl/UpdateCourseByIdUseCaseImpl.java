@@ -1,22 +1,22 @@
-package com.imo.backend.contexts.catalog.course.services.impl;
+package com.imo.backend.contexts.catalog.course.usecases.impl;
 
 import com.imo.backend.contexts.catalog.course.Course;
 import com.imo.backend.contexts.catalog.course.actions.UpdateCourseByIdAction;
 import com.imo.backend.contexts.catalog.course.actions.commands.UpdateCourseByIdCommand;
 import com.imo.backend.contexts.catalog.course.http.dtos.UpdateCourseByIdRequest;
 import com.imo.backend.contexts.catalog.course.repositories.CourseRepository;
-import com.imo.backend.contexts.catalog.course.services.UpdateCourseByIdService;
+import com.imo.backend.contexts.catalog.course.usecases.UpdateCourseByIdUseCase;
 import com.imo.backend.contexts.common.Slug;
 import com.imo.backend.contexts.common.exceptions.custom.ConflictException;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UpdateCourseByIdServiceImpl implements UpdateCourseByIdService {
+public class UpdateCourseByIdUseCaseImpl implements UpdateCourseByIdUseCase {
   private final UpdateCourseByIdAction updateCourseByIdAction;
 
   private final CourseRepository courseRepository;
 
-  public UpdateCourseByIdServiceImpl(
+  public UpdateCourseByIdUseCaseImpl(
       UpdateCourseByIdAction updateCourseByIdAction,
       CourseRepository courseRepository
   ) {

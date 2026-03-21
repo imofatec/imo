@@ -1,22 +1,23 @@
-package com.imo.backend.contexts.catalog.lesson.services.impl;
+package com.imo.backend.contexts.catalog.lesson.usecases.impl;
 
 import com.imo.backend.contexts.common.exceptions.custom.ConflictException;
 import com.imo.backend.contexts.catalog.lesson.Lesson;
 import com.imo.backend.contexts.catalog.lesson.actions.UpdateLessonByIdAction;
 import com.imo.backend.contexts.catalog.lesson.actions.commands.UpdateLessonCommand;
 import com.imo.backend.contexts.catalog.lesson.repositories.LessonRepository;
-import com.imo.backend.contexts.catalog.lesson.services.UpdateLessonByIdService;
+import com.imo.backend.contexts.catalog.lesson.usecases.UpdateLessonByIdUseCase;
+
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class UpdateLessonByIdServiceImpl implements UpdateLessonByIdService {
+public class UpdateLessonByIdUseCaseImpl implements UpdateLessonByIdUseCase {
   private final UpdateLessonByIdAction updateLessonByIdAction;
 
   private final LessonRepository lessonRepository;
 
-  public UpdateLessonByIdServiceImpl(
+  public UpdateLessonByIdUseCaseImpl(
       UpdateLessonByIdAction updateLessonByIdAction,
       LessonRepository lessonRepository
   ) {

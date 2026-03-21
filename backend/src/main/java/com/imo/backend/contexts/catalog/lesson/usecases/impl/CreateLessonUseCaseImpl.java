@@ -1,4 +1,4 @@
-package com.imo.backend.contexts.catalog.lesson.services.impl;
+package com.imo.backend.contexts.catalog.lesson.usecases.impl;
 
 import com.imo.backend.contexts.catalog.course.events.IncLessonsCountEvent;
 import com.imo.backend.contexts.catalog.course.events.UpdateCourseLessonsCountEvent;
@@ -6,7 +6,7 @@ import com.imo.backend.contexts.catalog.lesson.Lesson;
 import com.imo.backend.contexts.catalog.lesson.actions.commands.CreateLessonCommand; // ✅ Usando Command
 import com.imo.backend.contexts.catalog.lesson.actions.factory.LessonFactory;
 import com.imo.backend.contexts.catalog.lesson.repositories.LessonRepository;
-import com.imo.backend.contexts.catalog.lesson.services.CreateLessonService;
+import com.imo.backend.contexts.catalog.lesson.usecases.CreateLessonUseCase;
 import com.imo.backend.contexts.common.exceptions.custom.ConflictException;
 import com.imo.backend.contexts.journey_tracking.events.ReevaluateProgressEvent;
 import org.springframework.context.ApplicationEventPublisher;
@@ -16,11 +16,11 @@ import java.util.HashSet;
 import java.util.List;
 
 @Service
-public class CreateLessonServiceImpl implements CreateLessonService {
+public class CreateLessonUseCaseImpl implements CreateLessonUseCase {
     private final LessonRepository lessonRepository;
     private final ApplicationEventPublisher applicationEventPublisher;
 
-    public CreateLessonServiceImpl(
+    public CreateLessonUseCaseImpl(
         LessonRepository lessonRepository,
         ApplicationEventPublisher applicationEventPublisher
     ) {

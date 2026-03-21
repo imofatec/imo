@@ -4,7 +4,7 @@ import com.imo.backend.contexts.catalog.course.http.middlewares.ValidateUserCour
 import com.imo.backend.contexts.catalog.course.repositories.CourseRepository;
 import com.imo.backend.contexts.catalog.lesson.http.dtos.LessonResponseDTO;
 import com.imo.backend.contexts.catalog.lesson.http.dtos.UpdateLessonRequest;
-import com.imo.backend.contexts.catalog.lesson.services.UpdateLessonByIdService;
+import com.imo.backend.contexts.catalog.lesson.usecases.UpdateLessonByIdUseCase;
 import com.imo.backend.contexts.common.MongoDB;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -20,13 +20,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class UpdateLessonByIdController extends LessonController {
   private final ValidateUserCourseAccessService validateUserCourseAccessService;
 
-  private final UpdateLessonByIdService updateLessonByIdService;
+  private final UpdateLessonByIdUseCase updateLessonByIdService;
 
   private final CourseRepository courseRepository;
 
   public UpdateLessonByIdController(
       ValidateUserCourseAccessService validateUserCourseAccessService,
-      UpdateLessonByIdService updateLessonByIdService,
+      UpdateLessonByIdUseCase updateLessonByIdService,
       CourseRepository courseRepository
   ) {
     this.validateUserCourseAccessService = validateUserCourseAccessService;

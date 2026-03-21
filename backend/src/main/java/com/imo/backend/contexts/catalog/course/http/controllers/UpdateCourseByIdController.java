@@ -3,7 +3,7 @@ package com.imo.backend.contexts.catalog.course.http.controllers;
 import com.imo.backend.contexts.catalog.course.http.dtos.CourseResponseDTO;
 import com.imo.backend.contexts.catalog.course.http.dtos.UpdateCourseByIdRequest;
 import com.imo.backend.contexts.catalog.course.http.middlewares.ValidateUserCourseAccessService;
-import com.imo.backend.contexts.catalog.course.services.UpdateCourseByIdService;
+import com.imo.backend.contexts.catalog.course.usecases.UpdateCourseByIdUseCase;
 import com.imo.backend.contexts.common.MongoDB;
 import com.imo.backend.lib.token.TokenManager;
 import io.swagger.v3.oas.annotations.Operation;
@@ -18,12 +18,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class UpdateCourseByIdController extends CourseController {
-  private final UpdateCourseByIdService updateCourseByIdService;
+  private final UpdateCourseByIdUseCase updateCourseByIdService;
 
   private final ValidateUserCourseAccessService validateUserCourseAccessService;
 
   public UpdateCourseByIdController(
-      UpdateCourseByIdService updateCourseByIdService,
+      UpdateCourseByIdUseCase updateCourseByIdService,
       TokenManager tokenManager,
       ValidateUserCourseAccessService validateUserCourseAccessService
   ) {
