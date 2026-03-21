@@ -2,6 +2,7 @@ package com.imo.backend.contexts.identity;
 
 import com.imo.backend.contexts.catalog.course.value_objects.Categories;
 import com.imo.backend.contexts.common.Entity;
+import com.imo.backend.contexts.identity.commands.UpdateUserByIdCommand;
 import com.imo.backend.contexts.identity.value_objects.AcademicDegree;
 import com.imo.backend.contexts.identity.value_objects.AvailableTimePerDay;
 import com.imo.backend.contexts.identity.value_objects.ExperienceLevel;
@@ -9,6 +10,7 @@ import com.imo.backend.contexts.common.exceptions.custom.BadRequestException;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -112,5 +114,71 @@ public class User extends Entity {
 
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
     return LocalDate.parse(birthDate, formatter);
+  }
+
+  public String assertUploadProfilePicture(MultipartFile file){
+      if (file.isEmpty()) {
+        throw new BadRequestException("Adicione um arquivo");
+    }
+
+    long fileSizeInMb = file.getSize() / (1024 * 1024);
+    if (fileSizeInMb > 10) {
+      throw new BadRequestException("O arquivo não pode ter mais do que 10MB");
+    }
+
+    if (file.getContentType() == null || file.getOriginalFilename() == null) {
+      throw new BadRequestException("Arquivo corrompido");
+    }
+
+    String filename = file.getOriginalFilename();
+
+    String regex = "image/jpg|image/jpeg|image/png";
+    Pattern pattern = Pattern.compile(regex);
+
+    if (!pattern.matcher(file.getContentType()).matches()) {
+      throw new BadRequestException(String.format("O formato %s não é valido, só é válido imagens png, jpeg e jpg",
+          file.getContentType()
+      ));
+    }
+
+    return filename;
+  }
+
+  public static void applyUpdate(User user, UpdateUserByIdCommand cmd) {
+    if (cmd.name() != null && !cmd.name().isEmpty()) {
+      user.setName(cmd.name());
+    }
+
+    if (cmd.email() != null && !cmd.email().isEmpty()) {
+      user.setEmail(cmd.email());
+    }
+
+    if (cmd.password() != null && !cmd.password().isEmpty()) {
+      user.setPassword(cmd.password());
+    }
+
+    if (cmd.profilePicturePath() != null && !cmd.profilePicturePath().isEmpty()) {
+      user.setProfilePicturePath(cmd.profilePicturePath());
+    }
+
+    if (cmd.birthDate() != null) {
+      user.setBirthDate(cmd.birthDate());
+    }
+
+    if (cmd.availableTimePerDay() != null) {
+      user.setAvailableTimePerDay(cmd.availableTimePerDay());
+    }
+
+    if (cmd.academicDegree() != null) {
+      user.setAcademicDegree(cmd.academicDegree());
+    }
+
+    if (cmd.experienceLevel() != null) {
+      user.setExperienceLevel(cmd.experienceLevel());
+    }
+
+    if (cmd.categoriesOfInterest() != null) {
+      user.setCategoriesOfInterest(cmd.categoriesOfInterest());
+    }
   }
 }

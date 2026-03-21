@@ -1,6 +1,7 @@
 package com.imo.backend.e2e.domains.auth;
 
-import com.imo.backend.contexts.identity.actions.inputs.CreateUserInput;
+
+import com.imo.backend.contexts.identity.commands.CreateUserCommand;
 import com.imo.backend.contexts.identity.http.dtos.auth.LoginRequestDTO;
 import com.imo.backend.e2e.config.BaseE2ETest;
 import com.imo.backend.e2e.factories.UserTestFactory;
@@ -23,7 +24,7 @@ class UserAuthenticationE2ETest extends BaseE2ETest {
   @DisplayName("Deve autenticar o usuario e retornar o JWT")
   void shouldAuthenticateUserAndReturnToken() {
 
-    CreateUserInput usuarioCriado = UserTestFactory.mountValidUser();
+    CreateUserCommand usuarioCriado = UserTestFactory.mountValidUser();
     String jsonBody = this.jsonString.fromObj(usuarioCriado);
 
     givenBaseRequest()

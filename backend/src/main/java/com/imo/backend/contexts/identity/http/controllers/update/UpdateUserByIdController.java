@@ -3,7 +3,7 @@ package com.imo.backend.contexts.identity.http.controllers.update;
 import com.imo.backend.contexts.identity.http.controllers.UserController;
 import com.imo.backend.contexts.identity.http.dtos.UpdateUserByIdRequest;
 import com.imo.backend.contexts.identity.http.dtos.UserDTO;
-import com.imo.backend.contexts.identity.services.UpdateUserByIdService;
+import com.imo.backend.contexts.identity.usecases.UpdateUserByIdUseCase;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
@@ -20,12 +20,12 @@ import java.util.stream.Stream;
 @Slf4j
 @RestController
 public class UpdateUserByIdController extends UserController {
-  private final UpdateUserByIdService updateUserByIdService;
+  private final UpdateUserByIdUseCase updateUserByIdUseCase;
 
   public UpdateUserByIdController(
-      UpdateUserByIdService updateUserByIdService
+      UpdateUserByIdUseCase updateUserByIdUseCase
   ) {
-    this.updateUserByIdService = updateUserByIdService;
+    this.updateUserByIdUseCase = updateUserByIdUseCase;
   }
 
   @Operation(summary = "Update the user's credentials")
@@ -41,7 +41,7 @@ public class UpdateUserByIdController extends UserController {
 
     return checkNoContent(fieldsToUpdateUser)
         ? ResponseEntity.noContent().build()
-        : ResponseEntity.ok(UserDTO.fromUser(this.updateUserByIdService.execute(
+        : ResponseEntity.ok(UserDTO.fromUser(this.updateUserByIdUseCase.execute(
             userId,
             fieldsToUpdateUser
         )));

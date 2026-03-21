@@ -1,9 +1,10 @@
 package com.imo.backend.contexts.identity.http.controllers.create;
 
-import com.imo.backend.contexts.identity.actions.inputs.CreateUserInput;
+import com.imo.backend.contexts.identity.commands.CreateUserCommand;
 import com.imo.backend.contexts.identity.http.controllers.UserController;
+import com.imo.backend.contexts.identity.http.dtos.CreateUserRequest;
 import com.imo.backend.contexts.identity.http.dtos.UserDTO;
-import com.imo.backend.contexts.identity.services.CreateUserService;
+import com.imo.backend.contexts.identity.usecases.CreateUserUseCase;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -16,10 +17,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class CreateUserController extends UserController {
 
-  private final CreateUserService createUserService;
+  private final CreateUserUseCase createUserUseCase;
 
-  public CreateUserController(CreateUserService createUserService) {
-    this.createUserService = createUserService;
+  public CreateUserController(CreateUserUseCase createUserUseCase) {
+    this.createUserUseCase = createUserUseCase;
   }
 
   @Transactional
@@ -28,9 +29,9 @@ public class CreateUserController extends UserController {
   public ResponseEntity<UserDTO> handle(
       @Valid
       @RequestBody
-      CreateUserInput createUserInput
+      CreateUserRequest createUserRequest
   ) {
-    var newUser = UserDTO.fromUser(this.createUserService.execute(createUserInput));
+    var newUser = UserDTO.fromUser(this.createUserUseCase.execute(new CreateUserCommand(createUserRequest.name(), createUserRequest.email(), createUserRequest.password(), createUserRequest.confPassword())));
 
     return new ResponseEntity<>(newUser, HttpStatus.CREATED);
   }

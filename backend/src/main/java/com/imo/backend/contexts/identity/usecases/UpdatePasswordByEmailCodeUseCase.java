@@ -1,4 +1,4 @@
-package com.imo.backend.contexts.identity.services.impl;
+package com.imo.backend.contexts.identity.usecases;
 
 import com.imo.backend.contexts.apagar_dps.Outbox;
 import com.imo.backend.contexts.apagar_dps.OutboxEvent;
@@ -8,24 +8,23 @@ import com.imo.backend.contexts.common.Pageable;
 import com.imo.backend.contexts.common.exceptions.custom.NotFoundException;
 import com.imo.backend.contexts.identity.User;
 import com.imo.backend.contexts.identity.events.ForgetPasswordEvent;
-import com.imo.backend.contexts.identity.services.UpdatePasswordByEmailCodeService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class UpdatePasswordByEmailCodeServiceImpl implements UpdatePasswordByEmailCodeService {
+public class UpdatePasswordByEmailCodeUseCase {
 
   private final OutboxRepository<ForgetPasswordEvent> outboxRepository;
 
-  private final UpdatePasswordByIdServiceImpl updatePasswordByIdServiceImpl;
+  private final UpdatePasswordByIdUseCase updatePasswordByIdUseCase;
 
-  public UpdatePasswordByEmailCodeServiceImpl(
+  public UpdatePasswordByEmailCodeUseCase(
       OutboxRepository<ForgetPasswordEvent> outboxRepository,
-      UpdatePasswordByIdServiceImpl updatePasswordByIdServiceImpl
+      UpdatePasswordByIdUseCase updatePasswordByIdUseCase
   ) {
     this.outboxRepository = outboxRepository;
-    this.updatePasswordByIdServiceImpl = updatePasswordByIdServiceImpl;
+    this.updatePasswordByIdUseCase = updatePasswordByIdUseCase;
   }
 
   public User execute(String emailCode, String userId, String newPassword) {
@@ -49,7 +48,7 @@ public class UpdatePasswordByEmailCodeServiceImpl implements UpdatePasswordByEma
       boolean verified = this.verifyPayload(outboxes, userId, emailCode);
 
       if (verified) {
-        return this.updatePasswordByIdServiceImpl.execute(userId, newPassword);
+        return this.updatePasswordByIdUseCase.execute(userId, newPassword);
       }
 
       pageNumber++;

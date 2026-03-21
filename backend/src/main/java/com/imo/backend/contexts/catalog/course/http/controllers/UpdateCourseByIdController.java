@@ -5,7 +5,8 @@ import com.imo.backend.contexts.catalog.course.http.dtos.UpdateCourseByIdRequest
 import com.imo.backend.contexts.catalog.course.http.middlewares.ValidateUserCourseAccessService;
 import com.imo.backend.contexts.catalog.course.services.UpdateCourseByIdService;
 import com.imo.backend.contexts.common.MongoDB;
-import com.imo.backend.lib.token.TokenManager;
+import com.imo.backend.contexts.identity.lib.TokenManager;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;

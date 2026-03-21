@@ -1,4 +1,4 @@
-package com.imo.backend.lib.token;
+package com.imo.backend.contexts.identity.lib;
 
 import com.imo.backend.contexts.identity.http.dtos.auth.LoginResponseDTO;
 
