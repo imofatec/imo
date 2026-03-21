@@ -1,10 +1,11 @@
 package com.imo.backend.contexts.journey_tracking.events;
 
-import com.imo.backend.contexts.journey_tracking.Progress;
-import com.imo.backend.contexts.common.Entity;
 import com.imo.backend.contexts.catalog.lesson.repositories.LessonRepository;
+import com.imo.backend.contexts.common.Entity;
+import com.imo.backend.contexts.journey_tracking.Progress;
 import com.imo.backend.contexts.journey_tracking.repositories.ProgressRepository;
-import org.springframework.modulith.events.ApplicationModuleListener;
+import org.springframework.context.event.EventListener;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -23,7 +24,8 @@ public class ProgressEventListener {
     this.lessonRepository = lessonRepository;
   }
 
-  @ApplicationModuleListener
+  @Async
+  @EventListener
   public void execute(ReevaluateProgressEvent event) {
     int page = 0;
     int size = 100;
@@ -34,11 +36,12 @@ public class ProgressEventListener {
       progressList = this.progressRepository.findProgressByCourseId(courseId, page, size);
 
       progressList.forEach(progress -> {
-         List<String> existingLessonsIds = this.lessonRepository.findAllByCourseId(progress.getCourseId())
-        .stream()
-        .map(Entity::getId)
-        .toList();
-        
+        List<String> existingLessonsIds = this.lessonRepository
+            .findAllByCourseId(progress.getCourseId())
+            .stream()
+            .map(Entity::getId)
+            .toList();
+
         boolean changed = progress.assertReevaluateStructure(existingLessonsIds);
 
         if (changed) {
