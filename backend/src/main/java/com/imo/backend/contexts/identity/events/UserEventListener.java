@@ -67,12 +67,12 @@ public class UserEventListener {
           event.userId(),
           this.passwordEncoder.encode(event.code())
       );
-      RecoveryCode newRecoveryCode = this.recoveryCodeRepository.save(recoveryCode);
+      this.recoveryCodeRepository.save(recoveryCode);
 
       this.rabbitTemplate.convertAndSend(
           this.identityExchangeName,
           this.routingKeyForgetPassword,
-          newRecoveryCode.getCode()
+          event
       );
     } catch (Exception e) {
       log.error("FORGET_PASSWORD_EVENT: erro durante criação do recovery code {}", e.getMessage());

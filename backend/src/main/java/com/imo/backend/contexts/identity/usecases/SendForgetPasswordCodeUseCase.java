@@ -50,7 +50,8 @@ public class SendForgetPasswordCodeUseCase {
 
     this.applicationEventPublisher.publishEvent(new ForgetPasswordEvent(
         foundUser.getId(),
-        email,
+        foundUser.getName(),
+        foundUser.getEmail(),
         checkCode
     ));
 

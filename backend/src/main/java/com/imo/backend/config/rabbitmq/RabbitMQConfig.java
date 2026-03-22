@@ -20,6 +20,12 @@ public class RabbitMQConfig {
   @Value("${rabbitmq.routing.confirm_email}")
   private String routingKeyConfirmEmail;
 
+  @Value("${rabbitmq.queue.forget_password}")
+  private String forgetPasswordQueue;
+
+  @Value("${rabbitmq.routing.forget_password}")
+  private String routingKeyForgetPassword;
+
   @Bean
   public TopicExchange topicExchange() {
     return new TopicExchange(this.identityExchange);
@@ -33,6 +39,19 @@ public class RabbitMQConfig {
   @Bean
   public Binding confirmEmailBinding(Queue confirmEmailQueue, TopicExchange topicExchange) {
     return BindingBuilder.bind(confirmEmailQueue).to(topicExchange).with(routingKeyConfirmEmail);
+  }
+
+  @Bean
+  public Queue forgetPasswordQueue() {
+    return QueueBuilder.durable(forgetPasswordQueue).build();
+  }
+
+  @Bean
+  public Binding forgetPasswordBinding(Queue forgetPasswordQueue, TopicExchange topicExchange) {
+    return BindingBuilder
+        .bind(forgetPasswordQueue)
+        .to(topicExchange)
+        .with(routingKeyForgetPassword);
   }
 
   @Bean
