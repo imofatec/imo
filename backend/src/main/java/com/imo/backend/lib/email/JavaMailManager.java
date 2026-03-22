@@ -52,7 +52,7 @@ public class JavaMailManager implements MailManager {
       log.debug("JAVA_MAIL: enviando email com: {} para: {}", this.usernameSender, message.to());
       this.javaMailSender.send(mimeMessage);
     } catch (MessagingException e) {
-      log.info("JAVA_MAIL: ENVIO DE EMAIL FALHOU {}", e.getMessage());
+      log.error("JAVA_MAIL: ENVIO DE EMAIL FALHOU {}", e.getMessage());
     }
   }
 
