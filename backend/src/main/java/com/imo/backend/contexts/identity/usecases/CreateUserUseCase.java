@@ -4,7 +4,6 @@ import com.imo.backend.contexts.identity.User;
 import com.imo.backend.contexts.identity.UserPolicies;
 import com.imo.backend.contexts.identity.commands.CreateUserCommand;
 import com.imo.backend.contexts.identity.events.SendEmailConfirmationEvent;
-import com.imo.backend.contexts.identity.http.dtos.UserDTO;
 import com.imo.backend.contexts.identity.repositories.UserRepository;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -25,7 +24,8 @@ public class CreateUserUseCase {
       ApplicationEventPublisher publisher,
       UserPolicies userPolicies,
       UserRepository userRepository,
-      PasswordEncoder passwordEncoder) {
+      PasswordEncoder passwordEncoder
+  ) {
     this.publisher = publisher;
     this.userPolicies = userPolicies;
     this.userRepository = userRepository;
@@ -40,7 +40,10 @@ public class CreateUserUseCase {
     potentialNewUser.setPassword(this.passwordEncoder.encode(potentialNewUser.getPassword()));
 
     User newUser = this.userRepository.save(potentialNewUser);
-    this.publisher.publishEvent(new SendEmailConfirmationEvent(UserDTO.fromUser(newUser)));
+    this.publisher.publishEvent(new SendEmailConfirmationEvent(
+        newUser.getEmail(),
+        newUser.getName()
+    ));
 
     return newUser;
   }
