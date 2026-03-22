@@ -42,14 +42,11 @@ public class UserEventListener {
   @Async
   @EventListener
   public void handle(SendEmailConfirmationEvent event) {
-    log.debug(
-        "SEND_EMAIL_CONFIRMATION_EVENT: enviando mensagem pro broker {}",
-        event.user().email()
-    );
+    log.debug("SEND_EMAIL_CONFIRMATION_EVENT: enviando mensagem pro broker {}", event.email());
     this.rabbitTemplate.convertAndSend(
         this.identityExchangeName,
         this.routingKeyConfirmEmail,
-        event.user()
+        event
     );
   }
 

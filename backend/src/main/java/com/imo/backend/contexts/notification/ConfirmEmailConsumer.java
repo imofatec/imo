@@ -1,6 +1,6 @@
-package com.imo.backend.contexts.notification.confirm_email;
+package com.imo.backend.contexts.notification;
 
-import com.imo.backend.contexts.identity.http.dtos.UserDTO;
+import com.imo.backend.contexts.identity.events.SendEmailConfirmationEvent;
 import com.imo.backend.contexts.notification.lib.MailManager;
 import com.imo.backend.contexts.notification.lib.MailMessageBuilder;
 import lombok.extern.slf4j.Slf4j;
@@ -30,16 +30,16 @@ public class ConfirmEmailConsumer {
   }
 
   @RabbitListener(queues = "${rabbitmq.queue.confirm_email}")
-  public void handle(UserDTO user) {
-    log.debug("SEND_EMAIL_CONFIRMATION_EVENT: mensagem recebida {}", user.email());
+  public void handle(SendEmailConfirmationEvent event) {
+    log.debug("SEND_EMAIL_CONFIRMATION_EVENT: mensagem recebida {}", event.email());
 
     MailMessageBuilder messageBuilder = new MailMessageBuilder()
-        .setTo(user.email())
+        .setTo(event.email())
         .setSubject(EMAIL_SUBJECT);
 
     Map<String, Object> templateVariables = Map.of(
         "name",
-        user.name(),
+        event.name(),
         "confirmationURL",
         emailConfirmUrl
     );
