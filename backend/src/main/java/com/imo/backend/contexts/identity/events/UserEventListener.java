@@ -1,26 +1,24 @@
 package com.imo.backend.contexts.identity.events;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.imo.backend.contexts.apagar_dps.Outbox;
-import com.imo.backend.contexts.apagar_dps.OutboxEvent;
-import com.imo.backend.contexts.apagar_dps.OutboxStatus;
-import com.imo.backend.contexts.apagar_dps.services.CreateOutboxService;
+import com.imo.backend.contexts.identity.RecoveryCode;
+import com.imo.backend.contexts.identity.repositories.RecoveryCodeRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
 public class UserEventListener {
-  private final ObjectMapper objectMapper;
-
   private final RabbitTemplate rabbitTemplate;
 
-  private final CreateOutboxService<ForgetPasswordEvent> outboxService;
+  private final RecoveryCodeRepository recoveryCodeRepository;
+
+  private final PasswordEncoder passwordEncoder;
+
 
   @Value("${rabbitmq.identity.exchange}")
   private String identityExchangeName;
@@ -32,13 +30,13 @@ public class UserEventListener {
   private String routingKeyForgetPassword;
 
   public UserEventListener(
-      ObjectMapper objectMapper,
       RabbitTemplate rabbitTemplate,
-      CreateOutboxService<ForgetPasswordEvent> outboxService
+      RecoveryCodeRepository recoveryCodeRepository,
+      PasswordEncoder passwordEncoder
   ) {
-    this.objectMapper = objectMapper;
+    this.recoveryCodeRepository = recoveryCodeRepository;
     this.rabbitTemplate = rabbitTemplate;
-    this.outboxService = outboxService;
+    this.passwordEncoder = passwordEncoder;
   }
 
   @Async
@@ -58,30 +56,26 @@ public class UserEventListener {
   @Async
   @EventListener
   public void handle(ForgetPasswordEvent event) {
+    log.debug(
+        "FORGET_PASSWORD_EVENT: enviando mensagem pro broker {} {}",
+        event.email(),
+        event.code()
+    );
+
     try {
-      var newOutbox = this.outboxService.execute(new Outbox<>(
-          event,
-          OutboxStatus.PENDING,
-          OutboxEvent.USER_FORGET_PASSWORD
-      ));
-
-      var payload = new ForgetPasswordMessagePayload(
-          newOutbox.getId(),
+      RecoveryCode recoveryCode = new RecoveryCode(
           event.userId(),
-          event.email(),
-          event.code()
+          this.passwordEncoder.encode(event.code())
       );
-
-      String json = this.objectMapper.writeValueAsString(payload);
+      RecoveryCode newRecoveryCode = this.recoveryCodeRepository.save(recoveryCode);
 
       this.rabbitTemplate.convertAndSend(
           this.identityExchangeName,
           this.routingKeyForgetPassword,
-          new Message(json.getBytes())
+          newRecoveryCode.getCode()
       );
-
     } catch (Exception e) {
-      log.error(e.getMessage(), e);
+      log.error("FORGET_PASSWORD_EVENT: erro durante criação do recovery code {}", e.getMessage());
     }
   }
 }
