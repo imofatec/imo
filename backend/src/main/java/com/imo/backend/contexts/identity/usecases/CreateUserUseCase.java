@@ -25,8 +25,7 @@ public class CreateUserUseCase {
       ApplicationEventPublisher publisher,
       UserPolicies userPolicies,
       UserRepository userRepository,
-      PasswordEncoder passwordEncoder
-  ) {
+      PasswordEncoder passwordEncoder) {
     this.publisher = publisher;
     this.userPolicies = userPolicies;
     this.userRepository = userRepository;
@@ -36,12 +35,7 @@ public class CreateUserUseCase {
   public User execute(CreateUserCommand cmd) {
     this.userPolicies.assertCanRegister(cmd);
 
-    var potentialNewUser = new User(
-        cmd.name(),
-        cmd.email(),
-        cmd.password(),
-        false
-    );
+    var potentialNewUser = new User(cmd.name(), cmd.email(), cmd.password(), false);
 
     potentialNewUser.setPassword(this.passwordEncoder.encode(potentialNewUser.getPassword()));
 
