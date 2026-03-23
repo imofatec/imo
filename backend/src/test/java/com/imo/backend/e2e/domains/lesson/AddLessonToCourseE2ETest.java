@@ -1,7 +1,7 @@
 package com.imo.backend.e2e.domains.lesson;
 
 import com.imo.backend.contexts.catalog.course.http.dtos.CourseDetailsDTO;
-import com.imo.backend.contexts.catalog.lesson.actions.inputs.CreateLessonInput;
+import com.imo.backend.contexts.catalog.lesson.http.dtos.CreateLessonRequest;
 import com.imo.backend.e2e.config.BaseE2ETest;
 import com.imo.backend.e2e.helpers.E2EFlowHelper;
 import com.imo.backend.e2e.utils.JsonString;
@@ -24,7 +24,7 @@ public class AddLessonToCourseE2ETest extends BaseE2ETest {
     CourseDetailsDTO details = E2EFlowHelper.createCourseAndReturnDetails(token, 5);
     String courseId = details.course().id();
 
-    CreateLessonInput lessonInput = new CreateLessonInput(
+    CreateLessonRequest command = new CreateLessonRequest(
         "Curso de Rust",
         "Ownership",
         "https://youtube.com/watch?v=abc123def45"
@@ -38,7 +38,7 @@ public class AddLessonToCourseE2ETest extends BaseE2ETest {
 
     givenBaseRequest()
         .header("Authorization", "Bearer " + token)
-        .body(jsonString.fromObj(lessonInput))
+        .body(jsonString.fromObj(command))
         .when()
         .post("/lesson/" + courseId)
         .then()

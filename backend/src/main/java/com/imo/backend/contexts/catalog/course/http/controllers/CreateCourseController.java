@@ -2,9 +2,7 @@ package com.imo.backend.contexts.catalog.course.http.controllers;
 
 import com.imo.backend.contexts.catalog.course.http.dtos.CourseDetailsDTO;
 import com.imo.backend.contexts.catalog.course.http.dtos.CreateCourseRequest;
-import com.imo.backend.contexts.catalog.course.orchestrators.CreateCourseOrchestrator;
-import com.imo.backend.contexts.identity.lib.TokenManager;
-
+import com.imo.backend.contexts.catalog.course.usecases.CreateCourseUseCase;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
@@ -18,28 +16,23 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class CreateCourseController extends CourseController {
 
-  private final CreateCourseOrchestrator createCourseOrchestrator;
+  private final CreateCourseUseCase createCourseUseCase;
 
   public CreateCourseController(
-      TokenManager tokenManager,
-      CreateCourseOrchestrator createCourseOrchestrator
-  ) {
-    this.createCourseOrchestrator = createCourseOrchestrator;
+      CreateCourseUseCase createCourseUseCase) {
+    this.createCourseUseCase = createCourseUseCase;
   }
 
   @Operation(summary = "Create a course")
   @SecurityRequirement(name = "Authorization")
   @PostMapping()
   public ResponseEntity<CourseDetailsDTO> handle(
-      @Valid
-      @RequestBody
-      CreateCourseRequest createCourseRequest
-  ) {
+      @Valid @RequestBody CreateCourseRequest createCourseRequest) {
     String contributorId = SecurityContextHolder.getContext().getAuthentication().getName();
-    var newCourseWithLessons = this.createCourseOrchestrator.execute(
-        createCourseRequest,
-        contributorId
-    );
+    var newCourseWithLessons = this.createCourseUseCase.execute(
+        createCourseRequest.toCommand(
+            contributorId),
+        contributorId);
 
     return new ResponseEntity<>(newCourseWithLessons, HttpStatus.CREATED);
   }

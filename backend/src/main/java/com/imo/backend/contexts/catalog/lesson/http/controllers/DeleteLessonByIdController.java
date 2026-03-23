@@ -3,7 +3,7 @@ package com.imo.backend.contexts.catalog.lesson.http.controllers;
 import com.imo.backend.contexts.catalog.course.http.middlewares.ValidateUserCourseAccessService;
 import com.imo.backend.contexts.catalog.course.repositories.CourseRepository;
 import com.imo.backend.contexts.catalog.lesson.http.dtos.LessonResponseDTO;
-import com.imo.backend.contexts.catalog.lesson.services.DeleteLessonByIdService;
+import com.imo.backend.contexts.catalog.lesson.usecases.DeleteLessonByIdUseCase;
 import com.imo.backend.contexts.common.MongoDB;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -16,18 +16,18 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class DeleteLessonByIdController extends LessonController {
 
-  private final DeleteLessonByIdService deleteLessonByIdService;
+  private final DeleteLessonByIdUseCase useCase;
 
   private final ValidateUserCourseAccessService validateUserCourseAccessService;
 
   private final CourseRepository courseRepository;
 
   public DeleteLessonByIdController(
-      DeleteLessonByIdService deleteLessonByIdService,
+      DeleteLessonByIdUseCase useCase,
       ValidateUserCourseAccessService validateUserCourseAccessService,
       CourseRepository courseRepository
   ) {
-    this.deleteLessonByIdService = deleteLessonByIdService;
+    this.useCase = useCase;
     this.validateUserCourseAccessService = validateUserCourseAccessService;
     this.courseRepository = courseRepository;
   }
@@ -45,7 +45,7 @@ public class DeleteLessonByIdController extends LessonController {
 
     this.validateUserCourseAccessService.execute(userId, existingCourse.getId());
 
-    var deletedLesson = this.deleteLessonByIdService.execute(id);
+    var deletedLesson = this.useCase.execute(id);
 
     return deletedLesson != null
         ? ResponseEntity.ok(LessonResponseDTO.fromEntity(deletedLesson))
