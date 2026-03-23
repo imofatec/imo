@@ -41,7 +41,7 @@ public class SecurityConfig {
   @Value("${jwt.private.key}")
   private RSAPrivateKey privateKey;
 
-  @Value("${client.url}")
+  @Value("${frontend.client.url}")
   private String clientURL;
 
 
@@ -60,7 +60,6 @@ public class SecurityConfig {
                 "/docs/**",
                 "/api/user/ids",
                 "/api/user/{id}",
-                "/api/user/forget-password/**",
                 "/api/course/{id}",
                 "/api/course/search",
                 "/api/course/search/details",
@@ -69,9 +68,18 @@ public class SecurityConfig {
                 "/api/certificate/details/{id}"
             )
             .permitAll()
-            .requestMatchers(HttpMethod.POST, "/api/user", "/api/user/login")
+            .requestMatchers(
+                HttpMethod.POST,
+                "/api/user",
+                "/api/user/login",
+                "/api/user/forget-password"
+            )
             .permitAll()
-            .requestMatchers(HttpMethod.PATCH, "/api/user/{emailCode}/{userId}")
+            .requestMatchers(
+                HttpMethod.PATCH,
+                "/api/user/{emailCode}/{userId}",
+                "/api/user/recovery-password"
+            )
             .permitAll()
             .anyRequest()
             .authenticated())

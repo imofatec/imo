@@ -1,12 +1,14 @@
 package com.imo.backend.contexts.identity.http.controllers.auth;
 
 import com.imo.backend.contexts.identity.http.controllers.UserController;
-import com.imo.backend.contexts.identity.http.dtos.UserDTO;
+import com.imo.backend.contexts.identity.http.dtos.SimpleMessage;
+import com.imo.backend.contexts.identity.http.dtos.auth.ForgetPasswordRequest;
 import com.imo.backend.contexts.identity.usecases.SendForgetPasswordCodeUseCase;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -18,11 +20,10 @@ public class SendForgetPasswordCodeController extends UserController {
   }
 
   @Operation(summary = "Send code to user's email where he can change his password")
-  @GetMapping("/forget-password/{email}")
-  public ResponseEntity<UserDTO> handle(
-      @PathVariable
-      String email
-  ) {
-    return ResponseEntity.ok(UserDTO.fromUser(this.sendForgetPasswordCodeUseCase.execute(email)));
+  @PostMapping("/forget-password")
+  public ResponseEntity<SimpleMessage> handle(
+      @RequestBody ForgetPasswordRequest request) {
+    String response = this.sendForgetPasswordCodeUseCase.execute(request.email());
+    return ResponseEntity.ok(new SimpleMessage(response));
   }
 }

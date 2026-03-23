@@ -2,7 +2,8 @@ package com.imo.backend.contexts.catalog.course.events;
 
 import com.imo.backend.contexts.catalog.course.commands.UpdateCourseByIdCommand;
 import com.imo.backend.contexts.catalog.course.usecases.UpdateCourseByIdUseCase;
-import org.springframework.modulith.events.ApplicationModuleListener;
+import org.springframework.context.event.EventListener;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -11,12 +12,12 @@ public class CourseEventListener {
   private final UpdateCourseByIdUseCase updateCourseByIdUseCase;
 
   public CourseEventListener(
-      UpdateCourseByIdUseCase updateCourseByIdUseCase
-  ) {
+      UpdateCourseByIdUseCase updateCourseByIdUseCase) {
     this.updateCourseByIdUseCase = updateCourseByIdUseCase;
   }
 
-  @ApplicationModuleListener
+  @Async
+  @EventListener
   public void handle(UpdateCourseLessonsCountEvent event) {
     this.updateCourseByIdUseCase.execute(
         event.courseId(),
@@ -27,12 +28,11 @@ public class CourseEventListener {
             null,
             null,
             event.newCount(),
-            null
-        )
-    );
+            null));
   }
 
-  @ApplicationModuleListener
+  @Async
+  @EventListener
   public void handle(UpdateCourseFirstYoutubeLinkEvent event) {
     this.updateCourseByIdUseCase.execute(
         event.courseId(),
@@ -43,8 +43,6 @@ public class CourseEventListener {
             null,
             null,
             null,
-            event.newFirstYoutubeLink()
-        )
-    );
+            event.newFirstYoutubeLink()));
   }
 }

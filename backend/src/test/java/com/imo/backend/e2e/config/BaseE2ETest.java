@@ -18,7 +18,7 @@ import static io.restassured.RestAssured.given;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Testcontainers
 @ActiveProfiles("test")
-@Import(RabbitMQMock.class)
+@Import({RabbitMQMock.class, JavaMailSenderMock.class})
 public abstract class BaseE2ETest {
 
   @LocalServerPort
