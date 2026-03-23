@@ -2,7 +2,7 @@ package com.imo.backend.contexts.catalog.lesson.http.controllers;
 
 import com.imo.backend.contexts.catalog.course.http.middlewares.ValidateUserCourseAccessService;
 import com.imo.backend.contexts.catalog.lesson.http.dtos.CreateLessonRequest;
-import com.imo.backend.contexts.catalog.lesson.http.dtos.LessonResponseDTO;
+import com.imo.backend.contexts.catalog.lesson.http.dtos.LessonDTO;
 import com.imo.backend.contexts.catalog.lesson.usecases.CreateLessonUseCase;
 import com.imo.backend.contexts.common.MongoDB;
 import io.swagger.v3.oas.annotations.Operation;
@@ -36,7 +36,7 @@ public class CreateLessonController extends LessonController {
   @Operation(summary = "Add new lesson in a course")
   @SecurityRequirement(name = "Authorization")
   @PostMapping("/{courseId}")
-  public ResponseEntity<LessonResponseDTO> handle(
+  public ResponseEntity<LessonDTO> handle(
       HttpServletRequest request,
       @PathVariable
       String courseId,
@@ -50,6 +50,6 @@ public class CreateLessonController extends LessonController {
 
     var newLesson = this.useCase.execute(dto.toCommand(), courseId);
 
-    return new ResponseEntity<>(LessonResponseDTO.fromEntity(newLesson), HttpStatus.CREATED);
+    return new ResponseEntity<>(LessonDTO.fromEntity(newLesson), HttpStatus.CREATED);
   }
 }

@@ -2,7 +2,7 @@ package com.imo.backend.contexts.catalog.lesson.http.controllers;
 
 import com.imo.backend.contexts.catalog.course.http.middlewares.ValidateUserCourseAccessService;
 import com.imo.backend.contexts.catalog.course.repositories.CourseRepository;
-import com.imo.backend.contexts.catalog.lesson.http.dtos.LessonResponseDTO;
+import com.imo.backend.contexts.catalog.lesson.http.dtos.LessonDTO;
 import com.imo.backend.contexts.catalog.lesson.usecases.DeleteLessonByIdUseCase;
 import com.imo.backend.contexts.common.MongoDB;
 import io.swagger.v3.oas.annotations.Operation;
@@ -35,7 +35,7 @@ public class DeleteLessonByIdController extends LessonController {
   @Operation(summary = "Delete lesson by id")
   @SecurityRequirement(name = "Authorization")
   @DeleteMapping("/{id}")
-  public ResponseEntity<LessonResponseDTO> handle(
+  public ResponseEntity<LessonDTO> handle(
       @PathVariable
       String id
   ) {
@@ -48,7 +48,7 @@ public class DeleteLessonByIdController extends LessonController {
     var deletedLesson = this.useCase.execute(id);
 
     return deletedLesson != null
-        ? ResponseEntity.ok(LessonResponseDTO.fromEntity(deletedLesson))
+        ? ResponseEntity.ok(LessonDTO.fromEntity(deletedLesson))
         : ResponseEntity.noContent().build();
   }
 

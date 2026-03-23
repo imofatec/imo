@@ -2,14 +2,13 @@ package com.imo.backend.contexts.catalog.lesson.http.controllers;
 
 import com.imo.backend.contexts.catalog.course.repositories.CourseRepository;
 import com.imo.backend.contexts.catalog.course.repositories.CourseSearchParams;
-import com.imo.backend.contexts.catalog.lesson.http.dtos.LessonResponseDTO;
+import com.imo.backend.contexts.catalog.lesson.http.dtos.LessonDTO;
 import com.imo.backend.contexts.catalog.lesson.repositories.LessonSearchParams;
 import com.imo.backend.contexts.common.CombineWith;
 import com.imo.backend.contexts.common.MatchType;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,7 +28,7 @@ public class LessonSearchController extends LessonController {
   @Operation(summary = "Search lesson")
   @SecurityRequirement(name = "Authorization")
   @GetMapping("/search")
-  public ResponseEntity<List<LessonResponseDTO>> handle(
+  public ResponseEntity<List<LessonDTO>> handle(
       @Parameter(description = "Query params to search", example = "slugCategory=dev-web")
       @ParameterObject
       LessonSearchParams lessonSearchParams,
@@ -56,13 +55,17 @@ public class LessonSearchController extends LessonController {
     );
 
     var courseDetailsStream = (page == null || size == null)
-      ? this.courseRepository.searchDetails(searchParams, matchType, combineWith).stream()
-      : this.courseRepository.searchDetails(searchParams,page, size, matchType, combineWith).stream();
+        ? this.courseRepository
+        .searchDetails(searchParams, matchType, combineWith)
+        .stream()
+        : this.courseRepository
+            .searchDetails(searchParams, page, size, matchType, combineWith)
+            .stream();
 
     var response = courseDetailsStream
-      .flatMap(courseDetails -> courseDetails.lessons().stream())
-      .map(LessonResponseDTO::fromEntity)
-      .toList();
+        .flatMap(courseDetails -> courseDetails.lessons().stream())
+        .map(LessonDTO::fromEntity)
+        .toList();
 
     return ResponseEntity.ok(response);
   }
