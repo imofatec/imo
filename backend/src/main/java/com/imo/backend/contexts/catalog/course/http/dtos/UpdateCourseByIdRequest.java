@@ -1,6 +1,6 @@
 package com.imo.backend.contexts.catalog.course.http.dtos;
 
-import com.imo.backend.contexts.catalog.course.actions.commands.UpdateCourseByIdCommand;
+import com.imo.backend.contexts.catalog.course.commands.UpdateCourseByIdCommand;
 import com.imo.backend.contexts.catalog.course.value_objects.Categories;
 import jakarta.validation.constraints.Size;
 
@@ -19,15 +19,15 @@ public record UpdateCourseByIdRequest(
 
     String firstLessonYoutubeLink
 ) {
-    public UpdateCourseByIdCommand toCommand(String id) {
-        return new UpdateCourseByIdCommand(
-            id,
-            this.name,
-            this.category,
-            this.level,
-            this.description,
-            this.lessonsCount,
-            this.firstLessonYoutubeLink
-        );
-    }
+  public UpdateCourseByIdCommand toCommand(String id) {
+    return new UpdateCourseByIdCommand(
+        id,
+        this.name,
+        this.category,
+        this.level,
+        this.description,
+        this.lessonsCount,
+        this.firstLessonYoutubeLink
+    );
+  }
 }

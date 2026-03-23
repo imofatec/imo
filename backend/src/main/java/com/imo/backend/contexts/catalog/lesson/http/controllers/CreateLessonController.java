@@ -23,14 +23,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class CreateLessonController extends LessonController {
   private final ValidateUserCourseAccessService validateUserCourseAccessService;
 
-  private final CreateLessonUseCase createLessonService;
+  private final CreateLessonUseCase useCase;
 
   public CreateLessonController(
       ValidateUserCourseAccessService validateUserCourseAccessService,
-      CreateLessonUseCase createLessonService
+      CreateLessonUseCase useCase
   ) {
     this.validateUserCourseAccessService = validateUserCourseAccessService;
-    this.createLessonService = createLessonService;
+    this.useCase = useCase;
   }
 
   @Operation(summary = "Add new lesson in a course")
@@ -48,7 +48,7 @@ public class CreateLessonController extends LessonController {
     String userId = SecurityContextHolder.getContext().getAuthentication().getName();
     this.validateUserCourseAccessService.execute(userId, courseId);
 
-    var newLesson = this.createLessonService.execute(dto.toCommand(), courseId);
+    var newLesson = this.useCase.execute(dto.toCommand(), courseId);
 
     return new ResponseEntity<>(LessonResponseDTO.fromEntity(newLesson), HttpStatus.CREATED);
   }

@@ -1,7 +1,8 @@
-package com.imo.backend.contexts.catalog.course.actions.commands;
+package com.imo.backend.contexts.catalog.course.commands;
 
 import com.imo.backend.contexts.catalog.course.value_objects.Categories;
-import com.imo.backend.contexts.catalog.lesson.actions.commands.CreateLessonCommand;
+import com.imo.backend.contexts.catalog.lesson.commands.CreateLessonCommand;
+
 import java.util.List;
 
 public record CreateCourseCommand(

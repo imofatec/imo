@@ -3,15 +3,12 @@ package com.imo.backend.contexts.catalog.course.http.dtos;
 import com.imo.backend.contexts.catalog.course.value_objects.Categories;
 import com.imo.backend.contexts.catalog.course.value_objects.Category;
 
-public record CategoryResponseDTO (
+public record CategoryDTO(
     Categories name,
     String slug
 ) {
-    public static CategoryResponseDTO fromVO(Category category) {
-        return new CategoryResponseDTO(
-            category.name(),
-            category.slug()
-        );
-    }
+  public static CategoryDTO fromVO(Category category) {
+    return new CategoryDTO(category.name(), category.slug());
+  }
 
 }

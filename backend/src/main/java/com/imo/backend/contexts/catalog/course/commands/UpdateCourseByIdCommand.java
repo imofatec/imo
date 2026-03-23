@@ -1,4 +1,4 @@
-package com.imo.backend.contexts.catalog.course.actions.commands;
+package com.imo.backend.contexts.catalog.course.commands;
 
 import com.imo.backend.contexts.catalog.course.value_objects.Categories;
 

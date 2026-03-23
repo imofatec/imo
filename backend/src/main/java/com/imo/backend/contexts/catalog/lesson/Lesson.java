@@ -1,6 +1,6 @@
 package com.imo.backend.contexts.catalog.lesson;
 
-import com.imo.backend.contexts.catalog.lesson.actions.commands.UpdateLessonCommand;
+import com.imo.backend.contexts.catalog.lesson.commands.UpdateLessonCommand;
 import com.imo.backend.contexts.common.Entity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

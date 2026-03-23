@@ -1,10 +1,9 @@
 package com.imo.backend.config.mongodb.populate;
 
 import com.imo.backend.contexts.catalog.course.http.dtos.CreateCourseRequest;
-import com.imo.backend.contexts.catalog.course.orchestrators.CreateCourseOrchestrator;
+import com.imo.backend.contexts.catalog.course.usecases.CreateCourseUseCase;
 import com.imo.backend.contexts.catalog.course.value_objects.Categories;
 import com.imo.backend.contexts.catalog.lesson.http.dtos.CreateLessonRequest;
-
 import net.datafaker.Faker;
 import org.springframework.stereotype.Service;
 
@@ -16,10 +15,10 @@ import java.util.concurrent.ThreadLocalRandom;
 public class PopulateCourses {
   private final Faker faker = new Faker();
 
-  private final CreateCourseOrchestrator createCourseOrchestrator;
+  private final CreateCourseUseCase createCourseUseCase;
 
-  public PopulateCourses(CreateCourseOrchestrator createCourseOrchestrator) {
-    this.createCourseOrchestrator = createCourseOrchestrator;
+  public PopulateCourses(CreateCourseUseCase createCourseUseCase) {
+    this.createCourseUseCase = createCourseUseCase;
   }
 
   public void execute(String contributorId, int qyt) {
@@ -47,7 +46,7 @@ public class PopulateCourses {
           contributorId
       );
 
-      this.createCourseOrchestrator.execute(createCourseRequest, contributorId);
+      this.createCourseUseCase.execute(createCourseRequest.toCommand(contributorId), contributorId);
     }
   }
 

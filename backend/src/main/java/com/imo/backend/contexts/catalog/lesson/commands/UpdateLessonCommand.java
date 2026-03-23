@@ -1,4 +1,4 @@
-package com.imo.backend.contexts.catalog.lesson.actions.commands;
+package com.imo.backend.contexts.catalog.lesson.commands;
 
 public record UpdateLessonCommand(
     String lessonId,
@@ -6,5 +6,5 @@ public record UpdateLessonCommand(
     String description,
     String youtubeLink
 ) {
-    
+
 }

@@ -1,11 +1,10 @@
 package com.imo.backend.contexts.catalog.course.http.controllers;
 
-import com.imo.backend.contexts.catalog.course.http.dtos.CourseResponseDTO;
+import com.imo.backend.contexts.catalog.course.http.dtos.CourseDTO;
 import com.imo.backend.contexts.catalog.course.http.dtos.UpdateCourseByIdRequest;
 import com.imo.backend.contexts.catalog.course.http.middlewares.ValidateUserCourseAccessService;
 import com.imo.backend.contexts.catalog.course.usecases.UpdateCourseByIdUseCase;
 import com.imo.backend.contexts.common.MongoDB;
-import com.imo.backend.lib.token.TokenManager;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
@@ -18,23 +17,22 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class UpdateCourseByIdController extends CourseController {
-  private final UpdateCourseByIdUseCase updateCourseByIdService;
+  private final UpdateCourseByIdUseCase useCase;
 
   private final ValidateUserCourseAccessService validateUserCourseAccessService;
 
   public UpdateCourseByIdController(
-      UpdateCourseByIdUseCase updateCourseByIdService,
-      TokenManager tokenManager,
+      UpdateCourseByIdUseCase useCase,
       ValidateUserCourseAccessService validateUserCourseAccessService
   ) {
-    this.updateCourseByIdService = updateCourseByIdService;
+    this.useCase = useCase;
     this.validateUserCourseAccessService = validateUserCourseAccessService;
   }
 
   @Operation(summary = "Update course fields by id")
   @SecurityRequirement(name = "Authorization")
   @PutMapping("/{id}")
-  public ResponseEntity<CourseResponseDTO> handle(
+  public ResponseEntity<CourseDTO> handle(
       @PathVariable
       String id,
       @Valid
@@ -46,10 +44,10 @@ public class UpdateCourseByIdController extends CourseController {
 
     this.validateUserCourseAccessService.execute(userId, id);
 
-    var updatedCourse = this.updateCourseByIdService.execute(id, dto);
+    var updatedCourse = this.useCase.execute(id, dto.toCommand(id));
 
     return updatedCourse == null
         ? ResponseEntity.noContent().build()
-        : ResponseEntity.ok(CourseResponseDTO.fromEntity(updatedCourse));
+        : ResponseEntity.ok(CourseDTO.fromEntity(updatedCourse));
   }
 }

@@ -1,9 +1,8 @@
 package com.imo.backend.contexts.catalog.course.http.dtos;
 
+import com.imo.backend.contexts.catalog.course.commands.CreateCourseCommand;
 import com.imo.backend.contexts.catalog.course.value_objects.Categories;
-import com.imo.backend.contexts.catalog.course.actions.commands.CreateCourseCommand;
 import com.imo.backend.contexts.catalog.lesson.http.dtos.CreateLessonRequest;
-
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -33,14 +32,14 @@ public record CreateCourseRequest(
     @NotBlank(message = "ID do contribuidor é obrigatório")
     String contributorId
 ) {
-    public CreateCourseCommand toCommand(String contributorId){
-        return new CreateCourseCommand(
-            name,
-            category,
-            level,
-            description,
-            lessons.stream().map(CreateLessonRequest::toCommand).toList(),
-            contributorId
-        );
-    }
+  public CreateCourseCommand toCommand(String contributorId) {
+    return new CreateCourseCommand(
+        name,
+        category,
+        level,
+        description,
+        lessons.stream().map(CreateLessonRequest::toCommand).toList(),
+        contributorId
+    );
+  }
 }

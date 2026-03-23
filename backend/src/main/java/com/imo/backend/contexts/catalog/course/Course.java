@@ -1,6 +1,6 @@
 package com.imo.backend.contexts.catalog.course;
 
-import com.imo.backend.contexts.catalog.course.actions.commands.UpdateCourseByIdCommand;
+import com.imo.backend.contexts.catalog.course.commands.UpdateCourseByIdCommand;
 import com.imo.backend.contexts.catalog.course.value_objects.Category;
 import com.imo.backend.contexts.catalog.course.value_objects.CourseName;
 import com.imo.backend.contexts.catalog.course.value_objects.Level;
@@ -49,37 +49,32 @@ public class Course extends Entity {
   }
 
   public static void applyUpdate(Course course, UpdateCourseByIdCommand command) {
-      if (command.name() != null) {
-          course.setName(new CourseName(command.name()));
-      }
+    if (command.name() != null) {
+      course.setName(new CourseName(command.name()));
+    }
 
-      if (command.category() != null) {
-          course.setCategory(new Category(command.category()));
-      }
+    if (command.category() != null) {
+      course.setCategory(new Category(command.category()));
+    }
 
-      if (command.level() != null) {
-          course.setLevel(new Level(command.level()));
-      }
+    if (command.level() != null) {
+      course.setLevel(new Level(command.level()));
+    }
 
-      if (command.description() != null) {
-          course.setDescription(command.description());
-      }
+    if (command.description() != null) {
+      course.setDescription(command.description());
+    }
 
-      if (command.lessonsCount() != null) {
-          course.setLessonsCount(command.lessonsCount());
-      }
+    if (command.lessonsCount() != null) {
+      course.setLessonsCount(command.lessonsCount());
+    }
 
-      if (command.firstLessonYoutubeLink() != null) {
-          course.setFirstLessonYoutubeLink(command.firstLessonYoutubeLink());
-      }  
+    if (command.firstLessonYoutubeLink() != null) {
+      course.setFirstLessonYoutubeLink(command.firstLessonYoutubeLink());
+    }
   }
 
   public void toggleStatus() {
-      this.isActive = !this.isActive;
-    }
-
-    public void incrementLessonsCount() {
-        this.lessonsCount++;
-    }
-    
+    this.isActive = !this.isActive;
+  }
 }

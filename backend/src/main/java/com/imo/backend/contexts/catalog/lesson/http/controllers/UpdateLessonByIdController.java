@@ -20,17 +20,17 @@ import org.springframework.web.bind.annotation.RestController;
 public class UpdateLessonByIdController extends LessonController {
   private final ValidateUserCourseAccessService validateUserCourseAccessService;
 
-  private final UpdateLessonByIdUseCase updateLessonByIdService;
+  private final UpdateLessonByIdUseCase useCase;
 
   private final CourseRepository courseRepository;
 
   public UpdateLessonByIdController(
       ValidateUserCourseAccessService validateUserCourseAccessService,
-      UpdateLessonByIdUseCase updateLessonByIdService,
+      UpdateLessonByIdUseCase useCase,
       CourseRepository courseRepository
   ) {
     this.validateUserCourseAccessService = validateUserCourseAccessService;
-    this.updateLessonByIdService = updateLessonByIdService;
+    this.useCase = useCase;
     this.courseRepository = courseRepository;
   }
 
@@ -49,7 +49,7 @@ public class UpdateLessonByIdController extends LessonController {
     var existingCourse = this.courseRepository.findByLessonIdOrThrow(id);
     this.validateUserCourseAccessService.execute(userId, existingCourse.getId());
 
-    var updatedLesson = this.updateLessonByIdService.execute(dto.toCommand(id));
+    var updatedLesson = this.useCase.execute(dto.toCommand(id));
 
     return updatedLesson != null
         ? ResponseEntity.ok(LessonResponseDTO.fromEntity(updatedLesson))

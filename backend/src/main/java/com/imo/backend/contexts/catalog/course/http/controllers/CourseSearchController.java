@@ -1,6 +1,6 @@
 package com.imo.backend.contexts.catalog.course.http.controllers;
 
-import com.imo.backend.contexts.catalog.course.http.dtos.CourseResponseDTO;
+import com.imo.backend.contexts.catalog.course.http.dtos.CourseDTO;
 import com.imo.backend.contexts.catalog.course.repositories.CourseRepository;
 import com.imo.backend.contexts.catalog.course.repositories.CourseSearchParams;
 import com.imo.backend.contexts.common.CombineWith;
@@ -25,7 +25,7 @@ public class CourseSearchController extends CourseController {
 
   @Operation(summary = "Search course")
   @GetMapping("/search")
-  public ResponseEntity<List<CourseResponseDTO>> handle(
+  public ResponseEntity<List<CourseDTO>> handle(
       @Parameter(description = "Query params to search", example = "slugCategory=dev-web")
       @ParameterObject
       CourseSearchParams courseSearchParams,
@@ -42,15 +42,11 @@ public class CourseSearchController extends CourseController {
       @RequestParam(required = false)
       Integer size
   ) {
-    var courses = (page == null || size == null) ? this.courseRepository.search(
-        courseSearchParams,
-        matchType,
-        combineWith
-    ) : this.courseRepository.search(courseSearchParams, page, size, matchType, combineWith);
+    var courses = (page == null || size == null)
+        ? this.courseRepository.search(courseSearchParams, matchType, combineWith)
+        : this.courseRepository.search(courseSearchParams, page, size, matchType, combineWith);
 
-    var response = courses.stream()
-      .map(CourseResponseDTO::fromEntity)
-      .toList();
+    var response = courses.stream().map(CourseDTO::fromEntity).toList();
 
     return ResponseEntity.ok(response);
   }

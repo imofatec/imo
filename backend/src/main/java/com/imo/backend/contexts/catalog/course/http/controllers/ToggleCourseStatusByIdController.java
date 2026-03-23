@@ -1,6 +1,6 @@
 package com.imo.backend.contexts.catalog.course.http.controllers;
 
-import com.imo.backend.contexts.catalog.course.http.dtos.CourseResponseDTO;
+import com.imo.backend.contexts.catalog.course.http.dtos.CourseDTO;
 import com.imo.backend.contexts.catalog.course.http.middlewares.ValidateUserCourseAccessService;
 import com.imo.backend.contexts.catalog.course.usecases.ToggleCourseStatusByIdUseCase;
 import com.imo.backend.contexts.common.MongoDB;
@@ -15,22 +15,22 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class ToggleCourseStatusByIdController extends CourseController {
 
-  private final ToggleCourseStatusByIdUseCase toggleCourseStatusByIdAction;
+  private final ToggleCourseStatusByIdUseCase useCase;
 
   private final ValidateUserCourseAccessService validateUserCourseAccessService;
 
   public ToggleCourseStatusByIdController(
-      ToggleCourseStatusByIdUseCase toggleCourseStatusByIdAction,
+      ToggleCourseStatusByIdUseCase useCase,
       ValidateUserCourseAccessService validateUserCourseAccessService
   ) {
-    this.toggleCourseStatusByIdAction = toggleCourseStatusByIdAction;
+    this.useCase = useCase;
     this.validateUserCourseAccessService = validateUserCourseAccessService;
   }
 
   @Operation(summary = "Toggle course status")
   @SecurityRequirement(name = "Authorization")
   @PatchMapping("/{id}")
-  public ResponseEntity<CourseResponseDTO> handle(
+  public ResponseEntity<CourseDTO> handle(
       @PathVariable
       String id
   ) {
@@ -39,10 +39,10 @@ public class ToggleCourseStatusByIdController extends CourseController {
 
     this.validateUserCourseAccessService.execute(userId, id);
 
-    var updatedCourse = toggleCourseStatusByIdAction.execute(id);
+    var updatedCourse = useCase.execute(id);
 
     return updatedCourse != null
-        ? ResponseEntity.ok(CourseResponseDTO.fromEntity(updatedCourse))
+        ? ResponseEntity.ok(CourseDTO.fromEntity(updatedCourse))
         : ResponseEntity.noContent().build();
   }
 }

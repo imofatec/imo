@@ -1,7 +1,6 @@
-package com.imo.backend.contexts.catalog.course.factories;
+package com.imo.backend.contexts.catalog.course;
 
-import com.imo.backend.contexts.catalog.course.Course;
-import com.imo.backend.contexts.catalog.course.actions.commands.CreateCourseCommand;
+import com.imo.backend.contexts.catalog.course.commands.CreateCourseCommand;
 import com.imo.backend.contexts.catalog.course.value_objects.Category;
 import com.imo.backend.contexts.catalog.course.value_objects.CourseName;
 import com.imo.backend.contexts.catalog.course.value_objects.Level;

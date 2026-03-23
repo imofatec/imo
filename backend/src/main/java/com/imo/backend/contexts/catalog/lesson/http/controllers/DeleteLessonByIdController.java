@@ -16,18 +16,18 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class DeleteLessonByIdController extends LessonController {
 
-  private final DeleteLessonByIdUseCase deleteLessonByIdService;
+  private final DeleteLessonByIdUseCase useCase;
 
   private final ValidateUserCourseAccessService validateUserCourseAccessService;
 
   private final CourseRepository courseRepository;
 
   public DeleteLessonByIdController(
-      DeleteLessonByIdUseCase deleteLessonByIdService,
+      DeleteLessonByIdUseCase useCase,
       ValidateUserCourseAccessService validateUserCourseAccessService,
       CourseRepository courseRepository
   ) {
-    this.deleteLessonByIdService = deleteLessonByIdService;
+    this.useCase = useCase;
     this.validateUserCourseAccessService = validateUserCourseAccessService;
     this.courseRepository = courseRepository;
   }
@@ -45,7 +45,7 @@ public class DeleteLessonByIdController extends LessonController {
 
     this.validateUserCourseAccessService.execute(userId, existingCourse.getId());
 
-    var deletedLesson = this.deleteLessonByIdService.execute(id);
+    var deletedLesson = this.useCase.execute(id);
 
     return deletedLesson != null
         ? ResponseEntity.ok(LessonResponseDTO.fromEntity(deletedLesson))
