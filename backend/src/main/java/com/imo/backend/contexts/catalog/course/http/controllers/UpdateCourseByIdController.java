@@ -23,8 +23,7 @@ public class UpdateCourseByIdController extends CourseController {
 
   public UpdateCourseByIdController(
       UpdateCourseByIdUseCase useCase,
-      ValidateUserCourseAccessService validateUserCourseAccessService
-  ) {
+      ValidateUserCourseAccessService validateUserCourseAccessService) {
     this.useCase = useCase;
     this.validateUserCourseAccessService = validateUserCourseAccessService;
   }
@@ -33,12 +32,8 @@ public class UpdateCourseByIdController extends CourseController {
   @SecurityRequirement(name = "Authorization")
   @PutMapping("/{id}")
   public ResponseEntity<CourseDTO> handle(
-      @PathVariable
-      String id,
-      @Valid
-      @RequestBody
-      UpdateCourseByIdRequest dto
-  ) {
+      @PathVariable String id,
+      @Valid @RequestBody UpdateCourseByIdRequest dto) {
     MongoDB.validateObjectId(id);
     String userId = SecurityContextHolder.getContext().getAuthentication().getName();
 

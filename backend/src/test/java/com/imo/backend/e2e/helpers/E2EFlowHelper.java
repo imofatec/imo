@@ -2,7 +2,7 @@ package com.imo.backend.e2e.helpers;
 
 import com.imo.backend.contexts.catalog.course.http.dtos.CourseDetailsDTO;
 import com.imo.backend.contexts.catalog.course.http.dtos.CreateCourseRequest;
-import com.imo.backend.contexts.identity.actions.inputs.CreateUserInput;
+import com.imo.backend.contexts.identity.commands.CreateUserCommand;
 import com.imo.backend.contexts.identity.http.dtos.auth.LoginRequestDTO;
 import com.imo.backend.e2e.factories.CourseTestFactory;
 import com.imo.backend.e2e.factories.UserTestFactory;
@@ -22,7 +22,7 @@ public class E2EFlowHelper {
   private static final JsonString jsonString = new JsonString();
 
   public static String createAndAuthenticateUser() {
-    CreateUserInput user = UserTestFactory.mountValidUser();
+    CreateUserCommand user = UserTestFactory.mountValidUser();
     String jsonBody = jsonString.fromObj(user);
 
     givenBaseRequest()

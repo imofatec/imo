@@ -19,8 +19,7 @@ public class CreateCourseController extends CourseController {
   private final CreateCourseUseCase createCourseUseCase;
 
   public CreateCourseController(
-      CreateCourseUseCase createCourseUseCase
-  ) {
+      CreateCourseUseCase createCourseUseCase) {
     this.createCourseUseCase = createCourseUseCase;
   }
 
@@ -28,15 +27,12 @@ public class CreateCourseController extends CourseController {
   @SecurityRequirement(name = "Authorization")
   @PostMapping()
   public ResponseEntity<CourseDetailsDTO> handle(
-      @Valid
-      @RequestBody
-      CreateCourseRequest createCourseRequest
-  ) {
+      @Valid @RequestBody CreateCourseRequest createCourseRequest) {
     String contributorId = SecurityContextHolder.getContext().getAuthentication().getName();
     var newCourseWithLessons = this.createCourseUseCase.execute(
         createCourseRequest.toCommand(
-            contributorId), contributorId
-    );
+            contributorId),
+        contributorId);
 
     return new ResponseEntity<>(newCourseWithLessons, HttpStatus.CREATED);
   }
