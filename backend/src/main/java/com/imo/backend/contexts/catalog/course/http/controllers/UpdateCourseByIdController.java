@@ -1,12 +1,10 @@
 package com.imo.backend.contexts.catalog.course.http.controllers;
 
-import com.imo.backend.contexts.catalog.course.http.dtos.CourseResponseDTO;
+import com.imo.backend.contexts.catalog.course.http.dtos.CourseDTO;
 import com.imo.backend.contexts.catalog.course.http.dtos.UpdateCourseByIdRequest;
 import com.imo.backend.contexts.catalog.course.http.middlewares.ValidateUserCourseAccessService;
-import com.imo.backend.contexts.catalog.course.services.UpdateCourseByIdService;
+import com.imo.backend.contexts.catalog.course.usecases.UpdateCourseByIdUseCase;
 import com.imo.backend.contexts.common.MongoDB;
-import com.imo.backend.contexts.identity.lib.TokenManager;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
@@ -19,38 +17,32 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class UpdateCourseByIdController extends CourseController {
-  private final UpdateCourseByIdService updateCourseByIdService;
+  private final UpdateCourseByIdUseCase useCase;
 
   private final ValidateUserCourseAccessService validateUserCourseAccessService;
 
   public UpdateCourseByIdController(
-      UpdateCourseByIdService updateCourseByIdService,
-      TokenManager tokenManager,
-      ValidateUserCourseAccessService validateUserCourseAccessService
-  ) {
-    this.updateCourseByIdService = updateCourseByIdService;
+      UpdateCourseByIdUseCase useCase,
+      ValidateUserCourseAccessService validateUserCourseAccessService) {
+    this.useCase = useCase;
     this.validateUserCourseAccessService = validateUserCourseAccessService;
   }
 
   @Operation(summary = "Update course fields by id")
   @SecurityRequirement(name = "Authorization")
   @PutMapping("/{id}")
-  public ResponseEntity<CourseResponseDTO> handle(
-      @PathVariable
-      String id,
-      @Valid
-      @RequestBody
-      UpdateCourseByIdRequest dto
-  ) {
+  public ResponseEntity<CourseDTO> handle(
+      @PathVariable String id,
+      @Valid @RequestBody UpdateCourseByIdRequest dto) {
     MongoDB.validateObjectId(id);
     String userId = SecurityContextHolder.getContext().getAuthentication().getName();
 
     this.validateUserCourseAccessService.execute(userId, id);
 
-    var updatedCourse = this.updateCourseByIdService.execute(id, dto);
+    var updatedCourse = this.useCase.execute(id, dto.toCommand(id));
 
     return updatedCourse == null
         ? ResponseEntity.noContent().build()
-        : ResponseEntity.ok(CourseResponseDTO.fromEntity(updatedCourse));
+        : ResponseEntity.ok(CourseDTO.fromEntity(updatedCourse));
   }
 }

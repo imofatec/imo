@@ -1,9 +1,9 @@
 package com.imo.backend.contexts.catalog.lesson.http.controllers;
 
 import com.imo.backend.contexts.catalog.course.http.middlewares.ValidateUserCourseAccessService;
-import com.imo.backend.contexts.catalog.lesson.actions.inputs.CreateLessonInput;
+import com.imo.backend.contexts.catalog.lesson.http.dtos.CreateLessonRequest;
 import com.imo.backend.contexts.catalog.lesson.http.dtos.LessonResponseDTO;
-import com.imo.backend.contexts.catalog.lesson.services.CreateLessonService;
+import com.imo.backend.contexts.catalog.lesson.usecases.CreateLessonUseCase;
 import com.imo.backend.contexts.common.MongoDB;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -23,14 +23,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class CreateLessonController extends LessonController {
   private final ValidateUserCourseAccessService validateUserCourseAccessService;
 
-  private final CreateLessonService createLessonService;
+  private final CreateLessonUseCase useCase;
 
   public CreateLessonController(
       ValidateUserCourseAccessService validateUserCourseAccessService,
-      CreateLessonService createLessonService
+      CreateLessonUseCase useCase
   ) {
     this.validateUserCourseAccessService = validateUserCourseAccessService;
-    this.createLessonService = createLessonService;
+    this.useCase = useCase;
   }
 
   @Operation(summary = "Add new lesson in a course")
@@ -42,13 +42,13 @@ public class CreateLessonController extends LessonController {
       String courseId,
       @Valid
       @RequestBody
-      CreateLessonInput dto
+      CreateLessonRequest dto
   ) {
     MongoDB.validateObjectId(courseId);
     String userId = SecurityContextHolder.getContext().getAuthentication().getName();
     this.validateUserCourseAccessService.execute(userId, courseId);
 
-    var newLesson = this.createLessonService.execute(dto, courseId);
+    var newLesson = this.useCase.execute(dto.toCommand(), courseId);
 
     return new ResponseEntity<>(LessonResponseDTO.fromEntity(newLesson), HttpStatus.CREATED);
   }

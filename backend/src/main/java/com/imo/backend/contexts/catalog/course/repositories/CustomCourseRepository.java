@@ -15,9 +15,6 @@ public interface CustomCourseRepository {
 
   List<Course> findAllByContributorId(String id, Pageable page);
 
-  Course toggleStatusById(String id, boolean currentStatus);
-
-  Course incLessonsCountById(String courseId);
 
   Optional<Course> findByLessonId(String lessonId);
 

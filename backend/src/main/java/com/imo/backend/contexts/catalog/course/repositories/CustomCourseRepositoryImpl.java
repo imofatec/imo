@@ -48,32 +48,6 @@ public class CustomCourseRepositoryImpl implements CustomCourseRepository {
   }
 
   @Override
-  public Course toggleStatusById(String id, boolean currentStatus) {
-    Query query = new Query(Criteria.where("_id").is(id));
-
-    Update update = new Update().set("isActive", !currentStatus);
-
-    return this.mongoTemplate.findAndModify(
-        query,
-        update,
-        FindAndModifyOptions.options().returnNew(true),
-        Course.class
-    );
-  }
-
-  @Override
-  public Course incLessonsCountById(String courseId) {
-    Query query = new Query(Criteria.where("_id").is(courseId));
-    Update update = new Update().inc("lessonsCount", 1);
-    return mongoTemplate.findAndModify(
-        query,
-        update,
-        FindAndModifyOptions.options().returnNew(true),
-        Course.class
-    );
-  }
-
-  @Override
   public Optional<Course> findByLessonId(String lessonId) {
     Lesson lesson = mongoTemplate.findById(lessonId, Lesson.class);
 

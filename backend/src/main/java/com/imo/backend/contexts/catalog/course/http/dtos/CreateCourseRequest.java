@@ -1,7 +1,8 @@
 package com.imo.backend.contexts.catalog.course.http.dtos;
 
+import com.imo.backend.contexts.catalog.course.commands.CreateCourseCommand;
 import com.imo.backend.contexts.catalog.course.value_objects.Categories;
-import com.imo.backend.contexts.catalog.lesson.actions.inputs.CreateLessonInput;
+import com.imo.backend.contexts.catalog.lesson.http.dtos.CreateLessonRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -26,6 +27,19 @@ public record CreateCourseRequest(
 
     @Size(min = 1, max = 100, message = "Um curso pode ter no mínimo 1 e no máximo 100 aulas")
     @Valid
-    List<CreateLessonInput> lessons
+    List<CreateLessonRequest> lessons,
+
+    @NotBlank(message = "ID do contribuidor é obrigatório")
+    String contributorId
 ) {
+  public CreateCourseCommand toCommand(String contributorId) {
+    return new CreateCourseCommand(
+        name,
+        category,
+        level,
+        description,
+        lessons.stream().map(CreateLessonRequest::toCommand).toList(),
+        contributorId
+    );
+  }
 }
