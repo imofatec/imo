@@ -3,42 +3,40 @@ package com.imo.backend.contexts.catalog.lesson.usecases.impl;
 import com.imo.backend.contexts.catalog.course.events.IncLessonsCountEvent;
 import com.imo.backend.contexts.catalog.course.events.UpdateCourseLessonsCountEvent;
 import com.imo.backend.contexts.catalog.lesson.Lesson;
+import com.imo.backend.contexts.catalog.lesson.LessonPolicies;
 import com.imo.backend.contexts.catalog.lesson.actions.commands.CreateLessonCommand; // ✅ Usando Command
 import com.imo.backend.contexts.catalog.lesson.actions.factory.LessonFactory;
 import com.imo.backend.contexts.catalog.lesson.repositories.LessonRepository;
 import com.imo.backend.contexts.catalog.lesson.usecases.CreateLessonUseCase;
-import com.imo.backend.contexts.common.exceptions.custom.ConflictException;
 import com.imo.backend.contexts.journey_tracking.events.ReevaluateProgressEvent;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
 import java.util.List;
 
 @Service
 public class CreateLessonUseCaseImpl implements CreateLessonUseCase {
     private final LessonRepository lessonRepository;
     private final ApplicationEventPublisher applicationEventPublisher;
+    private final LessonPolicies lessonPolicies;
 
     public CreateLessonUseCaseImpl(
         LessonRepository lessonRepository,
-        ApplicationEventPublisher applicationEventPublisher
+        ApplicationEventPublisher applicationEventPublisher,
+        LessonPolicies lessonPolicies
     ) {
         this.lessonRepository = lessonRepository;
         this.applicationEventPublisher = applicationEventPublisher;
+        this.lessonPolicies = lessonPolicies;
     }
 
     @Override
     public List<Lesson> execute(List<CreateLessonCommand> commands, String courseId) {
-        this.checkConflictLessons(commands);
+        this.lessonPolicies.checkListInternalConflicts(commands);
 
         var newLessons = this.lessonRepository.saveAll(LessonFactory.createLesson(commands, courseId));
 
-        this.applicationEventPublisher.publishEvent(new UpdateCourseLessonsCountEvent(
-            courseId,
-            newLessons.size()
-        ));
-
+        this.applicationEventPublisher.publishEvent(new UpdateCourseLessonsCountEvent(courseId, newLessons.size()));
         this.applicationEventPublisher.publishEvent(new ReevaluateProgressEvent(courseId));
 
         return newLessons;
@@ -46,21 +44,15 @@ public class CreateLessonUseCaseImpl implements CreateLessonUseCase {
 
     @Override
     public Lesson execute(CreateLessonCommand command, String courseId) {
-        var existingLessons = lessonRepository.findAllByCourseId(courseId);
 
-        existingLessons.forEach(existingLesson -> {
-            if (existingLesson.getTitle().equals(command.title())) {
-                throw new ConflictException("Já existe uma aula com esse título");
-            }
+        this.lessonPolicies.checkLessonConflicts(courseId, null, command.title(), command.youtubeLink());
 
-            if (existingLesson.getYoutubeLink().equals(command.youtubeLink())) {
-                throw new ConflictException("Já existe uma aula com este link de vídeo");
-            }
-        });
+        var existingLessonsCount = lessonRepository.findAllByCourseId(courseId).size();
+
 
         Lesson newLesson = this.lessonRepository.save(LessonFactory.createLesson(
             command,
-            existingLessons.size() + 1,
+            existingLessonsCount + 1,
             courseId
         ));
 
@@ -68,28 +60,5 @@ public class CreateLessonUseCaseImpl implements CreateLessonUseCase {
         this.applicationEventPublisher.publishEvent(new ReevaluateProgressEvent(courseId));
 
         return newLesson;
-    }
-
-    private void checkConflictLessons(List<CreateLessonCommand> commands) { // ✅ Trocado para Command
-        var titles = new HashSet<String>();
-        var descriptions = new HashSet<String>();
-        var youtubeLinks = new HashSet<String>();
-
-        commands.forEach(command -> {
-            if (!titles.add(command.title())) {
-                throw new ConflictException(String.format("Titulo '%s' repetido", command.title()));
-            }
-
-            if (command.description() != null && !descriptions.add(command.description())) {
-                String shortDesc = command.description().length() > 10 
-                    ? command.description().substring(0, 10) 
-                    : command.description();
-                throw new ConflictException(String.format("Descrição '%s...' repetida", shortDesc));
-            }
-
-            if (!youtubeLinks.add(command.youtubeLink())) {
-                throw new ConflictException(String.format("Aula '%s' repetida", command.youtubeLink()));
-            }
-        });
     }
 }

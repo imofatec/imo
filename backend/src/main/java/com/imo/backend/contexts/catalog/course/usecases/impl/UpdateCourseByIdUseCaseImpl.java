@@ -1,12 +1,12 @@
 package com.imo.backend.contexts.catalog.course.usecases.impl;
 
 import com.imo.backend.contexts.catalog.course.Course;
+import com.imo.backend.contexts.catalog.course.CoursePolicies;
 import com.imo.backend.contexts.catalog.course.actions.commands.UpdateCourseByIdCommand;
 import com.imo.backend.contexts.catalog.course.http.dtos.UpdateCourseByIdRequest;
 import com.imo.backend.contexts.catalog.course.repositories.CourseRepository;
 import com.imo.backend.contexts.catalog.course.usecases.UpdateCourseByIdUseCase;
 import com.imo.backend.contexts.common.Slug;
-import com.imo.backend.contexts.common.exceptions.custom.ConflictException;
 import com.imo.backend.contexts.common.exceptions.custom.NotFoundException;
 
 import org.springframework.stereotype.Service;
@@ -15,11 +15,14 @@ import org.springframework.stereotype.Service;
 public class UpdateCourseByIdUseCaseImpl implements UpdateCourseByIdUseCase {
 
   private final CourseRepository courseRepository;
+  private final CoursePolicies coursePolicies; 
 
   public UpdateCourseByIdUseCaseImpl(
-      CourseRepository courseRepository
+      CourseRepository courseRepository,
+      CoursePolicies coursePolicies
   ) {
     this.courseRepository = courseRepository;
+    this.coursePolicies = coursePolicies;
   }
 
   @Override
@@ -27,11 +30,10 @@ public class UpdateCourseByIdUseCaseImpl implements UpdateCourseByIdUseCase {
     Course course = this.courseRepository.findByIdOrThrow(courseId);
 
     if (fieldsToUpdateCourse.name() != null) {
-      this.checkConflictContributorCourse(
-          courseId,
-          course.getContributorId(),
-          Slug.create(fieldsToUpdateCourse.name())
-      );
+      this.coursePolicies.checkUpdateConflict(
+        courseId,
+        course.getContributorId(),
+        Slug.create(fieldsToUpdateCourse.name()));
     }
 
     UpdateCourseByIdCommand command = fieldsToUpdateCourse.toCommand(courseId);
@@ -47,20 +49,5 @@ public class UpdateCourseByIdUseCaseImpl implements UpdateCourseByIdUseCase {
       Course.applyUpdate(course, command);
       return this.courseRepository.save(course);
     }
-
-  private void checkConflictContributorCourse(
-      String courseId,
-      String contributorId,
-      String maybeNewSlug
-  ) {
-    var existingContributorCourse = this.courseRepository.findAllByContributorId(contributorId)
-        .stream()
-        .anyMatch(course -> course.getName().slug().equals(maybeNewSlug) && !course
-            .getId()
-            .equals(courseId));
-
-    if (existingContributorCourse) {
-      throw new ConflictException(String.format("Curso %s já existe", maybeNewSlug));
-    }
-  }
+   
 }

@@ -70,11 +70,16 @@ public class Course extends Entity {
       }
 
       if (command.firstLessonYoutubeLink() != null) {
-          course.setFirstLessonYoutubeLink(Lesson.formatYoutubeLink(command.firstLessonYoutubeLink()));
+          course.setFirstLessonYoutubeLink(command.firstLessonYoutubeLink());
       }  
   }
 
   public void toggleStatus() {
       this.isActive = !this.isActive;
     }
+
+    public void incrementLessonsCount() {
+        this.lessonsCount++;
+    }
+    
 }
