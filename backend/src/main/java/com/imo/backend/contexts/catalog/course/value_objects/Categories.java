@@ -1,9 +1,8 @@
 package com.imo.backend.contexts.catalog.course.value_objects;
 
-import com.imo.backend.contexts.common.exceptions.custom.BadRequestException;
 import lombok.Getter;
 
-import java.util.Arrays;
+import java.util.List;
 
 @Getter
 public enum Categories {
@@ -20,15 +19,14 @@ public enum Categories {
     this.value = value;
   }
 
-  public static Categories safeParseFromString(String value) {
-    try {
-      return Categories.valueOf(value.toUpperCase());
-    } catch (IllegalArgumentException e) {
-      throw new BadRequestException(String.format(
-          "Categoria inválida: %s\nCategorias válidas: %s",
-          value,
-          Arrays.stream(Categories.values()).toList()
-      ));
-    }
+  public static List<Categories> getAll() {
+    return List.of(
+        Categories.AI,
+        Categories.DATA,
+        Categories.CLOUD,
+        Categories.DEV_WEB,
+        Categories.SECURITY,
+        Categories.DEV_MOBILE
+    );
   }
 }

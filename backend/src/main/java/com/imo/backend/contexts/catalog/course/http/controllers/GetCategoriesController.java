@@ -1,41 +1,23 @@
 package com.imo.backend.contexts.catalog.course.http.controllers;
 
 import com.imo.backend.contexts.catalog.course.http.dtos.CategoryDTO;
-import com.imo.backend.contexts.catalog.course.repositories.CourseRepository;
+import com.imo.backend.contexts.catalog.course.value_objects.Categories;
+import com.imo.backend.contexts.catalog.course.value_objects.Category;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
 @RestController
 public class GetCategoriesController extends CourseController {
-  private final CourseRepository courseRepository;
-
-  public GetCategoriesController(CourseRepository courseRepository) {
-    this.courseRepository = courseRepository;
-  }
-
   @Operation(summary = "Get categories")
   @GetMapping("/categories")
   public ResponseEntity<List<CategoryDTO>> handle(
-      @Parameter(description = "Page number to retrieve", example = "0", required = false)
-      @RequestParam(required = false)
-      Integer page,
-      @Parameter(description = "Size of each page", example = "10", required = false)
-      @RequestParam(required = false)
-      Integer size
   ) {
+    List<Category> categories = Categories.getAll().stream().map(Category::new).toList();
 
-    var categories = (page == null || size == null)
-        ? this.courseRepository.findAllCategories()
-        : this.courseRepository.findAllCategories(page, size);
-
-    var response = categories.stream().map(CategoryDTO::fromVO).toList();
-
-    return ResponseEntity.ok(response);
+    return ResponseEntity.ok(categories.stream().map(CategoryDTO::fromVO).toList());
   }
 }
