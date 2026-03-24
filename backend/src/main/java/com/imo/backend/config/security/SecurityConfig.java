@@ -58,6 +58,7 @@ public class SecurityConfig {
                 "/swagger-resources/**",
                 "/webjars/**",
                 "/docs/**",
+                "/api/health-check",
                 "/api/user/ids",
                 "/api/user/{id}",
                 "/api/course/{id}",
