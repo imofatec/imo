@@ -1,6 +1,6 @@
 package com.imo.backend.contexts.notification;
 
-import com.imo.backend.contexts.identity.events.ForgetPasswordEvent;
+import com.imo.backend.contexts.identity.user.events.ForgetPasswordEvent;
 import com.imo.backend.contexts.notification.lib.MailManager;
 import com.imo.backend.contexts.notification.lib.MailMessageBuilder;
 import lombok.extern.slf4j.Slf4j;

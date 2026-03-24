@@ -1,6 +1,6 @@
 package com.imo.backend.e2e.factories;
 
-import com.imo.backend.contexts.identity.commands.CreateUserCommand;
+import com.imo.backend.contexts.identity.user.commands.CreateUserCommand;
 import com.imo.backend.e2e.utils.DataFakeFactory;
 
 public class UserTestFactory {

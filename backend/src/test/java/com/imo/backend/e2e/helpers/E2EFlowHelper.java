@@ -2,8 +2,8 @@ package com.imo.backend.e2e.helpers;
 
 import com.imo.backend.contexts.catalog.course.http.dtos.CourseDetailsDTO;
 import com.imo.backend.contexts.catalog.course.http.dtos.CreateCourseRequest;
-import com.imo.backend.contexts.identity.commands.CreateUserCommand;
-import com.imo.backend.contexts.identity.http.dtos.auth.LoginRequestDTO;
+import com.imo.backend.contexts.identity.user.commands.CreateUserCommand;
+import com.imo.backend.contexts.identity.user.http.dtos.auth.LoginRequestDTO;
 import com.imo.backend.e2e.factories.CourseTestFactory;
 import com.imo.backend.e2e.factories.UserTestFactory;
 import com.imo.backend.e2e.utils.JsonString;

@@ -65,20 +65,21 @@ public class SecurityConfig {
                 "/api/course/search/details",
                 "/apí/course/categories",
                 "/api/comment/{lessonId}",
-                "/api/certificate/details/{id}"
+                "/api/certificate/details/{id},"
             )
             .permitAll()
             .requestMatchers(
                 HttpMethod.POST,
                 "/api/user",
                 "/api/user/login",
-                "/api/user/forget-password"
+                "/api/recovery/password/send-code",
+                "/api/recovery/password/verify"
             )
             .permitAll()
             .requestMatchers(
                 HttpMethod.PATCH,
                 "/api/user/{emailCode}/{userId}",
-                "/api/user/recovery-password"
+                "/api/recovery/password/reset"
             )
             .permitAll()
             .anyRequest()

@@ -1,8 +1,8 @@
 package com.imo.backend.e2e.domains.auth;
 
 
-import com.imo.backend.contexts.identity.commands.CreateUserCommand;
-import com.imo.backend.contexts.identity.http.dtos.auth.LoginRequestDTO;
+import com.imo.backend.contexts.identity.user.commands.CreateUserCommand;
+import com.imo.backend.contexts.identity.user.http.dtos.auth.LoginRequestDTO;
 import com.imo.backend.e2e.config.BaseE2ETest;
 import com.imo.backend.e2e.factories.UserTestFactory;
 import com.imo.backend.e2e.utils.JsonString;
