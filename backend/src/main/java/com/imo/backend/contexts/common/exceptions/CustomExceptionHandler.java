@@ -4,23 +4,24 @@ import com.imo.backend.contexts.common.exceptions.custom.BadRequestException;
 import com.imo.backend.contexts.common.exceptions.custom.ConflictException;
 import com.imo.backend.contexts.common.exceptions.custom.ForbiddenException;
 import com.imo.backend.contexts.common.exceptions.custom.NotFoundException;
-import org.springframework.context.support.DefaultMessageSourceResolvable;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import java.util.List;
+import java.util.Optional;
 
+@Slf4j
 @RestControllerAdvice
 public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
-  // 400
   @Override
   protected ResponseEntity<Object> handleMethodArgumentNotValid(
       MethodArgumentNotValidException ex,
@@ -28,19 +29,15 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
       HttpStatusCode status,
       WebRequest request
   ) {
-    List<String> errorMessages = ex
-        .getBindingResult()
-        .getFieldErrors()
-        .stream()
-        .map(DefaultMessageSourceResolvable::getDefaultMessage)
-        .toList();
+    String message = Optional
+        .ofNullable(ex.getBindingResult().getFieldError())
+        .map(FieldError::getDefaultMessage)
+        .orElse("Erro de validação");
 
-    String errorMessage = errorMessages.get(0);
-    String description = String.format("path: %s", request.getDescription(false));
-
-    ErrorResponseDto errorResponseDto = new ErrorResponseDto(errorMessage, description);
-    System.out.println(errorMessage);
-    return new ResponseEntity<>(errorResponseDto, HttpStatus.BAD_REQUEST);
+    return new ResponseEntity<>(
+        new ErrorResponseDto("VALIDATION_ERROR", message),
+        HttpStatus.BAD_REQUEST
+    );
   }
 
   @Override
@@ -50,62 +47,51 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
       HttpStatusCode status,
       WebRequest request
   ) {
-    String errorMessage = "Argumento inválido";
-    String description = String.format("path: %s", request.getDescription(false));
-
-    ErrorResponseDto errorResponseDto = new ErrorResponseDto(errorMessage, description);
-    return new ResponseEntity<>(errorResponseDto, HttpStatus.BAD_REQUEST);
+    log.warn("JSON malformado em {}", request.getDescription(false));
+    return new ResponseEntity<>(
+        new ErrorResponseDto("VALIDATION_ERROR", "Argumento inválido"),
+        HttpStatus.BAD_REQUEST
+    );
   }
 
-  // 400
   @ExceptionHandler(BadRequestException.class)
-  public final ResponseEntity<Object> handleBadRequestException(
-      BadRequestException ex,
-      WebRequest request
-  ) {
-    String errorMessage = ex.getMessage();
-    String description = String.format("path: %s", request.getDescription(false));
-
-    ErrorResponseDto errorResponseDto = new ErrorResponseDto(errorMessage, description);
-    return new ResponseEntity<>(errorResponseDto, HttpStatus.BAD_REQUEST);
+  public final ResponseEntity<Object> handleBadRequestException(BadRequestException ex) {
+    return new ResponseEntity<>(
+        new ErrorResponseDto("BAD_REQUEST", ex.getMessage()),
+        HttpStatus.BAD_REQUEST
+    );
   }
 
-  // 403
   @ExceptionHandler(ForbiddenException.class)
-  public final ResponseEntity<Object> handleForbiddenException(
-      ForbiddenException ex,
-      WebRequest request
-  ) {
-    String errorMessage = ex.getMessage();
-    String description = String.format("path: %s", request.getDescription(false));
-
-    ErrorResponseDto errorResponseDto = new ErrorResponseDto(errorMessage, description);
-    return new ResponseEntity<>(errorResponseDto, HttpStatus.FORBIDDEN);
+  public final ResponseEntity<Object> handleForbiddenException(ForbiddenException ex) {
+    return new ResponseEntity<>(
+        new ErrorResponseDto("FORBIDDEN", ex.getMessage()),
+        HttpStatus.FORBIDDEN
+    );
   }
 
-  // 404
   @ExceptionHandler(NotFoundException.class)
-  public final ResponseEntity<Object> handleNotFoundException(
-      NotFoundException ex,
-      WebRequest request
-  ) {
-    String errorMessage = ex.getMessage();
-    String description = String.format("path: %s", request.getDescription(false));
-
-    ErrorResponseDto errorResponseDto = new ErrorResponseDto(errorMessage, description);
-    return new ResponseEntity<>(errorResponseDto, HttpStatus.NOT_FOUND);
+  public final ResponseEntity<Object> handleNotFoundException(NotFoundException ex) {
+    return new ResponseEntity<>(
+        new ErrorResponseDto("NOT_FOUND", ex.getMessage()),
+        HttpStatus.NOT_FOUND
+    );
   }
 
-  // 409
   @ExceptionHandler(ConflictException.class)
-  public final ResponseEntity<Object> handleConflictException(
-      ConflictException ex,
-      WebRequest request
-  ) {
-    String errorMessage = ex.getMessage();
-    String description = String.format("path: %s", request.getDescription(false));
-
-    ErrorResponseDto errorResponseDto = new ErrorResponseDto(errorMessage, description);
-    return new ResponseEntity<>(errorResponseDto, HttpStatus.CONFLICT);
+  public final ResponseEntity<Object> handleConflictException(ConflictException ex) {
+    return new ResponseEntity<>(
+        new ErrorResponseDto("CONFLICT", ex.getMessage()),
+        HttpStatus.CONFLICT
+    );
+  }
+  
+  @ExceptionHandler(Exception.class)
+  public final ResponseEntity<Object> handleAllExceptions(Exception ex, WebRequest request) {
+    log.error("Erro não tratado em {}", request.getDescription(false), ex);
+    return new ResponseEntity<>(
+        new ErrorResponseDto("INTERNAL_ERROR", "Erro interno do servidor"),
+        HttpStatus.INTERNAL_SERVER_ERROR
+    );
   }
 }
