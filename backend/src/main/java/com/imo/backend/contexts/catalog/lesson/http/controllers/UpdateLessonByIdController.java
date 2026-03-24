@@ -7,6 +7,10 @@ import com.imo.backend.contexts.catalog.lesson.http.dtos.UpdateLessonRequest;
 import com.imo.backend.contexts.catalog.lesson.usecases.UpdateLessonByIdUseCase;
 import com.imo.backend.contexts.common.MongoDB;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -36,6 +40,21 @@ public class UpdateLessonByIdController extends LessonController {
 
   @Operation(summary = "Update lesson by id")
   @SecurityRequirement(name = "Authorization")
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "Aula atualizada com sucesso",
+          content = @Content(schema = @Schema(implementation = LessonDTO.class))),
+      @ApiResponse(responseCode = "204", description = "Nenhum campo para atualizar"),
+      @ApiResponse(responseCode = "400", description = "Dados inválidos",
+          content = @Content(schema = @Schema(implementation = com.imo.backend.contexts.common.exceptions.ErrorResponseDto.class))),
+      @ApiResponse(responseCode = "401", description = "Não autenticado",
+          content = @Content(schema = @Schema(implementation = com.imo.backend.contexts.common.exceptions.ErrorResponseDto.class))),
+      @ApiResponse(responseCode = "403", description = "Sem permissão para editar aula neste curso",
+          content = @Content(schema = @Schema(implementation = com.imo.backend.contexts.common.exceptions.ErrorResponseDto.class))),
+      @ApiResponse(responseCode = "404", description = "Curso ou aula não encontrados",
+          content = @Content(schema = @Schema(implementation = com.imo.backend.contexts.common.exceptions.ErrorResponseDto.class))),
+      @ApiResponse(responseCode = "409", description = "Título ou link já existem no curso",
+          content = @Content(schema = @Schema(implementation = com.imo.backend.contexts.common.exceptions.ErrorResponseDto.class)))
+  })
   @PutMapping("/{id}")
   public ResponseEntity<LessonDTO> handle(
       @PathVariable

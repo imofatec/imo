@@ -5,6 +5,10 @@ import com.imo.backend.contexts.identity.user.http.dtos.UpdateUserByIdRequest;
 import com.imo.backend.contexts.identity.user.http.dtos.UserDTO;
 import com.imo.backend.contexts.identity.user.usecases.UpdateUserByIdUseCase;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +34,15 @@ public class UpdateUserByIdController extends UserController {
 
   @Operation(summary = "Update the user's credentials")
   @SecurityRequirement(name = "Authorization")
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "Usuário atualizado com sucesso",
+          content = @Content(schema = @Schema(implementation = UserDTO.class))),
+      @ApiResponse(responseCode = "204", description = "Nenhum campo para atualizar"),
+      @ApiResponse(responseCode = "400", description = "Dados inválidos",
+          content = @Content(schema = @Schema(implementation = com.imo.backend.contexts.common.exceptions.ErrorResponseDto.class))),
+      @ApiResponse(responseCode = "401", description = "Não autenticado",
+          content = @Content(schema = @Schema(implementation = com.imo.backend.contexts.common.exceptions.ErrorResponseDto.class)))
+  })
   @PutMapping()
   public ResponseEntity<UserDTO> handle(
       @Valid

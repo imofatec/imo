@@ -14,6 +14,10 @@ import com.imo.backend.contexts.social.comment.http.dtos.CommentDTO;
 import com.imo.backend.contexts.social.comment.http.dtos.CreateCommentRequest;
 import com.imo.backend.contexts.social.comment.usecases.CreateCommentUseCase;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 
@@ -28,6 +32,16 @@ public class CreateCommentController extends CommentController {
 
   @Operation(summary = "Add comment in a lesson")
   @SecurityRequirement(name = "Authorization")
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "201", description = "Comentário criado com sucesso",
+          content = @Content(schema = @Schema(implementation = CommentDTO.class))),
+      @ApiResponse(responseCode = "400", description = "Dados inválidos",
+          content = @Content(schema = @Schema(implementation = com.imo.backend.contexts.common.exceptions.ErrorResponseDto.class))),
+      @ApiResponse(responseCode = "401", description = "Não autenticado",
+          content = @Content(schema = @Schema(implementation = com.imo.backend.contexts.common.exceptions.ErrorResponseDto.class))),
+      @ApiResponse(responseCode = "404", description = "Aula não encontrada",
+          content = @Content(schema = @Schema(implementation = com.imo.backend.contexts.common.exceptions.ErrorResponseDto.class)))
+  })
   @PostMapping("/{lessonId}")
   public ResponseEntity<CommentDTO> handle(
       @PathVariable

@@ -6,6 +6,10 @@ import com.imo.backend.contexts.identity.user.http.dtos.CreateUserRequest;
 import com.imo.backend.contexts.identity.user.http.dtos.UserDTO;
 import com.imo.backend.contexts.identity.user.usecases.CreateUserUseCase;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +27,14 @@ public class CreateUserController extends UserController {
   }
 
   @Operation(summary = "Register user")
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "201", description = "Usuário criado com sucesso",
+          content = @Content(schema = @Schema(implementation = UserDTO.class))),
+      @ApiResponse(responseCode = "400", description = "Dados inválidos",
+          content = @Content(schema = @Schema(implementation = com.imo.backend.contexts.common.exceptions.ErrorResponseDto.class))),
+      @ApiResponse(responseCode = "409", description = "Email já cadastrado",
+          content = @Content(schema = @Schema(implementation = com.imo.backend.contexts.common.exceptions.ErrorResponseDto.class)))
+  })
   @PostMapping()
   public ResponseEntity<UserDTO> handle(
       @Valid

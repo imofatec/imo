@@ -5,6 +5,11 @@ import com.imo.backend.contexts.identity.user.http.controllers.UserController;
 import com.imo.backend.contexts.identity.user.http.dtos.UserDTO;
 import com.imo.backend.contexts.identity.user.repositories.UserRepository;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -21,6 +26,10 @@ public class GetUsersByIdsController extends UserController {
   }
 
   @Operation(summary = "Get user by ids")
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "Usuários encontrados",
+          content = @Content(array = @ArraySchema(schema = @Schema(implementation = UserDTO.class))))
+  })
   @GetMapping("/ids")
   public ResponseEntity<List<UserDTO>> handle(
       @RequestParam

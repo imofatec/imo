@@ -7,6 +7,11 @@ import com.imo.backend.contexts.common.CombineWith;
 import com.imo.backend.contexts.common.MatchType;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,6 +29,10 @@ public class CourseSearchController extends CourseController {
   }
 
   @Operation(summary = "Search course")
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "Cursos encontrados",
+          content = @Content(array = @ArraySchema(schema = @Schema(implementation = CourseDTO.class))))
+  })
   @GetMapping("/search")
   public ResponseEntity<List<CourseDTO>> handle(
       @Parameter(description = "Query params to search", example = "slugCategory=dev-web")
