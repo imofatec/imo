@@ -6,6 +6,10 @@ import com.imo.backend.contexts.catalog.lesson.http.dtos.LessonDTO;
 import com.imo.backend.contexts.catalog.lesson.usecases.DeleteLessonByIdUseCase;
 import com.imo.backend.contexts.common.MongoDB;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -34,6 +38,17 @@ public class DeleteLessonByIdController extends LessonController {
 
   @Operation(summary = "Delete lesson by id")
   @SecurityRequirement(name = "Authorization")
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "Aula deletada com sucesso",
+          content = @Content(schema = @Schema(implementation = LessonDTO.class))),
+      @ApiResponse(responseCode = "204", description = "Aula não encontrada"),
+      @ApiResponse(responseCode = "401", description = "Não autenticado",
+          content = @Content(schema = @Schema(implementation = com.imo.backend.contexts.common.exceptions.ErrorResponseDto.class))),
+      @ApiResponse(responseCode = "403", description = "Sem permissão para deletar aula neste curso",
+          content = @Content(schema = @Schema(implementation = com.imo.backend.contexts.common.exceptions.ErrorResponseDto.class))),
+      @ApiResponse(responseCode = "404", description = "Curso ou aula não encontrados",
+          content = @Content(schema = @Schema(implementation = com.imo.backend.contexts.common.exceptions.ErrorResponseDto.class)))
+  })
   @DeleteMapping("/{id}")
   public ResponseEntity<LessonDTO> handle(
       @PathVariable

@@ -6,6 +6,11 @@ import com.imo.backend.contexts.common.Pageable;
 import com.imo.backend.contexts.social.comment.repositories.CommentRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,6 +30,10 @@ public class GetCommentsByLessonIdController extends CommentController {
   }
 
   @Operation(summary = "Get all comments by lessonId")
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "Comentários encontrados",
+          content = @Content(array = @ArraySchema(schema = @Schema(implementation = CommentDTO.class))))
+  })
   @GetMapping("/{lessonId}")
   public ResponseEntity<List<CommentDTO>> handle(
       @PathVariable

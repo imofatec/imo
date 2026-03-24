@@ -1,13 +1,13 @@
 package com.imo.backend.config.mongodb.populate;
 
 import com.imo.backend.contexts.catalog.course.value_objects.Categories;
-import com.imo.backend.contexts.identity.User;
-import com.imo.backend.contexts.identity.http.dtos.UpdateUserByIdRequest;
-import com.imo.backend.contexts.identity.repositories.UserRepository;
-import com.imo.backend.contexts.identity.usecases.UpdateUserByIdUseCase;
-import com.imo.backend.contexts.identity.value_objects.AcademicDegree;
-import com.imo.backend.contexts.identity.value_objects.AvailableTimePerDay;
-import com.imo.backend.contexts.identity.value_objects.ExperienceLevel;
+import com.imo.backend.contexts.identity.user.User;
+import com.imo.backend.contexts.identity.user.http.dtos.UpdateUserByIdRequest;
+import com.imo.backend.contexts.identity.user.repositories.UserRepository;
+import com.imo.backend.contexts.identity.user.usecases.UpdateUserByIdUseCase;
+import com.imo.backend.contexts.identity.user.value_objects.AcademicDegree;
+import com.imo.backend.contexts.identity.user.value_objects.AvailableTimePerDay;
+import com.imo.backend.contexts.identity.user.value_objects.ExperienceLevel;
 import net.datafaker.Faker;
 import org.springframework.stereotype.Service;
 
@@ -24,10 +24,7 @@ public class PopulateUsers {
   private final UserRepository userRepository;
   private final UpdateUserByIdUseCase updateUserByIdUseCase;
 
-  public PopulateUsers(
-      UserRepository userRepository,
-      UpdateUserByIdUseCase updateUserByIdUseCase
-  ) {
+  public PopulateUsers(UserRepository userRepository, UpdateUserByIdUseCase updateUserByIdUseCase) {
     this.userRepository = userRepository;
     this.updateUserByIdUseCase = updateUserByIdUseCase;
   }

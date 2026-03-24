@@ -4,6 +4,10 @@ import com.imo.backend.contexts.catalog.course.http.dtos.CourseDetailsDTO;
 import com.imo.backend.contexts.catalog.course.http.dtos.CreateCourseRequest;
 import com.imo.backend.contexts.catalog.course.usecases.CreateCourseUseCase;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -25,6 +29,16 @@ public class CreateCourseController extends CourseController {
 
   @Operation(summary = "Create a course")
   @SecurityRequirement(name = "Authorization")
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "201", description = "Curso criado com sucesso",
+          content = @Content(schema = @Schema(implementation = CourseDetailsDTO.class))),
+      @ApiResponse(responseCode = "400", description = "Dados inválidos",
+          content = @Content(schema = @Schema(implementation = com.imo.backend.contexts.common.exceptions.ErrorResponseDto.class))),
+      @ApiResponse(responseCode = "401", description = "Não autenticado",
+          content = @Content(schema = @Schema(implementation = com.imo.backend.contexts.common.exceptions.ErrorResponseDto.class))),
+      @ApiResponse(responseCode = "409", description = "Curso já cadastrado",
+          content = @Content(schema = @Schema(implementation = com.imo.backend.contexts.common.exceptions.ErrorResponseDto.class)))
+  })
   @PostMapping()
   public ResponseEntity<CourseDetailsDTO> handle(
       @Valid @RequestBody CreateCourseRequest createCourseRequest) {

@@ -10,6 +10,10 @@ import com.imo.backend.contexts.certification.repositories.CertificateRepository
 import com.imo.backend.contexts.common.MongoDB;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
 @RestController
 public class GetCertificateByIdController extends CertificateController {
@@ -20,6 +24,12 @@ public class GetCertificateByIdController extends CertificateController {
   }
 
   @Operation(summary = "Get certificate details by id")
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "Certificado encontrado",
+          content = @Content(schema = @Schema(implementation = CertificateDTO.class))),
+      @ApiResponse(responseCode = "404", description = "Certificado não encontrado",
+          content = @Content(schema = @Schema(implementation = com.imo.backend.contexts.common.exceptions.ErrorResponseDto.class)))
+  })
   @GetMapping("/details/{id}")
   public ResponseEntity<CertificateDTO> handle(
       @PathVariable
