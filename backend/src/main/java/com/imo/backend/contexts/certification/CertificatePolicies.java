@@ -1,12 +1,11 @@
 package com.imo.backend.contexts.certification;
 
-import org.springframework.stereotype.Service;
-
 import com.imo.backend.contexts.common.exceptions.custom.ForbiddenException;
 import com.imo.backend.contexts.common.exceptions.custom.NotFoundException;
 import com.imo.backend.contexts.journey_tracking.Progress;
 import com.imo.backend.contexts.journey_tracking.repositories.ProgressRepository;
 import com.imo.backend.contexts.journey_tracking.value_objects.ProgressStatus;
+import org.springframework.stereotype.Service;
 
 @Service
 public class CertificatePolicies {
