@@ -73,6 +73,7 @@ public class SecurityConfig {
                 HttpMethod.POST,
                 "/api/user",
                 "/api/user/login",
+                "/api/user/confirm/resend",
                 "/api/recovery/password/send-code",
                 "/api/recovery/password/verify"
             )
