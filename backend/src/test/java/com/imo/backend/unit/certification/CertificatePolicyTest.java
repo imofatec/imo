@@ -5,8 +5,6 @@ import com.imo.backend.contexts.common.exceptions.custom.ForbiddenException;
 import com.imo.backend.contexts.common.exceptions.custom.NotFoundException;
 import com.imo.backend.contexts.journey_tracking.Progress;
 import com.imo.backend.contexts.journey_tracking.repositories.ProgressRepository;
-import com.imo.backend.contexts.journey_tracking.value_objects.ProgressPeriod;
-import com.imo.backend.contexts.journey_tracking.value_objects.ProgressStatus;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,7 +13,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,14 +35,9 @@ class CertificatePolicyTest {
   void shouldAssertIsFinished() {
     String userId = new ObjectId().toString();
     String courseId = new ObjectId().toString();
+    String lessonId = new ObjectId().toString();
 
-    Progress progress = new Progress(
-        userId,
-        courseId,
-        List.of(new ObjectId().toString()),
-        new ProgressPeriod(LocalDateTime.now(), LocalDateTime.now()),
-        ProgressStatus.FINISHED
-    );
+    Progress progress = new Progress(userId, courseId, List.of(lessonId), 1);
 
     when(this.repository.findByUserIdAndCourseId(
         userId,
@@ -62,14 +54,9 @@ class CertificatePolicyTest {
   void shouldThrowForbiddenWhenInProgress() {
     String userId = new ObjectId().toString();
     String courseId = new ObjectId().toString();
+    String lessonId = new ObjectId().toString();
 
-    Progress progress = new Progress(
-        userId,
-        courseId,
-        List.of(new ObjectId().toString()),
-        new ProgressPeriod(LocalDateTime.now(), LocalDateTime.now()),
-        ProgressStatus.IN_PROGRESS
-    );
+    Progress progress = new Progress(userId, courseId, List.of(lessonId), 3);
 
     when(this.repository.findByUserIdAndCourseId(
         userId,

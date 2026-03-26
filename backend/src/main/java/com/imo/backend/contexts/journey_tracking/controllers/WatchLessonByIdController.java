@@ -1,8 +1,8 @@
 package com.imo.backend.contexts.journey_tracking.controllers;
 
+import com.imo.backend.contexts.common.MongoDB;
 import com.imo.backend.contexts.journey_tracking.controllers.dtos.ProgressDTO;
 import com.imo.backend.contexts.journey_tracking.usecases.WatchLessonByIdUseCase;
-import com.imo.backend.contexts.common.MongoDB;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -28,14 +28,10 @@ public class WatchLessonByIdController extends ProgressController {
   @Operation(summary = "Watch a lesson")
   @SecurityRequirement(name = "Authorization")
   @ApiResponses(value = {
-      @ApiResponse(responseCode = "200", description = "Aula assistida com sucesso",
-          content = @Content(schema = @Schema(implementation = ProgressDTO.class))),
-      @ApiResponse(responseCode = "401", description = "Não autenticado",
-          content = @Content(schema = @Schema(implementation = com.imo.backend.contexts.common.exceptions.ErrorResponseDto.class))),
-      @ApiResponse(responseCode = "404", description = "Aula não encontrada",
-          content = @Content(schema = @Schema(implementation = com.imo.backend.contexts.common.exceptions.ErrorResponseDto.class))),
-      @ApiResponse(responseCode = "409", description = "Aula já concluída anteriormente",
-          content = @Content(schema = @Schema(implementation = com.imo.backend.contexts.common.exceptions.ErrorResponseDto.class)))
+      @ApiResponse(responseCode = "200", description = "Aula assistida com sucesso", content = @Content(schema = @Schema(implementation = ProgressDTO.class))),
+      @ApiResponse(responseCode = "401", description = "Não autenticado", content = @Content(schema = @Schema(implementation = com.imo.backend.contexts.common.exceptions.ErrorResponseDto.class))),
+      @ApiResponse(responseCode = "404", description = "Aula não encontrada", content = @Content(schema = @Schema(implementation = com.imo.backend.contexts.common.exceptions.ErrorResponseDto.class))),
+      @ApiResponse(responseCode = "409", description = "Aula já concluída anteriormente", content = @Content(schema = @Schema(implementation = com.imo.backend.contexts.common.exceptions.ErrorResponseDto.class)))
   })
   @PutMapping("/{lessonId}")
   public ResponseEntity<ProgressDTO> handle(
@@ -44,7 +40,6 @@ public class WatchLessonByIdController extends ProgressController {
   ) {
     MongoDB.validateObjectId(lessonId);
     String userId = SecurityContextHolder.getContext().getAuthentication().getName();
-    var updatedProgress = this.useCase.execute(lessonId, userId);
-    return ResponseEntity.ok(updatedProgress);
+    return ResponseEntity.ok(ProgressDTO.fromProgress(this.useCase.execute(lessonId, userId)));
   }
 }
