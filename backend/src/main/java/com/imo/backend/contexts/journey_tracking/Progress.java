@@ -95,17 +95,17 @@ public class Progress extends Entity {
     }
   }
 
-  public boolean assertReevaluateStructure(List<String> existingLessonsIds) {
+  public boolean reevaluateStructure(List<String> existingLessonsIds) {
     boolean changed = false;
     Set<String> existingLessonsIdsSet = Set.copyOf(existingLessonsIds);
 
-    List<String> filteredWatchedLessons = this
-        .getLessonsWatched()
+    List<String> watchedLessons = this.getLessonsWatched();
+    List<String> filteredWatchedLessons = watchedLessons
         .stream()
         .filter(existingLessonsIdsSet::contains)
         .toList();
 
-    if (filteredWatchedLessons.size() != this.lessonsWatched.size()) {
+    if (filteredWatchedLessons.size() != watchedLessons.size()) {
       this.lessonsWatched = filteredWatchedLessons.stream().map(ObjectId::new).toList();
       changed = true;
     }

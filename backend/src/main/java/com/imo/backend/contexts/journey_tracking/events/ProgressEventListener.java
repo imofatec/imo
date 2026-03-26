@@ -42,7 +42,7 @@ public class ProgressEventListener {
             .map(Entity::getId)
             .toList();
 
-        boolean changed = progress.assertReevaluateStructure(existingLessonsIds);
+        boolean changed = progress.reevaluateStructure(existingLessonsIds);
 
         if (changed) {
           this.progressRepository.save(progress);
