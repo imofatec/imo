@@ -1,9 +1,42 @@
-export default function Register(){
-    return (
-         <div className="flex min-h-screen items-center justify-center p-6">
-            <div>
-                <h1>Register Screen</h1>
-            </div>
+import { Github, Linkedin } from 'lucide-react'
+import FormInput from '@/components/ui/FormInput'
+import Button from '@/components/ui/Button'
+import Divider from '@/components/ui/divider'
+import SocialAccounts from '@/components/auth/SocialAccounts'
+import AuthLinks from '@/components/auth/AuthLinksRegister'
+
+export default function Register() {
+  return (
+    <div className="flex flex-1 flex-col items-center justify-center text-white">
+      <form className="flex w-96 flex-col gap-2 p-8">
+        <div className="flex flex-col items-center">
+          <h1 className="text-center text-xl font-bold">Cadastro</h1>
         </div>
-    )
+
+        <FormInput type="text" id="email" name="email" placeholder="Email" label="Email" />
+        <FormInput type='text' id='user' name='user' placeholder='Usuário' label='Usuário'/>
+        <FormInput
+          type="password"
+          id="password"
+          name="password"
+          placeholder="Senha"
+          label="Senha"
+        />
+        <FormInput
+          type="password"
+          id="password"
+          name="password"
+          placeholder="Confirmar senha"
+          label="Confirmar senha"
+        />
+        <Button className="bg-cyan text-black">Cadastrar</Button>
+      </form>
+
+      <div className="flex flex-col gap-6">
+        <Divider text="Entre com outras contas" />
+        <SocialAccounts providers={[Github, Linkedin]} />
+        <AuthLinks />
+      </div>
+    </div>
+  )
 }

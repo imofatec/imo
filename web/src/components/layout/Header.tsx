@@ -25,10 +25,10 @@ export default function Header() {
           <>
             <div className="flex w-1/7 justify-between">
               <LinkButton to={'/login'} className="bg-cyan w-25 text-black">
-                Login
+                Entrar
               </LinkButton>
-              <LinkButton to={'/cadastrar'} className="bg-cyan w-25 text-black">
-                Registro
+              <LinkButton to={'/register'} className="bg-cyan w-25 text-black">
+                Cadastrar
               </LinkButton>
             </div>
           </>
