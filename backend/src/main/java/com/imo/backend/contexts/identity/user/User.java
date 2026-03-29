@@ -3,17 +3,14 @@ package com.imo.backend.contexts.identity.user;
 import com.imo.backend.contexts.catalog.course.value_objects.Categories;
 import com.imo.backend.contexts.common.Entity;
 import com.imo.backend.contexts.common.exceptions.custom.BadRequestException;
-import com.imo.backend.contexts.identity.user.commands.UpdateUserByIdCommand;
 import com.imo.backend.contexts.identity.user.value_objects.AcademicDegree;
 import com.imo.backend.contexts.identity.user.value_objects.AvailableTimePerDay;
 import com.imo.backend.contexts.identity.user.value_objects.ExperienceLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -45,9 +42,16 @@ public class User extends Entity {
   public User() {
   }
 
+  public User(String name, String email, String password) {
+    this.setName(name);
+    this.setEmail(email);
+    this.password = password;
+    this.isConfirmed = false;
+  }
+
   public User(String name, String email, String password, Boolean isConfirmed) {
     this.setName(name);
-    this.email = email;
+    this.setEmail(email);
     this.password = password;
     this.isConfirmed = isConfirmed;
   }
@@ -64,7 +68,7 @@ public class User extends Entity {
       List<Categories> categoriesOfInterest
   ) {
     this.setName(name);
-    this.email = email;
+    this.setEmail(email);
     this.password = password;
     this.isConfirmed = isConfirmed;
     this.birthDate = birthDate;
@@ -75,27 +79,20 @@ public class User extends Entity {
   }
 
 
+  private static final String EMAIL_REGEX = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
+
+  public void setEmail(String email) {
+    if (email == null || !Pattern.matches(EMAIL_REGEX, email)) {
+      throw new BadRequestException("Formato de e-mail inválido");
+    }
+    this.email = email;
+  }
+
   public void setName(String name) {
-    if (name.length() < 30) {
-      this.name = name;
-      return;
+    if (name.length() > 20) {
+      throw new BadRequestException("O nome deve ter no máximo 30 caracteres");
     }
-
-    var oldName = name;
-    var splitName = oldName.split(" ");
-    var formattedNamePt1 = splitName[0] + " ";
-    var formattedNamePt2 = "";
-
-    var potentialPrepositionInName = splitName[splitName.length - 2];
-    if (potentialPrepositionInName.toLowerCase().matches("^(de|do|da)$")) {
-      formattedNamePt2 = potentialPrepositionInName + " ";
-    }
-
-    var formattedNamePt3 = splitName[splitName.length - 1];
-
-    this.name = formattedNamePt1.toUpperCase()
-                + formattedNamePt2.toUpperCase()
-                + formattedNamePt3.toUpperCase();
+    this.name = name;
   }
 
   public void setCategoriesOfInterest(List<Categories> categoriesOfInterest) {
@@ -105,80 +102,29 @@ public class User extends Entity {
     this.categoriesOfInterest = categoriesOfInterest;
   }
 
-  public static LocalDate getBirthDateFromString(String birthDate) {
-    String pattern = "^(\\d{4})\\/(0[1-9]|1[0-2])\\/(0[1-9]|[12]\\d|3[01])$";
-
-    if (!Pattern.matches(pattern, birthDate)) {
-      throw new BadRequestException("Preencha a data no formato de yyyy/MM/dd");
-    }
-
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
-    return LocalDate.parse(birthDate, formatter);
-  }
-
-  public String assertUploadProfilePicture(MultipartFile file) {
-    if (file.isEmpty()) {
+  public String assertUploadProfilePicture(String filename, long sizeInBytes, String contentType) {
+    if (filename == null || filename.isEmpty()) {
       throw new BadRequestException("Adicione um arquivo");
     }
 
-    long fileSizeInMb = file.getSize() / (1024 * 1024);
+    long fileSizeInMb = sizeInBytes / (1024 * 1024);
     if (fileSizeInMb > 10) {
       throw new BadRequestException("O arquivo não pode ter mais do que 10MB");
     }
 
-    if (file.getContentType() == null || file.getOriginalFilename() == null) {
+    if (contentType == null) {
       throw new BadRequestException("Arquivo corrompido");
     }
 
-    String filename = file.getOriginalFilename();
-
-    String regex = "image/jpg|image/jpeg|image/png";
+    String regex = "image/jpg|image/jpeg|image/png|image/webp";
     Pattern pattern = Pattern.compile(regex);
 
-    if (!pattern.matcher(file.getContentType()).matches()) {
-      throw new BadRequestException(String.format("O formato %s não é valido, só é válido imagens png, jpeg e jpg",
-          file.getContentType()
+    if (!pattern.matcher(contentType).matches()) {
+      throw new BadRequestException(String.format("O formato %s não é valido, só é válido imagens png, jpeg, jpg e webp",
+          contentType
       ));
     }
 
     return filename;
-  }
-
-  public static void applyUpdate(User user, UpdateUserByIdCommand cmd) {
-    if (cmd.name() != null && !cmd.name().isEmpty()) {
-      user.setName(cmd.name());
-    }
-
-    if (cmd.email() != null && !cmd.email().isEmpty()) {
-      user.setEmail(cmd.email());
-    }
-
-    if (cmd.password() != null && !cmd.password().isEmpty()) {
-      user.setPassword(cmd.password());
-    }
-
-    if (cmd.profilePicturePath() != null && !cmd.profilePicturePath().isEmpty()) {
-      user.setProfilePicturePath(cmd.profilePicturePath());
-    }
-
-    if (cmd.birthDate() != null) {
-      user.setBirthDate(cmd.birthDate());
-    }
-
-    if (cmd.availableTimePerDay() != null) {
-      user.setAvailableTimePerDay(cmd.availableTimePerDay());
-    }
-
-    if (cmd.academicDegree() != null) {
-      user.setAcademicDegree(cmd.academicDegree());
-    }
-
-    if (cmd.experienceLevel() != null) {
-      user.setExperienceLevel(cmd.experienceLevel());
-    }
-
-    if (cmd.categoriesOfInterest() != null) {
-      user.setCategoriesOfInterest(cmd.categoriesOfInterest());
-    }
   }
 }

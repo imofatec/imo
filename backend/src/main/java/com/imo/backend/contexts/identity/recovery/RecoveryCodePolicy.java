@@ -7,6 +7,8 @@ import com.imo.backend.contexts.identity.user.repositories.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 @Service
 public class RecoveryCodePolicy {
   private final PasswordEncoder passwordEncoder;
@@ -36,10 +38,11 @@ public class RecoveryCodePolicy {
         .findByUserId(foundUser.getId())
         .orElse(null);
 
-    if (foundRecoveryCode == null || foundRecoveryCode.isWasUsed() || !passwordEncoder.matches(
-        code,
-        foundRecoveryCode.getCode()
-    )) {
+    if (foundRecoveryCode == null
+        || foundRecoveryCode.isWasUsed()
+        || foundRecoveryCode.getExpiresAt().isBefore(LocalDateTime.now())
+        || !passwordEncoder.matches(code, foundRecoveryCode.getCode())
+    ) {
       throw new BadRequestException(ERROR_MESSAGE);
     }
 
