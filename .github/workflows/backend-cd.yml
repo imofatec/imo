@@ -1,72 +1,29 @@
 name: Backend CD Pipeline
 
 on:
-    push:
-        branches: [master]
-        paths:
-        - "backend/**"
-        - ".github/workflows/backend-cd.yml"
+  push:
+    branches:
+      - develop
+      - master
+    paths:
+      - "backend/**"
+      - ".github/workflows/backend-cd.yml"
 
 jobs:
-    deploy-backend:
-        runs-on: ubuntu-latest
-        environment: prod
-        concurrency:
-            group: backend-cd-${{ github.ref }}
-            cancel-in-progress: true
+  deploy-homolog:
+    if: github.ref == 'refs/heads/develop'
+    uses: ./.github/workflows/_deploy-ecs.yml
+    with:
+      environment: homolog
+      concurrency-group: backend-cd-homolog-${{ github.ref }}
+      build-and-push: true
+    secrets: inherit
 
-        permissions:
-            id-token: write
-            contents: read
-
-        steps:
-        - name: Baixa o codigo do repositorio
-          uses: actions/checkout@v4
-
-        - name: Configurar credenciais AWS (OIDC)
-          uses: aws-actions/configure-aws-credentials@v4
-          with:
-            role-to-assume: ${{ secrets.AWS_ROLE }}
-            aws-region: ${{ secrets.AWS_REGION }}
-
-        - name: Login no ECR
-          uses: aws-actions/amazon-ecr-login@v2
-
-        - name: Build e push da imagem Docker
-          id: build-image
-          working-directory: backend
-          env:
-            ECR_URI: ${{ secrets.ECR_REPOSITORY }}
-          run: |
-            IMAGE_URI=$ECR_URI:${{ github.sha }}
-
-            docker build -t $IMAGE_URI .
-            docker push $IMAGE_URI
-
-            echo "image=$IMAGE_URI" >> "$GITHUB_OUTPUT"
-
-        - name: Baixar task definition atual
-          run: |
-            aws ecs describe-task-definition \
-                --task-definition "${{ secrets.ECS_TASK_DEFINITION }}" \
-                --query taskDefinition \
-                > task-definition.json
-
-        - name: Renderizar nova revisao da task definition
-          id: render-task-definition
-          uses: aws-actions/amazon-ecs-render-task-definition@v1
-          with:
-            task-definition: task-definition.json
-            container-name: ${{ secrets.ECS_CONTAINER_NAME }}
-            image: ${{ steps.build-image.outputs.image }}
-
-        - name: Deploy da nova revisao no ECS
-          uses: aws-actions/amazon-ecs-deploy-task-definition@v2
-          with:
-            task-definition: ${{ steps.render-task-definition.outputs.task-definition }}
-            service: ${{ secrets.ECS_SERVICE }}
-            cluster: ${{ secrets.ECS_CLUSTER }}
-            wait-for-service-stability: true
-
-
-
+  deploy-prod:
+    if: github.ref == 'refs/heads/master'
+    uses: ./.github/workflows/_deploy-ecs.yml
+    with:
+      environment: prod
+      concurrency-group: backend-cd-prod-${{ github.ref }}
+      build-and-push: false
+    secrets: inherit
