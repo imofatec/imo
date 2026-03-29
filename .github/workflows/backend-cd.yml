@@ -16,6 +16,7 @@ jobs:
     with:
       environment: homolog
       concurrency-group: backend-cd-homolog-${{ github.ref }}
+      build-and-push: true
     secrets: inherit
 
   deploy-prod:
@@ -24,4 +25,5 @@ jobs:
     with:
       environment: prod
       concurrency-group: backend-cd-prod-${{ github.ref }}
+      build-and-push: false
     secrets: inherit

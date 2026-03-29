@@ -9,6 +9,10 @@ on:
       concurrency-group:
         required: true
         type: string
+      build-and-push:
+        required: false
+        type: boolean
+        default: false
 
 jobs:
   deploy:
@@ -17,9 +21,11 @@ jobs:
     concurrency:
       group: ${{ inputs.concurrency-group }}
       cancel-in-progress: true
+
     permissions:
       id-token: write
       contents: read
+
     steps:
       - uses: actions/checkout@v4
 
@@ -31,7 +37,7 @@ jobs:
       - uses: aws-actions/amazon-ecr-login@v2
 
       - name: Build e push da imagem Docker
-        id: build-image
+        if: ${{ inputs.build-and-push }}
         working-directory: backend
         env:
           ECR_URI: ${{ secrets.ECR_REPOSITORY }}
@@ -40,6 +46,12 @@ jobs:
           docker build -t $IMAGE_URI .
           docker push $IMAGE_URI
           echo "image=$IMAGE_URI" >> "$GITHUB_OUTPUT"
+      
+      - name: Definindo URI da imagem docker
+        id: build-image
+        run: |
+            echo "image=${{ secrets.ECR_REPOSITORY }}:${{ github.sha }}" >> "$GITHUB_OUTPUT"
+        
 
       - name: Baixar task definition atual
         run: |
