@@ -2,7 +2,7 @@ package com.imo.backend.config.mongodb.populate;
 
 import com.imo.backend.contexts.catalog.course.value_objects.Categories;
 import com.imo.backend.contexts.identity.user.User;
-import com.imo.backend.contexts.identity.user.http.dtos.UpdateUserByIdRequest;
+import com.imo.backend.contexts.identity.user.commands.UpdateUserByIdCommand;
 import com.imo.backend.contexts.identity.user.repositories.UserRepository;
 import com.imo.backend.contexts.identity.user.usecases.UpdateUserByIdUseCase;
 import com.imo.backend.contexts.identity.user.value_objects.AcademicDegree;
@@ -11,8 +11,8 @@ import com.imo.backend.contexts.identity.user.value_objects.ExperienceLevel;
 import net.datafaker.Faker;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -30,8 +30,6 @@ public class PopulateUsers {
   }
 
   public User execute(int qty) {
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
-
     WeightedRandom<AvailableTimePerDay> availableTimeGenerator = new WeightedRandom<>(
         List.of(
             AvailableTimePerDay.LESS_THAN_ONE_HOUR,
@@ -63,11 +61,10 @@ public class PopulateUsers {
 
       int age = generateBiasedAge(18, 60);
       Date birthDate = getBirthDateFromAge(age);
-      String formattedBirthDate = birthDate
+      LocalDate parsedBirthDate = birthDate
           .toInstant()
           .atZone(ZoneId.systemDefault())
-          .toLocalDate()
-          .format(formatter);
+          .toLocalDate();
 
       AcademicDegree academicDegree = generateDegreeBasedOnAge(age);
       ExperienceLevel experienceLevel = correlatedExperience(academicDegree);
@@ -82,18 +79,19 @@ public class PopulateUsers {
       categoriesOfInterest.add(firstCategory);
       categoriesOfInterest.add(secondCategory);
 
-      UpdateUserByIdRequest fieldsToUpdate = new UpdateUserByIdRequest(
+      UpdateUserByIdCommand cmd = new UpdateUserByIdCommand(
           null,
           null,
           null,
-          formattedBirthDate,
+          null,
+          parsedBirthDate,
           availableTime,
           academicDegree,
           experienceLevel,
           categoriesOfInterest
       );
 
-      this.updateUserByIdUseCase.execute(newUser.getId(), fieldsToUpdate);
+      this.updateUserByIdUseCase.execute(newUser.getId(), cmd);
     }
 
     return admin;

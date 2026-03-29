@@ -30,7 +30,11 @@ public class UploadUserProfilePictureUseCase {
         .findById(id)
         .orElseThrow(() -> new NotFoundException("Usuário não encontrado"));
 
-    String filename = user.assertUploadProfilePicture(file);
+    String filename = user.assertUploadProfilePicture(
+        file.getOriginalFilename(),
+        file.getSize(),
+        file.getContentType()
+    );
 
     var userDir = checkUploadDir(uploadDir, id);
 

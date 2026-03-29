@@ -7,8 +7,6 @@ import com.imo.backend.contexts.identity.user.repositories.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @Service
 public class UserPolicies {
   private final UserRepository userRepository;
@@ -31,15 +29,19 @@ public class UserPolicies {
     }
   }
 
-  public void assertCredentials(Optional<User> foundUser, String password) {
-    if (foundUser.isEmpty()) {
+  public User assertCredentials(String email, String password) {
+    User foundUser = this.userRepository.findByEmail(email).orElse(null);
+
+    if (foundUser == null) {
       throw new BadRequestException("Credenciais inválidas");
     }
 
-    var isMatch = passwordEncoder.matches(password, foundUser.get().getPassword());
+    var isMatch = passwordEncoder.matches(password, foundUser.getPassword());
 
     if (!isMatch) {
       throw new BadRequestException("Credenciais inválidas");
     }
+
+    return foundUser;
   }
 }

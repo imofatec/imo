@@ -1,24 +1,16 @@
 package com.imo.backend.contexts.identity.user.events;
 
-import com.imo.backend.contexts.identity.recovery.RecoveryCode;
-import com.imo.backend.contexts.identity.recovery.repositories.RecoveryCodeRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
 public class UserEventListener {
   private final RabbitTemplate rabbitTemplate;
-
-  private final RecoveryCodeRepository recoveryCodeRepository;
-
-  private final PasswordEncoder passwordEncoder;
-
 
   @Value("${rabbitmq.identity.exchange}")
   private String identityExchangeName;
@@ -30,13 +22,9 @@ public class UserEventListener {
   private String routingKeyForgetPassword;
 
   public UserEventListener(
-      RabbitTemplate rabbitTemplate,
-      RecoveryCodeRepository recoveryCodeRepository,
-      PasswordEncoder passwordEncoder
+      RabbitTemplate rabbitTemplate
   ) {
-    this.recoveryCodeRepository = recoveryCodeRepository;
     this.rabbitTemplate = rabbitTemplate;
-    this.passwordEncoder = passwordEncoder;
   }
 
   @Async
@@ -58,12 +46,6 @@ public class UserEventListener {
         event.email(),
         event.code()
     );
-
-    RecoveryCode recoveryCode = new RecoveryCode(
-        event.userId(),
-        this.passwordEncoder.encode(event.code())
-    );
-    this.recoveryCodeRepository.save(recoveryCode);
 
     this.rabbitTemplate.convertAndSend(
         this.identityExchangeName,

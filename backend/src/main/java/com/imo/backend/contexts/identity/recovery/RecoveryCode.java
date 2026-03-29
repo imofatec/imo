@@ -28,7 +28,7 @@ public class RecoveryCode extends Entity {
   public RecoveryCode(String userId, String code) {
     this.setUserId(userId);
     this.code = code;
-    this.expiresAt = LocalDateTime.now();
+    this.expiresAt = LocalDateTime.now().plusMinutes(10);
   }
 
   public void setUserId(String userId) {
