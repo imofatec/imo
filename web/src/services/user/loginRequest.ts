@@ -1,7 +1,12 @@
 import axiosInstance from '@/api/axiosInstance'
 import { safeAwait } from '@/lib/safeAwait'
 
-export async function loginRequest(data: { email: string; password: string }) {
+type LoginRequestData = {
+  email: string
+  password: string
+}
+
+export async function loginRequest(data: LoginRequestData) {
   const [error, response] = await safeAwait(axiosInstance.post('/api/user/login', data))
 
   if (error || !response) throw error

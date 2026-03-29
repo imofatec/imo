@@ -49,10 +49,7 @@ export default function Login() {
 
   return (
     <div className="flex flex-1 flex-col items-center justify-center text-white">
-      <form
-        onSubmit={handleSubmit(handleLogin)}
-        className="flex w-96 flex-col items-center gap-2 p-8"
-      >
+      <form onSubmit={handleSubmit(handleLogin)} className="flex w-96 flex-col gap-2 p-8">
         <div className="flex flex-col items-center">
           <h1 className="text-center text-xl font-bold">Login</h1>
         </div>
@@ -73,7 +70,7 @@ export default function Login() {
           error={errors.password?.message}
           {...register('password')}
         />
-        <Button className="bg-cyan mt-5 text-black w-full" disabled={isSubmitting}>
+        <Button className="bg-cyan mt-5 text-black" disabled={isSubmitting}>
           {isSubmitting ? <LoaderCircle className="animate-spin" /> : 'Entrar'}
         </Button>
         {errorMessage && <p className="mt-1 text-sm text-red-500">{errorMessage}</p>}
