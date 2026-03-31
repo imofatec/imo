@@ -70,7 +70,7 @@ export default function Login() {
           error={errors.password?.message}
           {...register('password')}
         />
-        <Button className="bg-cyan mt-5 text-black" disabled={isSubmitting}>
+        <Button variant="cyanOutline" className="text-cyan" disabled={isSubmitting}>
           {isSubmitting ? <LoaderCircle className="animate-spin" /> : 'Entrar'}
         </Button>
         {errorMessage && <p className="mt-1 text-sm text-red-500">{errorMessage}</p>}

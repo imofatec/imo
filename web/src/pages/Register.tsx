@@ -83,7 +83,7 @@ export default function Register() {
           error={errors.confPassword?.message}
         />
 
-        <Button className="bg-cyan text-black" disabled={isSubmitting}>
+        <Button variant="cyanOutline" className="bg-cyan text-cyan" disabled={isSubmitting}>
           {isSubmitting ? <LoaderCircle className="animate-spin" /> : 'Cadastrar'}
         </Button>
         {errorMessage && <p className="mt-1 text-sm text-red-500">{errorMessage}</p>}

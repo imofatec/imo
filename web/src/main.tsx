@@ -6,10 +6,11 @@ import App from '@/App'
 import Home from '@/pages/Home'
 import Login from '@/pages/Login'
 import Register from '@/pages/Register'
-import Test from '@/pages/Test'
+import AllCourses from '@/pages/AllCourses'
 import { AuthProvider } from '@/contexts/AuthContext'
 import ProtectedRoutes from './components/auth/ProtectedRoutes'
 import GuestRoutes from './components/auth/GuestRoutes'
+import MyCourses from './pages/MyCourses'
 
 const router = createBrowserRouter([
   {
@@ -17,6 +18,7 @@ const router = createBrowserRouter([
     element: <App />,
     children: [
       { index: true, element: <Home /> },
+      { path: 'allcourses', element: <AllCourses /> },
 
       {
         element: <GuestRoutes redirectTo="/" />,
@@ -28,7 +30,7 @@ const router = createBrowserRouter([
 
       {
         element: <ProtectedRoutes />,
-        children: [{ path: 'test', element: <Test /> }],
+        children: [{ path: 'mycourses', element: <MyCourses /> }],
       },
     ],
   },
