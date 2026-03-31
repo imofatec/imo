@@ -2,14 +2,13 @@ package com.imo.backend.contexts.identity.recovery.usecases;
 
 import com.imo.backend.contexts.common.exceptions.custom.BadRequestException;
 import com.imo.backend.contexts.identity.recovery.RecoveryCode;
+import com.imo.backend.contexts.identity.recovery.lib.CodeGenerator;
 import com.imo.backend.contexts.identity.recovery.repositories.RecoveryCodeRepository;
 import com.imo.backend.contexts.identity.user.events.ForgetPasswordEvent;
 import com.imo.backend.contexts.identity.user.repositories.UserRepository;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.security.SecureRandom;
 
 @Service
 public class SendForgetPasswordCodeUseCase {
@@ -21,7 +20,7 @@ public class SendForgetPasswordCodeUseCase {
 
   private final PasswordEncoder passwordEncoder;
 
-  private final SecureRandom secureRandom = new SecureRandom();
+  private final CodeGenerator codeGenerator;
 
   private static final String RESPONSE_MESSAGE = "Se o email informado existir, você receberá uma mensagem com o código de recuperação";
 
@@ -29,12 +28,14 @@ public class SendForgetPasswordCodeUseCase {
       UserRepository userRepository,
       RecoveryCodeRepository recoveryCodeRepository,
       ApplicationEventPublisher applicationEventPublisher,
-      PasswordEncoder passwordEncoder
+      PasswordEncoder passwordEncoder,
+      CodeGenerator codeGenerator
   ) {
     this.userRepository = userRepository;
     this.recoveryCodeRepository = recoveryCodeRepository;
     this.applicationEventPublisher = applicationEventPublisher;
     this.passwordEncoder = passwordEncoder;
+    this.codeGenerator = codeGenerator;
   }
 
   public String execute(String email) {
@@ -50,8 +51,7 @@ public class SendForgetPasswordCodeUseCase {
       throw new BadRequestException("Espere alguns minutos para solicitar novamente");
     }
 
-    int code = this.secureRandom.nextInt(1_000_000);
-    String rawCode = String.format("%06d", code);
+    String rawCode = this.codeGenerator.generate();
 
     RecoveryCode recoveryCode = new RecoveryCode(
         foundUser.getId(),
