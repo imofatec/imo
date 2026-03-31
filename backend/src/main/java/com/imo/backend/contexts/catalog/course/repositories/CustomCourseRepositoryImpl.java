@@ -3,6 +3,7 @@ package com.imo.backend.contexts.catalog.course.repositories;
 import com.imo.backend.contexts.catalog.course.Course;
 import com.imo.backend.contexts.catalog.course.CourseDetails;
 import com.imo.backend.contexts.catalog.course.value_objects.Category;
+import com.imo.backend.contexts.common.exceptions.custom.NotFoundException;
 import com.imo.backend.contexts.catalog.lesson.Lesson;
 import com.imo.backend.contexts.common.CombineWith;
 import com.imo.backend.contexts.common.MatchType;
@@ -10,12 +11,10 @@ import com.imo.backend.contexts.common.MongoDB;
 import org.bson.types.ObjectId;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.mongodb.core.FindAndModifyOptions;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.*;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -142,6 +141,36 @@ public class CustomCourseRepositoryImpl implements CustomCourseRepository {
     return this.mongoTemplate
         .aggregate(aggregation, "courses", CourseDetails.class)
         .getMappedResults();
+  }
+
+  @Override
+  public CourseDetails findCourseDetailsByIdOrThrow(String id) {
+    MongoDB.validateObjectId(id);
+
+    List<AggregationOperation> operations = new ArrayList<>();
+    operations.add(Aggregation.match(Criteria.where("_id").is(new ObjectId(id))));
+    operations.add(Aggregation.lookup("lessons", "_id", "courseId", "lessons"));
+
+    ProjectionOperation project = Aggregation
+        .project()
+        .andExclude("_id")
+        .and(Aggregation.ROOT)
+        .as("course")
+        .and("lessons")
+        .as("lessons");
+
+    operations.add(project);
+
+    Aggregation aggregation = Aggregation.newAggregation(operations);
+    var results = this.mongoTemplate
+        .aggregate(aggregation, "courses", CourseDetails.class)
+        .getMappedResults();
+
+    if (results.isEmpty()) {
+      throw new NotFoundException("Curso não Encontrado");
+    }
+
+    return results.get(0);
   }
 
   private Aggregation buildCourseSearchDetailsAggregation(
