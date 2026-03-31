@@ -73,7 +73,11 @@ export default function Login() {
         <Button className="bg-cyan mt-5 text-black" disabled={isSubmitting}>
           {isSubmitting ? <LoaderCircle className="animate-spin" /> : 'Entrar'}
         </Button>
-        {errorMessage && <p className="mt-1 text-sm text-red-500">{errorMessage}</p>}
+        {errorMessage && (
+          <p role="alert" className="mt-1 text-sm text-red-500">
+            {errorMessage}
+          </p>
+        )}
       </form>
 
       <div className="flex flex-col gap-6">
