@@ -158,7 +158,9 @@ class UserE2ETest extends BaseE2ETest {
   @Test
   @DisplayName("exception (GET /api/user/profile): retorna erro quando nao autenticado")
   void shouldReturnErrorWhenNotAuthenticated() {
-    given().when().get("/api/user/profile").then().statusCode(HttpStatus.UNAUTHORIZED.value());
+    given().when().get("/api/user/profile").then()
+        .statusCode(HttpStatus.UNAUTHORIZED.value())
+        .body("error", equalTo("UNAUTHORIZED"));
   }
 
   @Test
