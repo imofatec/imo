@@ -8,6 +8,7 @@ import com.imo.backend.contexts.catalog.lesson.http.dtos.CreateLessonRequest;
 import com.imo.backend.contexts.catalog.lesson.http.dtos.LessonDTO;
 import io.restassured.http.ContentType;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static io.restassured.RestAssured.given;
@@ -28,6 +29,31 @@ public final class CatalogTestHelper {
           "Iniciante",
           "Um curso completo para aprender Java do zero",
           List.of(TestLesson.defaultLesson().toCreateRequest())
+      );
+    }
+
+    public static TestCourse defaultCourseWithThreeLessons() {
+      String[] youtubeVideoIds = {
+          "rnZmWZgPB7I", "yMztOcYgtLI", "Ps0zSZXCDPk"
+      };
+
+      int numberOfLessons = youtubeVideoIds.length;
+
+      List<CreateLessonRequest> lessons = new ArrayList<>();
+      for (int i = 0; i < numberOfLessons; i++) {
+        lessons.add(new CreateLessonRequest(
+            "Aula " + (i + 1) + " do Curso",
+            "Descrição da aula " + (i + 1),
+            youtubeVideoIds[i]
+        ));
+      }
+
+      return new TestCourse(
+          "Curso com " + numberOfLessons + " Aulas",
+          Categories.DEV_WEB,
+          "Iniciante",
+          "Um curso com " + numberOfLessons + " aulas para teste",
+          lessons
       );
     }
 
