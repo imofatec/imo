@@ -42,8 +42,7 @@ public class PopulateCourses {
           faker.options().option(Categories.class),
           faker.options().option("Iniciante", "Intermediário", "Avançado"),
           faker.lorem().characters(10, 300),
-          lessons,
-          contributorId
+          lessons
       );
 
       this.createCourseUseCase.execute(createCourseRequest.toCommand(contributorId), contributorId);

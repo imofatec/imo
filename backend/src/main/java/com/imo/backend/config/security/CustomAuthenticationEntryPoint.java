@@ -15,7 +15,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         var writer = response.getWriter();
-        writer.write("{\"message\": \"Você não está autenticado\"}");
+        writer.write("{\"error\": \"UNAUTHORIZED\", \"message\": \"Você não está autenticado\"}");
         writer.flush();
     }
 }

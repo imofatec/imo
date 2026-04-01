@@ -15,7 +15,6 @@ public interface CustomCourseRepository {
 
   List<Course> findAllByContributorId(String id, Pageable page);
 
-
   Optional<Course> findByLessonId(String lessonId);
 
   List<Course> search(
@@ -45,6 +44,8 @@ public interface CustomCourseRepository {
       MatchType matchType,
       CombineWith combineWith
   );
+
+  CourseDetails findCourseDetailsByIdOrThrow(String id);
 
   List<Category> findAllCategories();
 
