@@ -86,7 +86,11 @@ export default function Register() {
         <Button className="bg-cyan text-black" disabled={isSubmitting}>
           {isSubmitting ? <LoaderCircle className="animate-spin" /> : 'Cadastrar'}
         </Button>
-        {errorMessage && <p className="mt-1 text-sm text-red-500">{errorMessage}</p>}
+        {errorMessage && (
+          <p role="alert" className="mt-1 text-sm text-red-500">
+            {errorMessage}
+          </p>
+        )}
       </form>
 
       <div className="flex flex-col gap-6">
