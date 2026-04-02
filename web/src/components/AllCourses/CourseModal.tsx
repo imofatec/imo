@@ -11,9 +11,10 @@ type Course = {
 type Props = {
   course: Course | null
   onClose: () => void
+  actionLabel?: string
 }
 
-export default function CourseModal({ course, onClose }: Props) {
+export default function CourseModal({ course, onClose, actionLabel = 'Inscrever-se' }: Props) {
   if (!course) return null
 
   return (
@@ -68,7 +69,7 @@ export default function CourseModal({ course, onClose }: Props) {
             </div>
           </div>
           <Linkbutton to={'/mycourses'} variant="cyanOutline" className="text-cyan">
-            Inscrever-se
+            {actionLabel}
           </Linkbutton>
         </div>
       </div>

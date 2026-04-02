@@ -22,6 +22,11 @@ const router = createBrowserRouter([
 
       {
         element: <GuestRoutes redirectTo="/" />,
+        children: [{ path: 'home', element: <Home /> }],
+      },
+
+      {
+        element: <GuestRoutes redirectTo="/" />,
         children: [
           { path: 'login', element: <Login /> },
           { path: 'register', element: <Register /> },

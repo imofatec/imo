@@ -1,24 +1,19 @@
 import { useState } from 'react'
 
-type Props = {
-  selectedCategory: string
-  setSelectedCategory: (category: string) => void
+type Props<T extends string> = {
+  selectedCategory: T
+  setSelectedCategory: (category: T) => void
+  categories: readonly T[]
 }
 
-const categories = [
-  'Todos',
-  'Programação',
-  'Front-end',
-  'Back-end',
-  'Design',
-  'Banco de Dados',
-  'Ferramentas',
-]
-
-export default function FilterDrawer({ selectedCategory, setSelectedCategory }: Props) {
+export default function FilterDrawer<T extends string>({
+  selectedCategory,
+  setSelectedCategory,
+  categories,
+}: Props<T>) {
   const [isOpen, setIsOpen] = useState(false)
 
-  function handleSelect(category: string) {
+  function handleSelect(category: T) {
     setSelectedCategory(category)
     setIsOpen(false)
   }
