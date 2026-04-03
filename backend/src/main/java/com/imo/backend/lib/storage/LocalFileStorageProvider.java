@@ -8,18 +8,16 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
-
 import com.imo.backend.contexts.identity.user.lib.ImageStorageProvider;
 
 @Component
 @ConditionalOnProperty(name = "storage.mode", havingValue = "local", matchIfMissing = true)
 public class LocalFileStorageProvider implements ImageStorageProvider {
 
-    @Value("${storage.local.upload-dir}")
     private final Path uploadDir;
 
     public LocalFileStorageProvider(
-        String uploadDir
+        @Value("${storage.local.upload-dir}") String uploadDir
     ) {
         this.uploadDir = Paths.get(uploadDir).toAbsolutePath().normalize();
     }
