@@ -11,6 +11,7 @@ type UseCoursesParams = {
   combineWith?: CombineWith
   page?: number
   size?: number
+  enabled?: boolean
   categorySlug?: string
   name?: string
   nameSlug?: string
@@ -22,6 +23,7 @@ export function useCourses({
   combineWith = 'AND',
   page = 0,
   size = 10,
+  enabled = true,
   categorySlug,
   name,
   nameSlug,
@@ -32,6 +34,13 @@ export function useCourses({
   const [error, setError] = useState<string | null>(null)
 
   const fetchCourses = useCallback(async () => {
+    if (!enabled) {
+      setCourses([])
+      setError(null)
+      setLoading(false)
+      return
+    }
+
     setLoading(true)
 
     const query = new URLSearchParams({
@@ -58,7 +67,7 @@ export function useCourses({
     setCourses(response.data || [])
     setError(null)
     setLoading(false)
-  }, [matchType, combineWith, page, size, categorySlug, name, nameSlug, contributorId])
+  }, [matchType, combineWith, page, size, enabled, categorySlug, name, nameSlug, contributorId])
 
   useEffect(() => {
     // eslint-disable-next-line
