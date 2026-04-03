@@ -1,6 +1,6 @@
 package com.imo.backend.contexts.catalog.course.usecases;
 
-import com.imo.backend.contexts.catalog.course.CourseFactory;
+import com.imo.backend.contexts.catalog.course.Course;
 import com.imo.backend.contexts.catalog.course.commands.CreateCourseCommand;
 import com.imo.backend.contexts.catalog.course.http.dtos.CourseDTO;
 import com.imo.backend.contexts.catalog.course.http.dtos.CourseDetailsDTO;
@@ -20,8 +20,7 @@ public class CreateCourseUseCase {
 
   public CreateCourseUseCase(
       CreateLessonUseCase createLessonUseCase,
-      CourseRepository courseRepository
-  ) {
+      CourseRepository courseRepository) {
     this.createLessonUseCase = createLessonUseCase;
     this.courseRepository = courseRepository;
   }
@@ -30,7 +29,8 @@ public class CreateCourseUseCase {
     var potentialNewSlugCourse = Slug.create(cmd.name());
     this.checkConflictContributorCourse(contributorId, potentialNewSlugCourse);
 
-    var newCourse = this.courseRepository.save(CourseFactory.createCourse(cmd));
+    var newCourse = this.courseRepository.save(new Course(true, cmd.contributorId(), cmd.name(), cmd.level(),
+        cmd.category(), cmd.description(), cmd.lessons().getFirst().youtubeLink(), cmd.lessons().size()));
 
     var newLessons = this.createLessonUseCase.execute(cmd.lessons(), newCourse.getId());
 
@@ -46,8 +46,7 @@ public class CreateCourseUseCase {
     if (existingContributorCourse) {
       throw new ConflictException(String.format(
           "Você ja cadastrou o curso %s anteriormente",
-          potentialNewSlugCourse
-      ));
+          potentialNewSlugCourse));
     }
   }
 }

@@ -1,6 +1,7 @@
 package com.imo.backend.contexts.catalog.course;
 
 import com.imo.backend.contexts.catalog.course.commands.UpdateCourseByIdCommand;
+import com.imo.backend.contexts.catalog.course.value_objects.Categories;
 import com.imo.backend.contexts.catalog.course.value_objects.Category;
 import com.imo.backend.contexts.catalog.course.value_objects.CourseName;
 import com.imo.backend.contexts.catalog.course.value_objects.Level;
@@ -15,10 +16,10 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document("courses")
 @Data
 public class Course extends Entity {
-  //  relations
+  // relations
   private ObjectId contributorId;
 
-  //  attributes
+  // attributes
   private boolean isActive;
 
   private CourseName name;
@@ -34,6 +35,18 @@ public class Course extends Entity {
   private int lessonsCount;
 
   public Course() {
+  }
+
+  public Course(boolean isActive, String contributorId, String name, String level, Categories category,
+      String description, String firstLessonYoutubeLink, int lessonsCount) {
+    setActive(isActive);
+    setName(new CourseName(name));
+    setCategory(new Category(category));
+    setLevel(new Level(name));
+    setDescription(description);
+    setFirstLessonYoutubeLink(firstLessonYoutubeLink);
+    setLessonsCount(lessonsCount);
+    setContributorId(contributorId);
   }
 
   public void setContributorId(String contributorId) {

@@ -21,8 +21,8 @@ public class LessonPolicies {
       String courseId,
       String currentLessonId,
       String newTitle,
-      String newLink
-  ) {
+      String newLink,
+      String newDescription) {
     List<Lesson> existingLessons = this.lessonRepository.findAllByCourseId(courseId);
 
     existingLessons.forEach(lesson -> {
@@ -40,6 +40,10 @@ public class LessonPolicies {
           throw new ConflictException("Já existe uma aula com este link");
         }
       }
+
+      if (newDescription != null && lesson.getDescription().equals(newDescription)) {
+        throw new ConflictException("Já existe uma aula com essa descrição");
+      }
     });
   }
 
@@ -51,15 +55,13 @@ public class LessonPolicies {
       if (!titles.add(command.title())) {
         throw new ConflictException(String.format(
             "Título '%s' repetido na lista",
-            command.title()
-        ));
+            command.title()));
       }
 
       if (!youtubeLinks.add(Lesson.formatYoutubeLink(command.youtubeLink()))) {
         throw new ConflictException(String.format(
             "Link '%s' repetido na lista",
-            command.youtubeLink()
-        ));
+            command.youtubeLink()));
       }
     });
   }

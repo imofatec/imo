@@ -15,7 +15,7 @@ import java.util.stream.IntStream;
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class Lesson extends Entity {
-  //  relations
+  // relations
   private ObjectId courseId;
 
   private int indexInCourse;
@@ -25,6 +25,14 @@ public class Lesson extends Entity {
   private String description;
 
   private String youtubeLink;
+
+  public Lesson(String courseId, int indexInCourse, String title, String description, String youtubeLink) {
+    setCourseId(courseId);
+    setIndexInCourse(indexInCourse);
+    setTitle(title);
+    setDescription(description);
+    setYoutubeLink(youtubeLink);
+  }
 
   public void setCourseId(String courseId) {
     this.courseId = new ObjectId(courseId);

@@ -24,8 +24,8 @@ public class UpdateLessonByIdUseCase {
         foundLesson.getCourseId(),
         foundLesson.getId(),
         command.title(),
-        command.youtubeLink()
-    );
+        command.youtubeLink(),
+        command.description());
 
     Lesson.applyUpdate(foundLesson, command);
     return this.lessonRepository.save(foundLesson);

@@ -21,8 +21,7 @@ public class CreateLessonUseCase {
   public CreateLessonUseCase(
       LessonRepository lessonRepository,
       ApplicationEventPublisher applicationEventPublisher,
-      LessonPolicies lessonPolicies
-  ) {
+      LessonPolicies lessonPolicies) {
     this.lessonRepository = lessonRepository;
     this.applicationEventPublisher = applicationEventPublisher;
     this.lessonPolicies = lessonPolicies;
@@ -35,8 +34,7 @@ public class CreateLessonUseCase {
 
     this.applicationEventPublisher.publishEvent(new UpdateCourseLessonsCountEvent(
         courseId,
-        newLessons.size()
-    ));
+        newLessons.size()));
     this.applicationEventPublisher.publishEvent(new ReevaluateProgressEvent(courseId));
 
     return newLessons;
@@ -48,21 +46,21 @@ public class CreateLessonUseCase {
         courseId,
         null,
         command.title(),
-        command.youtubeLink()
-    );
+        command.youtubeLink(),
+        command.description());
 
     var existingLessonsCount = lessonRepository.findAllByCourseId(courseId).size();
 
-    Lesson newLesson = this.lessonRepository.save(LessonFactory.createLesson(
-        command,
+    Lesson newLesson = this.lessonRepository.save(new Lesson(
+        courseId,
         existingLessonsCount + 1,
-        courseId
-    ));
+        command.title(),
+        command.description(),
+        command.youtubeLink()));
 
     this.applicationEventPublisher.publishEvent(new UpdateCourseLessonsCountEvent(
         courseId,
-        existingLessonsCount + 1
-    ));
+        existingLessonsCount + 1));
     this.applicationEventPublisher.publishEvent(new ReevaluateProgressEvent(courseId));
 
     return newLesson;
