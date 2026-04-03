@@ -18,7 +18,7 @@ const router = createBrowserRouter([
     element: <App />,
     children: [
       { index: true, element: <Home /> },
-      { path: 'allcourses', element: <AllCourses /> },
+      { path: 'allcourses/:categorySlug?', element: <AllCourses /> },
 
       {
         element: <GuestRoutes redirectTo="/" />,

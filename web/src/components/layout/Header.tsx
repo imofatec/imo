@@ -1,4 +1,5 @@
 import LogoIMO from '@/assets/LogoIMO.svg'
+import SearchBar from '@/components/layout/SearchBar'
 import { useAuth } from '@/contexts/AuthContext'
 import { Link } from 'react-router-dom'
 import Button from '@/components/ui/Button'
@@ -14,9 +15,7 @@ export default function Header() {
           <img src={LogoIMO} className="cursor-pointer" />
         </Link>
 
-        <div className="relative flex w-196 items-center">
-          <p>dropdownsearch</p>
-        </div>
+        <SearchBar />
         {isAuthenticated ? (
           <Button className="bg-cyan text-cyan my-5 w-25" onClick={logout}>
             Sair

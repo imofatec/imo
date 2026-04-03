@@ -1,22 +1,14 @@
 import { useState } from 'react'
+import type { Category } from '@/types/category'
+import { Link } from 'react-router-dom'
 
-type Props<T extends string> = {
-  selectedCategory: T
-  setSelectedCategory: (category: T) => void
-  categories: readonly T[]
+type Props = {
+  categories: Category[]
+  selectedCategory: string | null
 }
 
-export default function FilterDrawer<T extends string>({
-  selectedCategory,
-  setSelectedCategory,
-  categories,
-}: Props<T>) {
+export default function FilterDrawer({ categories, selectedCategory }: Props) {
   const [isOpen, setIsOpen] = useState(false)
-
-  function handleSelect(category: T) {
-    setSelectedCategory(category)
-    setIsOpen(false)
-  }
 
   return (
     <div className="relative ml-auto">
@@ -35,24 +27,32 @@ export default function FilterDrawer<T extends string>({
           </div>
 
           <div className="p-2">
-            {categories.map((category) => {
-              const isSelected = selectedCategory === category
+            <Link
+              to="/allcourses"
+              className={`flex w-full items-center justify-between rounded-xl px-3 py-2 text-left text-sm transition ${
+                selectedCategory === null
+                  ? 'bg-cyan/20 text-cyan'
+                  : 'text-white/80 hover:bg-white/10 hover:text-white'
+              }`}
+            >
+              <span>Todos os cursos</span>
+              {selectedCategory === null && <span className="text-xs">✓</span>}
+            </Link>
 
-              return (
-                <button
-                  key={category}
-                  onClick={() => handleSelect(category)}
-                  className={`flex w-full items-center justify-between rounded-xl px-3 py-2 text-left text-sm transition ${
-                    isSelected
-                      ? 'bg-cyan/20 text-cyan'
-                      : 'text-white/80 hover:bg-white/10 hover:text-white'
-                  }`}
-                >
-                  <span>{category}</span>
-                  {isSelected && <span className="text-xs">✓</span>}
-                </button>
-              )
-            })}
+            {categories.map((category) => (
+              <Link
+                to={`/allcourses/${category.slug}`}
+                key={category.slug}
+                className={`flex w-full items-center justify-between rounded-xl px-3 py-2 text-left text-sm transition ${
+                  selectedCategory === category.slug
+                    ? 'bg-cyan/20 text-cyan'
+                    : 'text-white/80 hover:bg-white/10 hover:text-white'
+                }`}
+              >
+                <span>{category.name}</span>
+                {selectedCategory === category.slug && <span className="text-xs">✓</span>}
+              </Link>
+            ))}
           </div>
         </div>
       )}

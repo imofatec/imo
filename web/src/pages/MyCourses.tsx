@@ -1,9 +1,9 @@
 import { useState } from 'react'
-import CourseCard from '../components/AllCourses/CourseCard'
-import CourseModal from '../components/AllCourses/CourseModal'
-import FilterDrawer from '../components/AllCourses/FilterDrawer'
-import PaginationControls from '../components/AllCourses/PaginationControls'
-import SkeletonCourseCard from '../components/AllCourses/SkeletonCourseCard'
+import CourseCard from '@/components/AllCourses/CourseCard'
+import CourseModal from '@/components/AllCourses/CourseModal'
+import FilterDrawer from '@/components/AllCourses/FilterDrawer'
+import PaginationControls from '@/components/AllCourses/PaginationControls'
+import SkeletonCourseCard from '@/components/AllCourses/SkeletonCourseCard'
 
 type Course = {
   id: string
