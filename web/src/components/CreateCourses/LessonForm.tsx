@@ -1,7 +1,7 @@
 ﻿import FormInput from '@/components/ui/FormInput'
 import TextBoxInput from './TextBoxInput'
 import type { UseFormRegister } from 'react-hook-form'
-import type { CreateCourseData } from '@/schemas/CreateCourseSchema'
+import type { CreateCourseData } from '@/schemas/courses/CreateCourseSchema'
 
 type Props = {
   index: number

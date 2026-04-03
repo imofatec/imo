@@ -1,28 +1,23 @@
-﻿import { zodResolver } from '@hookform/resolvers/zod'
+import { useState } from 'react'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { useFieldArray, useForm } from 'react-hook-form'
+import { useNavigate } from 'react-router-dom'
 import FormInput from '@/components/ui/FormInput'
 import SelectInput from '@/components/CreateCourses/SelectInput'
 import TextBoxInput from '@/components/CreateCourses/TextBoxInput'
 import LessonFormCard from '@/components/CreateCourses/LessonForm'
+import FormSection from '@/components/CreateCourses/FormSection'
+import { useUser } from '@/contexts/UserContext'
 import Button from '@/components/ui/Button'
-import { createCourseSchema, type CreateCourseData } from '@/schemas/CreateCourseSchema'
-
-const levelOptions = [
-  { label: 'Iniciante', value: 'beginner' },
-  { label: 'Intermediário', value: 'intermediate' },
-  { label: 'Avançado', value: 'advanced' },
-]
-
-const categoryOptions = [
-  { label: 'Inteligência artificial', value: 'AI' },
-  { label: 'Dados', value: 'DATA' },
-  { label: 'Computação em nuvem', value: 'CLOUD' },
-  { label: 'Desenvolvimento web', value: 'DEV_WEB' },
-  { label: 'Segurança', value: 'SECURITY' },
-  { label: 'Desenvolvimento mobile', value: 'DEV_MOBILE' },
-]
+import { categoryOptions, levelOptions } from '@/constants/courseOptions'
+import { createCourseSchema, type CreateCourseData } from '@/schemas/courses/CreateCourseSchema'
+import { createCourseRequest } from '@/services/course/createCourse'
 
 export default function CreateCoursePage() {
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
+  const { user } = useUser()
+  const navigate = useNavigate()
+
   const {
     register,
     handleSubmit,
@@ -56,23 +51,36 @@ export default function CreateCoursePage() {
     }
   }
 
-  function handleCreateCourse(data: CreateCourseData) {
-    console.log(data)
+  async function handleCreateCourse(data: CreateCourseData) {
+    setErrorMessage(null)
+
+    if (!user?.id) {
+      setErrorMessage('Usuário não identificado.')
+      return
+    }
+
+    try {
+      await createCourseRequest(data, user.id)
+      navigate('/categories')
+    } catch (error: any) {
+      setErrorMessage(
+        error.response?.data?.message ||
+          'Ocorreu um erro ao tentar criar o curso. Por favor, tente novamente.'
+      )
+    }
   }
 
   return (
     <main className="min-h-screen w-full bg-[#0C0424]">
-      <section className="border-b border-white/10">
-        <div className="w-full px-4 py-5">
+      <section className="flex justify-center border-b border-white/10">
+        <div className="px-4 py-5">
           <h1 className="text-2xl font-bold text-white">Criar curso</h1>
         </div>
       </section>
 
       <section className="mx-auto w-full max-w-5xl px-4 py-8">
         <form onSubmit={handleSubmit(handleCreateCourse)} className="space-y-8">
-          <div className="rounded-3xl border border-white/10 bg-[#14082f] p-6">
-            <h2 className="mb-4 text-xl font-semibold text-white">Informações do curso</h2>
-
+          <FormSection title="Informações do curso">
             <div className="grid gap-5 md:grid-cols-2">
               <FormInput
                 label="Nome do curso"
@@ -114,33 +122,9 @@ export default function CreateCoursePage() {
                 {...register('description')}
               />
             </div>
-          </div>
+          </FormSection>
 
-          <div className="rounded-3xl border border-white/10 bg-[#14082f] p-6">
-            <div className="mb-6 flex justify-between">
-              <h2 className="text-xl font-semibold text-white">Aulas</h2>
-
-              <div className="flex gap-3">
-                <Button
-                  type="button"
-                  onClick={addLesson}
-                  variant="cyanOutline"
-                  className="border-cyan/40 text-cyan rounded-full border px-4 py-2 text-sm"
-                >
-                  Adicionar
-                </Button>
-
-                <Button
-                  type="button"
-                  onClick={removeLesson}
-                  variant="cyanOutline"
-                  className="border-cyan/40 text-cyan rounded-full border px-4 py-2 text-sm"
-                >
-                  Remover
-                </Button>
-              </div>
-            </div>
-
+          <FormSection title="Aulas">
             {errors.lessons?.message && (
               <p className="mb-4 text-sm text-red-500">{errors.lessons.message}</p>
             )}
@@ -157,7 +141,27 @@ export default function CreateCoursePage() {
                 />
               ))}
             </div>
-          </div>
+
+            <div className="mt-6 flex justify-end gap-3">
+              <Button
+                type="button"
+                onClick={addLesson}
+                variant="cyanOutline"
+                className="border-cyan/40 text-cyan rounded-full border px-4 py-2 text-sm"
+              >
+                Adicionar
+              </Button>
+
+              <Button
+                type="button"
+                onClick={removeLesson}
+                variant="cyanOutline"
+                className="border-cyan/40 text-cyan rounded-full border px-4 py-2 text-sm"
+              >
+                Remover
+              </Button>
+            </div>
+          </FormSection>
 
           <div className="flex justify-end">
             <Button
@@ -169,6 +173,8 @@ export default function CreateCoursePage() {
               {isSubmitting ? 'Criando...' : 'Criar Curso'}
             </Button>
           </div>
+
+          {errorMessage && <p className="mt-1 text-sm text-red-500">{errorMessage}</p>}
         </form>
       </section>
     </main>

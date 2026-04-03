@@ -7,8 +7,7 @@ const lessonSchema = z.object({
     .min(15, { message: 'O nome deve ter no mínimo 15 caracteres' }),
   link: z
     .string({ message: 'A aula deve conter um link válido' })
-    .trim()
-    .url({ message: 'A aula deve conter um link válido' }),
+    .min(11, { message: 'Link muito curto' }),
   descriptionL: z
     .string({ message: 'A aula deve conter uma descrição' })
     .trim()
