@@ -44,7 +44,7 @@ export default function Header() {
         <LinkButton variant="default" to={'/mycourses'} className="bg-cyan w-25 text-black">
           Meus cursos
         </LinkButton>
-        <LinkButton variant="default" to={'/home'} className="bg-cyan w-25 text-black">
+        <LinkButton variant="default" to={'/createcourse'} className="bg-cyan w-25 text-black">
           Contribuir com curso
         </LinkButton>
         <LinkButton variant="default" to={'/home'} className="bg-cyan w-25 text-black">

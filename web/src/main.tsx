@@ -11,6 +11,7 @@ import { AuthProvider } from '@/contexts/AuthContext'
 import ProtectedRoutes from './components/auth/ProtectedRoutes'
 import GuestRoutes from './components/auth/GuestRoutes'
 import MyCourses from './pages/MyCourses'
+import CreateCoursePage from './pages/CreateCourse'
 
 const router = createBrowserRouter([
   {
@@ -36,6 +37,10 @@ const router = createBrowserRouter([
       {
         element: <ProtectedRoutes />,
         children: [{ path: 'mycourses', element: <MyCourses /> }],
+      },
+      {
+        element: <ProtectedRoutes />,
+        children: [{ path: 'createcourse', element: <CreateCoursePage /> }],
       },
     ],
   },
