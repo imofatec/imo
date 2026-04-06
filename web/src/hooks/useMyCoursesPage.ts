@@ -2,6 +2,7 @@ import type { MyCoursesFilter } from '@/components/MyCourses/MyCoursesFilter'
 import { useUser } from '@/contexts/UserContext'
 import { useCourses } from '@/hooks/useCourses'
 import { useUserProgress } from '@/hooks/useUserProgress'
+import type { Course } from '@/types/course'
 import { useEffect, useMemo, useState } from 'react'
 
 const PAGE_SIZE = 10
@@ -41,7 +42,7 @@ export function useMyCoursesPage() {
     contributorId: user?.id,
     page,
     size: PAGE_SIZE,
-    enabled: selectedFilter === 'CONTRIBUICAO' && Boolean(user?.id),
+    enabled: ['TODOS', 'CONTRIBUICAO'].includes(selectedFilter) && Boolean(user?.id),
   })
 
   useEffect(() => {
@@ -61,14 +62,45 @@ export function useMyCoursesPage() {
     return userProgress
   }, [selectedFilter, userProgress])
 
+  const allOwnedCourses = useMemo(() => {
+    const uniqueCoursesById = new Map<string, Course>()
+
+    userProgress.forEach((item) => {
+      uniqueCoursesById.set(item.course.id, item.course)
+    })
+
+    contributedCourses.forEach((course) => {
+      uniqueCoursesById.set(course.id, course)
+    })
+
+    return Array.from(uniqueCoursesById.values())
+  }, [userProgress, contributedCourses])
+
+  const isAllFilter = selectedFilter === 'TODOS'
   const isContributionFilter = selectedFilter === 'CONTRIBUICAO'
-  const currentLoading = isContributionFilter
-    ? userLoading || contributedCoursesLoading
-    : userProgressLoading
-  const currentError = isContributionFilter ? contributedCoursesError : userProgressError
-  const currentItemsLength = isContributionFilter
-    ? contributedCourses.length
-    : filteredProgress.length
+  const isCoursesMode = isAllFilter || isContributionFilter
+
+  const currentLoading = isAllFilter
+    ? userLoading || userProgressLoading || contributedCoursesLoading
+    : isContributionFilter
+      ? userLoading || contributedCoursesLoading
+      : userProgressLoading
+
+  const currentError = isAllFilter
+    ? userProgressError ?? contributedCoursesError
+    : isContributionFilter
+      ? contributedCoursesError
+      : userProgressError
+
+  const currentItemsLength = isAllFilter
+    ? allOwnedCourses.length
+    : isContributionFilter
+      ? contributedCourses.length
+      : filteredProgress.length
+
+  const isNextDisabled = isAllFilter
+    ? userProgress.length < PAGE_SIZE && contributedCourses.length < PAGE_SIZE
+    : currentItemsLength < PAGE_SIZE
 
   return {
     title: getTitle(selectedFilter),
@@ -76,13 +108,16 @@ export function useMyCoursesPage() {
     pageSize: PAGE_SIZE,
     selectedFilter,
     setSelectedFilter,
+    isAllFilter,
     isContributionFilter,
+    isCoursesMode,
+    allOwnedCourses,
     contributedCourses,
     filteredProgress,
     currentLoading,
     currentError,
     isPrevDisabled: page === 0,
-    isNextDisabled: currentItemsLength < PAGE_SIZE,
+    isNextDisabled,
     goToPreviousPage: () => setPage((currentPage) => Math.max(currentPage - 1, 0)),
     goToNextPage: () => setPage((currentPage) => currentPage + 1),
   }

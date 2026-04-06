@@ -12,6 +12,7 @@ import Button from '@/components/ui/Button'
 import { categoryOptions, levelOptions } from '@/constants/courseOptions'
 import { createCourseSchema, type CreateCourseData } from '@/schemas/courses/CreateCourseSchema'
 import { createCourseRequest } from '@/services/course/createCourse'
+import axios from 'axios'
 
 export default function CreateCoursePage() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
@@ -62,11 +63,16 @@ export default function CreateCoursePage() {
     try {
       await createCourseRequest(data, user.id)
       navigate('/categories')
-    } catch (error: any) {
-      setErrorMessage(
-        error.response?.data?.message ||
-          'Ocorreu um erro ao tentar criar o curso. Por favor, tente novamente.'
-      )
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        setErrorMessage(
+          error.response?.data?.message ||
+            'Ocorreu um erro ao tentar criar o curso. Por favor, tente novamente.'
+        )
+        return
+      }
+
+      setErrorMessage('Ocorreu um erro ao tentar criar o curso. Por favor, tente novamente.')
     }
   }
 
@@ -119,6 +125,7 @@ export default function CreateCoursePage() {
                 label="Descrição"
                 placeholder="Descrição do curso..."
                 error={errors.description?.message}
+                maxLength={500}
                 {...register('description')}
               />
             </div>
@@ -131,14 +138,17 @@ export default function CreateCoursePage() {
 
             <div className="space-y-5">
               {fields.map((field, index) => (
-                <LessonFormCard
-                  key={field.id}
-                  index={index}
-                  register={register}
-                  nameLessonError={errors.lessons?.[index]?.nameLesson?.message}
-                  linkError={errors.lessons?.[index]?.link?.message}
-                  descriptionError={errors.lessons?.[index]?.descriptionL?.message}
-                />
+                <div key={field.id}>
+                  {index > 0 ? <div className="mb-5 h-px w-full bg-white/10" aria-hidden /> : null}
+
+                  <LessonFormCard
+                    index={index}
+                    register={register}
+                    nameLessonError={errors.lessons?.[index]?.nameLesson?.message}
+                    linkError={errors.lessons?.[index]?.link?.message}
+                    descriptionError={errors.lessons?.[index]?.descriptionL?.message}
+                  />
+                </div>
               ))}
             </div>
 

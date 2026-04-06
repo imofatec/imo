@@ -14,6 +14,7 @@ import ProtectedRoutes from './components/auth/ProtectedRoutes'
 import GuestRoutes from './components/auth/GuestRoutes'
 import MyCourses from './pages/MyCourses'
 import CreateCoursePage from './pages/CreateCourse'
+import WatchPage from './pages/Watch'
 
 const router = createBrowserRouter([
   {
@@ -38,7 +39,10 @@ const router = createBrowserRouter([
 
       {
         element: <ProtectedRoutes />,
-        children: [{ path: 'user/courses', element: <MyCourses /> }],
+        children: [
+          { path: 'user/courses', element: <MyCourses /> },
+          { path: 'user/courses/:courseSlug/watch', element: <WatchPage /> },
+        ],
       },
       {
         element: <ProtectedRoutes />,

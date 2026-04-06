@@ -58,7 +58,13 @@ export default function MyCoursesContent({
     return (
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5">
         {items.map((course) => (
-          <CourseCard key={course.id} course={course} />
+          <CourseCard
+            key={course.id}
+            course={course}
+            actionLabel="Iniciar curso"
+            modalActionLabel="Iniciar curso"
+            modalActionTo={`/user/courses/${encodeURIComponent(course.name.slug)}/watch`}
+          />
         ))}
       </div>
     )
@@ -67,7 +73,13 @@ export default function MyCoursesContent({
   return (
     <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5">
       {items.map((item) => (
-        <CourseCard key={item.progress.id} course={item.course} />
+        <CourseCard
+          key={item.progress.id}
+          course={item.course}
+          actionLabel="Iniciar curso"
+          modalActionLabel="Iniciar curso"
+          modalActionTo={`/user/courses/${encodeURIComponent(item.course.name.slug)}/watch`}
+        />
       ))}
     </div>
   )
