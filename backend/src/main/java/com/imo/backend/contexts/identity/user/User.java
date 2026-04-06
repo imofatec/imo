@@ -90,7 +90,7 @@ public class User extends Entity {
 
   public void setName(String name) {
     if (name.length() > 20) {
-      throw new BadRequestException("O nome deve ter no máximo 30 caracteres");
+      throw new BadRequestException("O nome deve ter no máximo 20 caracteres");
     }
     this.name = name;
   }

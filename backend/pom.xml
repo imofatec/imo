@@ -27,6 +27,7 @@
         <springdoc.version>2.8.16</springdoc.version>
         <html2pdf.version>5.0.5</html2pdf.version>
         <lombok.version>1.18.36</lombok.version>
+        <aws.sdk.version>2.42.11</aws.sdk.version>
     </properties>
 
     <dependencyManagement>
@@ -92,6 +93,12 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-mail</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>s3</artifactId>
+            <version>${aws.sdk.version}</version>
         </dependency>
 
         <!-- ==================== DEVTOOLS ==================== -->
