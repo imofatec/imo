@@ -9,6 +9,4 @@ public record UpdateCourseByIdCommand(
     String level,
     String description,
     Integer lessonsCount,
-    String firstLessonYoutubeLink
-) {
-}
+    String firstLessonYoutubeLink) {}

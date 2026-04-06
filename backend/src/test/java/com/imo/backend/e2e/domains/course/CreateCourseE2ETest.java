@@ -1,5 +1,7 @@
 package com.imo.backend.e2e.domains.course;
 
+import static org.hamcrest.Matchers.*;
+
 import com.imo.backend.contexts.catalog.course.http.dtos.CreateCourseRequest;
 import com.imo.backend.e2e.config.BaseE2ETest;
 import com.imo.backend.e2e.factories.CourseTestFactory;
@@ -11,8 +13,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
-import static org.hamcrest.Matchers.*;
-
 @Slf4j
 public class CreateCourseE2ETest extends BaseE2ETest {
 
@@ -21,7 +21,6 @@ public class CreateCourseE2ETest extends BaseE2ETest {
   @Test
   @DisplayName("Deve criar um curso ja com algumas aulas")
   public void shouldCreateCourseWithLessons() {
-
 
     String token = E2EFlowHelper.createAndAuthenticateUser();
 

@@ -12,17 +12,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class GetCourseByIdController extends CourseController {
 
-  private final CourseRepository courseRepository; 
+  private final CourseRepository courseRepository;
+
   public GetCourseByIdController(CourseRepository courseRepository) {
     this.courseRepository = courseRepository;
   }
 
   @Operation(summary = "Get course by id")
   @GetMapping("/{id}")
-  public ResponseEntity<CourseResponseDTO> execute(
-      @PathVariable
-      String id
-  ) {
+  public ResponseEntity<CourseResponseDTO> execute(@PathVariable String id) {
     MongoDB.validateObjectId(id);
     var course = this.courseRepository.findByIdOrThrow(id);
     return ResponseEntity.ok(CourseResponseDTO.fromEntity(course));

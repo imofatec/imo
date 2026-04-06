@@ -8,19 +8,16 @@ import com.imo.backend.contexts.catalog.course.repositories.CourseRepository;
 import com.imo.backend.contexts.catalog.course.usecases.UpdateCourseByIdUseCase;
 import com.imo.backend.contexts.common.Slug;
 import com.imo.backend.contexts.common.exceptions.custom.NotFoundException;
-
 import org.springframework.stereotype.Service;
 
 @Service
 public class UpdateCourseByIdUseCaseImpl implements UpdateCourseByIdUseCase {
 
   private final CourseRepository courseRepository;
-  private final CoursePolicies coursePolicies; 
+  private final CoursePolicies coursePolicies;
 
   public UpdateCourseByIdUseCaseImpl(
-      CourseRepository courseRepository,
-      CoursePolicies coursePolicies
-  ) {
+      CourseRepository courseRepository, CoursePolicies coursePolicies) {
     this.courseRepository = courseRepository;
     this.coursePolicies = coursePolicies;
   }
@@ -31,23 +28,22 @@ public class UpdateCourseByIdUseCaseImpl implements UpdateCourseByIdUseCase {
 
     if (fieldsToUpdateCourse.name() != null) {
       this.coursePolicies.checkUpdateConflict(
-        courseId,
-        course.getContributorId(),
-        Slug.create(fieldsToUpdateCourse.name()));
+          courseId, course.getContributorId(), Slug.create(fieldsToUpdateCourse.name()));
     }
 
     UpdateCourseByIdCommand command = fieldsToUpdateCourse.toCommand(courseId);
 
     return this.execute(command);
   }
-  @Override 
+
+  @Override
   public Course execute(UpdateCourseByIdCommand command) {
-    Course course = this.courseRepository
-      .findById(command.id())
-      .orElseThrow(() -> new NotFoundException("Curso não encontrado"));
-  
-      Course.applyUpdate(course, command);
-      return this.courseRepository.save(course);
-    }
-   
+    Course course =
+        this.courseRepository
+            .findById(command.id())
+            .orElseThrow(() -> new NotFoundException("Curso não encontrado"));
+
+    Course.applyUpdate(course, command);
+    return this.courseRepository.save(course);
+  }
 }

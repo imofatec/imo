@@ -13,16 +13,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class SendForgetPasswordCodeController extends UserController {
   private final SendForgetPasswordCodeService sendForgetPasswordCodeService;
 
-  public SendForgetPasswordCodeController(SendForgetPasswordCodeService sendForgetPasswordCodeService) {
+  public SendForgetPasswordCodeController(
+      SendForgetPasswordCodeService sendForgetPasswordCodeService) {
     this.sendForgetPasswordCodeService = sendForgetPasswordCodeService;
   }
 
   @Operation(summary = "Send code to user's email where he can change his password")
   @GetMapping("/forget-password/{email}")
-  public ResponseEntity<UserDTO> handle(
-      @PathVariable
-      String email
-  ) {
+  public ResponseEntity<UserDTO> handle(@PathVariable String email) {
     return ResponseEntity.ok(UserDTO.fromUser(this.sendForgetPasswordCodeService.execute(email)));
   }
 }

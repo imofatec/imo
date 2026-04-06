@@ -1,27 +1,26 @@
 package com.imo.backend.contexts.certification.orchestrators;
 
-import com.imo.backend.contexts.common.exceptions.custom.NotFoundException;
+import com.imo.backend.contexts.certification.CertificateDetails;
 import com.imo.backend.contexts.certification.actions.CreateCertificateAction;
 import com.imo.backend.contexts.certification.guards.GetCertificateDetailsByUserIdAndCourseIdGuard;
-import com.imo.backend.contexts.certification.CertificateDetails;
 import com.imo.backend.contexts.certification.services.IssueCertificateService;
+import com.imo.backend.contexts.common.exceptions.custom.NotFoundException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
-
 
 @Service
 public class IssueCertificateOrchestrator {
   private final CreateCertificateAction createCertificateAction;
 
-  private final GetCertificateDetailsByUserIdAndCourseIdGuard getCertificateDetailsByUserIdAndCourseId;
+  private final GetCertificateDetailsByUserIdAndCourseIdGuard
+      getCertificateDetailsByUserIdAndCourseId;
 
   private final IssueCertificateService issueCertificateService;
 
   public IssueCertificateOrchestrator(
       CreateCertificateAction createCertificateAction,
       GetCertificateDetailsByUserIdAndCourseIdGuard getCertificateDetailsByUserIdAndCourseId,
-      IssueCertificateService issueCertificateService
-  ) {
+      IssueCertificateService issueCertificateService) {
     this.createCertificateAction = createCertificateAction;
     this.getCertificateDetailsByUserIdAndCourseId = getCertificateDetailsByUserIdAndCourseId;
     this.issueCertificateService = issueCertificateService;
@@ -46,12 +45,12 @@ public class IssueCertificateOrchestrator {
   }
 
   private void manageHeaders(CertificateDetails certificateDetails, HttpHeaders headers) {
-    var filename = String.format(
-        "%s-%s-%s",
-        certificateDetails.user().getName().toUpperCase(),
-        certificateDetails.course().getName().slug().toUpperCase(),
-        certificateDetails.certificate().getIssuedAt()
-    );
+    var filename =
+        String.format(
+            "%s-%s-%s",
+            certificateDetails.user().getName().toUpperCase(),
+            certificateDetails.course().getName().slug().toUpperCase(),
+            certificateDetails.certificate().getIssuedAt());
 
     var headerValue = String.format("attachment; filename=%s.pdf", filename);
 

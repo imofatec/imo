@@ -20,9 +20,7 @@ public class CreateCourseController extends CourseController {
   private final CreateCourseOrchestrator createCourseOrchestrator;
 
   public CreateCourseController(
-      TokenManager tokenManager,
-      CreateCourseOrchestrator createCourseOrchestrator
-  ) {
+      TokenManager tokenManager, CreateCourseOrchestrator createCourseOrchestrator) {
     this.createCourseOrchestrator = createCourseOrchestrator;
   }
 
@@ -30,15 +28,10 @@ public class CreateCourseController extends CourseController {
   @SecurityRequirement(name = "Authorization")
   @PostMapping()
   public ResponseEntity<CourseDetailsDTO> handle(
-      @Valid
-      @RequestBody
-      CreateCourseRequest createCourseRequest
-  ) {
+      @Valid @RequestBody CreateCourseRequest createCourseRequest) {
     String contributorId = SecurityContextHolder.getContext().getAuthentication().getName();
-    var newCourseWithLessons = this.createCourseOrchestrator.execute(
-        createCourseRequest,
-        contributorId
-    );
+    var newCourseWithLessons =
+        this.createCourseOrchestrator.execute(createCourseRequest, contributorId);
 
     return new ResponseEntity<>(newCourseWithLessons, HttpStatus.CREATED);
   }

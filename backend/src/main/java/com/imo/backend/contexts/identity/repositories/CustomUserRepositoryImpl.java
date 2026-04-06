@@ -23,10 +23,6 @@ public class CustomUserRepositoryImpl implements CustomUserRepository {
     Update update = new Update();
     update.set("isConfirmed", !isConfirmed);
     return this.mongoTemplate.findAndModify(
-        query,
-        update,
-        FindAndModifyOptions.options().returnNew(true),
-        User.class
-    );
+        query, update, FindAndModifyOptions.options().returnNew(true), User.class);
   }
 }

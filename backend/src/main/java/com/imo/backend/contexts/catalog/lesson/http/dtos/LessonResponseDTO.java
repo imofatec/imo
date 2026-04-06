@@ -8,17 +8,14 @@ public record LessonResponseDTO(
     String description,
     String youtubeLink,
     int indexInCourse,
-    String courseId
-) {
-    public static LessonResponseDTO fromEntity(Lesson lesson) {
-        return new LessonResponseDTO(
-            lesson.getId(),
-            lesson.getTitle(),
-            lesson.getDescription(),
-            lesson.getYoutubeLink(),
-            lesson.getIndexInCourse(),
-            lesson.getCourseId()
-        );
-    }
-    
+    String courseId) {
+  public static LessonResponseDTO fromEntity(Lesson lesson) {
+    return new LessonResponseDTO(
+        lesson.getId(),
+        lesson.getTitle(),
+        lesson.getDescription(),
+        lesson.getYoutubeLink(),
+        lesson.getIndexInCourse(),
+        lesson.getCourseId());
+  }
 }

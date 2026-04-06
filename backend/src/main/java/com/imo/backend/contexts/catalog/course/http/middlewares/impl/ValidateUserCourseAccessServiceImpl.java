@@ -16,9 +16,10 @@ public class ValidateUserCourseAccessServiceImpl implements ValidateUserCourseAc
 
   @Override
   public void execute(String userId, String courseId) {
-    var course = courseRepository
-        .findById(courseId)
-        .orElseThrow(() -> new NotFoundException("Curso não encontrado"));
+    var course =
+        courseRepository
+            .findById(courseId)
+            .orElseThrow(() -> new NotFoundException("Curso não encontrado"));
 
     if (!course.getContributorId().equals(userId)) {
       throw new ForbiddenException("Usuário sem permissão para atualizar este curso");

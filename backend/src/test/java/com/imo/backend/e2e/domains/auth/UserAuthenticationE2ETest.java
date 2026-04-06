@@ -1,5 +1,9 @@
 package com.imo.backend.e2e.domains.auth;
 
+import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import com.imo.backend.contexts.identity.actions.inputs.CreateUserInput;
 import com.imo.backend.contexts.identity.http.dtos.auth.LoginRequestDTO;
 import com.imo.backend.e2e.config.BaseE2ETest;
@@ -10,10 +14,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-
-import static org.hamcrest.Matchers.*;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Slf4j
 class UserAuthenticationE2ETest extends BaseE2ETest {
@@ -34,10 +34,8 @@ class UserAuthenticationE2ETest extends BaseE2ETest {
         .body("name", notNullValue())
         .body("email", notNullValue());
 
-    LoginRequestDTO loginRequestDTO = new LoginRequestDTO(
-        usuarioCriado.email(),
-        usuarioCriado.password()
-    );
+    LoginRequestDTO loginRequestDTO =
+        new LoginRequestDTO(usuarioCriado.email(), usuarioCriado.password());
 
     String loginJson = this.jsonString.fromObj(loginRequestDTO);
     log.info("Login JSON enviado: {}", loginJson.toString());

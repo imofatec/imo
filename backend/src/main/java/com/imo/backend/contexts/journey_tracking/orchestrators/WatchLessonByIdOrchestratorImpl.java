@@ -12,10 +12,9 @@ import com.imo.backend.contexts.journey_tracking.controllers.dtos.ProgressDTO;
 import com.imo.backend.contexts.journey_tracking.guards.GetProgressByUserIdAndCourseIdGuard;
 import com.imo.backend.contexts.journey_tracking.services.CreateProgressService;
 import com.imo.backend.contexts.journey_tracking.value_objects.ProgressStatus;
-import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.List;
+import org.springframework.stereotype.Service;
 
 @Service
 public class WatchLessonByIdOrchestratorImpl implements WatchLessonByIdOrchestrator {
@@ -34,8 +33,7 @@ public class WatchLessonByIdOrchestratorImpl implements WatchLessonByIdOrchestra
       CreateProgressService createProgressService,
       UpdateProgressByIdAction updateProgressByIdAction,
       CourseRepository courseRepository,
-      LessonRepository lessonRepository
-  ) {
+      LessonRepository lessonRepository) {
     this.getProgressByUserIdAndCourseIdGuard = getProgressByUserIdAndCourseIdGuard;
     this.createProgressService = createProgressService;
     this.updateProgressByIdAction = updateProgressByIdAction;
@@ -52,11 +50,9 @@ public class WatchLessonByIdOrchestratorImpl implements WatchLessonByIdOrchestra
     existingCourse = this.courseRepository.findByLessonIdOrThrow(lessonId);
 
     try {
-   
-      currentProgress = this.getProgressByUserIdAndCourseIdGuard.execute(
-          userId,
-          existingCourse.getId()
-      );
+
+      currentProgress =
+          this.getProgressByUserIdAndCourseIdGuard.execute(userId, existingCourse.getId());
     } catch (NotFoundException e) {
     }
 
@@ -66,11 +62,8 @@ public class WatchLessonByIdOrchestratorImpl implements WatchLessonByIdOrchestra
       Lesson lesson = this.lessonRepository.findByIdOrThrow(lessonId);
       List<String> lessonsIds = new ArrayList<>();
       lessonsIds.add(lesson.getId());
-      return ProgressDTO.fromProgress(this.createProgressService.execute(
-          userId,
-          existingCourse.getId(),
-          lessonsIds
-      ));
+      return ProgressDTO.fromProgress(
+          this.createProgressService.execute(userId, existingCourse.getId(), lessonsIds));
     }
 
     if (currentProgress.getStatus() == ProgressStatus.FINISHED) {
@@ -79,13 +72,13 @@ public class WatchLessonByIdOrchestratorImpl implements WatchLessonByIdOrchestra
 
     currentProgress.watchLesson(lessonId, existingCourse.getLessonsCount());
 
-    var updatedProgress = this.updateProgressByIdAction.execute(
-        currentProgress.getId(), new UpdateProgressInput(
-            currentProgress.getProgressPeriod(),
-            currentProgress.getStatus(),
-            currentProgress.getLessonsWatched()
-        )
-    );
+    var updatedProgress =
+        this.updateProgressByIdAction.execute(
+            currentProgress.getId(),
+            new UpdateProgressInput(
+                currentProgress.getProgressPeriod(),
+                currentProgress.getStatus(),
+                currentProgress.getLessonsWatched()));
 
     return ProgressDTO.fromProgress(updatedProgress);
   }

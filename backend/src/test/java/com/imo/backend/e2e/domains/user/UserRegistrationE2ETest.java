@@ -1,5 +1,8 @@
 package com.imo.backend.e2e.domains.user;
 
+import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.*;
+
 import com.imo.backend.contexts.identity.actions.inputs.CreateUserInput;
 import com.imo.backend.e2e.config.BaseE2ETest;
 import com.imo.backend.e2e.factories.UserTestFactory;
@@ -9,9 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-
-import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.*;
 
 @Slf4j
 public class UserRegistrationE2ETest extends BaseE2ETest {
@@ -36,7 +36,6 @@ public class UserRegistrationE2ETest extends BaseE2ETest {
         .statusCode(anyOf(is(HttpStatus.CREATED.value()), is(HttpStatus.OK.value())))
         .body("name", notNullValue())
         .body("email", notNullValue());
-
   }
 
   @Test
@@ -58,7 +57,5 @@ public class UserRegistrationE2ETest extends BaseE2ETest {
         .body("message", notNullValue())
         .body("name", nullValue())
         .body("email", nullValue());
-
   }
-
 }

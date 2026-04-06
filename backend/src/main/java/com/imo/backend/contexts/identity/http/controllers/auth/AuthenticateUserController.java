@@ -22,12 +22,8 @@ public class AuthenticateUserController extends UserController {
   @Operation(summary = "Login user")
   @PostMapping("/login")
   public ResponseEntity<LoginResponseDTO> handle(
-      @Valid
-      @RequestBody
-      LoginRequestDTO loginRequestDTO
-  ) {
+      @Valid @RequestBody LoginRequestDTO loginRequestDTO) {
     var token = authenticateUserService.execute(loginRequestDTO);
     return ResponseEntity.ok(token);
   }
-
 }

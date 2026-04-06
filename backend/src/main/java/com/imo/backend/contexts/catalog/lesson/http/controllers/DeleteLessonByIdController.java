@@ -25,8 +25,7 @@ public class DeleteLessonByIdController extends LessonController {
   public DeleteLessonByIdController(
       DeleteLessonByIdUseCase deleteLessonByIdService,
       ValidateUserCourseAccessService validateUserCourseAccessService,
-      CourseRepository courseRepository
-  ) {
+      CourseRepository courseRepository) {
     this.deleteLessonByIdService = deleteLessonByIdService;
     this.validateUserCourseAccessService = validateUserCourseAccessService;
     this.courseRepository = courseRepository;
@@ -35,10 +34,7 @@ public class DeleteLessonByIdController extends LessonController {
   @Operation(summary = "Delete lesson by id")
   @SecurityRequirement(name = "Authorization")
   @DeleteMapping("/{id}")
-  public ResponseEntity<LessonResponseDTO> handle(
-      @PathVariable
-      String id
-  ) {
+  public ResponseEntity<LessonResponseDTO> handle(@PathVariable String id) {
     MongoDB.validateObjectId(id);
     var existingCourse = this.courseRepository.findByLessonIdOrThrow(id);
     String userId = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -51,6 +47,4 @@ public class DeleteLessonByIdController extends LessonController {
         ? ResponseEntity.ok(LessonResponseDTO.fromEntity(deletedLesson))
         : ResponseEntity.noContent().build();
   }
-
 }
-

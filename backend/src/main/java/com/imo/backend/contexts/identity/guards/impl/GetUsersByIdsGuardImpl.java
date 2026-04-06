@@ -1,12 +1,11 @@
 package com.imo.backend.contexts.identity.guards.impl;
 
+import com.imo.backend.contexts.common.ValidateObjectId;
 import com.imo.backend.contexts.identity.User;
 import com.imo.backend.contexts.identity.guards.GetUsersByIdsGuard;
 import com.imo.backend.contexts.identity.repositories.UserRepository;
-import com.imo.backend.contexts.common.ValidateObjectId;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
+import org.springframework.stereotype.Service;
 
 @Service
 public class GetUsersByIdsGuardImpl implements GetUsersByIdsGuard {

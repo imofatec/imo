@@ -4,6 +4,7 @@ import com.imo.backend.contexts.common.exceptions.custom.BadRequestException;
 import com.imo.backend.contexts.common.exceptions.custom.ConflictException;
 import com.imo.backend.contexts.common.exceptions.custom.ForbiddenException;
 import com.imo.backend.contexts.common.exceptions.custom.NotFoundException;
+import java.util.List;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -16,8 +17,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import java.util.List;
-
 @RestControllerAdvice
 public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
   // 400
@@ -26,14 +25,11 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
       MethodArgumentNotValidException ex,
       HttpHeaders headers,
       HttpStatusCode status,
-      WebRequest request
-  ) {
-    List<String> errorMessages = ex
-        .getBindingResult()
-        .getFieldErrors()
-        .stream()
-        .map(DefaultMessageSourceResolvable::getDefaultMessage)
-        .toList();
+      WebRequest request) {
+    List<String> errorMessages =
+        ex.getBindingResult().getFieldErrors().stream()
+            .map(DefaultMessageSourceResolvable::getDefaultMessage)
+            .toList();
 
     String errorMessage = errorMessages.get(0);
     String description = String.format("path: %s", request.getDescription(false));
@@ -48,8 +44,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
       HttpMessageNotReadableException ex,
       HttpHeaders headers,
       HttpStatusCode status,
-      WebRequest request
-  ) {
+      WebRequest request) {
     String errorMessage = "Argumento inválido";
     String description = String.format("path: %s", request.getDescription(false));
 
@@ -60,9 +55,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
   // 400
   @ExceptionHandler(BadRequestException.class)
   public final ResponseEntity<Object> handleBadRequestException(
-      BadRequestException ex,
-      WebRequest request
-  ) {
+      BadRequestException ex, WebRequest request) {
     String errorMessage = ex.getMessage();
     String description = String.format("path: %s", request.getDescription(false));
 
@@ -73,9 +66,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
   // 403
   @ExceptionHandler(ForbiddenException.class)
   public final ResponseEntity<Object> handleForbiddenException(
-      ForbiddenException ex,
-      WebRequest request
-  ) {
+      ForbiddenException ex, WebRequest request) {
     String errorMessage = ex.getMessage();
     String description = String.format("path: %s", request.getDescription(false));
 
@@ -86,9 +77,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
   // 404
   @ExceptionHandler(NotFoundException.class)
   public final ResponseEntity<Object> handleNotFoundException(
-      NotFoundException ex,
-      WebRequest request
-  ) {
+      NotFoundException ex, WebRequest request) {
     String errorMessage = ex.getMessage();
     String description = String.format("path: %s", request.getDescription(false));
 
@@ -99,9 +88,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
   // 409
   @ExceptionHandler(ConflictException.class)
   public final ResponseEntity<Object> handleConflictException(
-      ConflictException ex,
-      WebRequest request
-  ) {
+      ConflictException ex, WebRequest request) {
     String errorMessage = ex.getMessage();
     String description = String.format("path: %s", request.getDescription(false));
 

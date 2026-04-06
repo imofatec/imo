@@ -27,8 +27,7 @@ public class UpdateLessonByIdController extends LessonController {
   public UpdateLessonByIdController(
       ValidateUserCourseAccessService validateUserCourseAccessService,
       UpdateLessonByIdUseCase updateLessonByIdService,
-      CourseRepository courseRepository
-  ) {
+      CourseRepository courseRepository) {
     this.validateUserCourseAccessService = validateUserCourseAccessService;
     this.updateLessonByIdService = updateLessonByIdService;
     this.courseRepository = courseRepository;
@@ -38,12 +37,7 @@ public class UpdateLessonByIdController extends LessonController {
   @SecurityRequirement(name = "Authorization")
   @PutMapping("/{id}")
   public ResponseEntity<LessonResponseDTO> handle(
-      @PathVariable
-      String id,
-      @Valid
-      @RequestBody
-      UpdateLessonRequest dto
-  ) {
+      @PathVariable String id, @Valid @RequestBody UpdateLessonRequest dto) {
     MongoDB.validateObjectId(id);
     String userId = SecurityContextHolder.getContext().getAuthentication().getName();
     var existingCourse = this.courseRepository.findByLessonIdOrThrow(id);

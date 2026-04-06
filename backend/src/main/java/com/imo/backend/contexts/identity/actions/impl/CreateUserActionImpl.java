@@ -1,11 +1,11 @@
 package com.imo.backend.contexts.identity.actions.impl;
 
+import com.imo.backend.contexts.common.exceptions.custom.BadRequestException;
+import com.imo.backend.contexts.common.exceptions.custom.ConflictException;
 import com.imo.backend.contexts.identity.User;
 import com.imo.backend.contexts.identity.actions.CreateUserAction;
 import com.imo.backend.contexts.identity.actions.inputs.CreateUserInput;
 import com.imo.backend.contexts.identity.repositories.UserRepository;
-import com.imo.backend.contexts.common.exceptions.custom.BadRequestException;
-import com.imo.backend.contexts.common.exceptions.custom.ConflictException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -24,12 +24,9 @@ public class CreateUserActionImpl implements CreateUserAction {
   public User execute(CreateUserInput createUserInput) {
     this.checkCredentials(createUserInput);
 
-    var potentialNewUser = new User(
-        createUserInput.name(),
-        createUserInput.email(),
-        createUserInput.password(),
-        false
-    );
+    var potentialNewUser =
+        new User(
+            createUserInput.name(), createUserInput.email(), createUserInput.password(), false);
 
     potentialNewUser.setPassword(passwordEncoder.encode(potentialNewUser.getPassword()));
 

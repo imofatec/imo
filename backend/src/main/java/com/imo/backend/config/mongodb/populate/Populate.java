@@ -1,15 +1,14 @@
 package com.imo.backend.config.mongodb.populate;
 
 import com.imo.backend.contexts.identity.User;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.mongodb.MongoDatabaseFactory;
 import org.springframework.stereotype.Component;
-
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
 @Slf4j
 @Component
@@ -23,8 +22,7 @@ public class Populate implements CommandLineRunner {
       MongoDatabaseFactory mongoDatabaseFactory,
       PopulateUsers populateUsers,
       PopulateCourses populateCourses,
-      PopulateProgress populateProgress
-  ) {
+      PopulateProgress populateProgress) {
     this.mongoDatabaseFactory = mongoDatabaseFactory;
     this.populateUsers = populateUsers;
     this.populateCourses = populateCourses;
@@ -56,14 +54,17 @@ public class Populate implements CommandLineRunner {
 
   private Map<String, String> parseArgs(String... args) {
     Map<String, String> map = new HashMap<>();
-    Arrays.stream(args).filter(arg -> arg.startsWith("--")).forEach(arg -> {
-      String[] split = arg.substring(2).split("=", 2);
-      if (split.length == 2) {
-        map.put(split[0], split[1]);
-      } else {
-        map.put(split[0], "true");
-      }
-    });
+    Arrays.stream(args)
+        .filter(arg -> arg.startsWith("--"))
+        .forEach(
+            arg -> {
+              String[] split = arg.substring(2).split("=", 2);
+              if (split.length == 2) {
+                map.put(split[0], split[1]);
+              } else {
+                map.put(split[0], "true");
+              }
+            });
     return map;
   }
 }

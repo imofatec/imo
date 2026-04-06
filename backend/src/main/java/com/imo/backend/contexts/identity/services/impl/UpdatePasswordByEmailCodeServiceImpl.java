@@ -9,9 +9,8 @@ import com.imo.backend.contexts.common.exceptions.custom.NotFoundException;
 import com.imo.backend.contexts.identity.User;
 import com.imo.backend.contexts.identity.events.ForgetPasswordEvent;
 import com.imo.backend.contexts.identity.services.UpdatePasswordByEmailCodeService;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
+import org.springframework.stereotype.Service;
 
 @Service
 public class UpdatePasswordByEmailCodeServiceImpl implements UpdatePasswordByEmailCodeService {
@@ -22,8 +21,7 @@ public class UpdatePasswordByEmailCodeServiceImpl implements UpdatePasswordByEma
 
   public UpdatePasswordByEmailCodeServiceImpl(
       OutboxRepository<ForgetPasswordEvent> outboxRepository,
-      UpdatePasswordByIdServiceImpl updatePasswordByIdServiceImpl
-  ) {
+      UpdatePasswordByIdServiceImpl updatePasswordByIdServiceImpl) {
     this.outboxRepository = outboxRepository;
     this.updatePasswordByIdServiceImpl = updatePasswordByIdServiceImpl;
   }
@@ -34,13 +32,13 @@ public class UpdatePasswordByEmailCodeServiceImpl implements UpdatePasswordByEma
 
     do {
       var pageable = Pageable.fromPageSize(pageNumber, pageSize);
-      var outboxes = this.outboxRepository
-          .findByStatusAndEvent(
-              OutboxStatus.WAITING_TO_UPDATE_PASSWORD,
-              OutboxEvent.USER_FORGET_PASSWORD,
-              pageable
-          )
-          .getContent();
+      var outboxes =
+          this.outboxRepository
+              .findByStatusAndEvent(
+                  OutboxStatus.WAITING_TO_UPDATE_PASSWORD,
+                  OutboxEvent.USER_FORGET_PASSWORD,
+                  pageable)
+              .getContent();
 
       if (outboxes.isEmpty()) {
         throw new NotFoundException(String.format("Código %s inválido", emailCode));
@@ -57,24 +55,23 @@ public class UpdatePasswordByEmailCodeServiceImpl implements UpdatePasswordByEma
     } while (true);
   }
 
-
   private boolean verifyPayload(
-      List<Outbox<ForgetPasswordEvent>> outboxes,
-      String userId,
-      String code
-  ) {
-    return outboxes.stream().anyMatch(outbox -> {
-      var payload = outbox.getPayload();
-      if (!payload.userId().equals(userId) || !payload.code().equals(code)) {
-        return false;
-      }
+      List<Outbox<ForgetPasswordEvent>> outboxes, String userId, String code) {
+    return outboxes.stream()
+        .anyMatch(
+            outbox -> {
+              var payload = outbox.getPayload();
+              if (!payload.userId().equals(userId) || !payload.code().equals(code)) {
+                return false;
+              }
 
-      var outboxesFromUser = this.outboxRepository.findByUserId(userId);
+              var outboxesFromUser = this.outboxRepository.findByUserId(userId);
 
-      outboxesFromUser.forEach(outboxFromUser -> {
-        this.outboxRepository.deleteById(outboxFromUser.getId());
-      });
-      return true;
-    });
+              outboxesFromUser.forEach(
+                  outboxFromUser -> {
+                    this.outboxRepository.deleteById(outboxFromUser.getId());
+                  });
+              return true;
+            });
   }
 }

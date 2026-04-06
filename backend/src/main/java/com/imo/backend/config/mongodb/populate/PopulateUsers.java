@@ -9,15 +9,14 @@ import com.imo.backend.contexts.identity.services.UpdateUserByIdService;
 import com.imo.backend.contexts.identity.value_objects.AcademicDegree;
 import com.imo.backend.contexts.identity.value_objects.AvailableTimePerDay;
 import com.imo.backend.contexts.identity.value_objects.ExperienceLevel;
-import net.datafaker.Faker;
-import org.springframework.stereotype.Service;
-
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
+import net.datafaker.Faker;
+import org.springframework.stereotype.Service;
 
 @Service
 public class PopulateUsers {
@@ -29,8 +28,7 @@ public class PopulateUsers {
   public PopulateUsers(
       CreateUserAction createUserAction,
       UserRepository userRepository,
-      UpdateUserByIdService updateUserByIdService
-  ) {
+      UpdateUserByIdService updateUserByIdService) {
     this.createUserAction = createUserAction;
     this.userRepository = userRepository;
     this.updateUserByIdService = updateUserByIdService;
@@ -39,42 +37,35 @@ public class PopulateUsers {
   public User execute(int qty) {
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
 
-    WeightedRandom<AvailableTimePerDay> availableTimeGenerator = new WeightedRandom<>(
-        List.of(
-            AvailableTimePerDay.LESS_THAN_ONE_HOUR,
-            AvailableTimePerDay.ONE_TO_TWO_HOURS,
-            AvailableTimePerDay.TWO_TO_FOUR_HOURS,
-            AvailableTimePerDay.MORE_THAN_FOUR_HOURS
-        ), List.of(0.2, 0.4, 0.3, 0.1)
-    );
+    WeightedRandom<AvailableTimePerDay> availableTimeGenerator =
+        new WeightedRandom<>(
+            List.of(
+                AvailableTimePerDay.LESS_THAN_ONE_HOUR,
+                AvailableTimePerDay.ONE_TO_TWO_HOURS,
+                AvailableTimePerDay.TWO_TO_FOUR_HOURS,
+                AvailableTimePerDay.MORE_THAN_FOUR_HOURS),
+            List.of(0.2, 0.4, 0.3, 0.1));
 
     // senha = admin
-    User admin = new User(
-        "admin",
-        "admin@admin.com",
-        "$2a$12$q2.hFPm72fMWRfxSvm1JRu.C3L6gxzDR3BjpKCXtD3cTED.6iXiha",
-        true
-    );
+    User admin =
+        new User(
+            "admin",
+            "admin@admin.com",
+            "$2a$12$q2.hFPm72fMWRfxSvm1JRu.C3L6gxzDR3BjpKCXtD3cTED.6iXiha",
+            true);
     this.userRepository.save(admin);
 
     for (int i = 0; i < qty; i++) {
       String password = faker.internet().password(8, 16, true, true);
-      User input = new User(
-          faker.name().firstName(),
-          faker.internet().emailAddress(),
-          password,
-          false
-      );
+      User input =
+          new User(faker.name().firstName(), faker.internet().emailAddress(), password, false);
 
       User newUser = this.userRepository.save(input);
 
       int age = generateBiasedAge(18, 60);
       Date birthDate = getBirthDateFromAge(age);
-      String formattedBirthDate = birthDate
-          .toInstant()
-          .atZone(ZoneId.systemDefault())
-          .toLocalDate()
-          .format(formatter);
+      String formattedBirthDate =
+          birthDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate().format(formatter);
 
       AcademicDegree academicDegree = generateDegreeBasedOnAge(age);
       ExperienceLevel experienceLevel = correlatedExperience(academicDegree);
@@ -89,16 +80,16 @@ public class PopulateUsers {
       categoriesOfInterest.add(firstCategory);
       categoriesOfInterest.add(secondCategory);
 
-      UpdateUserByIdRequest fieldsToUpdate = new UpdateUserByIdRequest(
-          null,
-          null,
-          null,
-          formattedBirthDate,
-          availableTime,
-          academicDegree,
-          experienceLevel,
-          categoriesOfInterest
-      );
+      UpdateUserByIdRequest fieldsToUpdate =
+          new UpdateUserByIdRequest(
+              null,
+              null,
+              null,
+              formattedBirthDate,
+              availableTime,
+              academicDegree,
+              experienceLevel,
+              categoriesOfInterest);
 
       this.updateUserByIdService.execute(newUser.getId(), fieldsToUpdate);
     }
@@ -118,10 +109,10 @@ public class PopulateUsers {
     var birthYear = currentYear - age;
     int month = ThreadLocalRandom.current().nextInt(1, 13);
     int day = ThreadLocalRandom.current().nextInt(1, 28);
-    return Date.from(java.time.LocalDate
-        .of(birthYear, month, day)
-        .atStartOfDay(ZoneId.systemDefault())
-        .toInstant());
+    return Date.from(
+        java.time.LocalDate.of(birthYear, month, day)
+            .atStartOfDay(ZoneId.systemDefault())
+            .toInstant());
   }
 
   private AcademicDegree generateDegreeBasedOnAge(int age) {
@@ -148,41 +139,45 @@ public class PopulateUsers {
 
   private ExperienceLevel correlatedExperience(AcademicDegree degree) {
     return switch (degree) {
-      case NONE, TECHNICAL -> new WeightedRandom<>(
-          List.of(
-              ExperienceLevel.BEGINNER,
-              ExperienceLevel.INTERMEDIATE,
-              ExperienceLevel.ADVANCED,
-              ExperienceLevel.EXPERT
-          ), List.of(0.6, 0.3, 0.1, 0.0)
-      ).next();
+      case NONE, TECHNICAL ->
+          new WeightedRandom<>(
+                  List.of(
+                      ExperienceLevel.BEGINNER,
+                      ExperienceLevel.INTERMEDIATE,
+                      ExperienceLevel.ADVANCED,
+                      ExperienceLevel.EXPERT),
+                  List.of(0.6, 0.3, 0.1, 0.0))
+              .next();
 
-      case ASSOCIATE, BACHELOR, LICENTIATE -> new WeightedRandom<>(
-          List.of(
-              ExperienceLevel.BEGINNER,
-              ExperienceLevel.INTERMEDIATE,
-              ExperienceLevel.ADVANCED,
-              ExperienceLevel.EXPERT
-          ), List.of(0.2, 0.45, 0.25, 0.1)
-      ).next();
+      case ASSOCIATE, BACHELOR, LICENTIATE ->
+          new WeightedRandom<>(
+                  List.of(
+                      ExperienceLevel.BEGINNER,
+                      ExperienceLevel.INTERMEDIATE,
+                      ExperienceLevel.ADVANCED,
+                      ExperienceLevel.EXPERT),
+                  List.of(0.2, 0.45, 0.25, 0.1))
+              .next();
 
-      case MBA, MASTER -> new WeightedRandom<>(
-          List.of(
-              ExperienceLevel.BEGINNER,
-              ExperienceLevel.INTERMEDIATE,
-              ExperienceLevel.ADVANCED,
-              ExperienceLevel.EXPERT
-          ), List.of(0.05, 0.25, 0.45, 0.25)
-      ).next();
+      case MBA, MASTER ->
+          new WeightedRandom<>(
+                  List.of(
+                      ExperienceLevel.BEGINNER,
+                      ExperienceLevel.INTERMEDIATE,
+                      ExperienceLevel.ADVANCED,
+                      ExperienceLevel.EXPERT),
+                  List.of(0.05, 0.25, 0.45, 0.25))
+              .next();
 
-      case DOCTORAL, POSTDOC -> new WeightedRandom<>(
-          List.of(
-              ExperienceLevel.BEGINNER,
-              ExperienceLevel.INTERMEDIATE,
-              ExperienceLevel.ADVANCED,
-              ExperienceLevel.EXPERT
-          ), List.of(0.0, 0.1, 0.35, 0.55)
-      ).next();
+      case DOCTORAL, POSTDOC ->
+          new WeightedRandom<>(
+                  List.of(
+                      ExperienceLevel.BEGINNER,
+                      ExperienceLevel.INTERMEDIATE,
+                      ExperienceLevel.ADVANCED,
+                      ExperienceLevel.EXPERT),
+                  List.of(0.0, 0.1, 0.35, 0.55))
+              .next();
     };
   }
 }

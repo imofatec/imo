@@ -1,5 +1,7 @@
 package com.imo.backend.e2e.domains.progress;
 
+import static org.junit.Assert.assertEquals;
+
 import com.imo.backend.contexts.catalog.course.http.dtos.CourseDetailsDTO;
 import com.imo.backend.e2e.config.BaseE2ETest;
 import com.imo.backend.e2e.helpers.E2EFlowHelper;
@@ -8,9 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-
-import static org.junit.Assert.assertEquals;
-
 
 @Slf4j
 public class CreateProgressE2ETest extends BaseE2ETest {
@@ -22,20 +21,20 @@ public class CreateProgressE2ETest extends BaseE2ETest {
     CourseDetailsDTO courseDetailsDTO = E2EFlowHelper.createCourseAndReturnDetails(token, 3);
     String firstLessonId = courseDetailsDTO.lessons().get(0).getId();
 
-    var response = givenBaseRequest()
-        .header("Authorization", "Bearer " + token)
-        .when()
-        .put("/progress/" + firstLessonId)
-        .then()
-        .statusCode(HttpStatus.OK.value())
-        .extract()
-        .response();
+    var response =
+        givenBaseRequest()
+            .header("Authorization", "Bearer " + token)
+            .when()
+            .put("/progress/" + firstLessonId)
+            .then()
+            .statusCode(HttpStatus.OK.value())
+            .extract()
+            .response();
 
     var status = response.jsonPath().getString("status");
     log.info("Status do progresso iniciado na aula com ID: " + response.jsonPath().getString("id"));
     assertEquals("IN_PROGRESS", status);
   }
-
 
   @Test
   @DisplayName("Deve iniciar e finalizar um progresso completo do curso")
@@ -92,13 +91,13 @@ public class CreateProgressE2ETest extends BaseE2ETest {
   public void shouldReturnBadRequestWhenInvalidLessonId() {
     String token = E2EFlowHelper.createAndAuthenticateUser();
 
-    var response = givenBaseRequest()
-        .header("Authorization", "Bearer " + token)
-        .when()
-        .put("/progress/invalid-id")
-        .then()
-        .statusCode(HttpStatus.BAD_REQUEST.value());
-
+    var response =
+        givenBaseRequest()
+            .header("Authorization", "Bearer " + token)
+            .when()
+            .put("/progress/invalid-id")
+            .then()
+            .statusCode(HttpStatus.BAD_REQUEST.value());
 
     log.info(response.toString());
   }

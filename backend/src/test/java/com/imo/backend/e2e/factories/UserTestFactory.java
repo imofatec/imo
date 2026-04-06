@@ -20,7 +20,6 @@ public class UserTestFactory {
         DataFakeFactory.generateValidUsername(),
         DataFakeFactory.generateValidEmail(),
         password,
-        password
-    );
+        password);
   }
 }

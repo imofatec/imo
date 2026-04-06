@@ -16,9 +16,7 @@ public class CreateUserServiceImpl implements CreateUserService {
   private final ApplicationEventPublisher publisher;
 
   public CreateUserServiceImpl(
-      CreateUserAction createUserAction,
-      ApplicationEventPublisher publisher
-  ) {
+      CreateUserAction createUserAction, ApplicationEventPublisher publisher) {
     this.createUserAction = createUserAction;
     this.publisher = publisher;
   }

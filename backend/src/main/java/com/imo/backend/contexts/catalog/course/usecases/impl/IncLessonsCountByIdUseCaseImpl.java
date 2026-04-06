@@ -3,7 +3,6 @@ package com.imo.backend.contexts.catalog.course.usecases.impl;
 import com.imo.backend.contexts.catalog.course.Course;
 import com.imo.backend.contexts.catalog.course.repositories.CourseRepository;
 import com.imo.backend.contexts.catalog.course.usecases.IncLessonsCountByIdUseCase;
-
 import org.springframework.stereotype.Service;
 
 @Service

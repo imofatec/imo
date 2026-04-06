@@ -4,5 +4,4 @@ import com.imo.backend.contexts.journey_tracking.Progress;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 public interface ProgressRepository
-    extends MongoRepository<Progress, String>, CustomProgressRepository {
-}
+    extends MongoRepository<Progress, String>, CustomProgressRepository {}

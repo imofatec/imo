@@ -12,16 +12,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class GetCertificateByIdController extends CertificateController {
   private final GetCertificateDetailsByIdGuard getCertificateDetailsByIdGuard;
 
-  public GetCertificateByIdController(GetCertificateDetailsByIdGuard getCertificateDetailsByIdGuard) {
+  public GetCertificateByIdController(
+      GetCertificateDetailsByIdGuard getCertificateDetailsByIdGuard) {
     this.getCertificateDetailsByIdGuard = getCertificateDetailsByIdGuard;
   }
 
   @Operation(summary = "Get certificate details by id")
   @GetMapping("/details/{id}")
-  public ResponseEntity<CertificateDetails> handle(
-      @PathVariable
-      String id
-  ) {
+  public ResponseEntity<CertificateDetails> handle(@PathVariable String id) {
     return ResponseEntity.ok(this.getCertificateDetailsByIdGuard.execute(id));
   }
 }

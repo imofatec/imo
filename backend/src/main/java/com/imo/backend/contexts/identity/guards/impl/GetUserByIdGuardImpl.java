@@ -1,9 +1,9 @@
 package com.imo.backend.contexts.identity.guards.impl;
 
+import com.imo.backend.contexts.common.exceptions.custom.NotFoundException;
 import com.imo.backend.contexts.identity.User;
 import com.imo.backend.contexts.identity.guards.GetUserByIdGuard;
 import com.imo.backend.contexts.identity.repositories.UserRepository;
-import com.imo.backend.contexts.common.exceptions.custom.NotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service

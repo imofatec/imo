@@ -1,9 +1,9 @@
 package com.imo.backend.contexts.certification.guards.impl;
 
-import com.imo.backend.contexts.common.exceptions.custom.NotFoundException;
-import com.imo.backend.contexts.certification.guards.GetCertificateDetailsByIdGuard;
 import com.imo.backend.contexts.certification.CertificateDetails;
+import com.imo.backend.contexts.certification.guards.GetCertificateDetailsByIdGuard;
 import com.imo.backend.contexts.certification.repositories.CertificateRepository;
+import com.imo.backend.contexts.common.exceptions.custom.NotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service

@@ -1,9 +1,9 @@
 package com.imo.backend.contexts.identity.actions.impl;
 
+import com.imo.backend.contexts.common.exceptions.custom.NotFoundException;
 import com.imo.backend.contexts.identity.User;
 import com.imo.backend.contexts.identity.actions.UpdateUserAccessByIdAction;
 import com.imo.backend.contexts.identity.repositories.UserRepository;
-import com.imo.backend.contexts.common.exceptions.custom.NotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -18,9 +18,10 @@ public class UpdateAccessUserByIdActionImpl implements UpdateUserAccessByIdActio
   @Override
   public User execute(String id) {
 
-    var foundUser = this.userRepository
-        .findById(id)
-        .orElseThrow(() -> new NotFoundException("Usuário não encontrado"));
+    var foundUser =
+        this.userRepository
+            .findById(id)
+            .orElseThrow(() -> new NotFoundException("Usuário não encontrado"));
 
     if (foundUser.getIsConfirmed()) {
       return foundUser;

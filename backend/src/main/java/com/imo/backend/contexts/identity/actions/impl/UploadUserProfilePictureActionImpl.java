@@ -1,30 +1,25 @@
 package com.imo.backend.contexts.identity.actions.impl;
 
+import com.imo.backend.contexts.common.exceptions.custom.BadRequestException;
+import com.imo.backend.contexts.common.exceptions.custom.NotFoundException;
 import com.imo.backend.contexts.identity.User;
 import com.imo.backend.contexts.identity.actions.UploadUserProfilePictureAction;
 import com.imo.backend.contexts.identity.repositories.UserRepository;
-import com.imo.backend.contexts.common.exceptions.custom.BadRequestException;
-import com.imo.backend.contexts.common.exceptions.custom.NotFoundException;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.regex.Pattern;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class UploadUserProfilePictureActionImpl implements UploadUserProfilePictureAction {
   private final UserRepository userRepository;
 
-  private final String uploadDir = Paths
-      .get("src", "main", "resources", "uploads")
-      .toAbsolutePath()
-      .toString();
+  private final String uploadDir =
+      Paths.get("src", "main", "resources", "uploads").toAbsolutePath().toString();
 
-  public UploadUserProfilePictureActionImpl(
-      UserRepository userRepository
-  ) {
+  public UploadUserProfilePictureActionImpl(UserRepository userRepository) {
     this.userRepository = userRepository;
   }
 
@@ -34,9 +29,10 @@ public class UploadUserProfilePictureActionImpl implements UploadUserProfilePict
     checkFileSize(file);
     String filename = checkFileType(file);
 
-    var user = this.userRepository
-        .findById(id)
-        .orElseThrow(() -> new NotFoundException("Usuário não encontrado"));
+    var user =
+        this.userRepository
+            .findById(id)
+            .orElseThrow(() -> new NotFoundException("Usuário não encontrado"));
 
     var userDir = checkUploadDir(uploadDir, id);
 
@@ -77,9 +73,10 @@ public class UploadUserProfilePictureActionImpl implements UploadUserProfilePict
     Pattern pattern = Pattern.compile(regex);
 
     if (!pattern.matcher(file.getContentType()).matches()) {
-      throw new BadRequestException(String.format("O formato %s não é valido, só é válido imagens png, jpeg e jpg",
-          file.getContentType()
-      ));
+      throw new BadRequestException(
+          String.format(
+              "O formato %s não é valido, só é válido imagens png, jpeg e jpg",
+              file.getContentType()));
     }
 
     return filename;

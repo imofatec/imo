@@ -1,17 +1,16 @@
 package com.imo.backend.contexts.journey_tracking;
 
 import com.imo.backend.contexts.common.Entity;
+import com.imo.backend.contexts.common.exceptions.custom.ConflictException;
 import com.imo.backend.contexts.journey_tracking.value_objects.ProgressPeriod;
 import com.imo.backend.contexts.journey_tracking.value_objects.ProgressStatus;
-import com.imo.backend.contexts.common.exceptions.custom.ConflictException;
+import java.time.LocalDateTime;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
-
-import java.time.LocalDateTime;
-import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @Document("progress")
@@ -30,16 +29,14 @@ public class Progress extends Entity {
 
   private ProgressStatus status;
 
-  public Progress() {
-  }
+  public Progress() {}
 
   public Progress(
       String userId,
       String courseId,
       List<String> lessonsWatched,
       ProgressPeriod progressPeriod,
-      ProgressStatus status
-  ) {
+      ProgressStatus status) {
     this.setUserId(userId);
     this.setCourseId(courseId);
     this.setLessonsWatched(lessonsWatched);
@@ -83,10 +80,8 @@ public class Progress extends Entity {
     this.lessonsWatched.add(new ObjectId(lessonToWatch));
 
     if (this.lessonsWatched.size() == totalLessons) {
-      this.progressPeriod = new ProgressPeriod(
-          this.progressPeriod.startedAt(),
-          LocalDateTime.now()
-      );
+      this.progressPeriod =
+          new ProgressPeriod(this.progressPeriod.startedAt(), LocalDateTime.now());
 
       this.status = ProgressStatus.FINISHED;
     }

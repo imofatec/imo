@@ -5,5 +5,4 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Tag(name = "Progress controllers")
 @RequestMapping("/api/progress")
-public abstract class ProgressController {
-}
+public abstract class ProgressController {}

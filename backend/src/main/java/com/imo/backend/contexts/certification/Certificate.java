@@ -1,13 +1,12 @@
 package com.imo.backend.contexts.certification;
 
-import com.imo.backend.contexts.common.Entity;
 import com.imo.backend.contexts.certification.values_objects.CertificatePeriod;
+import com.imo.backend.contexts.common.Entity;
+import java.time.LocalDateTime;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
-
-import java.time.LocalDateTime;
 
 @EqualsAndHashCode(callSuper = true)
 @Document("certificates")
@@ -22,15 +21,10 @@ public class Certificate extends Entity {
 
   private LocalDateTime issuedAt;
 
-  public Certificate() {
-  }
+  public Certificate() {}
 
   public Certificate(
-      String userId,
-      String courseId,
-      CertificatePeriod certificatePeriod,
-      LocalDateTime issuedAt
-  ) {
+      String userId, String courseId, CertificatePeriod certificatePeriod, LocalDateTime issuedAt) {
     this.setUserId(userId);
     this.setCourseId(courseId);
     this.setCertificatePeriod(certificatePeriod);

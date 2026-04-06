@@ -1,15 +1,14 @@
 package com.imo.backend.contexts.journey_tracking.services.impl;
 
 import com.imo.backend.contexts.catalog.course.repositories.CourseRepository;
+import com.imo.backend.contexts.common.exceptions.custom.ConflictException;
+import com.imo.backend.contexts.common.exceptions.custom.NotFoundException;
 import com.imo.backend.contexts.journey_tracking.Progress;
 import com.imo.backend.contexts.journey_tracking.actions.CreateProgressAction;
 import com.imo.backend.contexts.journey_tracking.guards.GetProgressByUserIdAndCourseIdGuard;
 import com.imo.backend.contexts.journey_tracking.services.CreateProgressService;
-import com.imo.backend.contexts.common.exceptions.custom.ConflictException;
-import com.imo.backend.contexts.common.exceptions.custom.NotFoundException;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
+import org.springframework.stereotype.Service;
 
 @Service
 public class CreateProgressServiceImpl implements CreateProgressService {
@@ -22,8 +21,7 @@ public class CreateProgressServiceImpl implements CreateProgressService {
   public CreateProgressServiceImpl(
       GetProgressByUserIdAndCourseIdGuard getProgressByUserIdAndCourseIdGuard,
       CreateProgressAction createProgressAction,
-      CourseRepository courseRepository
-  ) {
+      CourseRepository courseRepository) {
     this.getProgressByUserIdAndCourseIdGuard = getProgressByUserIdAndCourseIdGuard;
     this.createProgressAction = createProgressAction;
     this.courseRepository = courseRepository;

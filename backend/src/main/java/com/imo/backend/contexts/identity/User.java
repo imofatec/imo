@@ -2,18 +2,17 @@ package com.imo.backend.contexts.identity;
 
 import com.imo.backend.contexts.catalog.course.value_objects.Categories;
 import com.imo.backend.contexts.common.Entity;
+import com.imo.backend.contexts.common.exceptions.custom.BadRequestException;
 import com.imo.backend.contexts.identity.value_objects.AcademicDegree;
 import com.imo.backend.contexts.identity.value_objects.AvailableTimePerDay;
 import com.imo.backend.contexts.identity.value_objects.ExperienceLevel;
-import com.imo.backend.contexts.common.exceptions.custom.BadRequestException;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import org.springframework.data.mongodb.core.mapping.Document;
-
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.regex.Pattern;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 @EqualsAndHashCode(callSuper = true)
 @Document("users")
@@ -40,8 +39,7 @@ public class User extends Entity {
 
   private List<Categories> categoriesOfInterest;
 
-  public User() {
-  }
+  public User() {}
 
   public User(String name, String email, String password, Boolean isConfirmed) {
     this.setName(name);
@@ -59,8 +57,7 @@ public class User extends Entity {
       AvailableTimePerDay availableTimePerDay,
       AcademicDegree academicDegree,
       ExperienceLevel experienceLevel,
-      List<Categories> categoriesOfInterest
-  ) {
+      List<Categories> categoriesOfInterest) {
     this.setName(name);
     this.email = email;
     this.password = password;
@@ -71,7 +68,6 @@ public class User extends Entity {
     this.experienceLevel = experienceLevel;
     this.setCategoriesOfInterest(categoriesOfInterest);
   }
-
 
   public void setName(String name) {
     if (name.length() < 30) {
@@ -91,9 +87,10 @@ public class User extends Entity {
 
     var formattedNamePt3 = splitName[splitName.length - 1];
 
-    this.name = formattedNamePt1.toUpperCase()
-                + formattedNamePt2.toUpperCase()
-                + formattedNamePt3.toUpperCase();
+    this.name =
+        formattedNamePt1.toUpperCase()
+            + formattedNamePt2.toUpperCase()
+            + formattedNamePt3.toUpperCase();
   }
 
   public void setCategoriesOfInterest(List<Categories> categoriesOfInterest) {

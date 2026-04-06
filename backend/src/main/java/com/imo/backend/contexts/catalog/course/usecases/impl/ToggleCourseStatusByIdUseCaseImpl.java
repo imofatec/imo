@@ -1,10 +1,9 @@
 package com.imo.backend.contexts.catalog.course.usecases.impl;
 
-import com.imo.backend.contexts.common.exceptions.custom.NotFoundException;
 import com.imo.backend.contexts.catalog.course.Course;
 import com.imo.backend.contexts.catalog.course.repositories.CourseRepository;
 import com.imo.backend.contexts.catalog.course.usecases.ToggleCourseStatusByIdUseCase;
-
+import com.imo.backend.contexts.common.exceptions.custom.NotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -18,11 +17,12 @@ public class ToggleCourseStatusByIdUseCaseImpl implements ToggleCourseStatusById
 
   @Override
   public Course execute(String id) {
-    var foundCourse = courseRepository
-        .findById(id)
-        .orElseThrow(() -> new NotFoundException("Curso não encontrado"));
-    
+    var foundCourse =
+        courseRepository
+            .findById(id)
+            .orElseThrow(() -> new NotFoundException("Curso não encontrado"));
+
     foundCourse.toggleStatus();
-    return this.courseRepository.save(foundCourse);   
+    return this.courseRepository.save(foundCourse);
   }
 }

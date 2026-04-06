@@ -24,10 +24,7 @@ public class IssueCertificateController extends CertificateController {
   @Operation(summary = "Issue certificate by course id")
   @SecurityRequirement(name = "Authorization")
   @GetMapping("/issue/{courseId}")
-  public ResponseEntity<byte[]> handle(
-      @PathVariable
-      String courseId, HttpServletRequest request
-  ) {
+  public ResponseEntity<byte[]> handle(@PathVariable String courseId, HttpServletRequest request) {
     MongoDB.validateObjectId(courseId);
     HttpHeaders headers = new HttpHeaders();
     String userId = SecurityContextHolder.getContext().getAuthentication().getName();

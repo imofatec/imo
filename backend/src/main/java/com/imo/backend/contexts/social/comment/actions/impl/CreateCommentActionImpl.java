@@ -16,12 +16,8 @@ public class CreateCommentActionImpl implements CreateCommentAction {
 
   @Override
   public Comment execute(CreateCommentInput createCommentInput, String userId, String lessonId) {
-    Comment comment = new Comment(
-        userId,
-        lessonId,
-        createCommentInput.parentId(),
-        createCommentInput.content()
-    );
+    Comment comment =
+        new Comment(userId, lessonId, createCommentInput.parentId(), createCommentInput.content());
 
     return this.commentRepository.save(comment);
   }

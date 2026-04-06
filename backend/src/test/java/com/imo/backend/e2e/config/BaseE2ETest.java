@@ -1,5 +1,8 @@
 package com.imo.backend.e2e.config;
 
+import static io.restassured.RestAssured.given;
+
+import com.imo.backend.e2e.config.singleton.SharedMongoDBContainer;
 import io.restassured.RestAssured;
 import io.restassured.specification.RequestSpecification;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,18 +14,13 @@ import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import com.imo.backend.e2e.config.singleton.SharedMongoDBContainer;
-
-import static io.restassured.RestAssured.given;
-
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Testcontainers
 @ActiveProfiles("test")
 @Import(RabbitMQMock.class)
 public abstract class BaseE2ETest {
 
-  @LocalServerPort
-  protected int port;
+  @LocalServerPort protected int port;
 
   static {
     SharedMongoDBContainer.start();

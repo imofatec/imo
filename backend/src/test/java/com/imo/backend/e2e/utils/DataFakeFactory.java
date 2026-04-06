@@ -59,5 +59,4 @@ public class DataFakeFactory {
   public static String generateValidId() {
     return faker.internet().uuid();
   }
-
 }

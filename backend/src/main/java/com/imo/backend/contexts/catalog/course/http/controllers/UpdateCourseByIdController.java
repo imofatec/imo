@@ -25,8 +25,7 @@ public class UpdateCourseByIdController extends CourseController {
   public UpdateCourseByIdController(
       UpdateCourseByIdUseCase updateCourseByIdService,
       TokenManager tokenManager,
-      ValidateUserCourseAccessService validateUserCourseAccessService
-  ) {
+      ValidateUserCourseAccessService validateUserCourseAccessService) {
     this.updateCourseByIdService = updateCourseByIdService;
     this.validateUserCourseAccessService = validateUserCourseAccessService;
   }
@@ -35,12 +34,7 @@ public class UpdateCourseByIdController extends CourseController {
   @SecurityRequirement(name = "Authorization")
   @PutMapping("/{id}")
   public ResponseEntity<CourseResponseDTO> handle(
-      @PathVariable
-      String id,
-      @Valid
-      @RequestBody
-      UpdateCourseByIdRequest dto
-  ) {
+      @PathVariable String id, @Valid @RequestBody UpdateCourseByIdRequest dto) {
     MongoDB.validateObjectId(id);
     String userId = SecurityContextHolder.getContext().getAuthentication().getName();
 

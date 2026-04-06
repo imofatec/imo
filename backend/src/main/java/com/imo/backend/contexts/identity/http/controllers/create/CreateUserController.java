@@ -25,11 +25,7 @@ public class CreateUserController extends UserController {
   @Transactional
   @Operation(summary = "Register user")
   @PostMapping()
-  public ResponseEntity<UserDTO> handle(
-      @Valid
-      @RequestBody
-      CreateUserInput createUserInput
-  ) {
+  public ResponseEntity<UserDTO> handle(@Valid @RequestBody CreateUserInput createUserInput) {
     var newUser = UserDTO.fromUser(this.createUserService.execute(createUserInput));
 
     return new ResponseEntity<>(newUser, HttpStatus.CREATED);

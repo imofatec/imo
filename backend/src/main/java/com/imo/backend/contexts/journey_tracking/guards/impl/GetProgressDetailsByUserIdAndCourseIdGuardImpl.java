@@ -1,9 +1,9 @@
 package com.imo.backend.contexts.journey_tracking.guards.impl;
 
+import com.imo.backend.contexts.common.exceptions.custom.NotFoundException;
 import com.imo.backend.contexts.journey_tracking.ProgressDetails;
 import com.imo.backend.contexts.journey_tracking.guards.GetProgressDetailsByUserIdAndCourseIdGuard;
 import com.imo.backend.contexts.journey_tracking.repositories.ProgressRepository;
-import com.imo.backend.contexts.common.exceptions.custom.NotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service

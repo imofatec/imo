@@ -27,8 +27,7 @@ public class CreateLessonController extends LessonController {
 
   public CreateLessonController(
       ValidateUserCourseAccessService validateUserCourseAccessService,
-      CreateLessonUseCase createLessonService
-  ) {
+      CreateLessonUseCase createLessonService) {
     this.validateUserCourseAccessService = validateUserCourseAccessService;
     this.createLessonService = createLessonService;
   }
@@ -38,12 +37,8 @@ public class CreateLessonController extends LessonController {
   @PostMapping("/{courseId}")
   public ResponseEntity<LessonResponseDTO> handle(
       HttpServletRequest request,
-      @PathVariable
-      String courseId,
-      @Valid
-      @RequestBody
-      CreateLessonRequest dto
-  ) {
+      @PathVariable String courseId,
+      @Valid @RequestBody CreateLessonRequest dto) {
     MongoDB.validateObjectId(courseId);
     String userId = SecurityContextHolder.getContext().getAuthentication().getName();
     this.validateUserCourseAccessService.execute(userId, courseId);

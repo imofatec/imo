@@ -1,13 +1,12 @@
 package com.imo.backend.contexts.social.comment.repositories;
 
 import com.imo.backend.contexts.social.comment.Comment;
+import java.util.List;
 import org.bson.types.ObjectId;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-
-import java.util.List;
 
 public class CustomCommentRepositoryImpl implements CustomCommentRepository {
   private final MongoTemplate mongoTemplate;
@@ -24,9 +23,10 @@ public class CustomCommentRepositoryImpl implements CustomCommentRepository {
 
   @Override
   public List<Comment> findAllByLessonId(String lessonId, Pageable pageable) {
-    Query query = new Query()
-        .addCriteria(Criteria.where("lessonId").is(new ObjectId(lessonId)))
-        .with(pageable);
+    Query query =
+        new Query()
+            .addCriteria(Criteria.where("lessonId").is(new ObjectId(lessonId)))
+            .with(pageable);
     return this.mongoTemplate.find(query, Comment.class);
   }
 }

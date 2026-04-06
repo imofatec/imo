@@ -16,8 +16,7 @@ public class UpdateUserByIdServiceImpl implements UpdateUserByIdService {
 
   public UpdateUserByIdServiceImpl(
       UpdateUserByIdAction updateUserByIdAction,
-      UpdatePasswordByIdService updatePasswordByIdService
-  ) {
+      UpdatePasswordByIdService updatePasswordByIdService) {
     this.updateUserByIdAction = updateUserByIdAction;
     this.updatePasswordByIdService = updatePasswordByIdService;
   }
@@ -27,17 +26,17 @@ public class UpdateUserByIdServiceImpl implements UpdateUserByIdService {
       this.updatePasswordByIdService.execute(id, fieldsToUpdateUser.password());
     }
 
-    UpdateUserByIdInput input = new UpdateUserByIdInput(
-        fieldsToUpdateUser.email(),
-        fieldsToUpdateUser.name(),
-        null,
-        null,
-        User.getBirthDateFromString(fieldsToUpdateUser.birthDate()),
-        fieldsToUpdateUser.availableTimePerDay(),
-        fieldsToUpdateUser.academicDegree(),
-        fieldsToUpdateUser.experienceLevel(),
-        fieldsToUpdateUser.categoriesOfInterest()
-    );
+    UpdateUserByIdInput input =
+        new UpdateUserByIdInput(
+            fieldsToUpdateUser.email(),
+            fieldsToUpdateUser.name(),
+            null,
+            null,
+            User.getBirthDateFromString(fieldsToUpdateUser.birthDate()),
+            fieldsToUpdateUser.availableTimePerDay(),
+            fieldsToUpdateUser.academicDegree(),
+            fieldsToUpdateUser.experienceLevel(),
+            fieldsToUpdateUser.categoriesOfInterest());
     return this.updateUserByIdAction.execute(id, input);
   }
 }

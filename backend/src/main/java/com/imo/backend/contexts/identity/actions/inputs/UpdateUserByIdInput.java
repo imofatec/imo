@@ -1,10 +1,9 @@
 package com.imo.backend.contexts.identity.actions.inputs;
 
+import com.imo.backend.contexts.catalog.course.value_objects.Categories;
 import com.imo.backend.contexts.identity.value_objects.AcademicDegree;
 import com.imo.backend.contexts.identity.value_objects.AvailableTimePerDay;
 import com.imo.backend.contexts.identity.value_objects.ExperienceLevel;
-import com.imo.backend.contexts.catalog.course.value_objects.Categories;
-
 import java.time.LocalDate;
 import java.util.List;
 
@@ -17,6 +16,4 @@ public record UpdateUserByIdInput(
     AvailableTimePerDay availableTimePerDay,
     AcademicDegree academicDegree,
     ExperienceLevel experienceLevel,
-    List<Categories> categoriesOfInterest
-) {
-}
+    List<Categories> categoriesOfInterest) {}

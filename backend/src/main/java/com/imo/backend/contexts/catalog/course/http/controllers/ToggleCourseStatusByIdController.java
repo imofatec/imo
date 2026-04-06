@@ -21,8 +21,7 @@ public class ToggleCourseStatusByIdController extends CourseController {
 
   public ToggleCourseStatusByIdController(
       ToggleCourseStatusByIdUseCase toggleCourseStatusByIdAction,
-      ValidateUserCourseAccessService validateUserCourseAccessService
-  ) {
+      ValidateUserCourseAccessService validateUserCourseAccessService) {
     this.toggleCourseStatusByIdAction = toggleCourseStatusByIdAction;
     this.validateUserCourseAccessService = validateUserCourseAccessService;
   }
@@ -30,10 +29,7 @@ public class ToggleCourseStatusByIdController extends CourseController {
   @Operation(summary = "Toggle course status")
   @SecurityRequirement(name = "Authorization")
   @PatchMapping("/{id}")
-  public ResponseEntity<CourseResponseDTO> handle(
-      @PathVariable
-      String id
-  ) {
+  public ResponseEntity<CourseResponseDTO> handle(@PathVariable String id) {
     MongoDB.validateObjectId(id);
     String userId = SecurityContextHolder.getContext().getAuthentication().getName();
 

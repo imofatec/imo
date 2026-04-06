@@ -24,8 +24,7 @@ public class CreateCourseOrchestrator {
   public CreateCourseOrchestrator(
       CreateCourseUseCase createCourseAction,
       CreateLessonUseCase createLessonService,
-      CourseRepository courseRepository
-  ) {
+      CourseRepository courseRepository) {
     this.createCourseAction = createCourseAction;
     this.createLessonService = createLessonService;
     this.courseRepository = courseRepository;
@@ -39,27 +38,19 @@ public class CreateCourseOrchestrator {
 
     var newCourse = this.createCourseAction.execute(courseCommand);
 
-    var newLessons = this.createLessonService.execute(
-          courseCommand.lessons(),
-          newCourse.getId()
-    );
+    var newLessons = this.createLessonService.execute(courseCommand.lessons(), newCourse.getId());
 
-    return new CourseDetailsDTO(
-      CourseResponseDTO.fromEntity(newCourse), 
-      newLessons
-    );
+    return new CourseDetailsDTO(CourseResponseDTO.fromEntity(newCourse), newLessons);
   }
 
   private void checkConflictContributorCourse(String contributorId, String potentialNewSlugCourse) {
-    var existingContributorCourse = this.courseRepository.findAllByContributorId(contributorId)
-        .stream()
-        .anyMatch(course -> course.getName().slug().equals(potentialNewSlugCourse));
+    var existingContributorCourse =
+        this.courseRepository.findAllByContributorId(contributorId).stream()
+            .anyMatch(course -> course.getName().slug().equals(potentialNewSlugCourse));
 
     if (existingContributorCourse) {
-      throw new ConflictException(String.format(
-          "Você ja cadastrou o curso %s anteriormente",
-          potentialNewSlugCourse
-      ));
+      throw new ConflictException(
+          String.format("Você ja cadastrou o curso %s anteriormente", potentialNewSlugCourse));
     }
   }
 }

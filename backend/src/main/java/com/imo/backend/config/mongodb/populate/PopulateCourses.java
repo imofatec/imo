@@ -4,13 +4,11 @@ import com.imo.backend.contexts.catalog.course.http.dtos.CreateCourseRequest;
 import com.imo.backend.contexts.catalog.course.orchestrators.CreateCourseOrchestrator;
 import com.imo.backend.contexts.catalog.course.value_objects.Categories;
 import com.imo.backend.contexts.catalog.lesson.http.dtos.CreateLessonRequest;
-
-import net.datafaker.Faker;
-import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
+import net.datafaker.Faker;
+import org.springframework.stereotype.Service;
 
 @Service
 public class PopulateCourses {
@@ -30,22 +28,20 @@ public class PopulateCourses {
         String videoId = faker.regexify("[\\w-]{11}");
         var youtubeLink = "https://www.youtube.com/watch?v=" + videoId;
 
-        CreateLessonRequest createLessonInput = new CreateLessonRequest(
-            faker
-                .lorem()
-                .characters(10, 50), faker.lorem().characters(10, 300), youtubeLink
-        );
+        CreateLessonRequest createLessonInput =
+            new CreateLessonRequest(
+                faker.lorem().characters(10, 50), faker.lorem().characters(10, 300), youtubeLink);
         lessons.add(createLessonInput);
       }
 
-      CreateCourseRequest createCourseRequest = new CreateCourseRequest(
-          faker.lorem().characters(10, 100),
-          faker.options().option(Categories.class),
-          faker.options().option("Iniciante", "Intermediário", "Avançado"),
-          faker.lorem().characters(10, 300),
-          lessons,
-          contributorId
-      );
+      CreateCourseRequest createCourseRequest =
+          new CreateCourseRequest(
+              faker.lorem().characters(10, 100),
+              faker.options().option(Categories.class),
+              faker.options().option("Iniciante", "Intermediário", "Avançado"),
+              faker.lorem().characters(10, 300),
+              lessons,
+              contributorId);
 
       this.createCourseOrchestrator.execute(createCourseRequest, contributorId);
     }

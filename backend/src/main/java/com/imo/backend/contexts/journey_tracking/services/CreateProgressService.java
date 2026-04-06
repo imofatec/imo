@@ -1,7 +1,6 @@
 package com.imo.backend.contexts.journey_tracking.services;
 
 import com.imo.backend.contexts.journey_tracking.Progress;
-
 import java.util.List;
 
 public interface CreateProgressService {

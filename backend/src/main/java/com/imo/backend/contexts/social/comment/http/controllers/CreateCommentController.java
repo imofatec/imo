@@ -1,9 +1,9 @@
 package com.imo.backend.contexts.social.comment.http.controllers;
 
+import com.imo.backend.contexts.common.MongoDB;
 import com.imo.backend.contexts.social.comment.Comment;
 import com.imo.backend.contexts.social.comment.actions.CreateCommentAction;
 import com.imo.backend.contexts.social.comment.actions.inputs.CreateCommentInput;
-import com.imo.backend.contexts.common.MongoDB;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
@@ -28,12 +28,7 @@ public class CreateCommentController extends CommentController {
   @SecurityRequirement(name = "Authorization")
   @PostMapping("/{lessonId}")
   public ResponseEntity<Comment> handle(
-      @PathVariable
-      String lessonId,
-      @Valid
-      @RequestBody
-      CreateCommentInput createCommentInput
-  ) {
+      @PathVariable String lessonId, @Valid @RequestBody CreateCommentInput createCommentInput) {
     MongoDB.validateObjectId(lessonId);
     String userId = SecurityContextHolder.getContext().getAuthentication().getName();
 
@@ -41,5 +36,4 @@ public class CreateCommentController extends CommentController {
 
     return ResponseEntity.status(HttpStatus.CREATED).body(newComment);
   }
-
 }

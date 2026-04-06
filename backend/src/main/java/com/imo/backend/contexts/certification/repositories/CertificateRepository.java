@@ -6,5 +6,4 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CertificateRepository
-    extends MongoRepository<Certificate, String>, CustomCertificateRepository {
-}
+    extends MongoRepository<Certificate, String>, CustomCertificateRepository {}

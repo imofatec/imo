@@ -14,9 +14,7 @@ public class UpdatePasswordByIdServiceImpl implements UpdatePasswordByIdService 
   private final PasswordEncoder passwordEncoder;
 
   public UpdatePasswordByIdServiceImpl(
-      UpdateUserByIdAction updateUserByIdAction,
-      PasswordEncoder passwordEncoder
-  ) {
+      UpdateUserByIdAction updateUserByIdAction, PasswordEncoder passwordEncoder) {
     this.updateUserByIdAction = updateUserByIdAction;
     this.passwordEncoder = passwordEncoder;
   }
@@ -26,7 +24,6 @@ public class UpdatePasswordByIdServiceImpl implements UpdatePasswordByIdService 
 
     return this.updateUserByIdAction.execute(
         userId,
-        new UpdateUserByIdInput(null, null, hashedPassword, null, null, null, null, null, null)
-    );
+        new UpdateUserByIdInput(null, null, hashedPassword, null, null, null, null, null, null));
   }
 }

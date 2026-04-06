@@ -3,10 +3,9 @@ package com.imo.backend.lib.token.impl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.imo.backend.contexts.identity.http.dtos.auth.LoginResponseDTO;
 import com.imo.backend.lib.token.TokenManager;
+import java.time.Instant;
 import org.springframework.security.oauth2.jwt.*;
 import org.springframework.stereotype.Service;
-
-import java.time.Instant;
 
 @Service
 public class JWTokenManager implements TokenManager {
@@ -27,13 +26,13 @@ public class JWTokenManager implements TokenManager {
     var now = Instant.now();
     var expiresIn = 18000L; // 5h
 
-    var claims = JwtClaimsSet
-        .builder()
-        .issuer("IMO")
-        .issuedAt(now)
-        .subject(userId)
-        .expiresAt(now.plusSeconds(expiresIn))
-        .build();
+    var claims =
+        JwtClaimsSet.builder()
+            .issuer("IMO")
+            .issuedAt(now)
+            .subject(userId)
+            .expiresAt(now.plusSeconds(expiresIn))
+            .build();
 
     String token = jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
 

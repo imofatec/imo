@@ -5,5 +5,4 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Tag(name = "Certificate controllers")
 @RequestMapping("/api/certificate")
-public abstract class CertificateController {
-}
+public abstract class CertificateController {}

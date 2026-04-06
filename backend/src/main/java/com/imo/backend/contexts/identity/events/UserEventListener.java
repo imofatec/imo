@@ -27,8 +27,7 @@ public class UserEventListener {
       Envs envs,
       ObjectMapper objectMapper,
       RabbitTemplate rabbitTemplate,
-      CreateOutboxService<ForgetPasswordEvent> outboxService
-  ) {
+      CreateOutboxService<ForgetPasswordEvent> outboxService) {
     this.envs = envs;
     this.objectMapper = objectMapper;
     this.rabbitTemplate = rabbitTemplate;
@@ -42,8 +41,7 @@ public class UserEventListener {
       this.rabbitTemplate.convertAndSend(
           this.envs.EXCHANGE_NAME,
           this.envs.ROUTING_KEY_CONFIRM_EMAIL,
-          new Message(json.getBytes())
-      );
+          new Message(json.getBytes()));
     } catch (Exception e) {
       log.error(e.getMessage(), e);
     }
@@ -52,26 +50,20 @@ public class UserEventListener {
   @ApplicationModuleListener
   public void handle(ForgetPasswordEvent event) {
     try {
-      var newOutbox = this.outboxService.execute(new Outbox<>(
-          event,
-          OutboxStatus.PENDING,
-          OutboxEvent.USER_FORGET_PASSWORD
-      ));
+      var newOutbox =
+          this.outboxService.execute(
+              new Outbox<>(event, OutboxStatus.PENDING, OutboxEvent.USER_FORGET_PASSWORD));
 
-      var payload = new ForgetPasswordMessagePayload(
-          newOutbox.getId(),
-          event.userId(),
-          event.email(),
-          event.code()
-      );
+      var payload =
+          new ForgetPasswordMessagePayload(
+              newOutbox.getId(), event.userId(), event.email(), event.code());
 
       String json = this.objectMapper.writeValueAsString(payload);
 
       this.rabbitTemplate.convertAndSend(
           this.envs.EXCHANGE_NAME,
           this.envs.ROUTING_KEY_FORGET_PASSWORD,
-          new Message(json.getBytes())
-      );
+          new Message(json.getBytes()));
 
     } catch (Exception e) {
       log.error(e.getMessage(), e);

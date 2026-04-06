@@ -20,19 +20,16 @@ public class UploadUserProfilePictureController extends UserController {
   private final UploadUserProfilePictureAction uploadUserProfilePictureAction;
 
   public UploadUserProfilePictureController(
-      UploadUserProfilePictureAction uploadUserProfilePictureAction,
-      TokenManager tokenManager
-  ) {
+      UploadUserProfilePictureAction uploadUserProfilePictureAction, TokenManager tokenManager) {
     this.uploadUserProfilePictureAction = uploadUserProfilePictureAction;
   }
 
-  @Operation(summary = "Upload a profile picture", description = "Allow users to upload a new profile picture")
+  @Operation(
+      summary = "Upload a profile picture",
+      description = "Allow users to upload a new profile picture")
   @SecurityRequirement(name = "Authorization")
   @PutMapping(value = "/profile-picture", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-  public ResponseEntity<UserDTO> handle(
-      @RequestParam("file")
-      MultipartFile file
-  ) {
+  public ResponseEntity<UserDTO> handle(@RequestParam("file") MultipartFile file) {
     String userId = SecurityContextHolder.getContext().getAuthentication().getName();
 
     var updatedUser = UserDTO.fromUser(this.uploadUserProfilePictureAction.execute(userId, file));

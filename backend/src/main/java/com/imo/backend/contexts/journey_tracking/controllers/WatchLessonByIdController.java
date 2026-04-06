@@ -1,8 +1,8 @@
 package com.imo.backend.contexts.journey_tracking.controllers;
 
+import com.imo.backend.contexts.common.MongoDB;
 import com.imo.backend.contexts.journey_tracking.controllers.dtos.ProgressDTO;
 import com.imo.backend.contexts.journey_tracking.orchestrators.WatchLessonByIdOrchestrator;
-import com.imo.backend.contexts.common.MongoDB;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.http.ResponseEntity;
@@ -15,19 +15,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class WatchLessonByIdController extends ProgressController {
   private final WatchLessonByIdOrchestrator watchLessonByIdOrchestrator;
 
-  public WatchLessonByIdController(
-      WatchLessonByIdOrchestrator watchLessonByIdOrchestrator
-  ) {
+  public WatchLessonByIdController(WatchLessonByIdOrchestrator watchLessonByIdOrchestrator) {
     this.watchLessonByIdOrchestrator = watchLessonByIdOrchestrator;
   }
 
   @Operation(summary = "Watch a lesson")
   @SecurityRequirement(name = "Authorization")
   @PutMapping("/{lessonId}")
-  public ResponseEntity<ProgressDTO> handle(
-      @PathVariable
-      String lessonId
-  ) {
+  public ResponseEntity<ProgressDTO> handle(@PathVariable String lessonId) {
     MongoDB.validateObjectId(lessonId);
     String userId = SecurityContextHolder.getContext().getAuthentication().getName();
     var updatedProgress = this.watchLessonByIdOrchestrator.execute(lessonId, userId);

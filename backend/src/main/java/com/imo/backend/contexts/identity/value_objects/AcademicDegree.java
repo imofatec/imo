@@ -14,7 +14,6 @@ public enum AcademicDegree {
   DOCTORAL("Doutorado"),
   POSTDOC("Pós-doutorado");
 
-
   private final String value;
 
   AcademicDegree(String value) {

@@ -1,14 +1,13 @@
 package com.imo.backend.contexts.common;
 
 import com.imo.backend.contexts.common.exceptions.custom.BadRequestException;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Pattern;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.MatchOperation;
 import org.springframework.data.mongodb.core.query.Criteria;
-
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Pattern;
 
 public class MongoDB {
   public static void validateObjectId(String id) {
@@ -18,20 +17,17 @@ public class MongoDB {
   }
 
   public static MatchOperation buildMatchOperation(
-      Map<String, Object> fieldsToSearch,
-      MatchType matchType,
-      CombineWith combineWith
-  ) {
-    List<Criteria> criteriaList = fieldsToSearch
-        .entrySet()
-        .stream()
-        .map(entry -> buildCriteria(entry.getKey(), entry.getValue(), matchType))
-        .toList();
+      Map<String, Object> fieldsToSearch, MatchType matchType, CombineWith combineWith) {
+    List<Criteria> criteriaList =
+        fieldsToSearch.entrySet().stream()
+            .map(entry -> buildCriteria(entry.getKey(), entry.getValue(), matchType))
+            .toList();
 
-    Criteria combinedCriteria = switch (combineWith) {
-      case OR -> new Criteria().orOperator(criteriaList.toArray(new Criteria[0]));
-      case AND -> new Criteria().andOperator(criteriaList.toArray(new Criteria[0]));
-    };
+    Criteria combinedCriteria =
+        switch (combineWith) {
+          case OR -> new Criteria().orOperator(criteriaList.toArray(new Criteria[0]));
+          case AND -> new Criteria().andOperator(criteriaList.toArray(new Criteria[0]));
+        };
 
     return Aggregation.match(combinedCriteria);
   }

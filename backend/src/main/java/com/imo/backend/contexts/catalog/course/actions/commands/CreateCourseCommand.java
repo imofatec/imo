@@ -10,6 +10,4 @@ public record CreateCourseCommand(
     String level,
     String description,
     List<CreateLessonCommand> lessons,
-    String contributorId
-) {
-}
+    String contributorId) {}

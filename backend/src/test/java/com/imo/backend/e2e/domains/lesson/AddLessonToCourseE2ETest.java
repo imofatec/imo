@@ -1,5 +1,7 @@
 package com.imo.backend.e2e.domains.lesson;
 
+import static org.hamcrest.Matchers.is;
+
 import com.imo.backend.contexts.catalog.course.http.dtos.CourseDetailsDTO;
 import com.imo.backend.contexts.catalog.lesson.http.dtos.CreateLessonRequest;
 import com.imo.backend.e2e.config.BaseE2ETest;
@@ -9,8 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-
-import static org.hamcrest.Matchers.is;
 
 @Slf4j
 public class AddLessonToCourseE2ETest extends BaseE2ETest {
@@ -24,17 +24,14 @@ public class AddLessonToCourseE2ETest extends BaseE2ETest {
     CourseDetailsDTO details = E2EFlowHelper.createCourseAndReturnDetails(token, 5);
     String courseId = details.course().id();
 
-    CreateLessonRequest command = new CreateLessonRequest(
-        "Curso de Rust",
-        "Ownership",
-        "https://youtube.com/watch?v=abc123def45"
-    );
+    CreateLessonRequest command =
+        new CreateLessonRequest(
+            "Curso de Rust", "Ownership", "https://youtube.com/watch?v=abc123def45");
 
     log.info(
         "Course ID: {}\nCourse details:\n\nContributor Id: {}\nDescription: {}\n{}",
         courseId,
-        details.course().description()
-    );
+        details.course().description());
 
     givenBaseRequest()
         .header("Authorization", "Bearer " + token)

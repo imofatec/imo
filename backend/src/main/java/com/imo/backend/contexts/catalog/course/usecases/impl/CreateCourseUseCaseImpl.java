@@ -5,7 +5,6 @@ import com.imo.backend.contexts.catalog.course.actions.commands.CreateCourseComm
 import com.imo.backend.contexts.catalog.course.factories.CourseFactory;
 import com.imo.backend.contexts.catalog.course.repositories.CourseRepository;
 import com.imo.backend.contexts.catalog.course.usecases.CreateCourseUseCase;
-
 import org.springframework.stereotype.Service;
 
 @Service
