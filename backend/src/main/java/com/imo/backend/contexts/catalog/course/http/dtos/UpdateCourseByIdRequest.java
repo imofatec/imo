@@ -13,11 +13,7 @@ public record UpdateCourseByIdRequest(
     String level,
 
     @Size(min = 10, max = 300, message = "A descrição do curso precisa ter de 10 a 300 caracteres")
-    String description,
-
-    Integer lessonsCount,
-
-    String firstLessonYoutubeLink
+    String description
 ) {
   public UpdateCourseByIdCommand toCommand(String id) {
     return new UpdateCourseByIdCommand(
@@ -26,8 +22,8 @@ public record UpdateCourseByIdRequest(
         this.category,
         this.level,
         this.description,
-        this.lessonsCount,
-        this.firstLessonYoutubeLink
+        null,
+        null
     );
   }
 }

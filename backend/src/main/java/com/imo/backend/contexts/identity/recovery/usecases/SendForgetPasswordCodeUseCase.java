@@ -2,14 +2,13 @@ package com.imo.backend.contexts.identity.recovery.usecases;
 
 import com.imo.backend.contexts.common.exceptions.custom.BadRequestException;
 import com.imo.backend.contexts.identity.recovery.RecoveryCode;
+import com.imo.backend.contexts.identity.recovery.lib.CodeGenerator;
 import com.imo.backend.contexts.identity.recovery.repositories.RecoveryCodeRepository;
 import com.imo.backend.contexts.identity.user.events.ForgetPasswordEvent;
 import com.imo.backend.contexts.identity.user.repositories.UserRepository;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.security.SecureRandom;
-import java.util.Optional;
 
 @Service
 public class SendForgetPasswordCodeUseCase {
@@ -19,18 +18,24 @@ public class SendForgetPasswordCodeUseCase {
 
   private final ApplicationEventPublisher applicationEventPublisher;
 
-  private final SecureRandom secureRandom = new SecureRandom();
+  private final PasswordEncoder passwordEncoder;
+
+  private final CodeGenerator codeGenerator;
 
   private static final String RESPONSE_MESSAGE = "Se o email informado existir, você receberá uma mensagem com o código de recuperação";
 
   public SendForgetPasswordCodeUseCase(
       UserRepository userRepository,
       RecoveryCodeRepository recoveryCodeRepository,
-      ApplicationEventPublisher applicationEventPublisher
+      ApplicationEventPublisher applicationEventPublisher,
+      PasswordEncoder passwordEncoder,
+      CodeGenerator codeGenerator
   ) {
     this.userRepository = userRepository;
     this.recoveryCodeRepository = recoveryCodeRepository;
     this.applicationEventPublisher = applicationEventPublisher;
+    this.passwordEncoder = passwordEncoder;
+    this.codeGenerator = codeGenerator;
   }
 
   public String execute(String email) {
@@ -40,20 +45,25 @@ public class SendForgetPasswordCodeUseCase {
       return RESPONSE_MESSAGE;
     }
 
-    Optional<RecoveryCode> recoveryCode = this.recoveryCodeRepository.findByUserId(foundUser.getId());
+    var existingCode = this.recoveryCodeRepository.findByUserId(foundUser.getId());
 
-    if (recoveryCode.isPresent()) {
+    if (existingCode.isPresent()) {
       throw new BadRequestException("Espere alguns minutos para solicitar novamente");
     }
 
-    int code = this.secureRandom.nextInt(1_000_000);
-    String checkCode = String.format("%06d", code);
+    String rawCode = this.codeGenerator.generate();
+
+    RecoveryCode recoveryCode = new RecoveryCode(
+        foundUser.getId(),
+        this.passwordEncoder.encode(rawCode)
+    );
+    this.recoveryCodeRepository.save(recoveryCode);
 
     this.applicationEventPublisher.publishEvent(new ForgetPasswordEvent(
         foundUser.getId(),
         foundUser.getName(),
         foundUser.getEmail(),
-        checkCode
+        rawCode
     ));
 
     return RESPONSE_MESSAGE;

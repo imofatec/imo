@@ -2,26 +2,20 @@ package com.imo.backend.contexts.identity.user.usecases;
 
 import com.imo.backend.contexts.common.exceptions.custom.NotFoundException;
 import com.imo.backend.contexts.identity.user.User;
+import com.imo.backend.contexts.identity.user.lib.ImageStorageProvider;
 import com.imo.backend.contexts.identity.user.repositories.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Paths;
 
 @Service
 public class UploadUserProfilePictureUseCase {
 
   private final UserRepository userRepository;
+  private final ImageStorageProvider fileStorageManager;  
 
-  private final String uploadDir = Paths
-      .get("src", "main", "resources", "uploads")
-      .toAbsolutePath()
-      .toString();
-
-  public UploadUserProfilePictureUseCase(UserRepository userRepository) {
+  public UploadUserProfilePictureUseCase(UserRepository userRepository, ImageStorageProvider fileStorageManager) {
     this.userRepository = userRepository;
+    this.fileStorageManager = fileStorageManager;
   }
 
   public User execute(String id, MultipartFile file) {
@@ -30,32 +24,18 @@ public class UploadUserProfilePictureUseCase {
         .findById(id)
         .orElseThrow(() -> new NotFoundException("Usuário não encontrado"));
 
-    String filename = user.assertUploadProfilePicture(file);
+    String filename = user.assertUploadProfilePicture(
+        file.getOriginalFilename(),
+        file.getSize(),
+        file.getContentType()
+    );
 
-    var userDir = checkUploadDir(uploadDir, id);
-
-    try {
-      File destinationFile = new File(userDir, filename);
-      file.transferTo(destinationFile);
-
-      String fileDirFromUserDir = String.format(id + "/" + filename);
-      user.setProfilePicturePath(fileDirFromUserDir);
-      return this.userRepository.save(user);
-
-    } catch (IOException e) {
-      throw new Error("Erro ao processar arquivo");
+    if (user.getProfilePicturePath() != null) {
+      fileStorageManager.delete(user.getProfilePicturePath());
     }
-  }
 
-  private static File checkUploadDir(String uploadDir, String userId) {
-    File userDir = new File(uploadDir, userId);
-    if (!userDir.exists()) {
-      boolean createdDir = userDir.mkdir();
-      if (!createdDir) {
-        throw new RuntimeException("Não foi possível armazenar o arquivo");
-      }
-    }
-    return userDir;
+    String fileDirFromUserDir = fileStorageManager.store(user.getId(), file, filename);
+    user.setProfilePicturePath(fileDirFromUserDir);
+    return this.userRepository.save(user);
   }
-
 }

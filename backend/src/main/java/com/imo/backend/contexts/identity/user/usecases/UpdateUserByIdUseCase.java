@@ -2,7 +2,6 @@ package com.imo.backend.contexts.identity.user.usecases;
 
 import com.imo.backend.contexts.identity.user.User;
 import com.imo.backend.contexts.identity.user.commands.UpdateUserByIdCommand;
-import com.imo.backend.contexts.identity.user.http.dtos.UpdateUserByIdRequest;
 import com.imo.backend.contexts.identity.user.repositories.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -19,28 +18,48 @@ public class UpdateUserByIdUseCase {
     this.userRepository = userRepository;
   }
 
-  public User execute(String id, UpdateUserByIdRequest fieldsToUpdateUser) {
-    UpdateUserByIdCommand cmd = new UpdateUserByIdCommand(
-        fieldsToUpdateUser.email(),
-        fieldsToUpdateUser.name(),
-        fieldsToUpdateUser.password() != null
-            ? this.passwordEncoder.encode(fieldsToUpdateUser.password())
-            : null,
-        null,
-        User.getBirthDateFromString(fieldsToUpdateUser.birthDate()),
-        fieldsToUpdateUser.availableTimePerDay(),
-        fieldsToUpdateUser.academicDegree(),
-        fieldsToUpdateUser.experienceLevel(),
-        fieldsToUpdateUser.categoriesOfInterest()
-    );
-
+  public User execute(String id, UpdateUserByIdCommand cmd) {
     var foundUser = userRepository.findById(id).orElse(null);
 
     if (foundUser == null) {
       return null;
     }
 
-    User.applyUpdate(foundUser, cmd);
+    if (cmd.name() != null && !cmd.name().isEmpty()) {
+      foundUser.setName(cmd.name());
+    }
+
+    if (cmd.email() != null && !cmd.email().isEmpty()) {
+      foundUser.setEmail(cmd.email());
+    }
+
+    if (cmd.password() != null && !cmd.password().isEmpty()) {
+      foundUser.setPassword(this.passwordEncoder.encode(cmd.password()));
+    }
+
+    if (cmd.profilePicturePath() != null && !cmd.profilePicturePath().isEmpty()) {
+      foundUser.setProfilePicturePath(cmd.profilePicturePath());
+    }
+
+    if (cmd.birthDate() != null) {
+      foundUser.setBirthDate(cmd.birthDate());
+    }
+
+    if (cmd.availableTimePerDay() != null) {
+      foundUser.setAvailableTimePerDay(cmd.availableTimePerDay());
+    }
+
+    if (cmd.academicDegree() != null) {
+      foundUser.setAcademicDegree(cmd.academicDegree());
+    }
+
+    if (cmd.experienceLevel() != null) {
+      foundUser.setExperienceLevel(cmd.experienceLevel());
+    }
+
+    if (cmd.categoriesOfInterest() != null) {
+      foundUser.setCategoriesOfInterest(cmd.categoriesOfInterest());
+    }
 
     return this.userRepository.save(foundUser);
   }

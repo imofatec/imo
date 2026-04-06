@@ -27,10 +27,7 @@ public record CreateCourseRequest(
 
     @Size(min = 1, max = 100, message = "Um curso pode ter no mínimo 1 e no máximo 100 aulas")
     @Valid
-    List<CreateLessonRequest> lessons,
-
-    @NotBlank(message = "ID do contribuidor é obrigatório")
-    String contributorId
+    List<CreateLessonRequest> lessons
 ) {
   public CreateCourseCommand toCommand(String contributorId) {
     return new CreateCourseCommand(

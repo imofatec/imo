@@ -50,6 +50,7 @@ public class SecurityConfig {
     return http
         .cors(Customizer.withDefaults())
         .csrf(AbstractHttpConfigurer::disable)
+        .anonymous(AbstractHttpConfigurer::disable)
         .authorizeHttpRequests(auth -> auth
             .requestMatchers(
                 HttpMethod.GET,
@@ -60,19 +61,19 @@ public class SecurityConfig {
                 "/docs/**",
                 "/api/health-check",
                 "/api/user/ids",
-                "/api/user/{id}",
+                "/api/user/{id:^(?!profile$).+}",
                 "/api/course/{id}",
                 "/api/course/search",
-                "/api/course/search/details",
-                "/apí/course/categories",
+                "/api/course/categories",
                 "/api/comment/{lessonId}",
-                "/api/certificate/details/{id},"
+                "/api/certificate/details/{id}"
             )
             .permitAll()
             .requestMatchers(
                 HttpMethod.POST,
                 "/api/user",
                 "/api/user/login",
+                "/api/user/confirm/resend",
                 "/api/recovery/password/send-code",
                 "/api/recovery/password/verify"
             )

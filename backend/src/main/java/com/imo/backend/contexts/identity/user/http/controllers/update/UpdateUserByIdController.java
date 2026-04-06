@@ -1,5 +1,6 @@
 package com.imo.backend.contexts.identity.user.http.controllers.update;
 
+import com.imo.backend.contexts.identity.user.commands.UpdateUserByIdCommand;
 import com.imo.backend.contexts.identity.user.http.controllers.UserController;
 import com.imo.backend.contexts.identity.user.http.dtos.UpdateUserByIdRequest;
 import com.imo.backend.contexts.identity.user.http.dtos.UserDTO;
@@ -18,6 +19,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 import java.util.stream.Stream;
 
@@ -52,12 +55,32 @@ public class UpdateUserByIdController extends UserController {
 
     String userId = SecurityContextHolder.getContext().getAuthentication().getName();
 
-    return checkNoContent(fieldsToUpdateUser)
-        ? ResponseEntity.noContent().build()
-        : ResponseEntity.ok(UserDTO.fromUser(this.updateUserByIdUseCase.execute(
-            userId,
-            fieldsToUpdateUser
-        )));
+    if (checkNoContent(fieldsToUpdateUser)) {
+      return ResponseEntity.noContent().build();
+    }
+
+    LocalDate parsedBirthDate = null;
+    if (fieldsToUpdateUser.birthDate() != null) {
+      DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+      parsedBirthDate = LocalDate.parse(fieldsToUpdateUser.birthDate(), formatter);
+    }
+
+    UpdateUserByIdCommand cmd = new UpdateUserByIdCommand(
+        fieldsToUpdateUser.email(),
+        fieldsToUpdateUser.name(),
+        fieldsToUpdateUser.password(),
+        null,
+        parsedBirthDate,
+        fieldsToUpdateUser.availableTimePerDay(),
+        fieldsToUpdateUser.academicDegree(),
+        fieldsToUpdateUser.experienceLevel(),
+        fieldsToUpdateUser.categoriesOfInterest()
+    );
+
+    return ResponseEntity.ok(UserDTO.fromUser(this.updateUserByIdUseCase.execute(
+        userId,
+        cmd
+    )));
   }
 
   private static boolean checkNoContent(UpdateUserByIdRequest fieldsToUpdateUser) {
