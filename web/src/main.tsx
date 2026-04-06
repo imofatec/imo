@@ -6,10 +6,14 @@ import App from '@/App'
 import Home from '@/pages/Home'
 import Login from '@/pages/Login'
 import Register from '@/pages/Register'
-import Test from '@/pages/Test'
+import AllCourses from '@/pages/AllCourses'
+import NotFoundPage from '@/pages/NotFound'
 import { AuthProvider } from '@/contexts/AuthContext'
+import { UserProvider } from '@/contexts/UserContext'
 import ProtectedRoutes from './components/auth/ProtectedRoutes'
 import GuestRoutes from './components/auth/GuestRoutes'
+import MyCourses from './pages/MyCourses'
+import CreateCoursePage from './pages/CreateCourse'
 
 const router = createBrowserRouter([
   {
@@ -17,6 +21,12 @@ const router = createBrowserRouter([
     element: <App />,
     children: [
       { index: true, element: <Home /> },
+      { path: 'categories/:categorySlug?', element: <AllCourses /> },
+
+      {
+        element: <GuestRoutes redirectTo="/" />,
+        children: [{ path: 'home', element: <Home /> }],
+      },
 
       {
         element: <GuestRoutes redirectTo="/" />,
@@ -28,8 +38,13 @@ const router = createBrowserRouter([
 
       {
         element: <ProtectedRoutes />,
-        children: [{ path: 'test', element: <Test /> }],
+        children: [{ path: 'user/courses', element: <MyCourses /> }],
       },
+      {
+        element: <ProtectedRoutes />,
+        children: [{ path: 'createcourse', element: <CreateCoursePage /> }],
+      },
+      { path: '*', element: <NotFoundPage /> },
     ],
   },
 ])
@@ -37,7 +52,9 @@ const router = createBrowserRouter([
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <AuthProvider>
-      <RouterProvider router={router} />
+      <UserProvider>
+        <RouterProvider router={router} />
+      </UserProvider>
     </AuthProvider>
   </React.StrictMode>
 )
