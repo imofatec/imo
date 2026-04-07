@@ -62,7 +62,7 @@ export default function CreateCoursePage() {
 
     try {
       await createCourseRequest(data, user.id)
-      navigate('/categories')
+      navigate('/categorias')
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
         setErrorMessage(

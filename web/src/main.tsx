@@ -22,31 +22,24 @@ const router = createBrowserRouter([
     element: <App />,
     children: [
       { index: true, element: <Home /> },
-      { path: 'categories/:categorySlug?', element: <AllCourses /> },
-
-      {
-        element: <GuestRoutes redirectTo="/" />,
-        children: [{ path: 'home', element: <Home /> }],
-      },
+      { path: 'categorias/:categorySlug?', element: <AllCourses /> },
 
       {
         element: <GuestRoutes redirectTo="/" />,
         children: [
+          { path: 'home', element: <Home /> },
           { path: 'login', element: <Login /> },
-          { path: 'register', element: <Register /> },
+          { path: 'cadastro', element: <Register /> },
         ],
       },
 
       {
         element: <ProtectedRoutes />,
         children: [
-          { path: 'user/courses', element: <MyCourses /> },
-          { path: 'user/courses/:courseSlug/watch', element: <WatchPage /> },
+          { path: 'user/cursos', element: <MyCourses /> },
+          { path: 'cursos/:courseId/:idLesson', element: <WatchPage /> },
+          { path: 'criar-curso', element: <CreateCoursePage /> },
         ],
-      },
-      {
-        element: <ProtectedRoutes />,
-        children: [{ path: 'createcourse', element: <CreateCoursePage /> }],
       },
       { path: '*', element: <NotFoundPage /> },
     ],

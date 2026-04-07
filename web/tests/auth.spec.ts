@@ -11,7 +11,7 @@ test.describe('Auth', () => {
   test('should redirect to login after successful registration', async ({ page }) => {
     const user = createUserData()
 
-    await page.goto('/register')
+    await page.goto('/cadastro')
     await fillRegisterForm(page, user)
     await page.getByRole('button', { name: 'Cadastrar' }).click()
 
@@ -73,11 +73,11 @@ test.describe('Auth', () => {
     page,
     registeredUser,
   }) => {
-    await page.goto('/register')
+    await page.goto('/cadastro')
     await fillRegisterForm(page, registeredUser)
     await page.getByRole('button', { name: 'Cadastrar' }).click()
 
-    await expect(page).toHaveURL(/\/register$/)
+    await expect(page).toHaveURL(/\/cadastro$/)
     await expect(page.getByRole('alert')).toBeVisible()
   })
 })

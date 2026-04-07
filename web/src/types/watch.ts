@@ -12,7 +12,8 @@ export type WatchLesson = {
 
 export type LessonComment = {
   id: string
-  author: string
-  message: string
-  createdAt: string
+  userId: string
+  lessonId: string
+  parentId: string
+  content: string
 }

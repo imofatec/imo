@@ -1,11 +1,12 @@
 import LessonCard from '@/components/watch/LessonCard'
-import type { WatchLesson } from '@/types/watch'
+import type { CourseDetailsLesson } from '@/types/course'
 
 type Props = {
-  lessons: WatchLesson[]
+  lessons: CourseDetailsLesson[]
   currentLessonId: string
   onSelectLesson: (lessonId: string) => void
   watchedLessonIds: Set<string>
+  markingLessonIds: Set<string>
   onToggleLessonWatched: (lessonId: string) => void
 }
 
@@ -14,6 +15,7 @@ export default function LessonList({
   currentLessonId,
   onSelectLesson,
   watchedLessonIds,
+  markingLessonIds,
   onToggleLessonWatched,
 }: Props) {
   return (
@@ -25,6 +27,7 @@ export default function LessonList({
             isActive={lesson.id === currentLessonId}
             onSelect={() => onSelectLesson(lesson.id)}
             isWatched={watchedLessonIds.has(lesson.id)}
+            isMarking={markingLessonIds.has(lesson.id)}
             onToggleWatched={() => onToggleLessonWatched(lesson.id)}
           />
         </li>

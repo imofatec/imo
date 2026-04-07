@@ -8,8 +8,6 @@ type Props = {
   onClick?: () => void
   actionLabel?: string
   modalActionLabel?: string
-  modalActionTo?: string
-  modalActionHref?: string
 }
 
 export default function CourseCard({
@@ -17,8 +15,6 @@ export default function CourseCard({
   onClick,
   actionLabel = 'Ver mais',
   modalActionLabel,
-  modalActionTo,
-  modalActionHref,
 }: Props) {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const videoId = course.firstLessonYoutubeLink
@@ -62,8 +58,6 @@ export default function CourseCard({
         course={isModalOpen ? course : null}
         onClose={() => setIsModalOpen(false)}
         actionLabel={resolvedModalLabel}
-        actionTo={modalActionTo}
-        actionHref={modalActionHref}
       />
     </>
   )

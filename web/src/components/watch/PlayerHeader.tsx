@@ -1,16 +1,39 @@
-import type { WatchLesson } from '@/types/watch'
+import LessonNavigation from '@/components/watch/LessonNavigation'
+import type { CourseDetailsLesson } from '@/types/course'
 
-type Props = {
-  lesson: WatchLesson
+type PlayerHeaderProps = {
+  lesson: CourseDetailsLesson | null
+  onPreviousLesson: () => void
+  onNextLesson: () => void
+  hasPreviousLesson: boolean
+  hasNextLesson: boolean
 }
 
-export default function PlayerHeader({ lesson }: Props) {
+export default function PlayerHeader({
+  lesson,
+  onPreviousLesson,
+  onNextLesson,
+  hasPreviousLesson,
+  hasNextLesson,
+}: PlayerHeaderProps) {
+  if (!lesson) {
+    return (
+      <article className="overflow-hidden rounded-2xl border border-white/10 bg-[#14082f]/90 shadow-sm">
+        <div className="aspect-video w-full bg-black" />
+
+        <div className="space-y-3 p-5">
+          <h2 className="text-xl font-semibold text-white">Carregando aula...</h2>
+        </div>
+      </article>
+    )
+  }
+
   return (
     <article className="overflow-hidden rounded-2xl border border-white/10 bg-[#14082f]/90 shadow-sm">
       <div className="aspect-video w-full bg-black">
         <iframe
           className="h-full w-full"
-          src={`https://www.youtube.com/embed/${lesson.youtubeId}`}
+          src={`https://www.youtube.com/embed/${lesson.youtubeLink}`}
           title={lesson.title}
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           allowFullScreen
@@ -18,11 +41,17 @@ export default function PlayerHeader({ lesson }: Props) {
       </div>
 
       <div className="space-y-3 p-5">
-        <div className="flex flex-wrap items-center gap-2 text-xs text-white/70">
+        <div className="flex flex-wrap items-center justify-between gap-3 text-xs text-white/70">
           <span className="bg-cyan/15 text-cyan rounded-full px-2.5 py-1 font-medium">
-            Aula {lesson.order}
+            Aula {lesson.indexInCourse}
           </span>
-          <span>{lesson.duration}</span>
+
+          <LessonNavigation
+            onPreviousLesson={onPreviousLesson}
+            onNextLesson={onNextLesson}
+            hasPreviousLesson={hasPreviousLesson}
+            hasNextLesson={hasNextLesson}
+          />
         </div>
 
         <h2 className="text-xl font-semibold text-white">{lesson.title}</h2>

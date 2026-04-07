@@ -5,22 +5,17 @@ type Props = {
   course: Course | null
   onClose: () => void
   actionLabel?: string
-  actionHref?: string
-  actionTo?: string
 }
 
 export default function CourseModal({
   course,
   onClose,
   actionLabel = 'Assistir primeira aula',
-  actionHref,
-  actionTo,
 }: Props) {
   if (!course) return null
 
   const videoId = course.firstLessonYoutubeLink
   const thumbnailUrl = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`
-  const href = actionHref ?? course.firstLessonYoutubeLink
   const actionClassName =
     'inline-flex w-full items-center justify-center rounded-xl border border-cyan bg-cyan/10 px-4 py-3 text-center text-sm font-medium text-cyan transition-transform duration-200 hover:bg-cyan/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan/40'
 
@@ -79,21 +74,13 @@ export default function CourseModal({
               </p>
             </div>
           </div>
-
-          {actionTo ? (
-            <Link to={actionTo} onClick={onClose} className={actionClassName}>
-              {actionLabel}
-            </Link>
-          ) : (
-            <a
-              href={href}
-              target="_blank"
-              rel="noreferrer"
-              className={actionClassName}
-            >
-              {actionLabel}
-            </a>
-          )}
+          <Link
+            to={`/cursos/${course.id}/${course.firstLessonYoutubeLink}`}
+            onClick={onClose}
+            className={actionClassName}
+          >
+            {actionLabel}
+          </Link>
         </div>
       </div>
     </div>

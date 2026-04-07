@@ -1,142 +1,137 @@
-import { useMemo, useState } from 'react'
-import CommentsTabContent from '@/components/watch/CommentsTabContent'
+import { useEffect, useMemo, useState } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
+import authAxiosInstance from '@/api/authAxiosInstance'
 import LessonTabContent from '@/components/watch/LessonTabContent'
+import LessonCommentsSection from '@/components/watch/LessonCommentsSection'
 import PlayerHeader from '@/components/watch/PlayerHeader'
 import WatchHeader from '@/components/watch/WatchHeader'
-import type { LessonComment, WatchLesson } from '@/types/watch'
-
-const watchLessons: WatchLesson[] = [
-  {
-    id: 'lesson-1',
-    order: 1,
-    title: 'Boas vindas e visão geral',
-    description:
-      'Uma introdução rápida sobre o curso, os objetivos das aulas e como aproveitar melhor o conteúdo.',
-    youtubeId: '0Ssi-9wS1so',
-    duration: '08:20',
-    watched: false,
-  },
-  {
-    id: 'lesson-2',
-    order: 2,
-    title: 'Setup de ambiente',
-    description:
-      'Configuração inicial do projeto, padrão de pastas e ajustes para acelerar o fluxo de desenvolvimento.',
-    youtubeId: 'K_yDB4LKSBc',
-    duration: '14:09',
-    watched: false,
-  },
-  {
-    id: 'lesson-3',
-    order: 3,
-    title: 'Composição de componentes',
-    description:
-      'Separação de responsabilidades entre layout, conteúdo e elementos reutilizáveis da interface.',
-    youtubeId: 'urZWmEgm72Q',
-    duration: '22:31',
-    watched: false,
-  },
-  {
-    id: 'lesson-4',
-    order: 4,
-    title: 'Estados e interações',
-    description:
-      'Estratégias para controlar estado local da tela e interações basicas entre tabs, comentários e aulas.',
-    youtubeId: 'HcrRASQv0LA',
-    duration: '18:42',
-    watched: false,
-  },
-]
-
-const commentsByLesson: Record<string, LessonComment[]> = {
-  'lesson-1': [
-    {
-      id: 'comment-1',
-      author: 'Daniel Azevedo',
-      message: 'Muito legal daora mano',
-      createdAt: 'há 1 dia',
-    },
-    {
-      id: 'comment-2',
-      author: 'Matheus Nicolas',
-      message: 'Dando ideias',
-      createdAt: 'há 3 dias',
-    },
-  ],
-  'lesson-2': [
-    {
-      id: 'comment-3',
-      author: 'Abner Cerqueira',
-      message: 'Gosto muito dessa banda',
-      createdAt: 'há 6 horas',
-    },
-  ],
-  'lesson-3': [
-    {
-      id: 'comment-4',
-      author: 'Vastobode',
-      message: 'Eu sou o Vastobode',
-      createdAt: 'há 2 horas',
-    },
-  ],
-}
+import { useCurrentCourse } from '@/hooks/useCurrentCourse'
+import { useCurrentProgress } from '@/hooks/useCurrentProgress'
+import type { CourseDetailsLesson } from '@/types/course'
 
 export default function WatchPage() {
-  const [currentLessonId, setCurrentLessonId] = useState(watchLessons[0].id)
-  const [watchedLessonIds, setWatchedLessonIds] = useState<Set<string>>(() => new Set())
-
-  const currentLesson = useMemo(
-    () => watchLessons.find((lesson) => lesson.id === currentLessonId) ?? watchLessons[0],
-    [currentLessonId]
+  const { courseId, idLesson } = useParams()
+  const navigate = useNavigate()
+  const { course } = useCurrentCourse(courseId ?? '')
+  const { watchedLessonIds, markingLessonIds, markLessonAsWatched } = useCurrentProgress(
+    courseId ?? ''
   )
+  const [currentLesson, setCurrentLesson] = useState<CourseDetailsLesson | null>(null)
+  const [currentLessonId, setCurrentLessonId] = useState('')
+  const [isDownloadingCertificate, setIsDownloadingCertificate] = useState(false)
+  const lessonsCount = course?.lessons.length ?? 0
+
+  useEffect(() => {
+    if (!course?.lessons.length) {
+      setCurrentLesson(null)
+      return
+    }
+
+    const lessonFromUrl =
+      course.lessons.find((lesson) => lesson.youtubeLink === idLesson) ?? course.lessons[0]
+
+    setCurrentLesson(lessonFromUrl)
+    setCurrentLessonId(lessonFromUrl.id)
+  }, [course, idLesson])
 
   const watchedCount = useMemo(() => watchedLessonIds.size, [watchedLessonIds])
-
   const progressPercent = useMemo(
-    () => Math.round((watchedCount / watchLessons.length) * 100),
-    [watchedCount]
+    () => (lessonsCount > 0 ? Math.round((watchedCount / lessonsCount) * 100) : 0),
+    [watchedCount, lessonsCount]
   )
-  const allWatched = watchedCount === watchLessons.length
 
-  const currentComments = commentsByLesson[currentLesson.id] ?? []
+  const allWatched = lessonsCount > 0 && watchedCount === lessonsCount
+  const currentLessonIndex =
+    course?.lessons.findIndex((lesson) => lesson.id === currentLessonId) ?? -1
+  const hasPreviousLesson = currentLessonIndex > 0
+  const hasNextLesson =
+    currentLessonIndex >= 0 && currentLessonIndex < (course?.lessons.length ?? 0) - 1
 
-  function handleToggleLessonWatched(lessonId: string) {
-    setWatchedLessonIds((prev) => {
-      const next = new Set(prev)
+  function handleSelectLesson(lessonId: string) {
+    if (!courseId || !course?.lessons.length) return
 
-      if (next.has(lessonId)) {
-        next.delete(lessonId)
-      } else {
-        next.add(lessonId)
-      }
+    const lesson = course.lessons.find((item) => item.id === lessonId)
 
-      return next
-    })
+    if (!lesson) return
+
+    setCurrentLesson(lesson)
+    setCurrentLessonId(lesson.id)
+    navigate(`/cursos/${courseId}/${lesson.youtubeLink}`)
+  }
+
+  function handlePreviousLesson() {
+    if (!course?.lessons.length || currentLessonIndex <= 0) return
+
+    handleSelectLesson(course.lessons[currentLessonIndex - 1].id)
+  }
+
+  function handleNextLesson() {
+    if (!course?.lessons.length || currentLessonIndex < 0) return
+
+    const nextLesson = course.lessons[currentLessonIndex + 1]
+
+    if (!nextLesson) return
+
+    handleSelectLesson(nextLesson.id)
+  }
+
+  async function handleToggleLessonWatched(lessonId: string) {
+    await markLessonAsWatched(lessonId)
+  }
+
+  async function handleDownloadCertificate() {
+    if (!courseId || !allWatched || isDownloadingCertificate) return
+
+    setIsDownloadingCertificate(true)
+
+    try {
+      const response = await authAxiosInstance.get(`/api/certificate/issue/${courseId}`, {
+        responseType: 'blob',
+      })
+
+      const blobUrl = window.URL.createObjectURL(response.data)
+      const downloadLink = document.createElement('a')
+      const fileName = `${course?.course.name.slug ?? 'certificado'}.pdf`
+
+      downloadLink.href = blobUrl
+      downloadLink.download = fileName
+      document.body.appendChild(downloadLink)
+      downloadLink.click()
+      downloadLink.remove()
+      window.URL.revokeObjectURL(blobUrl)
+    } finally {
+      setIsDownloadingCertificate(false)
+    }
   }
 
   return (
     <main className="min-h-screen w-full bg-[#0C0424]">
-      <WatchHeader
-        courseTitle="React para web na prática"
-        watchedCount={watchedCount}
-        lessonsCount={watchLessons.length}
-        progressPercent={progressPercent}
-      />
+      <WatchHeader courseTitle={course?.course.name.name ?? 'Carregando curso...'} />
 
       <section className="mx-auto w-full max-w-360 px-4 py-8 sm:px-6 lg:px-8">
         <div className="grid gap-6 xl:grid-cols-[minmax(0,1.6fr)_minmax(320px,1fr)] xl:gap-0">
           <div className="space-y-6 xl:pr-6">
-            <PlayerHeader lesson={currentLesson} />
-            <CommentsTabContent comments={currentComments} />
+            <PlayerHeader
+              lesson={currentLesson}
+              onPreviousLesson={handlePreviousLesson}
+              onNextLesson={handleNextLesson}
+              hasPreviousLesson={hasPreviousLesson}
+              hasNextLesson={hasNextLesson}
+            />
+            <LessonCommentsSection lessonId={currentLesson?.id} />
           </div>
+
           <LessonTabContent
-            lessons={watchLessons}
+            lessons={course?.lessons ?? []}
             watchedCount={watchedCount}
             progressPercent={progressPercent}
-            currentLessonId={currentLesson.id}
-            onSelectLesson={setCurrentLessonId}
+            currentLessonId={currentLessonId}
+            onSelectLesson={handleSelectLesson}
             watchedLessonIds={watchedLessonIds}
+            markingLessonIds={markingLessonIds}
             onToggleLessonWatched={handleToggleLessonWatched}
+            onDownloadCertificate={handleDownloadCertificate}
+            isDownloadingCertificate={isDownloadingCertificate}
             certificateDisabled={!allWatched}
           />
         </div>

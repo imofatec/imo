@@ -61,9 +61,8 @@ export default function MyCoursesContent({
           <CourseCard
             key={course.id}
             course={course}
-            actionLabel="Iniciar curso"
-            modalActionLabel="Iniciar curso"
-            modalActionTo={`/user/courses/${encodeURIComponent(course.name.slug)}/watch`}
+            actionLabel="Retomar curso"
+            modalActionLabel="Retomar curso"
           />
         ))}
       </div>
@@ -76,9 +75,8 @@ export default function MyCoursesContent({
         <CourseCard
           key={item.progress.id}
           course={item.course}
-          actionLabel="Iniciar curso"
-          modalActionLabel="Iniciar curso"
-          modalActionTo={`/user/courses/${encodeURIComponent(item.course.name.slug)}/watch`}
+          actionLabel="Retomar curso"
+          modalActionLabel="Retomar curso"
         />
       ))}
     </div>

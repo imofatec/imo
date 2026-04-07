@@ -1,6 +1,5 @@
 import CourseCard from '@/components/AllCourses/CourseCard'
 import SkeletonCourseCard from '@/components/AllCourses/SkeletonCourseCard'
-import { useAuth } from '@/contexts/AuthContext'
 import type { Course } from '@/types/course'
 
 type Props = {
@@ -11,9 +10,6 @@ type Props = {
 }
 
 export default function CoursesContent({ courses, loading, error, pageSize }: Props) {
-  const { isAuthenticated, isLoading } = useAuth()
-  const loginRedirectTo = !isLoading && !isAuthenticated ? '/login' : undefined
-
   if (loading) {
     return (
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5">
@@ -45,12 +41,7 @@ export default function CoursesContent({ courses, loading, error, pageSize }: Pr
   return (
     <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5">
       {courses.map((course) => (
-        <CourseCard
-          key={course.id}
-          course={course}
-          modalActionLabel="Inscrever-se"
-          modalActionTo={loginRedirectTo}
-        />
+        <CourseCard key={course.id} course={course} modalActionLabel="Inscrever-se" />
       ))}
     </div>
   )
