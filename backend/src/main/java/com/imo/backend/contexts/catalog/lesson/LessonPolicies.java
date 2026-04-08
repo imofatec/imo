@@ -49,6 +49,7 @@ public class LessonPolicies {
 
   public void checkListInternalConflicts(List<CreateLessonCommand> commands) {
     var titles = new HashSet<String>();
+    var descriptions = new HashSet<String>();
     var youtubeLinks = new HashSet<String>();
 
     commands.forEach(command -> {
@@ -56,6 +57,12 @@ public class LessonPolicies {
         throw new ConflictException(String.format(
             "Título '%s' repetido na lista",
             command.title()));
+      }
+
+      if (command.description() != null && !descriptions.add(command.description())) {
+        throw new ConflictException(String.format(
+            "Descrição '%s' repetida na lista",
+            command.description()));
       }
 
       if (!youtubeLinks.add(Lesson.formatYoutubeLink(command.youtubeLink()))) {

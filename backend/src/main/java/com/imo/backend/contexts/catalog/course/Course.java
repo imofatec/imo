@@ -1,6 +1,5 @@
 package com.imo.backend.contexts.catalog.course;
 
-import com.imo.backend.contexts.catalog.course.commands.UpdateCourseByIdCommand;
 import com.imo.backend.contexts.catalog.course.value_objects.Categories;
 import com.imo.backend.contexts.catalog.course.value_objects.Category;
 import com.imo.backend.contexts.catalog.course.value_objects.CourseName;
@@ -37,12 +36,20 @@ public class Course extends Entity {
   public Course() {
   }
 
-  public Course(boolean isActive, String contributorId, String name, String level, Categories category,
-      String description, String firstLessonYoutubeLink, int lessonsCount) {
+  public Course(
+      boolean isActive,
+      String contributorId,
+      String name,
+      String level,
+      Categories category,
+      String description,
+      String firstLessonYoutubeLink,
+      int lessonsCount
+  ) {
     setActive(isActive);
     setName(new CourseName(name));
     setCategory(new Category(category));
-    setLevel(new Level(name));
+    setLevel(new Level(level));
     setDescription(description);
     setFirstLessonYoutubeLink(firstLessonYoutubeLink);
     setLessonsCount(lessonsCount);
@@ -59,32 +66,6 @@ public class Course extends Entity {
 
   public void setFirstLessonYoutubeLink(String firstLessonYoutubeLink) {
     this.firstLessonYoutubeLink = Lesson.formatYoutubeLink(firstLessonYoutubeLink);
-  }
-
-  public static void applyUpdate(Course course, UpdateCourseByIdCommand command) {
-    if (command.name() != null) {
-      course.setName(new CourseName(command.name()));
-    }
-
-    if (command.category() != null) {
-      course.setCategory(new Category(command.category()));
-    }
-
-    if (command.level() != null) {
-      course.setLevel(new Level(command.level()));
-    }
-
-    if (command.description() != null) {
-      course.setDescription(command.description());
-    }
-
-    if (command.lessonsCount() != null) {
-      course.setLessonsCount(command.lessonsCount());
-    }
-
-    if (command.firstLessonYoutubeLink() != null) {
-      course.setFirstLessonYoutubeLink(command.firstLessonYoutubeLink());
-    }
   }
 
   public void toggleStatus() {

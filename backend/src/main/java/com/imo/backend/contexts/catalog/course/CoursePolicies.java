@@ -14,16 +14,14 @@ public class CoursePolicies {
     this.courseRepository = courseRepository;
   }
 
-  public void checkUpdateConflict(String courseId, String contributorId, String newSlug) {
+  public void checkSlugConflict(String contributorId, String newSlug, String currentCourseId) {
     boolean existingContributorCourse = this.courseRepository.findAllByContributorId(contributorId)
         .stream()
         .anyMatch(course -> course.getName().slug().equals(newSlug) &&
-            !course.getId().equals(courseId));
+            (currentCourseId == null || !course.getId().equals(currentCourseId)));
 
     if (existingContributorCourse) {
       throw new ConflictException(String.format("Curso %s já existe", newSlug));
     }
-
   }
-
 }
