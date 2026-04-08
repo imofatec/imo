@@ -21,9 +21,7 @@ public class UserEventListener {
   @Value("${rabbitmq.routing.forget_password}")
   private String routingKeyForgetPassword;
 
-  public UserEventListener(
-      RabbitTemplate rabbitTemplate
-  ) {
+  public UserEventListener(RabbitTemplate rabbitTemplate) {
     this.rabbitTemplate = rabbitTemplate;
   }
 
@@ -32,25 +30,16 @@ public class UserEventListener {
   public void handle(SendEmailConfirmationEvent event) {
     log.debug("SEND_EMAIL_CONFIRMATION_EVENT: enviando mensagem pro broker {}", event.email());
     this.rabbitTemplate.convertAndSend(
-        this.identityExchangeName,
-        this.routingKeyConfirmEmail,
-        event
-    );
+        this.identityExchangeName, this.routingKeyConfirmEmail, event);
   }
 
   @Async
   @EventListener
   public void handle(ForgetPasswordEvent event) {
     log.debug(
-        "FORGET_PASSWORD_EVENT: enviando mensagem pro broker {} {}",
-        event.email(),
-        event.code()
-    );
+        "FORGET_PASSWORD_EVENT: enviando mensagem pro broker {} {}", event.email(), event.code());
 
     this.rabbitTemplate.convertAndSend(
-        this.identityExchangeName,
-        this.routingKeyForgetPassword,
-        event
-    );
+        this.identityExchangeName, this.routingKeyForgetPassword, event);
   }
 }

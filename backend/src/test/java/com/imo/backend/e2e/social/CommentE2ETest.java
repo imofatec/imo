@@ -1,5 +1,10 @@
 package com.imo.backend.e2e.social;
 
+import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.equalTo;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import com.imo.backend.contexts.catalog.course.http.dtos.CourseDetailsDTO;
 import com.imo.backend.contexts.social.comment.http.dtos.CommentDTO;
 import com.imo.backend.e2e.BaseE2ETest;
@@ -10,16 +15,10 @@ import com.imo.backend.e2e.identity.helpers.IdentityTestHelper.TestUser;
 import com.imo.backend.e2e.social.helpers.SocialTestHelper;
 import com.imo.backend.e2e.social.helpers.SocialTestHelper.TestComment;
 import io.restassured.http.ContentType;
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-
-import java.util.List;
-
-import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.equalTo;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class CommentE2ETest extends BaseE2ETest {
 
@@ -32,17 +31,18 @@ class CommentE2ETest extends BaseE2ETest {
 
     TestComment comment = SocialTestHelper.TestComment.defaultComment();
 
-    CommentDTO created = given()
-        .header("Authorization", "Bearer " + token)
-        .contentType(ContentType.JSON)
-        .body(comment.toCreateRequest())
-        .when()
-        .post("/api/comment/{lessonId}", lessonId)
-        .then()
-        .statusCode(HttpStatus.CREATED.value())
-        .contentType(ContentType.JSON)
-        .extract()
-        .as(CommentDTO.class);
+    CommentDTO created =
+        given()
+            .header("Authorization", "Bearer " + token)
+            .contentType(ContentType.JSON)
+            .body(comment.toCreateRequest())
+            .when()
+            .post("/api/comment/{lessonId}", lessonId)
+            .then()
+            .statusCode(HttpStatus.CREATED.value())
+            .contentType(ContentType.JSON)
+            .extract()
+            .as(CommentDTO.class);
 
     assertNotNull(created.id());
     assertEquals(comment.content(), created.content());
@@ -74,17 +74,18 @@ class CommentE2ETest extends BaseE2ETest {
     String lessonId = course.lessons().getFirst().getId();
     SocialTestHelper.createComment(token, lessonId, TestComment.defaultComment());
 
-    List<CommentDTO> comments = given()
-        .queryParam("page", 0)
-        .queryParam("size", 10)
-        .when()
-        .get("/api/comment/{lessonId}", lessonId)
-        .then()
-        .statusCode(HttpStatus.OK.value())
-        .contentType(ContentType.JSON)
-        .extract()
-        .jsonPath()
-        .getList(".", CommentDTO.class);
+    List<CommentDTO> comments =
+        given()
+            .queryParam("page", 0)
+            .queryParam("size", 10)
+            .when()
+            .get("/api/comment/{lessonId}", lessonId)
+            .then()
+            .statusCode(HttpStatus.OK.value())
+            .contentType(ContentType.JSON)
+            .extract()
+            .jsonPath()
+            .getList(".", CommentDTO.class);
 
     assertNotNull(comments);
   }

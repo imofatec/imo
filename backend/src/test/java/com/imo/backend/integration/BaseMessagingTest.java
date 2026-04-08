@@ -36,14 +36,12 @@ public abstract class BaseMessagingTest {
     registry.add("spring.rabbitmq.addresses", rabbitMQContainer::getAmqpUrl);
   }
 
-  @MockitoBean
-  protected JavaMailSender javaMailSender;
+  @MockitoBean protected JavaMailSender javaMailSender;
 
   @MockitoBean(name = "javaMailManager")
   protected MailManager mailManager;
 
-  @Autowired
-  protected MongoTemplate mongoTemplate;
+  @Autowired protected MongoTemplate mongoTemplate;
 
   @AfterEach
   void cleanDatabase() {

@@ -23,17 +23,24 @@ public class GetCourseByIdController extends CourseController {
   }
 
   @Operation(summary = "Get course by id")
-  @ApiResponses(value = {
-      @ApiResponse(responseCode = "200", description = "Curso encontrado",
-          content = @Content(schema = @Schema(implementation = CourseDTO.class))),
-      @ApiResponse(responseCode = "404", description = "Curso não encontrado",
-          content = @Content(schema = @Schema(implementation = com.imo.backend.contexts.common.exceptions.ErrorResponseDto.class)))
-  })
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "Curso encontrado",
+            content = @Content(schema = @Schema(implementation = CourseDTO.class))),
+        @ApiResponse(
+            responseCode = "404",
+            description = "Curso não encontrado",
+            content =
+                @Content(
+                    schema =
+                        @Schema(
+                            implementation =
+                                com.imo.backend.contexts.common.exceptions.ErrorResponseDto.class)))
+      })
   @GetMapping("/{id}")
-  public ResponseEntity<CourseDTO> execute(
-      @PathVariable
-      String id
-  ) {
+  public ResponseEntity<CourseDTO> execute(@PathVariable String id) {
     MongoDB.validateObjectId(id);
     var course = this.courseRepository.findByIdOrThrow(id);
     return ResponseEntity.ok(CourseDTO.fromEntity(course));

@@ -1,16 +1,15 @@
 package com.imo.backend.unit.journey_tracking;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import com.imo.backend.contexts.common.exceptions.custom.BadRequestException;
 import com.imo.backend.contexts.common.exceptions.custom.ConflictException;
 import com.imo.backend.contexts.journey_tracking.Progress;
 import com.imo.backend.contexts.journey_tracking.value_objects.ProgressStatus;
+import java.util.List;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class ProgressTest {
 
@@ -73,12 +72,12 @@ class ProgressTest {
   @Test
   @DisplayName("happy path (watchLesson): adicionar aula com sucesso")
   void shouldWatchLessonSuccessfully() {
-    Progress progress = new Progress(
-        new ObjectId().toString(),
-        new ObjectId().toString(),
-        List.of(new ObjectId().toString()),
-        4
-    );
+    Progress progress =
+        new Progress(
+            new ObjectId().toString(),
+            new ObjectId().toString(),
+            List.of(new ObjectId().toString()),
+            4);
     String newLesson = new ObjectId().toString();
 
     progress.watchLesson(newLesson, 4);
@@ -93,12 +92,8 @@ class ProgressTest {
   void shouldFinishWhenLastLessonWatched() {
     String lesson1 = new ObjectId().toString();
     String lesson2 = new ObjectId().toString();
-    Progress progress = new Progress(
-        new ObjectId().toString(),
-        new ObjectId().toString(),
-        List.of(lesson1),
-        2
-    );
+    Progress progress =
+        new Progress(new ObjectId().toString(), new ObjectId().toString(), List.of(lesson1), 2);
 
     progress.watchLesson(lesson2, 2);
 
@@ -111,12 +106,8 @@ class ProgressTest {
   @DisplayName("exception (watchLesson): aula duplicada")
   void shouldThrowConflictOnDuplicateLesson() {
     String lessonId = new ObjectId().toString();
-    Progress progress = new Progress(
-        new ObjectId().toString(),
-        new ObjectId().toString(),
-        List.of(lessonId),
-        4
-    );
+    Progress progress =
+        new Progress(new ObjectId().toString(), new ObjectId().toString(), List.of(lessonId), 4);
 
     assertThrows(ConflictException.class, () -> progress.watchLesson(lessonId, 4));
   }
@@ -126,19 +117,14 @@ class ProgressTest {
   void shouldThrowBadRequestWhenAlreadyFinished() {
     String lesson1 = new ObjectId().toString();
     String lesson2 = new ObjectId().toString();
-    Progress progress = new Progress(
-        new ObjectId().toString(),
-        new ObjectId().toString(),
-        List.of(lesson1, lesson2),
-        2
-    );
+    Progress progress =
+        new Progress(
+            new ObjectId().toString(), new ObjectId().toString(), List.of(lesson1, lesson2), 2);
 
     assertEquals(ProgressStatus.FINISHED, progress.getStatus());
 
     assertThrows(
-        BadRequestException.class,
-        () -> progress.watchLesson(new ObjectId().toString(), 2)
-    );
+        BadRequestException.class, () -> progress.watchLesson(new ObjectId().toString(), 2));
   }
 
   @Test
@@ -146,12 +132,8 @@ class ProgressTest {
   void shouldPreserveStartedAtWhenWatchingMoreLessons() throws InterruptedException {
     String lesson1 = new ObjectId().toString();
     String lesson2 = new ObjectId().toString();
-    Progress progress = new Progress(
-        new ObjectId().toString(),
-        new ObjectId().toString(),
-        List.of(lesson1),
-        3
-    );
+    Progress progress =
+        new Progress(new ObjectId().toString(), new ObjectId().toString(), List.of(lesson1), 3);
 
     var originalStartedAt = progress.getProgressPeriod().startedAt();
 
@@ -164,7 +146,8 @@ class ProgressTest {
   }
 
   @Test
-  @DisplayName("happy path (reevaluateStructure): remover aula que não existe mais no curso e continuar IN_PROGRESS")
+  @DisplayName(
+      "happy path (reevaluateStructure): remover aula que não existe mais no curso e continuar IN_PROGRESS")
   void shouldRemoveDeletedLesson() {
     String userId = new ObjectId().toString();
     String courseId = new ObjectId().toString();
@@ -185,7 +168,8 @@ class ProgressTest {
   }
 
   @Test
-  @DisplayName("functional (reevaluateStructure): trocar para FINISHED após remover aula que faltava assistir")
+  @DisplayName(
+      "functional (reevaluateStructure): trocar para FINISHED após remover aula que faltava assistir")
   void shouldRemoveDeletedLessonAndFinish() {
     String userId = new ObjectId().toString();
     String courseId = new ObjectId().toString();
@@ -206,7 +190,8 @@ class ProgressTest {
   }
 
   @Test
-  @DisplayName("functional (reevaluateStructure): reverter FINISHED para IN_PROGRESS ao adicionar aulas")
+  @DisplayName(
+      "functional (reevaluateStructure): reverter FINISHED para IN_PROGRESS ao adicionar aulas")
   void shouldRevertToInProgressWhenNewLessons() {
     String userId = new ObjectId().toString();
     String courseId = new ObjectId().toString();
@@ -229,7 +214,8 @@ class ProgressTest {
   }
 
   @Test
-  @DisplayName("edge (reevaluateStructure): teve mudança no curso mas isso nao afeta o status desse progresso específico")
+  @DisplayName(
+      "edge (reevaluateStructure): teve mudança no curso mas isso nao afeta o status desse progresso específico")
   void shouldDoNothing() {
     String userId = new ObjectId().toString();
     String courseId = new ObjectId().toString();

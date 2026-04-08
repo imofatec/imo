@@ -1,13 +1,12 @@
 package com.imo.backend.contexts.certification.repositories;
 
 import com.imo.backend.contexts.certification.CertificateDetails;
+import java.util.Optional;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.*;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Repository;
-
-import java.util.Optional;
 
 @Repository
 public class CustomCertificateRepositoryImpl implements CustomCertificateRepository {
@@ -19,14 +18,13 @@ public class CustomCertificateRepositoryImpl implements CustomCertificateReposit
 
   @Override
   public Optional<CertificateDetails> findDetailsByUserIdAndCourseId(
-      String userId,
-      String courseId
-  ) {
-    MatchOperation matchOperation = new MatchOperation(Criteria
-        .where("userId")
-        .is(new ObjectId(userId))
-        .and("courseId")
-        .is(new ObjectId(courseId)));
+      String userId, String courseId) {
+    MatchOperation matchOperation =
+        new MatchOperation(
+            Criteria.where("userId")
+                .is(new ObjectId(userId))
+                .and("courseId")
+                .is(new ObjectId(courseId)));
 
     return this.findCertificateDetails(matchOperation);
   }
@@ -42,34 +40,29 @@ public class CustomCertificateRepositoryImpl implements CustomCertificateReposit
     LookupOperation lookupUser = Aggregation.lookup("users", "userId", "_id", "user");
     LookupOperation lookupCourse = Aggregation.lookup("courses", "courseId", "_id", "course");
 
-    ProjectionOperation project = Aggregation
-        .project()
-        .andExclude("_id")
-        .and(Aggregation.ROOT)
-        .as("certificate")
-        .and("user")
-        .as("user")
-        .and("course")
-        .as("course");
+    ProjectionOperation project =
+        Aggregation.project()
+            .andExclude("_id")
+            .and(Aggregation.ROOT)
+            .as("certificate")
+            .and("user")
+            .as("user")
+            .and("course")
+            .as("course");
 
-    Aggregation pipeline = Aggregation.newAggregation(
-        matchOperation,
-        lookupUser,
-        Aggregation.unwind("user"),
-        lookupCourse,
-        Aggregation.unwind("course"),
-        project
-    );
+    Aggregation pipeline =
+        Aggregation.newAggregation(
+            matchOperation,
+            lookupUser,
+            Aggregation.unwind("user"),
+            lookupCourse,
+            Aggregation.unwind("course"),
+            project);
 
-    AggregationResults<CertificateDetails> results = this.mongoTemplate.aggregate(
-        pipeline,
-        "certificates",
-        CertificateDetails.class
-    );
+    AggregationResults<CertificateDetails> results =
+        this.mongoTemplate.aggregate(pipeline, "certificates", CertificateDetails.class);
 
-    return Optional.ofNullable((!results.getMappedResults().isEmpty()) ? results
-        .getMappedResults()
-        .getFirst() : null);
+    return Optional.ofNullable(
+        (!results.getMappedResults().isEmpty()) ? results.getMappedResults().getFirst() : null);
   }
-
 }

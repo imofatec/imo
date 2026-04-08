@@ -4,8 +4,7 @@ import org.testcontainers.containers.MongoDBContainer;
 import org.testcontainers.junit.jupiter.Container;
 
 public class MongoDBContainerSingleton {
-  @Container
-  private static MongoDBContainer mongoDBContainer;
+  @Container private static MongoDBContainer mongoDBContainer;
 
   public static MongoDBContainer getInstance() {
     if (mongoDBContainer == null) {

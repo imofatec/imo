@@ -25,20 +25,24 @@ public class ResendConfirmationEmailController extends UserController {
   }
 
   @Operation(summary = "Reenviar email de confirmação")
-  @ApiResponses(value = {
-      @ApiResponse(responseCode = "200", description = "Solicitação processada com sucesso", content = @Content(schema = @Schema(implementation = SimpleMessage.class))),
-      @ApiResponse(responseCode = "400", description = "Dados inválidos", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
-  })
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "Solicitação processada com sucesso",
+            content = @Content(schema = @Schema(implementation = SimpleMessage.class))),
+        @ApiResponse(
+            responseCode = "400",
+            description = "Dados inválidos",
+            content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
+      })
   @PostMapping("/confirm/resend")
   public ResponseEntity<SimpleMessage> handle(
-      @Valid
-      @RequestBody
-      ResendConfirmationEmailRequest request
-  ) {
+      @Valid @RequestBody ResendConfirmationEmailRequest request) {
     this.useCase.execute(request.email());
-    return ResponseEntity
-        .ok()
-        .body(new SimpleMessage(
-            "Se o email estiver cadastrado, enviaremos um novo link de confirmação"));
+    return ResponseEntity.ok()
+        .body(
+            new SimpleMessage(
+                "Se o email estiver cadastrado, enviaremos um novo link de confirmação"));
   }
 }

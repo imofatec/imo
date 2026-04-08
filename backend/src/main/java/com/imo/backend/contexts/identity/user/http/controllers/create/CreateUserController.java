@@ -27,26 +27,42 @@ public class CreateUserController extends UserController {
   }
 
   @Operation(summary = "Register user")
-  @ApiResponses(value = {
-      @ApiResponse(responseCode = "201", description = "Usuário criado com sucesso",
-          content = @Content(schema = @Schema(implementation = UserDTO.class))),
-      @ApiResponse(responseCode = "400", description = "Dados inválidos",
-          content = @Content(schema = @Schema(implementation = com.imo.backend.contexts.common.exceptions.ErrorResponseDto.class))),
-      @ApiResponse(responseCode = "409", description = "Email já cadastrado",
-          content = @Content(schema = @Schema(implementation = com.imo.backend.contexts.common.exceptions.ErrorResponseDto.class)))
-  })
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "201",
+            description = "Usuário criado com sucesso",
+            content = @Content(schema = @Schema(implementation = UserDTO.class))),
+        @ApiResponse(
+            responseCode = "400",
+            description = "Dados inválidos",
+            content =
+                @Content(
+                    schema =
+                        @Schema(
+                            implementation =
+                                com.imo.backend.contexts.common.exceptions.ErrorResponseDto
+                                    .class))),
+        @ApiResponse(
+            responseCode = "409",
+            description = "Email já cadastrado",
+            content =
+                @Content(
+                    schema =
+                        @Schema(
+                            implementation =
+                                com.imo.backend.contexts.common.exceptions.ErrorResponseDto.class)))
+      })
   @PostMapping()
-  public ResponseEntity<UserDTO> handle(
-      @Valid
-      @RequestBody
-      CreateUserRequest createUserRequest
-  ) {
-    var newUser = UserDTO.fromUser(this.createUserUseCase.execute(new CreateUserCommand(
-        createUserRequest.name(),
-        createUserRequest.email(),
-        createUserRequest.password(),
-        createUserRequest.confPassword()
-    )));
+  public ResponseEntity<UserDTO> handle(@Valid @RequestBody CreateUserRequest createUserRequest) {
+    var newUser =
+        UserDTO.fromUser(
+            this.createUserUseCase.execute(
+                new CreateUserCommand(
+                    createUserRequest.name(),
+                    createUserRequest.email(),
+                    createUserRequest.password(),
+                    createUserRequest.confPassword())));
 
     return new ResponseEntity<>(newUser, HttpStatus.CREATED);
   }

@@ -15,9 +15,10 @@ public class UpdateUserAccessByIdUseCase {
   }
 
   public User execute(String id) {
-    var foundUser = this.userRepository
-        .findById(id)
-        .orElseThrow(() -> new NotFoundException("Usuário não encontrado"));
+    var foundUser =
+        this.userRepository
+            .findById(id)
+            .orElseThrow(() -> new NotFoundException("Usuário não encontrado"));
 
     if (foundUser.getIsConfirmed()) {
       return foundUser;

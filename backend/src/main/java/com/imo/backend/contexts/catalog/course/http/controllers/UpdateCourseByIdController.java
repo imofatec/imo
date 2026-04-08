@@ -34,25 +34,66 @@ public class UpdateCourseByIdController extends CourseController {
 
   @Operation(summary = "Update course fields by id")
   @SecurityRequirement(name = "Authorization")
-  @ApiResponses(value = {
-      @ApiResponse(responseCode = "200", description = "Curso atualizado com sucesso",
-          content = @Content(schema = @Schema(implementation = CourseDTO.class))),
-      @ApiResponse(responseCode = "204", description = "Nenhum campo para atualizar"),
-      @ApiResponse(responseCode = "400", description = "Dados inválidos",
-          content = @Content(schema = @Schema(implementation = com.imo.backend.contexts.common.exceptions.ErrorResponseDto.class))),
-      @ApiResponse(responseCode = "401", description = "Não autenticado",
-          content = @Content(schema = @Schema(implementation = com.imo.backend.contexts.common.exceptions.ErrorResponseDto.class))),
-      @ApiResponse(responseCode = "403", description = "Sem permissão para editar este curso",
-          content = @Content(schema = @Schema(implementation = com.imo.backend.contexts.common.exceptions.ErrorResponseDto.class))),
-      @ApiResponse(responseCode = "404", description = "Curso não encontrado",
-          content = @Content(schema = @Schema(implementation = com.imo.backend.contexts.common.exceptions.ErrorResponseDto.class))),
-      @ApiResponse(responseCode = "409", description = "Curso já existe com este slug",
-          content = @Content(schema = @Schema(implementation = com.imo.backend.contexts.common.exceptions.ErrorResponseDto.class)))
-  })
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "Curso atualizado com sucesso",
+            content = @Content(schema = @Schema(implementation = CourseDTO.class))),
+        @ApiResponse(responseCode = "204", description = "Nenhum campo para atualizar"),
+        @ApiResponse(
+            responseCode = "400",
+            description = "Dados inválidos",
+            content =
+                @Content(
+                    schema =
+                        @Schema(
+                            implementation =
+                                com.imo.backend.contexts.common.exceptions.ErrorResponseDto
+                                    .class))),
+        @ApiResponse(
+            responseCode = "401",
+            description = "Não autenticado",
+            content =
+                @Content(
+                    schema =
+                        @Schema(
+                            implementation =
+                                com.imo.backend.contexts.common.exceptions.ErrorResponseDto
+                                    .class))),
+        @ApiResponse(
+            responseCode = "403",
+            description = "Sem permissão para editar este curso",
+            content =
+                @Content(
+                    schema =
+                        @Schema(
+                            implementation =
+                                com.imo.backend.contexts.common.exceptions.ErrorResponseDto
+                                    .class))),
+        @ApiResponse(
+            responseCode = "404",
+            description = "Curso não encontrado",
+            content =
+                @Content(
+                    schema =
+                        @Schema(
+                            implementation =
+                                com.imo.backend.contexts.common.exceptions.ErrorResponseDto
+                                    .class))),
+        @ApiResponse(
+            responseCode = "409",
+            description = "Curso já existe com este slug",
+            content =
+                @Content(
+                    schema =
+                        @Schema(
+                            implementation =
+                                com.imo.backend.contexts.common.exceptions.ErrorResponseDto.class)))
+      })
   @PutMapping("/{id}")
   public ResponseEntity<CourseDTO> handle(
-      @PathVariable String id,
-      @Valid @RequestBody UpdateCourseByIdRequest dto) {
+      @PathVariable String id, @Valid @RequestBody UpdateCourseByIdRequest dto) {
     MongoDB.validateObjectId(id);
     String userId = SecurityContextHolder.getContext().getAuthentication().getName();
 

@@ -6,8 +6,5 @@ public interface MailManager {
   void send(MailMessageBuilder.Message message);
 
   void sendWithTemplate(
-      MailMessageBuilder incompleteBuilder,
-      String templateName,
-      Map<String, Object> variables
-  );
+      MailMessageBuilder incompleteBuilder, String templateName, Map<String, Object> variables);
 }

@@ -5,5 +5,4 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Tag(name = "Identity - User", description = "Endpoints de gerenciamento de usuários")
 @RequestMapping("/api/user")
-public abstract class UserController {
-}
+public abstract class UserController {}

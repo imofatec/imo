@@ -1,5 +1,7 @@
 package com.imo.backend.e2e.catalog.helpers;
 
+import static io.restassured.RestAssured.given;
+
 import com.imo.backend.contexts.catalog.course.http.dtos.CourseDTO;
 import com.imo.backend.contexts.catalog.course.http.dtos.CourseDetailsDTO;
 import com.imo.backend.contexts.catalog.course.http.dtos.CreateCourseRequest;
@@ -7,11 +9,8 @@ import com.imo.backend.contexts.catalog.course.value_objects.Categories;
 import com.imo.backend.contexts.catalog.lesson.http.dtos.CreateLessonRequest;
 import com.imo.backend.contexts.catalog.lesson.http.dtos.LessonDTO;
 import io.restassured.http.ContentType;
-
 import java.util.ArrayList;
 import java.util.List;
-
-import static io.restassured.RestAssured.given;
 
 public final class CatalogTestHelper {
 
@@ -20,32 +19,28 @@ public final class CatalogTestHelper {
       Categories category,
       String level,
       String description,
-      List<CreateLessonRequest> lessons
-  ) {
+      List<CreateLessonRequest> lessons) {
     public static TestCourse defaultCourse() {
       return new TestCourse(
           "Curso de Java Completo",
           Categories.DEV_WEB,
           "Iniciante",
           "Um curso completo para aprender Java do zero",
-          List.of(TestLesson.defaultLesson().toCreateRequest())
-      );
+          List.of(TestLesson.defaultLesson().toCreateRequest()));
     }
 
     public static TestCourse defaultCourseWithThreeLessons() {
-      String[] youtubeVideoIds = {
-          "rnZmWZgPB7I", "yMztOcYgtLI", "Ps0zSZXCDPk"
-      };
+      String[] youtubeVideoIds = {"rnZmWZgPB7I", "yMztOcYgtLI", "Ps0zSZXCDPk"};
 
       int numberOfLessons = youtubeVideoIds.length;
 
       List<CreateLessonRequest> lessons = new ArrayList<>();
       for (int i = 0; i < numberOfLessons; i++) {
-        lessons.add(new CreateLessonRequest(
-            "Aula " + (i + 1) + " do Curso",
-            "Descrição da aula " + (i + 1),
-            youtubeVideoIds[i]
-        ));
+        lessons.add(
+            new CreateLessonRequest(
+                "Aula " + (i + 1) + " do Curso",
+                "Descrição da aula " + (i + 1),
+                youtubeVideoIds[i]));
       }
 
       return new TestCourse(
@@ -53,8 +48,7 @@ public final class CatalogTestHelper {
           Categories.DEV_WEB,
           "Iniciante",
           "Um curso com " + numberOfLessons + " aulas para teste",
-          lessons
-      );
+          lessons);
     }
 
     public CreateCourseRequest toCreateRequest() {
@@ -62,17 +56,12 @@ public final class CatalogTestHelper {
     }
   }
 
-  public record TestLesson(
-      String title,
-      String description,
-      String youtubeLink
-  ) {
+  public record TestLesson(String title, String description, String youtubeLink) {
     public static TestLesson defaultLesson() {
       return new TestLesson(
           "Introdução ao curso",
           "Aula introdutória do curso",
-          "https://www.youtube.com/watch?v=hO3EH6A-SEE&list=OLAK5uy_nnKPUsEOrSbpD4JRcSyi68p77fxhiTUJk&index=2"
-      );
+          "https://www.youtube.com/watch?v=hO3EH6A-SEE&list=OLAK5uy_nnKPUsEOrSbpD4JRcSyi68p77fxhiTUJk&index=2");
     }
 
     public CreateLessonRequest toCreateRequest() {

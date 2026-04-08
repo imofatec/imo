@@ -1,14 +1,14 @@
 package com.imo.backend.unit.catalog;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import com.imo.backend.contexts.catalog.course.Course;
 import com.imo.backend.contexts.catalog.course.value_objects.Categories;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class CourseTest {
 
@@ -21,8 +21,7 @@ class CourseTest {
         Categories.AI,
         "Curso sobre ia no java",
         "https://www.youtube.com/watch?v=abc123XYZ89&pp=test",
-        1
-    );
+        1);
   }
 
   @Test

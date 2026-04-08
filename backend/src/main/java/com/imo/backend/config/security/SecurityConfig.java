@@ -4,6 +4,10 @@ import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
+import java.security.interfaces.RSAPrivateKey;
+import java.security.interfaces.RSAPublicKey;
+import java.util.Arrays;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -25,11 +29,6 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import java.security.interfaces.RSAPrivateKey;
-import java.security.interfaces.RSAPublicKey;
-import java.util.Arrays;
-import java.util.List;
-
 @Slf4j
 @Configuration
 @EnableWebSecurity
@@ -44,52 +43,50 @@ public class SecurityConfig {
   @Value("${frontend.client.url}")
   private String clientURL;
 
-
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-    return http
-        .cors(Customizer.withDefaults())
+    return http.cors(Customizer.withDefaults())
         .csrf(AbstractHttpConfigurer::disable)
         .anonymous(AbstractHttpConfigurer::disable)
-        .authorizeHttpRequests(auth -> auth
-            .requestMatchers(
-                HttpMethod.GET,
-                "/swagger-ui/**",
-                "/v3/api-docs/**",
-                "/swagger-resources/**",
-                "/webjars/**",
-                "/docs/**",
-                "/api/health-check",
-                "/api/user/ids",
-                "/api/user/{id:^(?!profile$).+}",
-                "/api/course/{id}",
-                "/api/course/search",
-                "/api/course/categories",
-                "/api/comment/{lessonId}",
-                "/api/certificate/details/{id}"
-            )
-            .permitAll()
-            .requestMatchers(
-                HttpMethod.POST,
-                "/api/user",
-                "/api/user/login",
-                "/api/user/confirm/resend",
-                "/api/recovery/password/send-code",
-                "/api/recovery/password/verify"
-            )
-            .permitAll()
-            .requestMatchers(
-                HttpMethod.PATCH,
-                "/api/user/{emailCode}/{userId}",
-                "/api/recovery/password/reset"
-            )
-            .permitAll()
-            .anyRequest()
-            .authenticated())
-        .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-        .oauth2ResourceServer(conf -> conf
-            .jwt(Customizer.withDefaults())
-            .authenticationEntryPoint(new CustomAuthenticationEntryPoint()))
+        .authorizeHttpRequests(
+            auth ->
+                auth.requestMatchers(
+                        HttpMethod.GET,
+                        "/swagger-ui/**",
+                        "/v3/api-docs/**",
+                        "/swagger-resources/**",
+                        "/webjars/**",
+                        "/docs/**",
+                        "/api/health-check",
+                        "/api/user/ids",
+                        "/api/user/{id:^(?!profile$).+}",
+                        "/api/course/{id}",
+                        "/api/course/search",
+                        "/api/course/categories",
+                        "/api/comment/{lessonId}",
+                        "/api/certificate/details/{id}")
+                    .permitAll()
+                    .requestMatchers(
+                        HttpMethod.POST,
+                        "/api/user",
+                        "/api/user/login",
+                        "/api/user/confirm/resend",
+                        "/api/recovery/password/send-code",
+                        "/api/recovery/password/verify")
+                    .permitAll()
+                    .requestMatchers(
+                        HttpMethod.PATCH,
+                        "/api/user/{emailCode}/{userId}",
+                        "/api/recovery/password/reset")
+                    .permitAll()
+                    .anyRequest()
+                    .authenticated())
+        .sessionManagement(
+            session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        .oauth2ResourceServer(
+            conf ->
+                conf.jwt(Customizer.withDefaults())
+                    .authenticationEntryPoint(new CustomAuthenticationEntryPoint()))
         .build();
   }
 
@@ -97,14 +94,8 @@ public class SecurityConfig {
   public CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration configuration = new CorsConfiguration();
     configuration.setAllowedOrigins(Arrays.asList(this.clientURL));
-    configuration.setAllowedMethods(Arrays.asList(
-        "GET",
-        "POST",
-        "PUT",
-        "DELETE",
-        "OPTIONS",
-        "PATCH"
-    ));
+    configuration.setAllowedMethods(
+        Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
     configuration.setAllowCredentials(true);
     configuration.setAllowedHeaders(List.of("Authorization", "Cache-Control", "Content-Type"));
     configuration.setExposedHeaders(List.of("Content-Disposition"));

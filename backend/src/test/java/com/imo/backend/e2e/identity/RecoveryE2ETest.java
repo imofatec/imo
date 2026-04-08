@@ -1,5 +1,9 @@
 package com.imo.backend.e2e.identity;
 
+import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.equalTo;
+import static org.mockito.Mockito.when;
+
 import com.imo.backend.contexts.identity.recovery.http.dtos.ResetPasswordRequest;
 import com.imo.backend.contexts.identity.recovery.http.dtos.SendRecoveryCodeRequest;
 import com.imo.backend.contexts.identity.recovery.http.dtos.VerifyRecoveryCodeRequest;
@@ -15,16 +19,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
-import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.equalTo;
-import static org.mockito.Mockito.when;
-
 class RecoveryE2ETest extends BaseE2ETest {
 
   private static final String CODE = "123456";
 
-  @MockitoBean
-  private CodeGenerator codeGenerator;
+  @MockitoBean private CodeGenerator codeGenerator;
 
   @BeforeEach
   void mockCodeGenerator() {
@@ -38,7 +37,8 @@ class RecoveryE2ETest extends BaseE2ETest {
   }
 
   @Test
-  @DisplayName("happy path (POST /api/recovery/password/send-code): retorna 200 quando envia código")
+  @DisplayName(
+      "happy path (POST /api/recovery/password/send-code): retorna 200 quando envia código")
   void shouldSendRecoveryCode() {
     TestUser user = registerUser();
 
@@ -53,13 +53,12 @@ class RecoveryE2ETest extends BaseE2ETest {
         .body(
             "message",
             equalTo(
-                "Se o email informado existir, você receberá uma mensagem com o código de recuperação")
-        );
+                "Se o email informado existir, você receberá uma mensagem com o código de recuperação"));
   }
 
-
   @Test
-  @DisplayName("happy path (POST /api/recovery/password/verify): retorna 200 quando código e valido")
+  @DisplayName(
+      "happy path (POST /api/recovery/password/verify): retorna 200 quando código e valido")
   void shouldVerifyRecoveryCode() {
     TestUser user = registerUser();
 
@@ -81,7 +80,8 @@ class RecoveryE2ETest extends BaseE2ETest {
   }
 
   @Test
-  @DisplayName("happy path (PATCH /api/recovery/password/reset): retorna 200 quando senha e resetada")
+  @DisplayName(
+      "happy path (PATCH /api/recovery/password/reset): retorna 200 quando senha e resetada")
   void shouldResetPassword() {
     TestUser user = registerUser();
     String newPassword = "Nova1234";

@@ -16,11 +16,19 @@ public class PrivateTestController extends UserController {
 
   @Operation(summary = "Try to access the protected route")
   @SecurityRequirement(name = "Authorization")
-  @ApiResponses(value = {
-      @ApiResponse(responseCode = "200", description = "Acesso permitido"),
-      @ApiResponse(responseCode = "401", description = "Não autenticado",
-          content = @Content(schema = @Schema(implementation = com.imo.backend.contexts.common.exceptions.ErrorResponseDto.class)))
-  })
+  @ApiResponses(
+      value = {
+        @ApiResponse(responseCode = "200", description = "Acesso permitido"),
+        @ApiResponse(
+            responseCode = "401",
+            description = "Não autenticado",
+            content =
+                @Content(
+                    schema =
+                        @Schema(
+                            implementation =
+                                com.imo.backend.contexts.common.exceptions.ErrorResponseDto.class)))
+      })
   @GetMapping("/private")
   public ResponseEntity<?> handle() {
     return ResponseEntity.ok().build();

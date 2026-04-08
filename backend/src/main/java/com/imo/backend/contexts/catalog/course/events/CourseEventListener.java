@@ -11,8 +11,7 @@ public class CourseEventListener {
 
   private final UpdateCourseByIdUseCase updateCourseByIdUseCase;
 
-  public CourseEventListener(
-      UpdateCourseByIdUseCase updateCourseByIdUseCase) {
+  public CourseEventListener(UpdateCourseByIdUseCase updateCourseByIdUseCase) {
     this.updateCourseByIdUseCase = updateCourseByIdUseCase;
   }
 
@@ -22,13 +21,7 @@ public class CourseEventListener {
     this.updateCourseByIdUseCase.execute(
         event.courseId(),
         new UpdateCourseByIdCommand(
-            event.courseId(),
-            null,
-            null,
-            null,
-            null,
-            event.newCount(),
-            null));
+            event.courseId(), null, null, null, null, event.newCount(), null));
   }
 
   @Async
@@ -37,12 +30,6 @@ public class CourseEventListener {
     this.updateCourseByIdUseCase.execute(
         event.courseId(),
         new UpdateCourseByIdCommand(
-            event.courseId(),
-            null,
-            null,
-            null,
-            null,
-            null,
-            event.newFirstYoutubeLink()));
+            event.courseId(), null, null, null, null, null, event.newFirstYoutubeLink()));
   }
 }

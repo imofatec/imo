@@ -25,14 +25,32 @@ public class GetYourselfController extends UserController {
 
   @Operation(summary = "Get your profile")
   @SecurityRequirement(name = "Authorization")
-  @ApiResponses(value = {
-      @ApiResponse(responseCode = "200", description = "Perfil do usuário",
-          content = @Content(schema = @Schema(implementation = UserDTO.class))),
-      @ApiResponse(responseCode = "401", description = "Não autenticado",
-          content = @Content(schema = @Schema(implementation = com.imo.backend.contexts.common.exceptions.ErrorResponseDto.class))),
-      @ApiResponse(responseCode = "404", description = "Usuário não encontrado",
-          content = @Content(schema = @Schema(implementation = com.imo.backend.contexts.common.exceptions.ErrorResponseDto.class)))
-  })
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "Perfil do usuário",
+            content = @Content(schema = @Schema(implementation = UserDTO.class))),
+        @ApiResponse(
+            responseCode = "401",
+            description = "Não autenticado",
+            content =
+                @Content(
+                    schema =
+                        @Schema(
+                            implementation =
+                                com.imo.backend.contexts.common.exceptions.ErrorResponseDto
+                                    .class))),
+        @ApiResponse(
+            responseCode = "404",
+            description = "Usuário não encontrado",
+            content =
+                @Content(
+                    schema =
+                        @Schema(
+                            implementation =
+                                com.imo.backend.contexts.common.exceptions.ErrorResponseDto.class)))
+      })
   @GetMapping("/profile")
   public ResponseEntity<UserDTO> handle() {
     var userId = SecurityContextHolder.getContext().getAuthentication().getName();

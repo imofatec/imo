@@ -48,8 +48,7 @@ public class RabbitMQConfig {
 
   @Bean
   public Binding forgetPasswordBinding(Queue forgetPasswordQueue, TopicExchange topicExchange) {
-    return BindingBuilder
-        .bind(forgetPasswordQueue)
+    return BindingBuilder.bind(forgetPasswordQueue)
         .to(topicExchange)
         .with(routingKeyForgetPassword);
   }
@@ -61,9 +60,7 @@ public class RabbitMQConfig {
 
   @Bean
   public RabbitTemplate rabbitTemplate(
-      ConnectionFactory connectionFactory,
-      MessageConverter messageConverter
-  ) {
+      ConnectionFactory connectionFactory, MessageConverter messageConverter) {
     RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
     rabbitTemplate.setMessageConverter(messageConverter);
     return rabbitTemplate;

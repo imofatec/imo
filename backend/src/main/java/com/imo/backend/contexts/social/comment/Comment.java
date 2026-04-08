@@ -7,7 +7,6 @@ import lombok.Setter;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-
 @Document("comments")
 public class Comment extends Entity {
   // relations
@@ -15,16 +14,12 @@ public class Comment extends Entity {
 
   private ObjectId lessonId;
 
-  @Nullable
-  private ObjectId parentId;
+  @Nullable private ObjectId parentId;
 
   // properties
-  @Getter
-  @Setter
-  private String content;
+  @Getter @Setter private String content;
 
-  public Comment() {
-  }
+  public Comment() {}
 
   public Comment(String userId, String lessonId, String parentId, String content) {
     this.setUserId(userId);

@@ -10,13 +10,12 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 @RestController
 public class GetProgressByUserIdController extends ProgressController {
@@ -28,24 +27,41 @@ public class GetProgressByUserIdController extends ProgressController {
 
   @Operation(summary = "Get progress details by logged user")
   @SecurityRequirement(name = "Authorization")
-  @ApiResponses(value = {
-      @ApiResponse(responseCode = "200", description = "Progresso obtido com sucesso",
-          content = @Content(array = @ArraySchema(schema = @Schema(implementation = ProgressDetailsDTO.class)))),
-      @ApiResponse(responseCode = "401", description = "Não autenticado",
-          content = @Content(schema = @Schema(implementation = com.imo.backend.contexts.common.exceptions.ErrorResponseDto.class)))
-  })
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "Progresso obtido com sucesso",
+            content =
+                @Content(
+                    array =
+                        @ArraySchema(schema = @Schema(implementation = ProgressDetailsDTO.class)))),
+        @ApiResponse(
+            responseCode = "401",
+            description = "Não autenticado",
+            content =
+                @Content(
+                    schema =
+                        @Schema(
+                            implementation =
+                                com.imo.backend.contexts.common.exceptions.ErrorResponseDto.class)))
+      })
   @GetMapping("/details")
   public ResponseEntity<List<ProgressDetailsDTO>> handle(
-      @Parameter(description = "Page number to retrieve", example = "0", required = false) @RequestParam(required = false) Integer page,
-      @Parameter(description = "Size of each page", example = "10", required = false) @RequestParam(required = false) Integer size) {
+      @Parameter(description = "Page number to retrieve", example = "0", required = false)
+          @RequestParam(required = false)
+          Integer page,
+      @Parameter(description = "Size of each page", example = "10", required = false)
+          @RequestParam(required = false)
+          Integer size) {
     var userId = SecurityContextHolder.getContext().getAuthentication().getName();
-    var progressDetailsList = (page == null || size == null)
-        ? this.progressRepository.findAllProgressDetailsByUserId(userId)
-        : this.progressRepository.findAllProgressDetailsByUserId(userId, page, size);
+    var progressDetailsList =
+        (page == null || size == null)
+            ? this.progressRepository.findAllProgressDetailsByUserId(userId)
+            : this.progressRepository.findAllProgressDetailsByUserId(userId, page, size);
 
-    var response = progressDetailsList.stream()
-        .map(ProgressDetailsDTO::fromProgressDetails)
-        .toList();
+    var response =
+        progressDetailsList.stream().map(ProgressDetailsDTO::fromProgressDetails).toList();
 
     return ResponseEntity.ok(response);
   }

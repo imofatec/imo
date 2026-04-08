@@ -1,8 +1,7 @@
 package com.imo.backend.contexts.catalog.course.value_objects;
 
-import lombok.Getter;
-
 import java.util.List;
+import lombok.Getter;
 
 @Getter
 public enum Categories {
@@ -26,7 +25,6 @@ public enum Categories {
         Categories.CLOUD,
         Categories.DEV_WEB,
         Categories.SECURITY,
-        Categories.DEV_MOBILE
-    );
+        Categories.DEV_MOBILE);
   }
 }

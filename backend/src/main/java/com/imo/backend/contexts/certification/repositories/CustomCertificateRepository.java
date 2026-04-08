@@ -1,7 +1,6 @@
 package com.imo.backend.contexts.certification.repositories;
 
 import com.imo.backend.contexts.certification.CertificateDetails;
-
 import java.util.Optional;
 
 public interface CustomCertificateRepository {

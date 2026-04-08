@@ -6,13 +6,12 @@ import com.imo.backend.contexts.common.exceptions.custom.BadRequestException;
 import com.imo.backend.contexts.identity.user.value_objects.AcademicDegree;
 import com.imo.backend.contexts.identity.user.value_objects.AvailableTimePerDay;
 import com.imo.backend.contexts.identity.user.value_objects.ExperienceLevel;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import org.springframework.data.mongodb.core.mapping.Document;
-
 import java.time.LocalDate;
 import java.util.List;
 import java.util.regex.Pattern;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 @EqualsAndHashCode(callSuper = true)
 @Document("users")
@@ -39,8 +38,7 @@ public class User extends Entity {
 
   private List<Categories> categoriesOfInterest;
 
-  public User() {
-  }
+  public User() {}
 
   public User(String name, String email, String password) {
     this.setName(name);
@@ -65,8 +63,7 @@ public class User extends Entity {
       AvailableTimePerDay availableTimePerDay,
       AcademicDegree academicDegree,
       ExperienceLevel experienceLevel,
-      List<Categories> categoriesOfInterest
-  ) {
+      List<Categories> categoriesOfInterest) {
     this.setName(name);
     this.setEmail(email);
     this.password = password;
@@ -77,7 +74,6 @@ public class User extends Entity {
     this.experienceLevel = experienceLevel;
     this.setCategoriesOfInterest(categoriesOfInterest);
   }
-
 
   private static final String EMAIL_REGEX = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
 
@@ -120,9 +116,9 @@ public class User extends Entity {
     Pattern pattern = Pattern.compile(regex);
 
     if (!pattern.matcher(contentType).matches()) {
-      throw new BadRequestException(String.format("O formato %s não é valido, só é válido imagens png, jpeg, jpg e webp",
-          contentType
-      ));
+      throw new BadRequestException(
+          String.format(
+              "O formato %s não é valido, só é válido imagens png, jpeg, jpg e webp", contentType));
     }
 
     return filename;

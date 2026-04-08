@@ -9,22 +9,21 @@ import com.itextpdf.html2pdf.HtmlConverter;
 import com.itextpdf.kernel.geom.PageSize;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
-import org.springframework.stereotype.Service;
-import org.thymeleaf.TemplateEngine;
-import org.thymeleaf.context.Context;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
+import org.springframework.stereotype.Service;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
 
 @Service
 public class ItextPdfManager implements PdfManager {
   @Override
   public byte[] execute(CertificateDetails certificateDetails) {
     String htmlContent = createTemplate(certificateDetails, templateEngine);
-    try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream();) {
+    try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream(); ) {
       convertHtmlToPdf(htmlContent, outputStream);
       return outputStream.toByteArray();
     } catch (IOException e) {
@@ -41,20 +40,18 @@ public class ItextPdfManager implements PdfManager {
   }
 
   private static String createTemplate(
-      CertificateDetails certificateDetails,
-      TemplateEngine templateEngine
-  ) {
+      CertificateDetails certificateDetails, TemplateEngine templateEngine) {
     Context context = new Context();
 
     var user = certificateDetails.user();
     var course = certificateDetails.course();
 
-    var documentTile = String.format(
-        "IMO-%s-%s-%s",
-        user.getName().toUpperCase(),
-        course.getName().slug().toUpperCase(),
-        FormatDateTime.toDate(certificateDetails.certificate().getIssuedAt())
-    );
+    var documentTile =
+        String.format(
+            "IMO-%s-%s-%s",
+            user.getName().toUpperCase(),
+            course.getName().slug().toUpperCase(),
+            FormatDateTime.toDate(certificateDetails.certificate().getIssuedAt()));
 
     context.setVariable("documentTitle", documentTile);
     context.setVariable("name", user.getName().toUpperCase());
@@ -64,13 +61,12 @@ public class ItextPdfManager implements PdfManager {
     CertificatePeriod certificatePeriod = certificateDetails.certificate().getCertificatePeriod();
     var startedAt = FormatDateTime.toDate(certificatePeriod.courseStartedAt()).replaceAll("-", "/");
 
-    var finishedAt = FormatDateTime
-        .toDate(certificatePeriod.courseFinishedAt())
-        .replaceAll("-", "/");
+    var finishedAt =
+        FormatDateTime.toDate(certificatePeriod.courseFinishedAt()).replaceAll("-", "/");
 
-    var issuedAt = FormatDateTime
-        .toDateTime(certificateDetails.certificate().getIssuedAt())
-        .replaceAll("-", "/");
+    var issuedAt =
+        FormatDateTime.toDateTime(certificateDetails.certificate().getIssuedAt())
+            .replaceAll("-", "/");
 
     context.setVariable("startedAt", startedAt);
     context.setVariable("finishedAt", finishedAt);
@@ -79,20 +75,18 @@ public class ItextPdfManager implements PdfManager {
     return templateEngine.process("certificado", context);
   }
 
-  private void convertHtmlToPdf(String htmlContent, ByteArrayOutputStream outputStream) throws
-      IOException {
-    try (ByteArrayInputStream inputStream = new ByteArrayInputStream(htmlContent.getBytes(
-        StandardCharsets.UTF_8))) {
+  private void convertHtmlToPdf(String htmlContent, ByteArrayOutputStream outputStream)
+      throws IOException {
+    try (ByteArrayInputStream inputStream =
+        new ByteArrayInputStream(htmlContent.getBytes(StandardCharsets.UTF_8))) {
 
       PdfWriter writer = new PdfWriter(outputStream);
       PdfDocument pdfDocument = new PdfDocument(writer);
       pdfDocument.setDefaultPageSize(PAGE_SIZE);
 
       ConverterProperties converterProperties = new ConverterProperties();
-      converterProperties.setBaseUri(Paths
-          .get("src", "main", "resources", "static")
-          .toAbsolutePath()
-          .toString());
+      converterProperties.setBaseUri(
+          Paths.get("src", "main", "resources", "static").toAbsolutePath().toString());
 
       HtmlConverter.convertToPdf(inputStream, pdfDocument, converterProperties);
 

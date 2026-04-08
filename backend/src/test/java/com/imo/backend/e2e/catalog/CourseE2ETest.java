@@ -1,5 +1,9 @@
 package com.imo.backend.e2e.catalog;
 
+import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.equalTo;
+import static org.junit.jupiter.api.Assertions.*;
+
 import com.imo.backend.contexts.catalog.course.http.dtos.CategoryDTO;
 import com.imo.backend.contexts.catalog.course.http.dtos.CourseDTO;
 import com.imo.backend.contexts.catalog.course.http.dtos.CourseDetailsDTO;
@@ -11,15 +15,10 @@ import com.imo.backend.e2e.catalog.helpers.CatalogTestHelper.TestCourse;
 import com.imo.backend.e2e.identity.helpers.IdentityTestHelper;
 import com.imo.backend.e2e.identity.helpers.IdentityTestHelper.TestUser;
 import io.restassured.http.ContentType;
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-
-import java.util.List;
-
-import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.equalTo;
-import static org.junit.jupiter.api.Assertions.*;
 
 class CourseE2ETest extends BaseE2ETest {
 
@@ -29,17 +28,18 @@ class CourseE2ETest extends BaseE2ETest {
     String token = IdentityTestHelper.registerAndLogin(TestUser.defaultUser());
     TestCourse course = TestCourse.defaultCourse();
 
-    CourseDetailsDTO created = given()
-        .header("Authorization", "Bearer " + token)
-        .contentType(ContentType.JSON)
-        .body(course.toCreateRequest())
-        .when()
-        .post("/api/course")
-        .then()
-        .statusCode(HttpStatus.CREATED.value())
-        .contentType(ContentType.JSON)
-        .extract()
-        .as(CourseDetailsDTO.class);
+    CourseDetailsDTO created =
+        given()
+            .header("Authorization", "Bearer " + token)
+            .contentType(ContentType.JSON)
+            .body(course.toCreateRequest())
+            .when()
+            .post("/api/course")
+            .then()
+            .statusCode(HttpStatus.CREATED.value())
+            .contentType(ContentType.JSON)
+            .extract()
+            .as(CourseDetailsDTO.class);
 
     assertNotNull(created.course().id());
     assertEquals(course.name(), created.course().name().name());
@@ -66,7 +66,8 @@ class CourseE2ETest extends BaseE2ETest {
   }
 
   @Test
-  @DisplayName("exception (POST /api/course): retorna 409 quando usuário ja cadastrou curso com mesmo slug")
+  @DisplayName(
+      "exception (POST /api/course): retorna 409 quando usuário ja cadastrou curso com mesmo slug")
   void shouldReturn409WhenCourseSlugAlreadyExistsForUser() {
     String token = IdentityTestHelper.registerAndLogin(TestUser.defaultUser());
     TestCourse course = TestCourse.defaultCourse();
@@ -94,19 +95,18 @@ class CourseE2ETest extends BaseE2ETest {
   @DisplayName("happy path (GET /api/course/{id}): retorna 200 quando busca curso publico por id")
   void shouldGetCourseById() {
     String token = IdentityTestHelper.registerAndLogin(TestUser.defaultUser());
-    CourseDetailsDTO createdDetails = CatalogTestHelper.createCourse(
-        token,
-        TestCourse.defaultCourse()
-    );
+    CourseDetailsDTO createdDetails =
+        CatalogTestHelper.createCourse(token, TestCourse.defaultCourse());
 
-    CourseDTO course = given()
-        .when()
-        .get("/api/course/{id}", createdDetails.course().id())
-        .then()
-        .statusCode(HttpStatus.OK.value())
-        .contentType(ContentType.JSON)
-        .extract()
-        .as(CourseDTO.class);
+    CourseDTO course =
+        given()
+            .when()
+            .get("/api/course/{id}", createdDetails.course().id())
+            .then()
+            .statusCode(HttpStatus.OK.value())
+            .contentType(ContentType.JSON)
+            .extract()
+            .as(CourseDTO.class);
 
     assertEquals(createdDetails.course().id(), course.id());
     assertEquals(createdDetails.course().name().name(), course.name().name());
@@ -128,15 +128,16 @@ class CourseE2ETest extends BaseE2ETest {
   @Test
   @DisplayName("happy path (GET /api/course/categories): retorna 200 com lista de categorias")
   void shouldGetCategories() {
-    List<CategoryDTO> categories = given()
-        .when()
-        .get("/api/course/categories")
-        .then()
-        .statusCode(HttpStatus.OK.value())
-        .contentType(ContentType.JSON)
-        .extract()
-        .jsonPath()
-        .getList(".", CategoryDTO.class);
+    List<CategoryDTO> categories =
+        given()
+            .when()
+            .get("/api/course/categories")
+            .then()
+            .statusCode(HttpStatus.OK.value())
+            .contentType(ContentType.JSON)
+            .extract()
+            .jsonPath()
+            .getList(".", CategoryDTO.class);
 
     assertFalse(categories.isEmpty());
   }
@@ -160,7 +161,8 @@ class CourseE2ETest extends BaseE2ETest {
   }
 
   @Test
-  @DisplayName("happy path (GET /api/course/search/details): retorna 200 com detalhes dos cursos paginada")
+  @DisplayName(
+      "happy path (GET /api/course/search/details): retorna 200 com detalhes dos cursos paginada")
   void shouldSearchCourseDetails() {
     String token = IdentityTestHelper.registerAndLogin(TestUser.defaultUser());
     TestCourse course = TestCourse.defaultCourse();
@@ -191,13 +193,12 @@ class CourseE2ETest extends BaseE2ETest {
   }
 
   @Test
-  @DisplayName("happy path (GET /api/course/details/{id}): retorna 200 quando busca detalhes pelo id")
+  @DisplayName(
+      "happy path (GET /api/course/details/{id}): retorna 200 quando busca detalhes pelo id")
   void shouldGetCourseDetailsById() {
     String token = IdentityTestHelper.registerAndLogin(TestUser.defaultUser());
-    CourseDetailsDTO createdDetails = CatalogTestHelper.createCourse(
-        token,
-        TestCourse.defaultCourse()
-    );
+    CourseDetailsDTO createdDetails =
+        CatalogTestHelper.createCourse(token, TestCourse.defaultCourse());
 
     given()
         .header("Authorization", "Bearer " + token)
@@ -227,35 +228,32 @@ class CourseE2ETest extends BaseE2ETest {
   }
 
   @Test
-  @DisplayName("happy path (PUT /api/course/{id}): retorna 200 quando atualiza curso do próprio usuário")
+  @DisplayName(
+      "happy path (PUT /api/course/{id}): retorna 200 quando atualiza curso do próprio usuário")
   void shouldUpdateCourse() {
     String token = IdentityTestHelper.registerAndLogin(TestUser.defaultUser());
-    CourseDetailsDTO createdDetails = CatalogTestHelper.createCourse(
-        token,
-        TestCourse.defaultCourse()
-    );
+    CourseDetailsDTO createdDetails =
+        CatalogTestHelper.createCourse(token, TestCourse.defaultCourse());
 
     String updatedName = "Curso de Java Atualizado";
     String updatedDescription = "Descrição atualizada do curso de Java";
 
-    UpdateCourseByIdRequest updateRequest = new UpdateCourseByIdRequest(
-        updatedName,
-        Categories.DATA,
-        "Intermediário",
-        updatedDescription
-    );
+    UpdateCourseByIdRequest updateRequest =
+        new UpdateCourseByIdRequest(
+            updatedName, Categories.DATA, "Intermediário", updatedDescription);
 
-    CourseDTO updated = given()
-        .header("Authorization", "Bearer " + token)
-        .contentType(ContentType.JSON)
-        .body(updateRequest)
-        .when()
-        .put("/api/course/{id}", createdDetails.course().id())
-        .then()
-        .statusCode(HttpStatus.OK.value())
-        .contentType(ContentType.JSON)
-        .extract()
-        .as(CourseDTO.class);
+    CourseDTO updated =
+        given()
+            .header("Authorization", "Bearer " + token)
+            .contentType(ContentType.JSON)
+            .body(updateRequest)
+            .when()
+            .put("/api/course/{id}", createdDetails.course().id())
+            .then()
+            .statusCode(HttpStatus.OK.value())
+            .contentType(ContentType.JSON)
+            .extract()
+            .as(CourseDTO.class);
 
     assertEquals(createdDetails.course().id(), updated.id());
     assertEquals(updatedName, updated.name().name());
@@ -266,17 +264,11 @@ class CourseE2ETest extends BaseE2ETest {
   @DisplayName("exception (PUT /api/course/{id}): retorna 401 quando não autenticado")
   void shouldReturn401WhenUpdatingCourseNotAuthenticated() {
     String token = IdentityTestHelper.registerAndLogin(TestUser.defaultUser());
-    CourseDetailsDTO createdDetails = CatalogTestHelper.createCourse(
-        token,
-        TestCourse.defaultCourse()
-    );
+    CourseDetailsDTO createdDetails =
+        CatalogTestHelper.createCourse(token, TestCourse.defaultCourse());
 
-    UpdateCourseByIdRequest updateRequest = new UpdateCourseByIdRequest(
-        "Curso de Java Atualizado",
-        null,
-        null,
-        null
-    );
+    UpdateCourseByIdRequest updateRequest =
+        new UpdateCourseByIdRequest("Curso de Java Atualizado", null, null, null);
 
     given()
         .contentType(ContentType.JSON)
@@ -292,23 +284,15 @@ class CourseE2ETest extends BaseE2ETest {
   @DisplayName("exception (PUT /api/course/{id}): retorna 403 quando outro usuário tenta atualizar")
   void shouldReturn403WhenUpdatingCourseOfAnotherUser() {
     String tokenA = IdentityTestHelper.registerAndLogin(TestUser.defaultUser());
-    CourseDetailsDTO createdDetails = CatalogTestHelper.createCourse(
-        tokenA,
-        TestCourse.defaultCourse()
-    );
+    CourseDetailsDTO createdDetails =
+        CatalogTestHelper.createCourse(tokenA, TestCourse.defaultCourse());
 
-    String tokenB = IdentityTestHelper.registerAndLogin(new TestUser(
-        "Outro Usuário",
-        "outro@email.com",
-        "Teste123"
-    ));
+    String tokenB =
+        IdentityTestHelper.registerAndLogin(
+            new TestUser("Outro Usuário", "outro@email.com", "Teste123"));
 
-    UpdateCourseByIdRequest updateRequest = new UpdateCourseByIdRequest(
-        "Curso Hackeado",
-        null,
-        null,
-        null
-    );
+    UpdateCourseByIdRequest updateRequest =
+        new UpdateCourseByIdRequest("Curso Hackeado", null, null, null);
 
     given()
         .header("Authorization", "Bearer " + tokenB)
@@ -327,12 +311,8 @@ class CourseE2ETest extends BaseE2ETest {
   void shouldReturn404WhenUpdatingNonExistentCourse() {
     String token = IdentityTestHelper.registerAndLogin(TestUser.defaultUser());
 
-    UpdateCourseByIdRequest updateRequest = new UpdateCourseByIdRequest(
-        "Curso Inexistente",
-        null,
-        null,
-        null
-    );
+    UpdateCourseByIdRequest updateRequest =
+        new UpdateCourseByIdRequest("Curso Inexistente", null, null, null);
 
     String nonExistentId = "000000000000000000000001";
 
@@ -352,40 +332,36 @@ class CourseE2ETest extends BaseE2ETest {
   @DisplayName("happy path (PATCH /api/course/{id}): retorna 200 quando faz toggle do status")
   void shouldToggleCourseStatus() {
     String token = IdentityTestHelper.registerAndLogin(TestUser.defaultUser());
-    CourseDetailsDTO createdDetails = CatalogTestHelper.createCourse(
-        token,
-        TestCourse.defaultCourse()
-    );
+    CourseDetailsDTO createdDetails =
+        CatalogTestHelper.createCourse(token, TestCourse.defaultCourse());
     assertTrue(createdDetails.course().isActive());
 
-    CourseDTO toggled = given()
-        .header("Authorization", "Bearer " + token)
-        .when()
-        .patch("/api/course/{id}", createdDetails.course().id())
-        .then()
-        .statusCode(HttpStatus.OK.value())
-        .contentType(ContentType.JSON)
-        .extract()
-        .as(CourseDTO.class);
+    CourseDTO toggled =
+        given()
+            .header("Authorization", "Bearer " + token)
+            .when()
+            .patch("/api/course/{id}", createdDetails.course().id())
+            .then()
+            .statusCode(HttpStatus.OK.value())
+            .contentType(ContentType.JSON)
+            .extract()
+            .as(CourseDTO.class);
 
     assertEquals(createdDetails.course().id(), toggled.id());
     assertFalse(toggled.isActive());
   }
 
   @Test
-  @DisplayName("exception (PATCH /api/course/{id}): retorna 403 quando outro usuário tenta alterar status")
+  @DisplayName(
+      "exception (PATCH /api/course/{id}): retorna 403 quando outro usuário tenta alterar status")
   void shouldReturn403WhenTogglingStatusOfAnotherUsersCourse() {
     String tokenA = IdentityTestHelper.registerAndLogin(TestUser.defaultUser());
-    CourseDetailsDTO createdDetails = CatalogTestHelper.createCourse(
-        tokenA,
-        TestCourse.defaultCourse()
-    );
+    CourseDetailsDTO createdDetails =
+        CatalogTestHelper.createCourse(tokenA, TestCourse.defaultCourse());
 
-    String tokenB = IdentityTestHelper.registerAndLogin(new TestUser(
-        "Outro Usuário",
-        "outro2@email.com",
-        "Teste123"
-    ));
+    String tokenB =
+        IdentityTestHelper.registerAndLogin(
+            new TestUser("Outro Usuário", "outro2@email.com", "Teste123"));
 
     given()
         .header("Authorization", "Bearer " + tokenB)

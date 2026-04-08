@@ -22,31 +22,55 @@ public class CreateCourseController extends CourseController {
 
   private final CreateCourseUseCase createCourseUseCase;
 
-  public CreateCourseController(
-      CreateCourseUseCase createCourseUseCase) {
+  public CreateCourseController(CreateCourseUseCase createCourseUseCase) {
     this.createCourseUseCase = createCourseUseCase;
   }
 
   @Operation(summary = "Create a course")
   @SecurityRequirement(name = "Authorization")
-  @ApiResponses(value = {
-      @ApiResponse(responseCode = "201", description = "Curso criado com sucesso",
-          content = @Content(schema = @Schema(implementation = CourseDetailsDTO.class))),
-      @ApiResponse(responseCode = "400", description = "Dados inválidos",
-          content = @Content(schema = @Schema(implementation = com.imo.backend.contexts.common.exceptions.ErrorResponseDto.class))),
-      @ApiResponse(responseCode = "401", description = "Não autenticado",
-          content = @Content(schema = @Schema(implementation = com.imo.backend.contexts.common.exceptions.ErrorResponseDto.class))),
-      @ApiResponse(responseCode = "409", description = "Curso já cadastrado",
-          content = @Content(schema = @Schema(implementation = com.imo.backend.contexts.common.exceptions.ErrorResponseDto.class)))
-  })
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "201",
+            description = "Curso criado com sucesso",
+            content = @Content(schema = @Schema(implementation = CourseDetailsDTO.class))),
+        @ApiResponse(
+            responseCode = "400",
+            description = "Dados inválidos",
+            content =
+                @Content(
+                    schema =
+                        @Schema(
+                            implementation =
+                                com.imo.backend.contexts.common.exceptions.ErrorResponseDto
+                                    .class))),
+        @ApiResponse(
+            responseCode = "401",
+            description = "Não autenticado",
+            content =
+                @Content(
+                    schema =
+                        @Schema(
+                            implementation =
+                                com.imo.backend.contexts.common.exceptions.ErrorResponseDto
+                                    .class))),
+        @ApiResponse(
+            responseCode = "409",
+            description = "Curso já cadastrado",
+            content =
+                @Content(
+                    schema =
+                        @Schema(
+                            implementation =
+                                com.imo.backend.contexts.common.exceptions.ErrorResponseDto.class)))
+      })
   @PostMapping()
   public ResponseEntity<CourseDetailsDTO> handle(
       @Valid @RequestBody CreateCourseRequest createCourseRequest) {
     String contributorId = SecurityContextHolder.getContext().getAuthentication().getName();
-    var newCourseWithLessons = this.createCourseUseCase.execute(
-        createCourseRequest.toCommand(
-            contributorId),
-        contributorId);
+    var newCourseWithLessons =
+        this.createCourseUseCase.execute(
+            createCourseRequest.toCommand(contributorId), contributorId);
 
     return new ResponseEntity<>(newCourseWithLessons, HttpStatus.CREATED);
   }

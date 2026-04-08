@@ -13,25 +13,19 @@ public class ResendConfirmationEmailUseCase {
   private final ApplicationEventPublisher publisher;
 
   public ResendConfirmationEmailUseCase(
-      UserRepository repository,
-      ApplicationEventPublisher publisher
-  ) {
+      UserRepository repository, ApplicationEventPublisher publisher) {
     this.repository = repository;
     this.publisher = publisher;
   }
 
   public void execute(String email) {
-    User foundUser = this.repository
-        .findByEmail(email)
-        .orElse(null);
+    User foundUser = this.repository.findByEmail(email).orElse(null);
 
     if (foundUser == null || foundUser.getIsConfirmed()) {
       return;
     }
 
-    this.publisher.publishEvent(new SendEmailConfirmationEvent(
-        foundUser.getEmail(),
-        foundUser.getName()
-    ));
+    this.publisher.publishEvent(
+        new SendEmailConfirmationEvent(foundUser.getEmail(), foundUser.getName()));
   }
 }

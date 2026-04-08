@@ -6,5 +6,4 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface RecoveryCodeRepository
-    extends MongoRepository<RecoveryCode, String>, CustomRecoveryCodeRepository {
-}
+    extends MongoRepository<RecoveryCode, String>, CustomRecoveryCodeRepository {}

@@ -1,16 +1,13 @@
 package com.imo.backend.e2e.social.helpers;
 
+import static io.restassured.RestAssured.given;
+
 import com.imo.backend.contexts.social.comment.http.dtos.CommentDTO;
 import com.imo.backend.contexts.social.comment.http.dtos.CreateCommentRequest;
 import io.restassured.http.ContentType;
 
-import static io.restassured.RestAssured.given;
-
 public final class SocialTestHelper {
-  public record TestComment(
-      String content,
-      String parentId
-  ) {
+  public record TestComment(String content, String parentId) {
     public static TestComment defaultComment() {
       return new TestComment("Excelente aula", null);
     }

@@ -27,21 +27,47 @@ public class IssueCertificateController extends CertificateController {
 
   @Operation(summary = "Issue certificate by course id")
   @SecurityRequirement(name = "Authorization")
-  @ApiResponses(value = {
-      @ApiResponse(responseCode = "200", description = "Certificado emitido com sucesso",
-          content = @Content(mediaType = "application/pdf", schema = @Schema(type = "string", format = "binary"))),
-      @ApiResponse(responseCode = "401", description = "Não autenticado",
-          content = @Content(schema = @Schema(implementation = com.imo.backend.contexts.common.exceptions.ErrorResponseDto.class))),
-      @ApiResponse(responseCode = "403", description = "Curso não finalizado",
-          content = @Content(schema = @Schema(implementation = com.imo.backend.contexts.common.exceptions.ErrorResponseDto.class))),
-      @ApiResponse(responseCode = "404", description = "Curso não encontrado ou usuário não completou o curso",
-          content = @Content(schema = @Schema(implementation = com.imo.backend.contexts.common.exceptions.ErrorResponseDto.class)))
-  })
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "Certificado emitido com sucesso",
+            content =
+                @Content(
+                    mediaType = "application/pdf",
+                    schema = @Schema(type = "string", format = "binary"))),
+        @ApiResponse(
+            responseCode = "401",
+            description = "Não autenticado",
+            content =
+                @Content(
+                    schema =
+                        @Schema(
+                            implementation =
+                                com.imo.backend.contexts.common.exceptions.ErrorResponseDto
+                                    .class))),
+        @ApiResponse(
+            responseCode = "403",
+            description = "Curso não finalizado",
+            content =
+                @Content(
+                    schema =
+                        @Schema(
+                            implementation =
+                                com.imo.backend.contexts.common.exceptions.ErrorResponseDto
+                                    .class))),
+        @ApiResponse(
+            responseCode = "404",
+            description = "Curso não encontrado ou usuário não completou o curso",
+            content =
+                @Content(
+                    schema =
+                        @Schema(
+                            implementation =
+                                com.imo.backend.contexts.common.exceptions.ErrorResponseDto.class)))
+      })
   @GetMapping("/issue/{courseId}")
-  public ResponseEntity<byte[]> handle(
-      @PathVariable
-      String courseId, HttpServletRequest request
-  ) {
+  public ResponseEntity<byte[]> handle(@PathVariable String courseId, HttpServletRequest request) {
     MongoDB.validateObjectId(courseId);
     HttpHeaders headers = new HttpHeaders();
     String userId = SecurityContextHolder.getContext().getAuthentication().getName();

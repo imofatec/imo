@@ -5,9 +5,6 @@ import jakarta.validation.constraints.Size;
 
 public record CreateCommentRequest(
     @NotBlank(message = "O comentario nao pode ser vazio")
-    @Size(max = 300, message = "O seu comentario precisa ter menos de 300 caracteres")
-    String content,
-
-    String parentId
-) {
-}
+        @Size(max = 300, message = "O seu comentario precisa ter menos de 300 caracteres")
+        String content,
+    String parentId) {}

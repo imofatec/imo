@@ -5,15 +5,14 @@ import com.imo.backend.contexts.common.exceptions.custom.BadRequestException;
 import com.imo.backend.contexts.common.exceptions.custom.ConflictException;
 import com.imo.backend.contexts.journey_tracking.value_objects.ProgressPeriod;
 import com.imo.backend.contexts.journey_tracking.value_objects.ProgressStatus;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import org.bson.types.ObjectId;
-import org.springframework.data.mongodb.core.mapping.Document;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import org.bson.types.ObjectId;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 @EqualsAndHashCode(callSuper = true)
 @Document("progress")
@@ -31,15 +30,10 @@ public class Progress extends Entity {
 
   private ProgressStatus status;
 
-  public Progress() {
-  }
+  public Progress() {}
 
   public Progress(
-      String userId,
-      String courseId,
-      List<String> lessonsWatched,
-      int totalLessonsInCourse
-  ) {
+      String userId, String courseId, List<String> lessonsWatched, int totalLessonsInCourse) {
     if (lessonsWatched == null || lessonsWatched.isEmpty()) {
       throw new BadRequestException("Progresso deve ter ao menos 1 aula assistida");
     }
@@ -87,10 +81,8 @@ public class Progress extends Entity {
     }
 
     if (this.lessonsWatched.size() == totalLessonsInCourse) {
-      this.progressPeriod = new ProgressPeriod(
-          this.progressPeriod.startedAt(),
-          LocalDateTime.now()
-      );
+      this.progressPeriod =
+          new ProgressPeriod(this.progressPeriod.startedAt(), LocalDateTime.now());
       this.status = ProgressStatus.FINISHED;
     }
   }
@@ -100,10 +92,8 @@ public class Progress extends Entity {
     Set<String> existingLessonsIdsSet = Set.copyOf(existingLessonsIds);
 
     List<String> watchedLessons = this.getLessonsWatched();
-    List<String> filteredWatchedLessons = watchedLessons
-        .stream()
-        .filter(existingLessonsIdsSet::contains)
-        .toList();
+    List<String> filteredWatchedLessons =
+        watchedLessons.stream().filter(existingLessonsIdsSet::contains).toList();
 
     if (filteredWatchedLessons.size() != watchedLessons.size()) {
       this.lessonsWatched = filteredWatchedLessons.stream().map(ObjectId::new).toList();
@@ -114,10 +104,8 @@ public class Progress extends Entity {
     boolean shouldBeFinished = totalLessons > 0 && this.lessonsWatched.size() == totalLessons;
 
     if (shouldBeFinished && this.status != ProgressStatus.FINISHED) {
-      this.progressPeriod = new ProgressPeriod(
-          this.progressPeriod.startedAt(),
-          LocalDateTime.now()
-      );
+      this.progressPeriod =
+          new ProgressPeriod(this.progressPeriod.startedAt(), LocalDateTime.now());
       this.status = ProgressStatus.FINISHED;
       changed = true;
     }

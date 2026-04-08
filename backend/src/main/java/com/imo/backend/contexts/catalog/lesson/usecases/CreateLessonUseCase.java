@@ -7,10 +7,9 @@ import com.imo.backend.contexts.catalog.lesson.LessonPolicies;
 import com.imo.backend.contexts.catalog.lesson.commands.CreateLessonCommand;
 import com.imo.backend.contexts.catalog.lesson.repositories.LessonRepository;
 import com.imo.backend.contexts.journey_tracking.events.ReevaluateProgressEvent;
+import java.util.List;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class CreateLessonUseCase {
@@ -32,9 +31,8 @@ public class CreateLessonUseCase {
 
     var newLessons = this.lessonRepository.saveAll(LessonFactory.createLesson(commands, courseId));
 
-    this.applicationEventPublisher.publishEvent(new UpdateCourseLessonsCountEvent(
-        courseId,
-        newLessons.size()));
+    this.applicationEventPublisher.publishEvent(
+        new UpdateCourseLessonsCountEvent(courseId, newLessons.size()));
     this.applicationEventPublisher.publishEvent(new ReevaluateProgressEvent(courseId));
 
     return newLessons;
@@ -43,24 +41,21 @@ public class CreateLessonUseCase {
   public Lesson execute(CreateLessonCommand command, String courseId) {
 
     this.lessonPolicies.checkLessonConflicts(
-        courseId,
-        null,
-        command.title(),
-        command.youtubeLink(),
-        command.description());
+        courseId, null, command.title(), command.youtubeLink(), command.description());
 
     var existingLessonsCount = lessonRepository.findAllByCourseId(courseId).size();
 
-    Lesson newLesson = this.lessonRepository.save(new Lesson(
-        courseId,
-        existingLessonsCount + 1,
-        command.title(),
-        command.description(),
-        command.youtubeLink()));
+    Lesson newLesson =
+        this.lessonRepository.save(
+            new Lesson(
+                courseId,
+                existingLessonsCount + 1,
+                command.title(),
+                command.description(),
+                command.youtubeLink()));
 
-    this.applicationEventPublisher.publishEvent(new UpdateCourseLessonsCountEvent(
-        courseId,
-        existingLessonsCount + 1));
+    this.applicationEventPublisher.publishEvent(
+        new UpdateCourseLessonsCountEvent(courseId, existingLessonsCount + 1));
     this.applicationEventPublisher.publishEvent(new ReevaluateProgressEvent(courseId));
 
     return newLesson;

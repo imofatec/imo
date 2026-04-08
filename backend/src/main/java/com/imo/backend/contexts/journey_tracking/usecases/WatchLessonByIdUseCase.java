@@ -5,9 +5,8 @@ import com.imo.backend.contexts.catalog.course.repositories.CourseRepository;
 import com.imo.backend.contexts.journey_tracking.Progress;
 import com.imo.backend.contexts.journey_tracking.repositories.ProgressRepository;
 import com.imo.backend.contexts.journey_tracking.value_objects.ProgressStatus;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
+import org.springframework.stereotype.Service;
 
 @Service
 public class WatchLessonByIdUseCase {
@@ -16,9 +15,7 @@ public class WatchLessonByIdUseCase {
   private final CourseRepository courseRepository;
 
   public WatchLessonByIdUseCase(
-      ProgressRepository progressRepository,
-      CourseRepository courseRepository
-  ) {
+      ProgressRepository progressRepository, CourseRepository courseRepository) {
     this.progressRepository = progressRepository;
     this.courseRepository = courseRepository;
   }
@@ -26,9 +23,8 @@ public class WatchLessonByIdUseCase {
   public Progress execute(String lessonId, String userId) {
     Course course = this.courseRepository.findByLessonIdOrThrow(lessonId);
 
-    Progress progress = this.progressRepository
-        .findByUserIdAndCourseId(userId, course.getId())
-        .orElse(null);
+    Progress progress =
+        this.progressRepository.findByUserIdAndCourseId(userId, course.getId()).orElse(null);
 
     if (progress == null) {
       progress = new Progress(userId, course.getId(), List.of(lessonId), course.getLessonsCount());

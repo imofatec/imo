@@ -1,10 +1,9 @@
 package com.imo.backend.contexts.common;
 
 import com.imo.backend.contexts.common.exceptions.custom.BadRequestException;
+import java.util.Map;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-
-import java.util.Map;
 
 public class Pageable {
   public static org.springframework.data.domain.Pageable fromPageSize(Integer page, Integer size) {

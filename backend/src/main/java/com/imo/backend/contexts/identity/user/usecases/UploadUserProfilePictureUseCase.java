@@ -11,24 +11,24 @@ import org.springframework.web.multipart.MultipartFile;
 public class UploadUserProfilePictureUseCase {
 
   private final UserRepository userRepository;
-  private final ImageStorageProvider fileStorageManager;  
+  private final ImageStorageProvider fileStorageManager;
 
-  public UploadUserProfilePictureUseCase(UserRepository userRepository, ImageStorageProvider fileStorageManager) {
+  public UploadUserProfilePictureUseCase(
+      UserRepository userRepository, ImageStorageProvider fileStorageManager) {
     this.userRepository = userRepository;
     this.fileStorageManager = fileStorageManager;
   }
 
   public User execute(String id, MultipartFile file) {
 
-    var user = this.userRepository
-        .findById(id)
-        .orElseThrow(() -> new NotFoundException("Usuário não encontrado"));
+    var user =
+        this.userRepository
+            .findById(id)
+            .orElseThrow(() -> new NotFoundException("Usuário não encontrado"));
 
-    String filename = user.assertUploadProfilePicture(
-        file.getOriginalFilename(),
-        file.getSize(),
-        file.getContentType()
-    );
+    String filename =
+        user.assertUploadProfilePicture(
+            file.getOriginalFilename(), file.getSize(), file.getContentType());
 
     if (user.getProfilePicturePath() != null) {
       fileStorageManager.delete(user.getProfilePicturePath());
