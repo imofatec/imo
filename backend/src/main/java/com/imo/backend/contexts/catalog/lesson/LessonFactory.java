@@ -10,27 +10,8 @@ public class LessonFactory {
   public static List<Lesson> createLesson(List<CreateLessonCommand> commands, String courseId) {
     return IntStream.range(0, commands.size()).mapToObj(i -> {
       CreateLessonCommand item = commands.get(i);
-      Lesson lesson = new Lesson();
-      lesson.setCourseId(courseId);
-      lesson.setIndexInCourse(i + 1);
-      lesson.setTitle(item.title());
-      lesson.setDescription(item.description());
-      lesson.setYoutubeLink(item.youtubeLink());
+      Lesson lesson = new Lesson(courseId, i + 1, item.title(), item.description(), item.youtubeLink());
       return lesson;
     }).collect(Collectors.toList());
-  }
-
-  public static Lesson createLesson(
-      CreateLessonCommand command,
-      int indexInCourse,
-      String courseId
-  ) {
-    Lesson lesson = new Lesson();
-    lesson.setCourseId(courseId);
-    lesson.setIndexInCourse(indexInCourse);
-    lesson.setTitle(command.title());
-    lesson.setDescription(command.description());
-    lesson.setYoutubeLink(command.youtubeLink());
-    return lesson;
   }
 }

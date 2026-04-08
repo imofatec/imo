@@ -24,10 +24,21 @@ public class UpdateLessonByIdUseCase {
         foundLesson.getCourseId(),
         foundLesson.getId(),
         command.title(),
-        command.youtubeLink()
-    );
+        command.youtubeLink(),
+        command.description());
 
-    Lesson.applyUpdate(foundLesson, command);
+    if (command.title() != null) {
+      foundLesson.setTitle(command.title());
+    }
+
+    if (command.youtubeLink() != null) {
+      foundLesson.setYoutubeLink(command.youtubeLink());
+    }
+
+    if (command.description() != null) {
+      foundLesson.setDescription(command.description());
+    }
+
     return this.lessonRepository.save(foundLesson);
   }
 }

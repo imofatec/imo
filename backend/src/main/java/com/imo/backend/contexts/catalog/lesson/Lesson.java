@@ -1,6 +1,5 @@
 package com.imo.backend.contexts.catalog.lesson;
 
-import com.imo.backend.contexts.catalog.lesson.commands.UpdateLessonCommand;
 import com.imo.backend.contexts.common.Entity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -15,7 +14,7 @@ import java.util.stream.IntStream;
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class Lesson extends Entity {
-  //  relations
+  // relations
   private ObjectId courseId;
 
   private int indexInCourse;
@@ -25,6 +24,23 @@ public class Lesson extends Entity {
   private String description;
 
   private String youtubeLink;
+
+  public Lesson() {
+  }
+
+  public Lesson(
+      String courseId,
+      int indexInCourse,
+      String title,
+      String description,
+      String youtubeLink
+  ) {
+    setCourseId(courseId);
+    setIndexInCourse(indexInCourse);
+    setTitle(title);
+    setDescription(description);
+    setYoutubeLink(youtubeLink);
+  }
 
   public void setCourseId(String courseId) {
     this.courseId = new ObjectId(courseId);
@@ -79,19 +95,5 @@ public class Lesson extends Entity {
 
   public static void sortLessonsByIndexInCourse(List<Lesson> lessons) {
     lessons.sort(Comparator.comparing(Lesson::getIndexInCourse));
-  }
-
-  public static void applyUpdate(Lesson lesson, UpdateLessonCommand command) {
-    if (command.title() != null) {
-      lesson.setTitle(command.title());
-    }
-
-    if (command.youtubeLink() != null) {
-      lesson.setYoutubeLink(command.youtubeLink());
-    }
-
-    if (command.description() != null) {
-      lesson.setDescription(command.description());
-    }
   }
 }
