@@ -13,19 +13,14 @@ public class AuthenticateUserUseCase {
 
   private final TokenManager tokenManager;
 
-  public AuthenticateUserUseCase(
-      TokenManager tokenManager,
-      UserPolicies policies
-  ) {
+  public AuthenticateUserUseCase(TokenManager tokenManager, UserPolicies policies) {
     this.tokenManager = tokenManager;
     this.policies = policies;
   }
 
   public LoginResponseDTO execute(LoginRequestDTO loginRequestDTO) {
-    User foundUser = this.policies.assertCredentials(
-        loginRequestDTO.email(),
-        loginRequestDTO.password()
-    );
+    User foundUser =
+        this.policies.assertCredentials(loginRequestDTO.email(), loginRequestDTO.password());
 
     return tokenManager.generateToken(foundUser.getId());
   }

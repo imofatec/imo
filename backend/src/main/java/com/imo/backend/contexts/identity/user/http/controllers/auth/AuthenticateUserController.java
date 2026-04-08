@@ -24,20 +24,26 @@ public class AuthenticateUserController extends UserController {
   }
 
   @Operation(summary = "Login user")
-  @ApiResponses(value = {
-      @ApiResponse(responseCode = "200", description = "Login realizado com sucesso",
-          content = @Content(schema = @Schema(implementation = LoginResponseDTO.class))),
-      @ApiResponse(responseCode = "400", description = "Credenciais inválidas",
-          content = @Content(schema = @Schema(implementation = com.imo.backend.contexts.common.exceptions.ErrorResponseDto.class)))
-  })
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "Login realizado com sucesso",
+            content = @Content(schema = @Schema(implementation = LoginResponseDTO.class))),
+        @ApiResponse(
+            responseCode = "400",
+            description = "Credenciais inválidas",
+            content =
+                @Content(
+                    schema =
+                        @Schema(
+                            implementation =
+                                com.imo.backend.contexts.common.exceptions.ErrorResponseDto.class)))
+      })
   @PostMapping("/login")
   public ResponseEntity<LoginResponseDTO> handle(
-      @Valid
-      @RequestBody
-      LoginRequestDTO loginRequestDTO
-  ) {
+      @Valid @RequestBody LoginRequestDTO loginRequestDTO) {
     var token = this.authenticateUserUseCase.execute(loginRequestDTO);
     return ResponseEntity.ok(token);
   }
-
 }

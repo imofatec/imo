@@ -12,6 +12,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Objects;
+import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,39 +23,47 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.Objects;
-import java.util.stream.Stream;
-
 @Slf4j
 @RestController
 public class UpdateUserByIdController extends UserController {
   private final UpdateUserByIdUseCase updateUserByIdUseCase;
 
-  public UpdateUserByIdController(
-      UpdateUserByIdUseCase updateUserByIdUseCase
-  ) {
+  public UpdateUserByIdController(UpdateUserByIdUseCase updateUserByIdUseCase) {
     this.updateUserByIdUseCase = updateUserByIdUseCase;
   }
 
   @Operation(summary = "Update the user's credentials")
   @SecurityRequirement(name = "Authorization")
-  @ApiResponses(value = {
-      @ApiResponse(responseCode = "200", description = "Usuário atualizado com sucesso",
-          content = @Content(schema = @Schema(implementation = UserDTO.class))),
-      @ApiResponse(responseCode = "204", description = "Nenhum campo para atualizar"),
-      @ApiResponse(responseCode = "400", description = "Dados inválidos",
-          content = @Content(schema = @Schema(implementation = com.imo.backend.contexts.common.exceptions.ErrorResponseDto.class))),
-      @ApiResponse(responseCode = "401", description = "Não autenticado",
-          content = @Content(schema = @Schema(implementation = com.imo.backend.contexts.common.exceptions.ErrorResponseDto.class)))
-  })
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "Usuário atualizado com sucesso",
+            content = @Content(schema = @Schema(implementation = UserDTO.class))),
+        @ApiResponse(responseCode = "204", description = "Nenhum campo para atualizar"),
+        @ApiResponse(
+            responseCode = "400",
+            description = "Dados inválidos",
+            content =
+                @Content(
+                    schema =
+                        @Schema(
+                            implementation =
+                                com.imo.backend.contexts.common.exceptions.ErrorResponseDto
+                                    .class))),
+        @ApiResponse(
+            responseCode = "401",
+            description = "Não autenticado",
+            content =
+                @Content(
+                    schema =
+                        @Schema(
+                            implementation =
+                                com.imo.backend.contexts.common.exceptions.ErrorResponseDto.class)))
+      })
   @PutMapping()
   public ResponseEntity<UserDTO> handle(
-      @Valid
-      @RequestBody
-      UpdateUserByIdRequest fieldsToUpdateUser
-  ) {
+      @Valid @RequestBody UpdateUserByIdRequest fieldsToUpdateUser) {
 
     String userId = SecurityContextHolder.getContext().getAuthentication().getName();
 
@@ -65,22 +77,19 @@ public class UpdateUserByIdController extends UserController {
       parsedBirthDate = LocalDate.parse(fieldsToUpdateUser.birthDate(), formatter);
     }
 
-    UpdateUserByIdCommand cmd = new UpdateUserByIdCommand(
-        fieldsToUpdateUser.email(),
-        fieldsToUpdateUser.name(),
-        fieldsToUpdateUser.password(),
-        null,
-        parsedBirthDate,
-        fieldsToUpdateUser.availableTimePerDay(),
-        fieldsToUpdateUser.academicDegree(),
-        fieldsToUpdateUser.experienceLevel(),
-        fieldsToUpdateUser.categoriesOfInterest()
-    );
+    UpdateUserByIdCommand cmd =
+        new UpdateUserByIdCommand(
+            fieldsToUpdateUser.email(),
+            fieldsToUpdateUser.name(),
+            fieldsToUpdateUser.password(),
+            null,
+            parsedBirthDate,
+            fieldsToUpdateUser.availableTimePerDay(),
+            fieldsToUpdateUser.academicDegree(),
+            fieldsToUpdateUser.experienceLevel(),
+            fieldsToUpdateUser.categoriesOfInterest());
 
-    return ResponseEntity.ok(UserDTO.fromUser(this.updateUserByIdUseCase.execute(
-        userId,
-        cmd
-    )));
+    return ResponseEntity.ok(UserDTO.fromUser(this.updateUserByIdUseCase.execute(userId, cmd)));
   }
 
   private static boolean checkNoContent(UpdateUserByIdRequest fieldsToUpdateUser) {

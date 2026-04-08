@@ -29,8 +29,7 @@ public class DeleteLessonByIdController extends LessonController {
   public DeleteLessonByIdController(
       DeleteLessonByIdUseCase useCase,
       ValidateUserCourseAccessService validateUserCourseAccessService,
-      CourseRepository courseRepository
-  ) {
+      CourseRepository courseRepository) {
     this.useCase = useCase;
     this.validateUserCourseAccessService = validateUserCourseAccessService;
     this.courseRepository = courseRepository;
@@ -38,22 +37,45 @@ public class DeleteLessonByIdController extends LessonController {
 
   @Operation(summary = "Delete lesson by id")
   @SecurityRequirement(name = "Authorization")
-  @ApiResponses(value = {
-      @ApiResponse(responseCode = "200", description = "Aula deletada com sucesso",
-          content = @Content(schema = @Schema(implementation = LessonDTO.class))),
-      @ApiResponse(responseCode = "204", description = "Aula não encontrada"),
-      @ApiResponse(responseCode = "401", description = "Não autenticado",
-          content = @Content(schema = @Schema(implementation = com.imo.backend.contexts.common.exceptions.ErrorResponseDto.class))),
-      @ApiResponse(responseCode = "403", description = "Sem permissão para deletar aula neste curso",
-          content = @Content(schema = @Schema(implementation = com.imo.backend.contexts.common.exceptions.ErrorResponseDto.class))),
-      @ApiResponse(responseCode = "404", description = "Curso ou aula não encontrados",
-          content = @Content(schema = @Schema(implementation = com.imo.backend.contexts.common.exceptions.ErrorResponseDto.class)))
-  })
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "Aula deletada com sucesso",
+            content = @Content(schema = @Schema(implementation = LessonDTO.class))),
+        @ApiResponse(responseCode = "204", description = "Aula não encontrada"),
+        @ApiResponse(
+            responseCode = "401",
+            description = "Não autenticado",
+            content =
+                @Content(
+                    schema =
+                        @Schema(
+                            implementation =
+                                com.imo.backend.contexts.common.exceptions.ErrorResponseDto
+                                    .class))),
+        @ApiResponse(
+            responseCode = "403",
+            description = "Sem permissão para deletar aula neste curso",
+            content =
+                @Content(
+                    schema =
+                        @Schema(
+                            implementation =
+                                com.imo.backend.contexts.common.exceptions.ErrorResponseDto
+                                    .class))),
+        @ApiResponse(
+            responseCode = "404",
+            description = "Curso ou aula não encontrados",
+            content =
+                @Content(
+                    schema =
+                        @Schema(
+                            implementation =
+                                com.imo.backend.contexts.common.exceptions.ErrorResponseDto.class)))
+      })
   @DeleteMapping("/{id}")
-  public ResponseEntity<LessonDTO> handle(
-      @PathVariable
-      String id
-  ) {
+  public ResponseEntity<LessonDTO> handle(@PathVariable String id) {
     MongoDB.validateObjectId(id);
     var existingCourse = this.courseRepository.findByLessonIdOrThrow(id);
     String userId = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -66,6 +88,4 @@ public class DeleteLessonByIdController extends LessonController {
         ? ResponseEntity.ok(LessonDTO.fromEntity(deletedLesson))
         : ResponseEntity.noContent().build();
   }
-
 }
-

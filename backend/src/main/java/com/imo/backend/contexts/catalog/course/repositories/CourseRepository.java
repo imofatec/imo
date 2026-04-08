@@ -12,9 +12,7 @@ public interface CourseRepository extends MongoRepository<Course, String>, Custo
   }
 
   default Course findByLessonIdOrThrow(String lessonId) {
-    return this
-        .findByLessonId(lessonId)
+    return this.findByLessonId(lessonId)
         .orElseThrow(() -> new NotFoundException("Aula não Encontrada"));
   }
-
 }

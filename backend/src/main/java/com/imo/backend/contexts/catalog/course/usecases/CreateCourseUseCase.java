@@ -33,8 +33,17 @@ public class CreateCourseUseCase {
     var potentialNewSlugCourse = Slug.create(cmd.name());
     this.coursePolicies.checkSlugConflict(contributorId, potentialNewSlugCourse, null);
 
-    var newCourse = this.courseRepository.save(new Course(true, cmd.contributorId(), cmd.name(), cmd.level(),
-        cmd.category(), cmd.description(), cmd.lessons().getFirst().youtubeLink(), cmd.lessons().size()));
+    var newCourse =
+        this.courseRepository.save(
+            new Course(
+                true,
+                cmd.contributorId(),
+                cmd.name(),
+                cmd.level(),
+                cmd.category(),
+                cmd.description(),
+                cmd.lessons().getFirst().youtubeLink(),
+                cmd.lessons().size()));
 
     var newLessons = this.createLessonUseCase.execute(cmd.lessons(), newCourse.getId());
 

@@ -1,5 +1,9 @@
 package com.imo.backend.e2e.journey_tracking;
 
+import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.equalTo;
+import static org.junit.jupiter.api.Assertions.*;
+
 import com.imo.backend.contexts.catalog.course.http.dtos.CourseDetailsDTO;
 import com.imo.backend.contexts.journey_tracking.controllers.dtos.ProgressDTO;
 import com.imo.backend.contexts.journey_tracking.controllers.dtos.ProgressDetailsDTO;
@@ -15,19 +19,14 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
-import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.equalTo;
-import static org.junit.jupiter.api.Assertions.*;
-
 class ProgressE2ETest extends BaseE2ETest {
   @Test
-  @DisplayName("happy path (GET /api/progress/details): retorna 200 com lista de progressos paginada")
+  @DisplayName(
+      "happy path (GET /api/progress/details): retorna 200 com lista de progressos paginada")
   void shouldGetAllProgress() {
     String token = IdentityTestHelper.registerAndLogin(TestUser.defaultUser());
-    CourseDetailsDTO courseDetails = CatalogTestHelper.createCourse(
-        token,
-        TestCourse.defaultCourse()
-    );
+    CourseDetailsDTO courseDetails =
+        CatalogTestHelper.createCourse(token, TestCourse.defaultCourse());
     String lessonId = courseDetails.lessons().getFirst().getId();
     JourneyTrackingTestHelper.watchLesson(token, lessonId);
 
@@ -56,25 +55,25 @@ class ProgressE2ETest extends BaseE2ETest {
   }
 
   @Test
-  @DisplayName("happy path (GET /api/progress/details/{courseId}): retorna 200 com detalhes do progresso")
+  @DisplayName(
+      "happy path (GET /api/progress/details/{courseId}): retorna 200 com detalhes do progresso")
   void shouldGetProgressByCourseId() {
     String token = IdentityTestHelper.registerAndLogin(TestUser.defaultUser());
-    CourseDetailsDTO courseDetails = CatalogTestHelper.createCourse(
-        token,
-        TestCourse.defaultCourse()
-    );
+    CourseDetailsDTO courseDetails =
+        CatalogTestHelper.createCourse(token, TestCourse.defaultCourse());
     String lessonId = courseDetails.lessons().getFirst().getId();
     JourneyTrackingTestHelper.watchLesson(token, lessonId);
 
-    ProgressDetailsDTO progressDetails = given()
-        .header("Authorization", "Bearer " + token)
-        .when()
-        .get("/api/progress/details/{courseId}", courseDetails.course().id())
-        .then()
-        .statusCode(HttpStatus.OK.value())
-        .contentType(ContentType.JSON)
-        .extract()
-        .as(ProgressDetailsDTO.class);
+    ProgressDetailsDTO progressDetails =
+        given()
+            .header("Authorization", "Bearer " + token)
+            .when()
+            .get("/api/progress/details/{courseId}", courseDetails.course().id())
+            .then()
+            .statusCode(HttpStatus.OK.value())
+            .contentType(ContentType.JSON)
+            .extract()
+            .as(ProgressDetailsDTO.class);
 
     assertNotNull(progressDetails.progress().id());
     assertEquals(courseDetails.course().id(), progressDetails.course().id());
@@ -83,13 +82,12 @@ class ProgressE2ETest extends BaseE2ETest {
   }
 
   @Test
-  @DisplayName("exception (GET /api/progress/details/{courseId}): retorna 401 quando não autenticado")
+  @DisplayName(
+      "exception (GET /api/progress/details/{courseId}): retorna 401 quando não autenticado")
   void shouldReturn401WhenGettingProgressByCourseIdNotAuthenticated() {
     String token = IdentityTestHelper.registerAndLogin(TestUser.defaultUser());
-    CourseDetailsDTO courseDetails = CatalogTestHelper.createCourse(
-        token,
-        TestCourse.defaultCourse()
-    );
+    CourseDetailsDTO courseDetails =
+        CatalogTestHelper.createCourse(token, TestCourse.defaultCourse());
 
     given()
         .when()
@@ -100,7 +98,8 @@ class ProgressE2ETest extends BaseE2ETest {
   }
 
   @Test
-  @DisplayName("exception (GET /api/progress/details/{courseId}): retorna 400 quando courseId é inválido")
+  @DisplayName(
+      "exception (GET /api/progress/details/{courseId}): retorna 400 quando courseId é inválido")
   void shouldReturn400WhenCourseIdIsInvalid() {
     String token = IdentityTestHelper.registerAndLogin(TestUser.defaultUser());
 
@@ -114,24 +113,24 @@ class ProgressE2ETest extends BaseE2ETest {
   }
 
   @Test
-  @DisplayName("happy path (PUT /api/progress/{lessonId}): retorna 200 quando marca aula como assistida")
+  @DisplayName(
+      "happy path (PUT /api/progress/{lessonId}): retorna 200 quando marca aula como assistida")
   void shouldWatchLesson() {
     String token = IdentityTestHelper.registerAndLogin(TestUser.defaultUser());
-    CourseDetailsDTO courseDetails = CatalogTestHelper.createCourse(
-        token,
-        TestCourse.defaultCourseWithThreeLessons()
-    );
+    CourseDetailsDTO courseDetails =
+        CatalogTestHelper.createCourse(token, TestCourse.defaultCourseWithThreeLessons());
     String lessonId = courseDetails.lessons().getFirst().getId();
 
-    ProgressDTO progress = given()
-        .header("Authorization", "Bearer " + token)
-        .when()
-        .put("/api/progress/{lessonId}", lessonId)
-        .then()
-        .statusCode(HttpStatus.OK.value())
-        .contentType(ContentType.JSON)
-        .extract()
-        .as(ProgressDTO.class);
+    ProgressDTO progress =
+        given()
+            .header("Authorization", "Bearer " + token)
+            .when()
+            .put("/api/progress/{lessonId}", lessonId)
+            .then()
+            .statusCode(HttpStatus.OK.value())
+            .contentType(ContentType.JSON)
+            .extract()
+            .as(ProgressDTO.class);
 
     assertNotNull(progress.id());
     assertEquals(1, progress.lessonsWatched().size());
@@ -145,10 +144,8 @@ class ProgressE2ETest extends BaseE2ETest {
   @DisplayName("exception (PUT /api/progress/{lessonId}): retorna 401 quando não autenticado")
   void shouldReturn401WhenWatchingLessonNotAuthenticated() {
     String token = IdentityTestHelper.registerAndLogin(TestUser.defaultUser());
-    CourseDetailsDTO courseDetails = CatalogTestHelper.createCourse(
-        token,
-        TestCourse.defaultCourse()
-    );
+    CourseDetailsDTO courseDetails =
+        CatalogTestHelper.createCourse(token, TestCourse.defaultCourse());
     String lessonId = courseDetails.lessons().getFirst().getId();
 
     given()

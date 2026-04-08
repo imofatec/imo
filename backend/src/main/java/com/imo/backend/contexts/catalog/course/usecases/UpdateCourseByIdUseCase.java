@@ -26,10 +26,7 @@ public class UpdateCourseByIdUseCase {
 
     if (cmd.name() != null) {
       this.coursePolicies.checkSlugConflict(
-          course.getContributorId(),
-          Slug.create(cmd.name()),
-          courseId
-      );
+          course.getContributorId(), Slug.create(cmd.name()), courseId);
 
       course.setName(new CourseName(cmd.name()));
     }

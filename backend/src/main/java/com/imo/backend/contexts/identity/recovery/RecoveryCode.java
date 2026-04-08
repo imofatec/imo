@@ -1,13 +1,12 @@
 package com.imo.backend.contexts.identity.recovery;
 
 import com.imo.backend.contexts.common.Entity;
+import java.time.LocalDateTime;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
-
-import java.time.LocalDateTime;
 
 @EqualsAndHashCode(callSuper = true)
 @Document("recovery_codes")
@@ -22,8 +21,7 @@ public class RecoveryCode extends Entity {
   @Indexed(expireAfter = "10m")
   private LocalDateTime expiresAt;
 
-  public RecoveryCode() {
-  }
+  public RecoveryCode() {}
 
   public RecoveryCode(String userId, String code) {
     this.setUserId(userId);

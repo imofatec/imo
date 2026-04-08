@@ -1,5 +1,10 @@
 package com.imo.backend.e2e.identity;
 
+import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.jupiter.api.Assertions.*;
+
 import com.imo.backend.contexts.identity.user.http.dtos.UpdateUserByIdRequest;
 import com.imo.backend.contexts.identity.user.http.dtos.UserDTO;
 import com.imo.backend.contexts.identity.user.http.dtos.auth.LoginRequestDTO;
@@ -9,18 +14,12 @@ import com.imo.backend.e2e.BaseE2ETest;
 import com.imo.backend.e2e.identity.helpers.IdentityTestHelper;
 import com.imo.backend.e2e.identity.helpers.IdentityTestHelper.TestUser;
 import io.restassured.http.ContentType;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-
-import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
 
 class UserE2ETest extends BaseE2ETest {
   @Test
@@ -28,16 +27,17 @@ class UserE2ETest extends BaseE2ETest {
   void shouldCreateUser() {
     TestUser user = TestUser.defaultUser();
 
-    UserDTO created = given()
-        .contentType(ContentType.JSON)
-        .body(user.toCreateRequest())
-        .when()
-        .post("/api/user")
-        .then()
-        .statusCode(HttpStatus.CREATED.value())
-        .contentType(ContentType.JSON)
-        .extract()
-        .as(UserDTO.class);
+    UserDTO created =
+        given()
+            .contentType(ContentType.JSON)
+            .body(user.toCreateRequest())
+            .when()
+            .post("/api/user")
+            .then()
+            .statusCode(HttpStatus.CREATED.value())
+            .contentType(ContentType.JSON)
+            .extract()
+            .as(UserDTO.class);
 
     assertNotNull(created.id());
     assertEquals(user.name(), created.name());
@@ -117,15 +117,16 @@ class UserE2ETest extends BaseE2ETest {
     TestUser user = TestUser.defaultUser();
     String token = IdentityTestHelper.registerAndLogin(user);
 
-    UserDTO foundUser = given()
-        .header("Authorization", "Bearer " + token)
-        .when()
-        .put("/api/user/confirm")
-        .then()
-        .statusCode(HttpStatus.OK.value())
-        .contentType(ContentType.JSON)
-        .extract()
-        .as(UserDTO.class);
+    UserDTO foundUser =
+        given()
+            .header("Authorization", "Bearer " + token)
+            .when()
+            .put("/api/user/confirm")
+            .then()
+            .statusCode(HttpStatus.OK.value())
+            .contentType(ContentType.JSON)
+            .extract()
+            .as(UserDTO.class);
 
     assertNotNull(foundUser.id());
     assertEquals(user.name(), foundUser.name());
@@ -139,15 +140,16 @@ class UserE2ETest extends BaseE2ETest {
     TestUser user = TestUser.defaultUser();
     String token = IdentityTestHelper.registerAndLogin(user);
 
-    UserDTO profile = given()
-        .header("Authorization", "Bearer " + token)
-        .when()
-        .get("/api/user/profile")
-        .then()
-        .statusCode(HttpStatus.OK.value())
-        .contentType(ContentType.JSON)
-        .extract()
-        .as(UserDTO.class);
+    UserDTO profile =
+        given()
+            .header("Authorization", "Bearer " + token)
+            .when()
+            .get("/api/user/profile")
+            .then()
+            .statusCode(HttpStatus.OK.value())
+            .contentType(ContentType.JSON)
+            .extract()
+            .as(UserDTO.class);
 
     assertNotNull(profile.id());
     assertEquals(user.name(), profile.name());
@@ -158,7 +160,10 @@ class UserE2ETest extends BaseE2ETest {
   @Test
   @DisplayName("exception (GET /api/user/profile): retorna erro quando nao autenticado")
   void shouldReturnErrorWhenNotAuthenticated() {
-    given().when().get("/api/user/profile").then()
+    given()
+        .when()
+        .get("/api/user/profile")
+        .then()
         .statusCode(HttpStatus.UNAUTHORIZED.value())
         .body("error", equalTo("UNAUTHORIZED"));
   }
@@ -169,27 +174,29 @@ class UserE2ETest extends BaseE2ETest {
     TestUser user = TestUser.defaultUser();
     String token = IdentityTestHelper.registerAndLogin(user);
 
-    UpdateUserByIdRequest updateRequest = new UpdateUserByIdRequest(
-        "updated@email.com",
-        "Updated Name",
-        null,
-        "2026/03/31",
-        AvailableTimePerDay.ONE_TO_TWO_HOURS,
-        AcademicDegree.BACHELOR,
-        null,
-        null);
+    UpdateUserByIdRequest updateRequest =
+        new UpdateUserByIdRequest(
+            "updated@email.com",
+            "Updated Name",
+            null,
+            "2026/03/31",
+            AvailableTimePerDay.ONE_TO_TWO_HOURS,
+            AcademicDegree.BACHELOR,
+            null,
+            null);
 
-    UserDTO updated = given()
-        .header("Authorization", "Bearer " + token)
-        .contentType(ContentType.JSON)
-        .body(updateRequest)
-        .when()
-        .put("/api/user")
-        .then()
-        .statusCode(HttpStatus.OK.value())
-        .contentType(ContentType.JSON)
-        .extract()
-        .as(UserDTO.class);
+    UserDTO updated =
+        given()
+            .header("Authorization", "Bearer " + token)
+            .contentType(ContentType.JSON)
+            .body(updateRequest)
+            .when()
+            .put("/api/user")
+            .then()
+            .statusCode(HttpStatus.OK.value())
+            .contentType(ContentType.JSON)
+            .extract()
+            .as(UserDTO.class);
 
     assertNotNull(updated.id());
     assertEquals("Updated Name", updated.name());
@@ -206,19 +213,20 @@ class UserE2ETest extends BaseE2ETest {
 
     File tempFile = File.createTempFile("profile", ".png");
     try (FileOutputStream fos = new FileOutputStream(tempFile)) {
-      fos.write(new byte[] { (byte) 0x89, 0x50, 0x4E, 0x47 });
+      fos.write(new byte[] {(byte) 0x89, 0x50, 0x4E, 0x47});
     }
 
-    UserDTO updated = given()
-        .header("Authorization", "Bearer " + token)
-        .multiPart("file", tempFile, "image/png")
-        .when()
-        .put("/api/user/profile-picture")
-        .then()
-        .statusCode(HttpStatus.OK.value())
-        .contentType(ContentType.JSON)
-        .extract()
-        .as(UserDTO.class);
+    UserDTO updated =
+        given()
+            .header("Authorization", "Bearer " + token)
+            .multiPart("file", tempFile, "image/png")
+            .when()
+            .put("/api/user/profile-picture")
+            .then()
+            .statusCode(HttpStatus.OK.value())
+            .contentType(ContentType.JSON)
+            .extract()
+            .as(UserDTO.class);
 
     assertNotNull(updated.id());
     assertNotNull(updated.profilePicturePath());

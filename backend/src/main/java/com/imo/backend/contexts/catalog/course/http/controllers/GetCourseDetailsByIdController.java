@@ -25,16 +25,23 @@ public class GetCourseDetailsByIdController extends CourseController {
 
   @Operation(summary = "Get course details by id (includes lessons)")
   @SecurityRequirement(name = "Authorization")
-  @ApiResponses(value = {
-      @ApiResponse(responseCode = "200", description = "Curso encontrado com aulas", content = @Content(schema = @Schema(implementation = CourseDetailsDTO.class))),
-      @ApiResponse(responseCode = "401", description = "Não autenticado", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
-      @ApiResponse(responseCode = "404", description = "Curso não encontrado", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
-  })
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "Curso encontrado com aulas",
+            content = @Content(schema = @Schema(implementation = CourseDetailsDTO.class))),
+        @ApiResponse(
+            responseCode = "401",
+            description = "Não autenticado",
+            content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
+        @ApiResponse(
+            responseCode = "404",
+            description = "Curso não encontrado",
+            content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
+      })
   @GetMapping("/details/{id}")
-  public ResponseEntity<CourseDetailsDTO> execute(
-      @PathVariable
-      String id
-  ) {
+  public ResponseEntity<CourseDetailsDTO> execute(@PathVariable String id) {
     var courseDetails = this.courseRepository.findCourseDetailsByIdOrThrow(id);
     return ResponseEntity.ok(CourseDetailsDTO.fromCourseDetails(courseDetails));
   }

@@ -1,8 +1,8 @@
 package com.imo.backend.e2e.journey_tracking.helpers;
 
-import com.imo.backend.contexts.journey_tracking.controllers.dtos.ProgressDTO;
-
 import static io.restassured.RestAssured.given;
+
+import com.imo.backend.contexts.journey_tracking.controllers.dtos.ProgressDTO;
 
 public final class JourneyTrackingTestHelper {
 

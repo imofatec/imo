@@ -13,8 +13,7 @@ public record CourseDTO(
     String description,
     String firstLessonYoutubeLink,
     int lessonsCount,
-    boolean isActive
-) {
+    boolean isActive) {
   public static CourseDTO fromEntity(Course course) {
     return new CourseDTO(
         course.getId(),
@@ -24,8 +23,6 @@ public record CourseDTO(
         course.getDescription(),
         course.getFirstLessonYoutubeLink(),
         course.getLessonsCount(),
-        course.isActive()
-    );
+        course.isActive());
   }
-
 }

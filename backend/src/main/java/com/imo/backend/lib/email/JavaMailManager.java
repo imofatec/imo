@@ -4,6 +4,7 @@ import com.imo.backend.contexts.notification.lib.MailManager;
 import com.imo.backend.contexts.notification.lib.MailMessageBuilder;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
+import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -11,8 +12,6 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
-
-import java.util.Map;
 
 @Slf4j
 @Service
@@ -58,10 +57,7 @@ public class JavaMailManager implements MailManager {
 
   @Override
   public void sendWithTemplate(
-      MailMessageBuilder incompleteBuilder,
-      String templateName,
-      Map<String, Object> variables
-  ) {
+      MailMessageBuilder incompleteBuilder, String templateName, Map<String, Object> variables) {
     Context context = new Context();
     variables.forEach(context::setVariable);
     String html = this.templateEngine.process(templateName, context);

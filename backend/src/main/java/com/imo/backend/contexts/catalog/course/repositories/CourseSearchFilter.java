@@ -1,10 +1,9 @@
 package com.imo.backend.contexts.catalog.course.repositories;
 
 import com.imo.backend.contexts.common.MongoDB;
-import org.bson.types.ObjectId;
-
 import java.util.HashMap;
 import java.util.Map;
+import org.bson.types.ObjectId;
 
 public class CourseSearchFilter {
   public static Map<String, Object> apply(CourseSearchParams searchParams) {

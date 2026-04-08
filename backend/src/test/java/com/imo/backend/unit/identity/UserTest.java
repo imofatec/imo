@@ -1,15 +1,13 @@
 package com.imo.backend.unit.identity;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import com.imo.backend.contexts.catalog.course.value_objects.Categories;
 import com.imo.backend.contexts.common.exceptions.custom.BadRequestException;
 import com.imo.backend.contexts.identity.user.User;
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import java.time.LocalDate;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class UserTest {
   private final String baseName = "Kiss Shot";
@@ -21,8 +19,7 @@ class UserTest {
   void shouldThrowBadRequestWhenNameExceeds30Chars() {
     assertThrows(
         BadRequestException.class,
-        () -> new User("Kiss Shot Acerola Orion Heart Under Blade", baseEmail, "123456")
-    );
+        () -> new User("Kiss Shot Acerola Orion Heart Under Blade", baseEmail, "123456"));
   }
 
   @Test
@@ -44,12 +41,9 @@ class UserTest {
 
     assertThrows(
         BadRequestException.class,
-        () -> user.setCategoriesOfInterest(List.of(
-            Categories.AI,
-            Categories.DATA,
-            Categories.CLOUD
-        ))
-    );
+        () ->
+            user.setCategoriesOfInterest(
+                List.of(Categories.AI, Categories.DATA, Categories.CLOUD)));
   }
 
   @Test
@@ -69,7 +63,6 @@ class UserTest {
 
     assertThrows(
         BadRequestException.class,
-        () -> user.assertUploadProfilePicture("doc.pdf", 1024, "application/pdf")
-    );
+        () -> user.assertUploadProfilePicture("doc.pdf", 1024, "application/pdf"));
   }
 }

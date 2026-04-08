@@ -8,8 +8,7 @@ public record LessonDTO(
     String description,
     String youtubeLink,
     int indexInCourse,
-    String courseId
-) {
+    String courseId) {
   public static LessonDTO fromEntity(Lesson lesson) {
     return new LessonDTO(
         lesson.getId(),
@@ -17,8 +16,6 @@ public record LessonDTO(
         lesson.getDescription(),
         lesson.getYoutubeLink(),
         lesson.getIndexInCourse(),
-        lesson.getCourseId()
-    );
+        lesson.getCourseId());
   }
-
 }

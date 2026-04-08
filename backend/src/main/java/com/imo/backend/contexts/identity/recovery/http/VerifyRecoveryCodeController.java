@@ -21,18 +21,27 @@ public class VerifyRecoveryCodeController extends RecoveryController {
     this.policy = policy;
   }
 
-  @Operation(summary = "Verificar código de recuperação", description = "Verifica se o código de recuperação é válido para o email informado")
-  @ApiResponses(value = {
-      @ApiResponse(responseCode = "200", description = "Código validado com sucesso",
-          content = @Content(schema = @Schema(implementation = SimpleMessage.class))),
-      @ApiResponse(responseCode = "400", description = "Código inválido ou expirado",
-          content = @Content(schema = @Schema(implementation = com.imo.backend.contexts.common.exceptions.ErrorResponseDto.class)))
-  })
+  @Operation(
+      summary = "Verificar código de recuperação",
+      description = "Verifica se o código de recuperação é válido para o email informado")
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "Código validado com sucesso",
+            content = @Content(schema = @Schema(implementation = SimpleMessage.class))),
+        @ApiResponse(
+            responseCode = "400",
+            description = "Código inválido ou expirado",
+            content =
+                @Content(
+                    schema =
+                        @Schema(
+                            implementation =
+                                com.imo.backend.contexts.common.exceptions.ErrorResponseDto.class)))
+      })
   @PostMapping("/password/verify")
-  public ResponseEntity<SimpleMessage> handle(
-      @RequestBody
-      VerifyRecoveryCodeRequest request
-  ) {
+  public ResponseEntity<SimpleMessage> handle(@RequestBody VerifyRecoveryCodeRequest request) {
     this.policy.assertCanRecovery(request.code(), request.email());
 
     return ResponseEntity.ok().body(new SimpleMessage("Código validado com sucesso"));

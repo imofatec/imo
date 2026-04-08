@@ -5,5 +5,4 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Tag(name = "Catalog - Lesson", description = "Endpoints de gerenciamento de aulas")
 @RequestMapping("/api/lesson")
-public abstract class LessonController {
-}
+public abstract class LessonController {}

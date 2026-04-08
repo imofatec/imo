@@ -1,10 +1,9 @@
 package com.imo.backend.contexts.notification.lib;
 
-import org.springframework.stereotype.Service;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import org.springframework.stereotype.Service;
 
 @Service
 public class MailMessageBuilder {
@@ -56,13 +55,7 @@ public class MailMessageBuilder {
       String subject,
       String textContent,
       String htmlContent,
-      List<Attachment> attachments
-  ) {
-  }
+      List<Attachment> attachments) {}
 
-  public record Attachment(
-      String filename,
-      File file
-  ) {
-  }
+  public record Attachment(String filename, File file) {}
 }

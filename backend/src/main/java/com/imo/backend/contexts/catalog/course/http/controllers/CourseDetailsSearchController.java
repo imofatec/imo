@@ -12,13 +12,12 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import java.util.List;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 @RestController
 public class CourseDetailsSearchController extends CourseController {
@@ -30,38 +29,42 @@ public class CourseDetailsSearchController extends CourseController {
   }
 
   @Operation(summary = "Search course details")
-  @ApiResponses(value = {
-      @ApiResponse(responseCode = "200", description = "Detalhes dos cursos encontrados",
-          content = @Content(array = @ArraySchema(schema = @Schema(implementation = CourseDetailsDTO.class))))
-  })
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "Detalhes dos cursos encontrados",
+            content =
+                @Content(
+                    array =
+                        @ArraySchema(schema = @Schema(implementation = CourseDetailsDTO.class))))
+      })
   @GetMapping("/search/details")
   public ResponseEntity<List<CourseDetailsDTO>> handle(
       @Parameter(description = "Query params to search", example = "slugCategory=dev-web")
-      @ParameterObject
-      CourseSearchParams courseSearchParams,
+          @ParameterObject
+          CourseSearchParams courseSearchParams,
       @Parameter(description = "Query type of match", example = "PERFECT")
-      @RequestParam(defaultValue = "PERFECT")
-      MatchType matchType,
+          @RequestParam(defaultValue = "PERFECT")
+          MatchType matchType,
       @Parameter(description = "Query params to search", example = "AND")
-      @RequestParam(defaultValue = "AND")
-      CombineWith combineWith,
+          @RequestParam(defaultValue = "AND")
+          CombineWith combineWith,
       @Parameter(description = "Page number to retrieve", example = "0", required = false)
-      @RequestParam(required = false)
-      Integer page,
+          @RequestParam(required = false)
+          Integer page,
       @Parameter(description = "Size of each page", example = "10", required = false)
-      @RequestParam(required = false)
-      Integer size
-  ) {
+          @RequestParam(required = false)
+          Integer size) {
 
-    var details = (page == null || size == null)
-      ? this.courseRepository.searchDetails(courseSearchParams, matchType, combineWith)
-      : this.courseRepository.searchDetails(courseSearchParams, page, size, matchType, combineWith);
+    var details =
+        (page == null || size == null)
+            ? this.courseRepository.searchDetails(courseSearchParams, matchType, combineWith)
+            : this.courseRepository.searchDetails(
+                courseSearchParams, page, size, matchType, combineWith);
 
-    var response = details.stream()
-      .map(CourseDetailsDTO::fromCourseDetails)
-      .toList();
+    var response = details.stream().map(CourseDetailsDTO::fromCourseDetails).toList();
 
     return ResponseEntity.ok(response);
-
   }
 }

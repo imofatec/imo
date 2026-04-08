@@ -22,8 +22,7 @@ public class RecoveryPasswordUseCase {
       UserRepository userRepository,
       RecoveryCodeRepository recoveryCodeRepository,
       PasswordEncoder passwordEncoder,
-      RecoveryCodePolicy policy
-  ) {
+      RecoveryCodePolicy policy) {
     this.userRepository = userRepository;
     this.recoveryCodeRepository = recoveryCodeRepository;
     this.passwordEncoder = passwordEncoder;
@@ -31,10 +30,8 @@ public class RecoveryPasswordUseCase {
   }
 
   public String execute(String email, String newPassword, String code) {
-    RecoveryCodePolicy.RecoveryCodeAndUser recoveryCodeAndUser = this.policy.assertCanRecovery(
-        code,
-        email
-    );
+    RecoveryCodePolicy.RecoveryCodeAndUser recoveryCodeAndUser =
+        this.policy.assertCanRecovery(code, email);
     RecoveryCode foundRecoveryCode = recoveryCodeAndUser.recoveryCode();
     User foundUser = recoveryCodeAndUser.user();
 

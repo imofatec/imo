@@ -7,12 +7,11 @@ import com.imo.backend.contexts.catalog.lesson.repositories.LessonRepository;
 import com.imo.backend.contexts.identity.user.User;
 import com.imo.backend.contexts.identity.user.repositories.UserRepository;
 import com.imo.backend.contexts.journey_tracking.usecases.WatchLessonByIdUseCase;
-import org.springframework.stereotype.Service;
-
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
+import org.springframework.stereotype.Service;
 
 @Service
 public class PopulateProgress {
@@ -25,8 +24,7 @@ public class PopulateProgress {
       UserRepository userRepository,
       CourseRepository courseRepository,
       LessonRepository lessonRepository,
-      WatchLessonByIdUseCase watchLessonByIdUseCase
-  ) {
+      WatchLessonByIdUseCase watchLessonByIdUseCase) {
     this.userRepository = userRepository;
     this.courseRepository = courseRepository;
     this.lessonRepository = lessonRepository;

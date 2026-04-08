@@ -24,16 +24,34 @@ public class GetLessonByIdController extends LessonController {
 
   @Operation(summary = "Get lesson by id")
   @SecurityRequirement(name = "Authorization")
-  @ApiResponses(value = {
-      @ApiResponse(responseCode = "200", description = "Aula encontrada", content = @Content(schema = @Schema(implementation = LessonDTO.class))),
-      @ApiResponse(responseCode = "401", description = "Não autenticado", content = @Content(schema = @Schema(implementation = com.imo.backend.contexts.common.exceptions.ErrorResponseDto.class))),
-      @ApiResponse(responseCode = "404", description = "Aula não encontrada", content = @Content(schema = @Schema(implementation = com.imo.backend.contexts.common.exceptions.ErrorResponseDto.class)))
-  })
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "Aula encontrada",
+            content = @Content(schema = @Schema(implementation = LessonDTO.class))),
+        @ApiResponse(
+            responseCode = "401",
+            description = "Não autenticado",
+            content =
+                @Content(
+                    schema =
+                        @Schema(
+                            implementation =
+                                com.imo.backend.contexts.common.exceptions.ErrorResponseDto
+                                    .class))),
+        @ApiResponse(
+            responseCode = "404",
+            description = "Aula não encontrada",
+            content =
+                @Content(
+                    schema =
+                        @Schema(
+                            implementation =
+                                com.imo.backend.contexts.common.exceptions.ErrorResponseDto.class)))
+      })
   @GetMapping("/{id}")
-  public ResponseEntity<LessonDTO> execute(
-      @PathVariable
-      String id
-  ) {
+  public ResponseEntity<LessonDTO> execute(@PathVariable String id) {
     var lesson = this.lessonRepository.findByIdOrThrow(id);
     return ResponseEntity.ok(LessonDTO.fromEntity(lesson));
   }

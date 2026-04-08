@@ -9,5 +9,4 @@ public interface LessonRepository extends MongoRepository<Lesson, String>, Custo
   default Lesson findByIdOrThrow(String id) {
     return this.findById(id).orElseThrow(() -> new NotFoundException("Aula não Encontrada"));
   }
-
 }

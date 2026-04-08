@@ -8,10 +8,9 @@ import com.imo.backend.contexts.certification.repositories.CertificateRepository
 import com.imo.backend.contexts.certification.values_objects.CertificatePeriod;
 import com.imo.backend.contexts.common.exceptions.custom.NotFoundException;
 import com.imo.backend.contexts.journey_tracking.Progress;
+import java.time.LocalDateTime;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime;
 
 @Service
 public class IssueCertificateUseCase {
@@ -22,34 +21,32 @@ public class IssueCertificateUseCase {
   public IssueCertificateUseCase(
       CertificateRepository certificateRepository,
       CertificatePolicies certificatePolicies,
-      PdfManager pdfManager
-  ) {
+      PdfManager pdfManager) {
     this.certificateRepository = certificateRepository;
     this.certificatePolicies = certificatePolicies;
     this.pdfManager = pdfManager;
   }
 
   public byte[] execute(String userId, String courseId, HttpHeaders headers) {
-    CertificateDetails certificateDetails = this.certificateRepository
-        .findDetailsByUserIdAndCourseId(userId, courseId)
-        .orElse(null);
+    CertificateDetails certificateDetails =
+        this.certificateRepository.findDetailsByUserIdAndCourseId(userId, courseId).orElse(null);
 
     if (certificateDetails == null) {
       Progress progress = this.certificatePolicies.assertCourseIsFinished(userId, courseId);
 
-      this.certificateRepository.save(new Certificate(
-          userId,
-          courseId,
-          new CertificatePeriod(
-              progress.getProgressPeriod().startedAt(),
-              progress.getProgressPeriod().finishedAt()
-          ),
-          LocalDateTime.now()
-      ));
+      this.certificateRepository.save(
+          new Certificate(
+              userId,
+              courseId,
+              new CertificatePeriod(
+                  progress.getProgressPeriod().startedAt(),
+                  progress.getProgressPeriod().finishedAt()),
+              LocalDateTime.now()));
 
-      certificateDetails = this.certificateRepository
-          .findDetailsByUserIdAndCourseId(userId, courseId)
-          .orElseThrow(() -> new NotFoundException("Certificado não encontrado"));
+      certificateDetails =
+          this.certificateRepository
+              .findDetailsByUserIdAndCourseId(userId, courseId)
+              .orElseThrow(() -> new NotFoundException("Certificado não encontrado"));
     }
 
     this.manageHeaders(certificateDetails, headers);
@@ -57,12 +54,12 @@ public class IssueCertificateUseCase {
   }
 
   private void manageHeaders(CertificateDetails certificateDetails, HttpHeaders headers) {
-    var filename = String.format(
-        "%s-%s-%s",
-        certificateDetails.user().getName().toUpperCase(),
-        certificateDetails.course().getName().slug().toUpperCase(),
-        certificateDetails.certificate().getIssuedAt()
-    );
+    var filename =
+        String.format(
+            "%s-%s-%s",
+            certificateDetails.user().getName().toUpperCase(),
+            certificateDetails.course().getName().slug().toUpperCase(),
+            certificateDetails.certificate().getIssuedAt());
 
     var headerValue = String.format("attachment; filename=%s.pdf", filename);
     headers.add(HttpHeaders.CONTENT_DISPOSITION, headerValue);

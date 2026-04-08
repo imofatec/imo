@@ -33,8 +33,7 @@ public class Course extends Entity {
 
   private int lessonsCount;
 
-  public Course() {
-  }
+  public Course() {}
 
   public Course(
       boolean isActive,
@@ -44,8 +43,7 @@ public class Course extends Entity {
       Categories category,
       String description,
       String firstLessonYoutubeLink,
-      int lessonsCount
-  ) {
+      int lessonsCount) {
     setActive(isActive);
     setName(new CourseName(name));
     setCategory(new Category(category));

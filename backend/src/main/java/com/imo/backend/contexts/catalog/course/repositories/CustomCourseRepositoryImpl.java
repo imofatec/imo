@@ -3,11 +3,14 @@ package com.imo.backend.contexts.catalog.course.repositories;
 import com.imo.backend.contexts.catalog.course.Course;
 import com.imo.backend.contexts.catalog.course.CourseDetails;
 import com.imo.backend.contexts.catalog.course.value_objects.Category;
-import com.imo.backend.contexts.common.exceptions.custom.NotFoundException;
 import com.imo.backend.contexts.catalog.lesson.Lesson;
 import com.imo.backend.contexts.common.CombineWith;
 import com.imo.backend.contexts.common.MatchType;
 import com.imo.backend.contexts.common.MongoDB;
+import com.imo.backend.contexts.common.exceptions.custom.NotFoundException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import org.bson.types.ObjectId;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -16,10 +19,6 @@ import org.springframework.data.mongodb.core.aggregation.*;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 @Repository
 public class CustomCourseRepositoryImpl implements CustomCourseRepository {
@@ -39,9 +38,8 @@ public class CustomCourseRepositoryImpl implements CustomCourseRepository {
 
   @Override
   public List<Course> findAllByContributorId(String id, Pageable page) {
-    Query query = new Query()
-        .addCriteria(Criteria.where("contributorId").is(new ObjectId(id)))
-        .with(page);
+    Query query =
+        new Query().addCriteria(Criteria.where("contributorId").is(new ObjectId(id))).with(page);
 
     return this.mongoTemplate.find(query, Course.class);
   }
@@ -61,10 +59,7 @@ public class CustomCourseRepositoryImpl implements CustomCourseRepository {
 
   @Override
   public List<Course> search(
-      CourseSearchParams searchParams,
-      MatchType matchType,
-      CombineWith combineWith
-  ) {
+      CourseSearchParams searchParams, MatchType matchType, CombineWith combineWith) {
     var filters = CourseSearchFilter.apply(searchParams);
 
     List<AggregationOperation> operations = new ArrayList<>();
@@ -86,8 +81,7 @@ public class CustomCourseRepositoryImpl implements CustomCourseRepository {
       int page,
       int size,
       MatchType matchType,
-      CombineWith combineWith
-  ) {
+      CombineWith combineWith) {
     var filters = CourseSearchFilter.apply(searchParams);
 
     List<AggregationOperation> operations = new ArrayList<>();
@@ -107,17 +101,9 @@ public class CustomCourseRepositoryImpl implements CustomCourseRepository {
 
   @Override
   public List<CourseDetails> searchDetails(
-      CourseSearchParams searchParams,
-      MatchType matchType,
-      CombineWith combineWith
-  ) {
-    Aggregation aggregation = buildCourseSearchDetailsAggregation(
-        searchParams,
-        matchType,
-        combineWith,
-        null,
-        null
-    );
+      CourseSearchParams searchParams, MatchType matchType, CombineWith combineWith) {
+    Aggregation aggregation =
+        buildCourseSearchDetailsAggregation(searchParams, matchType, combineWith, null, null);
     return this.mongoTemplate
         .aggregate(aggregation, "courses", CourseDetails.class)
         .getMappedResults();
@@ -129,15 +115,9 @@ public class CustomCourseRepositoryImpl implements CustomCourseRepository {
       int page,
       int size,
       MatchType matchType,
-      CombineWith combineWith
-  ) {
-    Aggregation aggregation = buildCourseSearchDetailsAggregation(
-        searchParams,
-        matchType,
-        combineWith,
-        page,
-        size
-    );
+      CombineWith combineWith) {
+    Aggregation aggregation =
+        buildCourseSearchDetailsAggregation(searchParams, matchType, combineWith, page, size);
     return this.mongoTemplate
         .aggregate(aggregation, "courses", CourseDetails.class)
         .getMappedResults();
@@ -151,20 +131,21 @@ public class CustomCourseRepositoryImpl implements CustomCourseRepository {
     operations.add(Aggregation.match(Criteria.where("_id").is(new ObjectId(id))));
     operations.add(Aggregation.lookup("lessons", "_id", "courseId", "lessons"));
 
-    ProjectionOperation project = Aggregation
-        .project()
-        .andExclude("_id")
-        .and(Aggregation.ROOT)
-        .as("course")
-        .and("lessons")
-        .as("lessons");
+    ProjectionOperation project =
+        Aggregation.project()
+            .andExclude("_id")
+            .and(Aggregation.ROOT)
+            .as("course")
+            .and("lessons")
+            .as("lessons");
 
     operations.add(project);
 
     Aggregation aggregation = Aggregation.newAggregation(operations);
-    var results = this.mongoTemplate
-        .aggregate(aggregation, "courses", CourseDetails.class)
-        .getMappedResults();
+    var results =
+        this.mongoTemplate
+            .aggregate(aggregation, "courses", CourseDetails.class)
+            .getMappedResults();
 
     if (results.isEmpty()) {
       throw new NotFoundException("Curso não Encontrado");
@@ -178,30 +159,26 @@ public class CustomCourseRepositoryImpl implements CustomCourseRepository {
       MatchType matchType,
       CombineWith combineWith,
       Integer page,
-      Integer size
-  ) {
+      Integer size) {
     var filters = CourseSearchFilter.apply(searchParams);
 
     List<AggregationOperation> operations = new ArrayList<>();
 
     if (!filters.isEmpty()) {
-      MatchOperation optionalMatchOperation = MongoDB.buildMatchOperation(
-          filters,
-          matchType,
-          combineWith
-      );
+      MatchOperation optionalMatchOperation =
+          MongoDB.buildMatchOperation(filters, matchType, combineWith);
       operations.add(optionalMatchOperation);
     }
 
     operations.add(Aggregation.lookup("lessons", "_id", "courseId", "lessons"));
 
-    ProjectionOperation project = Aggregation
-        .project()
-        .andExclude("_id")
-        .and(Aggregation.ROOT)
-        .as("course")
-        .and("lessons")
-        .as("lessons");
+    ProjectionOperation project =
+        Aggregation.project()
+            .andExclude("_id")
+            .and(Aggregation.ROOT)
+            .as("course")
+            .and("lessons")
+            .as("lessons");
 
     if (page != null && size != null) {
       SortOperation sortOperation = Aggregation.sort(Sort.by(Sort.Direction.DESC, "createdAt"));
@@ -217,28 +194,27 @@ public class CustomCourseRepositoryImpl implements CustomCourseRepository {
 
   @Override
   public List<Category> findAllCategories() {
-    Aggregation aggregation = Aggregation.newAggregation(
-        Aggregation.project("category"),
-        Aggregation.replaceRoot("category"),
-        Aggregation.group("slug", "name").first("slug").as("slug").first("name").as("name")
-    );
+    Aggregation aggregation =
+        Aggregation.newAggregation(
+            Aggregation.project("category"),
+            Aggregation.replaceRoot("category"),
+            Aggregation.group("slug", "name").first("slug").as("slug").first("name").as("name"));
 
     return mongoTemplate.aggregate(aggregation, "courses", Category.class).getMappedResults();
   }
-
 
   @Override
   public List<Category> findAllCategories(int page, int size) {
     SortOperation sortOperation = Aggregation.sort(Sort.by(Sort.Direction.DESC, "createdAt"));
 
-    Aggregation aggregation = Aggregation.newAggregation(
-        sortOperation,
-        Aggregation.project("category"),
-        Aggregation.replaceRoot("category"),
-        Aggregation.group("slug", "name").first("slug").as("slug").first("name").as("name"),
-        Aggregation.skip((long) page * size),
-        Aggregation.limit(size)
-    );
+    Aggregation aggregation =
+        Aggregation.newAggregation(
+            sortOperation,
+            Aggregation.project("category"),
+            Aggregation.replaceRoot("category"),
+            Aggregation.group("slug", "name").first("slug").as("slug").first("name").as("name"),
+            Aggregation.skip((long) page * size),
+            Aggregation.limit(size));
 
     return mongoTemplate.aggregate(aggregation, "courses", Category.class).getMappedResults();
   }

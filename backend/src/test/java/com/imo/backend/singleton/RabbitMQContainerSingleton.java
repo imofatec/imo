@@ -4,8 +4,7 @@ import org.testcontainers.containers.RabbitMQContainer;
 import org.testcontainers.junit.jupiter.Container;
 
 public class RabbitMQContainerSingleton {
-  @Container
-  private static RabbitMQContainer rabbitMQContainer;
+  @Container private static RabbitMQContainer rabbitMQContainer;
 
   public static RabbitMQContainer getInstance() {
     if (rabbitMQContainer == null) {

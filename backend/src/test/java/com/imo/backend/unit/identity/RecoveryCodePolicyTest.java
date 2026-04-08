@@ -1,11 +1,17 @@
 package com.imo.backend.unit.identity;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import com.imo.backend.contexts.common.exceptions.custom.BadRequestException;
 import com.imo.backend.contexts.identity.recovery.RecoveryCode;
 import com.imo.backend.contexts.identity.recovery.RecoveryCodePolicy;
 import com.imo.backend.contexts.identity.recovery.repositories.RecoveryCodeRepository;
 import com.imo.backend.contexts.identity.user.User;
 import com.imo.backend.contexts.identity.user.repositories.UserRepository;
+import java.time.LocalDateTime;
+import java.util.Optional;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,27 +21,16 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.time.LocalDateTime;
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 @ExtendWith(MockitoExtension.class)
 class RecoveryCodePolicyTest {
 
-  @Mock
-  private UserRepository userRepository;
+  @Mock private UserRepository userRepository;
 
-  @Mock
-  private RecoveryCodeRepository recoveryCodeRepository;
+  @Mock private RecoveryCodeRepository recoveryCodeRepository;
 
-  @Mock
-  private PasswordEncoder passwordEncoder;
+  @Mock private PasswordEncoder passwordEncoder;
 
-  @InjectMocks
-  RecoveryCodePolicy policies;
+  @InjectMocks RecoveryCodePolicy policies;
 
   @Test
   @DisplayName("happy path (assertCanRecovery): codigo valido")
@@ -86,10 +81,7 @@ class RecoveryCodePolicyTest {
     user.setId(userId);
     when(this.recoveryCodeRepository.findByUserId(userId)).thenReturn(Optional.of(recoveryCode));
 
-    assertThrows(
-        BadRequestException.class,
-        () -> this.policies.assertCanRecovery(rawCode, email)
-    );
+    assertThrows(BadRequestException.class, () -> this.policies.assertCanRecovery(rawCode, email));
 
     verify(this.userRepository).findByEmail(email);
     verify(this.recoveryCodeRepository).findByUserId(userId);

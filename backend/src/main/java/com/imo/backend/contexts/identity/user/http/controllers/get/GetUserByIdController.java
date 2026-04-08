@@ -23,17 +23,24 @@ public class GetUserByIdController extends UserController {
   }
 
   @Operation(summary = "Get user by id")
-  @ApiResponses(value = {
-      @ApiResponse(responseCode = "200", description = "Usuário encontrado",
-          content = @Content(schema = @Schema(implementation = UserDTO.class))),
-      @ApiResponse(responseCode = "404", description = "Usuário não encontrado",
-          content = @Content(schema = @Schema(implementation = com.imo.backend.contexts.common.exceptions.ErrorResponseDto.class)))
-  })
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "Usuário encontrado",
+            content = @Content(schema = @Schema(implementation = UserDTO.class))),
+        @ApiResponse(
+            responseCode = "404",
+            description = "Usuário não encontrado",
+            content =
+                @Content(
+                    schema =
+                        @Schema(
+                            implementation =
+                                com.imo.backend.contexts.common.exceptions.ErrorResponseDto.class)))
+      })
   @GetMapping("/{id}")
-  public ResponseEntity<UserDTO> handle(
-      @PathVariable
-      String id
-  ) {
+  public ResponseEntity<UserDTO> handle(@PathVariable String id) {
     MongoDB.validateObjectId(id);
     var user = UserDTO.fromUser(this.userRepository.findByIdOrThrow(id));
 

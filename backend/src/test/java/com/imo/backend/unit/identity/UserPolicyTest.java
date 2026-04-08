@@ -1,11 +1,16 @@
 package com.imo.backend.unit.identity;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import com.imo.backend.contexts.common.exceptions.custom.BadRequestException;
 import com.imo.backend.contexts.common.exceptions.custom.ConflictException;
 import com.imo.backend.contexts.identity.user.User;
 import com.imo.backend.contexts.identity.user.UserPolicies;
 import com.imo.backend.contexts.identity.user.commands.CreateUserCommand;
 import com.imo.backend.contexts.identity.user.repositories.UserRepository;
+import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,23 +19,14 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 @ExtendWith(MockitoExtension.class)
 class UserPolicyTest {
 
-  @Mock
-  private UserRepository userRepository;
+  @Mock private UserRepository userRepository;
 
-  @Mock
-  private PasswordEncoder passwordEncoder;
+  @Mock private PasswordEncoder passwordEncoder;
 
-  @InjectMocks
-  UserPolicies policies;
+  @InjectMocks UserPolicies policies;
 
   private final String baseName = "Kiss Shot";
 
@@ -95,9 +91,7 @@ class UserPolicyTest {
     when(this.userRepository.findByEmail(baseEmail)).thenReturn(Optional.empty());
 
     assertThrows(
-        BadRequestException.class,
-        () -> this.policies.assertCredentials(baseEmail, "123456")
-    );
+        BadRequestException.class, () -> this.policies.assertCredentials(baseEmail, "123456"));
 
     verify(this.userRepository).findByEmail(baseEmail);
   }
@@ -111,9 +105,7 @@ class UserPolicyTest {
     when(this.passwordEncoder.matches("senhaErrada", "encoded123")).thenReturn(false);
 
     assertThrows(
-        BadRequestException.class,
-        () -> this.policies.assertCredentials(baseEmail, "senhaErrada")
-    );
+        BadRequestException.class, () -> this.policies.assertCredentials(baseEmail, "senhaErrada"));
 
     verify(this.userRepository).findByEmail(baseEmail);
     verify(this.passwordEncoder).matches("senhaErrada", "encoded123");

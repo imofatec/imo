@@ -32,17 +32,13 @@ public abstract class BaseE2ETest {
     registry.add("spring.data.mongodb.uri", mongoDBContainerSingleton::getReplicaSetUrl);
   }
 
-  @MockitoBean
-  protected RabbitTemplate rabbitTemplate;
+  @MockitoBean protected RabbitTemplate rabbitTemplate;
 
-  @MockitoBean
-  protected JavaMailSender javaMailSender;
+  @MockitoBean protected JavaMailSender javaMailSender;
 
-  @LocalServerPort
-  int port;
+  @LocalServerPort int port;
 
-  @Autowired
-  MongoTemplate mongoTemplate;
+  @Autowired MongoTemplate mongoTemplate;
 
   @AfterEach
   void cleanDatabase() {

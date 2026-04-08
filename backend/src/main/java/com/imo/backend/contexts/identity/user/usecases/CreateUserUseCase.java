@@ -24,8 +24,7 @@ public class CreateUserUseCase {
       ApplicationEventPublisher publisher,
       UserPolicies userPolicies,
       UserRepository userRepository,
-      PasswordEncoder passwordEncoder
-  ) {
+      PasswordEncoder passwordEncoder) {
     this.publisher = publisher;
     this.userPolicies = userPolicies;
     this.userRepository = userRepository;
@@ -40,10 +39,8 @@ public class CreateUserUseCase {
     potentialNewUser.setPassword(this.passwordEncoder.encode(potentialNewUser.getPassword()));
 
     User newUser = this.userRepository.save(potentialNewUser);
-    this.publisher.publishEvent(new SendEmailConfirmationEvent(
-        newUser.getEmail(),
-        newUser.getName()
-    ));
+    this.publisher.publishEvent(
+        new SendEmailConfirmationEvent(newUser.getEmail(), newUser.getName()));
 
     return newUser;
   }

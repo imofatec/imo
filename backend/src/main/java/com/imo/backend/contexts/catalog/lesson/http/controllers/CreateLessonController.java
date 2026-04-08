@@ -31,37 +31,74 @@ public class CreateLessonController extends LessonController {
 
   public CreateLessonController(
       ValidateUserCourseAccessService validateUserCourseAccessService,
-      CreateLessonUseCase useCase
-  ) {
+      CreateLessonUseCase useCase) {
     this.validateUserCourseAccessService = validateUserCourseAccessService;
     this.useCase = useCase;
   }
 
   @Operation(summary = "Add new lesson in a course")
   @SecurityRequirement(name = "Authorization")
-  @ApiResponses(value = {
-      @ApiResponse(responseCode = "201", description = "Aula criada com sucesso",
-          content = @Content(schema = @Schema(implementation = LessonDTO.class))),
-      @ApiResponse(responseCode = "400", description = "Dados inválidos",
-          content = @Content(schema = @Schema(implementation = com.imo.backend.contexts.common.exceptions.ErrorResponseDto.class))),
-      @ApiResponse(responseCode = "401", description = "Não autenticado",
-          content = @Content(schema = @Schema(implementation = com.imo.backend.contexts.common.exceptions.ErrorResponseDto.class))),
-      @ApiResponse(responseCode = "403", description = "Sem permissão para adicionar aula neste curso",
-          content = @Content(schema = @Schema(implementation = com.imo.backend.contexts.common.exceptions.ErrorResponseDto.class))),
-      @ApiResponse(responseCode = "404", description = "Curso não encontrado",
-          content = @Content(schema = @Schema(implementation = com.imo.backend.contexts.common.exceptions.ErrorResponseDto.class))),
-      @ApiResponse(responseCode = "409", description = "Título ou link já existem no curso",
-          content = @Content(schema = @Schema(implementation = com.imo.backend.contexts.common.exceptions.ErrorResponseDto.class)))
-  })
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "201",
+            description = "Aula criada com sucesso",
+            content = @Content(schema = @Schema(implementation = LessonDTO.class))),
+        @ApiResponse(
+            responseCode = "400",
+            description = "Dados inválidos",
+            content =
+                @Content(
+                    schema =
+                        @Schema(
+                            implementation =
+                                com.imo.backend.contexts.common.exceptions.ErrorResponseDto
+                                    .class))),
+        @ApiResponse(
+            responseCode = "401",
+            description = "Não autenticado",
+            content =
+                @Content(
+                    schema =
+                        @Schema(
+                            implementation =
+                                com.imo.backend.contexts.common.exceptions.ErrorResponseDto
+                                    .class))),
+        @ApiResponse(
+            responseCode = "403",
+            description = "Sem permissão para adicionar aula neste curso",
+            content =
+                @Content(
+                    schema =
+                        @Schema(
+                            implementation =
+                                com.imo.backend.contexts.common.exceptions.ErrorResponseDto
+                                    .class))),
+        @ApiResponse(
+            responseCode = "404",
+            description = "Curso não encontrado",
+            content =
+                @Content(
+                    schema =
+                        @Schema(
+                            implementation =
+                                com.imo.backend.contexts.common.exceptions.ErrorResponseDto
+                                    .class))),
+        @ApiResponse(
+            responseCode = "409",
+            description = "Título ou link já existem no curso",
+            content =
+                @Content(
+                    schema =
+                        @Schema(
+                            implementation =
+                                com.imo.backend.contexts.common.exceptions.ErrorResponseDto.class)))
+      })
   @PostMapping("/{courseId}")
   public ResponseEntity<LessonDTO> handle(
       HttpServletRequest request,
-      @PathVariable
-      String courseId,
-      @Valid
-      @RequestBody
-      CreateLessonRequest dto
-  ) {
+      @PathVariable String courseId,
+      @Valid @RequestBody CreateLessonRequest dto) {
     MongoDB.validateObjectId(courseId);
     String userId = SecurityContextHolder.getContext().getAuthentication().getName();
     this.validateUserCourseAccessService.execute(userId, courseId);

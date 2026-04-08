@@ -22,15 +22,15 @@ public class SendForgetPasswordCodeUseCase {
 
   private final CodeGenerator codeGenerator;
 
-  private static final String RESPONSE_MESSAGE = "Se o email informado existir, você receberá uma mensagem com o código de recuperação";
+  private static final String RESPONSE_MESSAGE =
+      "Se o email informado existir, você receberá uma mensagem com o código de recuperação";
 
   public SendForgetPasswordCodeUseCase(
       UserRepository userRepository,
       RecoveryCodeRepository recoveryCodeRepository,
       ApplicationEventPublisher applicationEventPublisher,
       PasswordEncoder passwordEncoder,
-      CodeGenerator codeGenerator
-  ) {
+      CodeGenerator codeGenerator) {
     this.userRepository = userRepository;
     this.recoveryCodeRepository = recoveryCodeRepository;
     this.applicationEventPublisher = applicationEventPublisher;
@@ -53,18 +53,13 @@ public class SendForgetPasswordCodeUseCase {
 
     String rawCode = this.codeGenerator.generate();
 
-    RecoveryCode recoveryCode = new RecoveryCode(
-        foundUser.getId(),
-        this.passwordEncoder.encode(rawCode)
-    );
+    RecoveryCode recoveryCode =
+        new RecoveryCode(foundUser.getId(), this.passwordEncoder.encode(rawCode));
     this.recoveryCodeRepository.save(recoveryCode);
 
-    this.applicationEventPublisher.publishEvent(new ForgetPasswordEvent(
-        foundUser.getId(),
-        foundUser.getName(),
-        foundUser.getEmail(),
-        rawCode
-    ));
+    this.applicationEventPublisher.publishEvent(
+        new ForgetPasswordEvent(
+            foundUser.getId(), foundUser.getName(), foundUser.getEmail(), rawCode));
 
     return RESPONSE_MESSAGE;
   }

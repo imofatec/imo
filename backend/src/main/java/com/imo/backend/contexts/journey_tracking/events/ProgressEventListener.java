@@ -4,11 +4,10 @@ import com.imo.backend.contexts.catalog.lesson.repositories.LessonRepository;
 import com.imo.backend.contexts.common.Entity;
 import com.imo.backend.contexts.journey_tracking.Progress;
 import com.imo.backend.contexts.journey_tracking.repositories.ProgressRepository;
+import java.util.List;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 @Component
 public class ProgressEventListener {
@@ -17,9 +16,7 @@ public class ProgressEventListener {
   private final LessonRepository lessonRepository;
 
   public ProgressEventListener(
-      ProgressRepository progressRepository,
-      LessonRepository lessonRepository
-  ) {
+      ProgressRepository progressRepository, LessonRepository lessonRepository) {
     this.progressRepository = progressRepository;
     this.lessonRepository = lessonRepository;
   }
@@ -35,19 +32,19 @@ public class ProgressEventListener {
     do {
       progressList = this.progressRepository.findProgressByCourseId(courseId, page, size);
 
-      progressList.forEach(progress -> {
-        List<String> existingLessonsIds = this.lessonRepository
-            .findAllByCourseId(progress.getCourseId())
-            .stream()
-            .map(Entity::getId)
-            .toList();
+      progressList.forEach(
+          progress -> {
+            List<String> existingLessonsIds =
+                this.lessonRepository.findAllByCourseId(progress.getCourseId()).stream()
+                    .map(Entity::getId)
+                    .toList();
 
-        boolean changed = progress.reevaluateStructure(existingLessonsIds);
+            boolean changed = progress.reevaluateStructure(existingLessonsIds);
 
-        if (changed) {
-          this.progressRepository.save(progress);
-        }
-      });
+            if (changed) {
+              this.progressRepository.save(progress);
+            }
+          });
 
       page++;
     } while (progressList.size() == size);

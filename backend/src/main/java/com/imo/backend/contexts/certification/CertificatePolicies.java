@@ -16,9 +16,10 @@ public class CertificatePolicies {
   }
 
   public Progress assertCourseIsFinished(String userId, String courseId) {
-    Progress progress = this.progressRepository
-        .findByUserIdAndCourseId(userId, courseId)
-        .orElseThrow(() -> new NotFoundException("Progresso não encontrado."));
+    Progress progress =
+        this.progressRepository
+            .findByUserIdAndCourseId(userId, courseId)
+            .orElseThrow(() -> new NotFoundException("Progresso não encontrado."));
 
     if (progress.getStatus() != ProgressStatus.FINISHED) {
       throw new ForbiddenException("Finalize o curso para emitir o certificado.");

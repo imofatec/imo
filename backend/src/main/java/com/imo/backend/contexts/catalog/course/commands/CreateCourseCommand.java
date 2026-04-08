@@ -2,7 +2,6 @@ package com.imo.backend.contexts.catalog.course.commands;
 
 import com.imo.backend.contexts.catalog.course.value_objects.Categories;
 import com.imo.backend.contexts.catalog.lesson.commands.CreateLessonCommand;
-
 import java.util.List;
 
 public record CreateCourseCommand(
@@ -11,6 +10,4 @@ public record CreateCourseCommand(
     String level,
     String description,
     List<CreateLessonCommand> lessons,
-    String contributorId
-) {
-}
+    String contributorId) {}

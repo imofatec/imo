@@ -1,8 +1,8 @@
 package com.imo.backend.contexts.journey_tracking.controllers;
 
+import com.imo.backend.contexts.common.MongoDB;
 import com.imo.backend.contexts.journey_tracking.controllers.dtos.ProgressDetailsDTO;
 import com.imo.backend.contexts.journey_tracking.repositories.ProgressRepository;
-import com.imo.backend.contexts.common.MongoDB;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -25,19 +25,34 @@ public class GetProgressByUserIdNCourseIdController extends ProgressController {
 
   @Operation(summary = "Get progress details of a course by logged user")
   @SecurityRequirement(name = "Authorization")
-  @ApiResponses(value = {
-      @ApiResponse(responseCode = "200", description = "Progresso obtido com sucesso",
-          content = @Content(schema = @Schema(implementation = ProgressDetailsDTO.class))),
-      @ApiResponse(responseCode = "401", description = "Não autenticado",
-          content = @Content(schema = @Schema(implementation = com.imo.backend.contexts.common.exceptions.ErrorResponseDto.class))),
-      @ApiResponse(responseCode = "404", description = "Progresso não encontrado",
-          content = @Content(schema = @Schema(implementation = com.imo.backend.contexts.common.exceptions.ErrorResponseDto.class)))
-  })
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "Progresso obtido com sucesso",
+            content = @Content(schema = @Schema(implementation = ProgressDetailsDTO.class))),
+        @ApiResponse(
+            responseCode = "401",
+            description = "Não autenticado",
+            content =
+                @Content(
+                    schema =
+                        @Schema(
+                            implementation =
+                                com.imo.backend.contexts.common.exceptions.ErrorResponseDto
+                                    .class))),
+        @ApiResponse(
+            responseCode = "404",
+            description = "Progresso não encontrado",
+            content =
+                @Content(
+                    schema =
+                        @Schema(
+                            implementation =
+                                com.imo.backend.contexts.common.exceptions.ErrorResponseDto.class)))
+      })
   @GetMapping("/details/{courseId}")
-  public ResponseEntity<ProgressDetailsDTO> handle(
-      @PathVariable
-      String courseId
-  ) {
+  public ResponseEntity<ProgressDetailsDTO> handle(@PathVariable String courseId) {
     MongoDB.validateObjectId(courseId);
     var userId = SecurityContextHolder.getContext().getAuthentication().getName();
     var progressDetails = this.progressRepository.findProgressDetailsOrThrow(userId, courseId);

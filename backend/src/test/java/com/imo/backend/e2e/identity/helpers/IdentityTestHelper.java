@@ -1,17 +1,14 @@
 package com.imo.backend.e2e.identity.helpers;
 
+import static io.restassured.RestAssured.given;
+
 import com.imo.backend.contexts.identity.user.http.dtos.CreateUserRequest;
 import com.imo.backend.contexts.identity.user.http.dtos.auth.LoginRequestDTO;
 import io.restassured.http.ContentType;
 
-import static io.restassured.RestAssured.given;
-
 public final class IdentityTestHelper {
 
-  public record TestUser(
-      String name,
-      String email,
-      String password) {
+  public record TestUser(String name, String email, String password) {
     public static TestUser defaultUser() {
       return new TestUser("Nome teste", "email@email.com", "Teste123");
     }
@@ -30,11 +27,7 @@ public final class IdentityTestHelper {
   }
 
   public static String registerUser(CreateUserRequest request) {
-    given()
-        .contentType(ContentType.JSON)
-        .body(request)
-        .when()
-        .post("/api/user");
+    given().contentType(ContentType.JSON).body(request).when().post("/api/user");
 
     return request.email();
   }
