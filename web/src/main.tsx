@@ -15,6 +15,7 @@ import GuestRoutes from './components/auth/GuestRoutes'
 import MyCourses from './pages/MyCourses'
 import CreateCoursePage from './pages/CreateCourse'
 import WatchPage from './pages/Watch'
+import EditCoursePage from './pages/EditCourse'
 
 const router = createBrowserRouter([
   {
@@ -39,6 +40,7 @@ const router = createBrowserRouter([
           { path: 'user/cursos', element: <MyCourses /> },
           { path: 'cursos/:courseId/:idLesson', element: <WatchPage /> },
           { path: 'criar-curso', element: <CreateCoursePage /> },
+          { path: 'editar-curso/:courseId', element: <EditCoursePage /> },
         ],
       },
       { path: '*', element: <NotFoundPage /> },

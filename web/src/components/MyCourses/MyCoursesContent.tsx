@@ -7,6 +7,7 @@ type BaseProps = {
   loading: boolean
   error: string | null
   pageSize: number
+  enableEditCourseButton?: boolean
 }
 
 type CoursesProps = BaseProps & {
@@ -27,6 +28,7 @@ export default function MyCoursesContent({
   error,
   pageSize,
   mode,
+  enableEditCourseButton = false,
 }: Props) {
   if (loading) {
     return (
@@ -63,6 +65,8 @@ export default function MyCoursesContent({
             course={course}
             actionLabel="Retomar curso"
             modalActionLabel="Retomar curso"
+            showEditButton={enableEditCourseButton}
+            editTo={`/editar-curso/${course.id}`}
           />
         ))}
       </div>

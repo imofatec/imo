@@ -11,6 +11,7 @@ export default function MyCoursesPage() {
     selectedFilter,
     setSelectedFilter,
     isAllFilter,
+    isContributionFilter,
     isCoursesMode,
     allOwnedCourses,
     contributedCourses,
@@ -42,6 +43,7 @@ export default function MyCoursesPage() {
                 error={currentError}
                 pageSize={pageSize}
                 mode="courses"
+                enableEditCourseButton={isContributionFilter}
               />
             ) : (
               <MyCoursesContent
