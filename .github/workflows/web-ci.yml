@@ -1,0 +1,79 @@
+name: Web CI
+
+on:
+  pull_request:
+    branches:
+      - develop
+      - master
+    paths:
+      - "web/**"
+      - ".github/workflows/web-ci.yml"
+
+concurrency:
+  group: web-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  web-ci:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    services:
+      mongodb:
+        image: mongo:7.0
+        ports:
+          - 27017:27017
+      rabbitmq:
+        image: rabbitmq:3-management
+        ports:
+          - 5672:5672
+          - 15672:15672
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Set up Java 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - name: Generate ephemeral RSA keys
+        working-directory: backend
+        run: |
+          chmod +x gen-keys.sh
+          ./gen-keys.sh
+
+      - name: Start backend
+        working-directory: backend
+        env:
+          MONGO_URI: mongodb://localhost:27017
+          RABBITMQ_URI: amqp://localhost:5672
+          EMAIL_USERNAME: test@test.com
+          EMAIL_PASSWORD: test123
+        run: |
+          chmod +x mvnw
+          ./mvnw -B -ntp spring-boot:run &
+          sleep 30
+
+      - name: Install web dependencies
+        working-directory: web
+        run: npm ci
+
+      - name: Install Playwright browsers
+        working-directory: web
+        run: npx playwright install --with-deps chrome firefox
+
+      - name: Run Playwright tests
+        working-directory: web
+        env:
+          CI: "true"
+          PLAYWRIGHT_BASE_URL: http://localhost:5173
+          VITE_API_BASE_URL: http://localhost:8080
+        run: npx playwright test
