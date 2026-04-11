@@ -42,7 +42,7 @@ public class GetCourseDetailsByIdController extends CourseController {
       })
   @GetMapping("/details/{id}")
   public ResponseEntity<CourseDetailsDTO> execute(@PathVariable String id) {
-    var courseDetails = this.courseRepository.findCourseDetailsByIdOrThrow(id);
+    var courseDetails = this.courseRepository.findCourseDetailsByIdOrThrow(id, true);
     return ResponseEntity.ok(CourseDetailsDTO.fromCourseDetails(courseDetails));
   }
 }

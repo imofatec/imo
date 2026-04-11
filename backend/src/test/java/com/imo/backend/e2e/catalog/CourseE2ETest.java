@@ -114,6 +114,43 @@ class CourseE2ETest extends BaseE2ETest {
   }
 
   @Test
+  @DisplayName("exception (GET /api/course/{id}): retorna 404 quando curso está inativo")
+  void shouldReturn404WhenCourseIsInactive() {
+    String token = IdentityTestHelper.registerAndLogin(TestUser.defaultUser());
+    CourseDTO inactiveCourse =
+        CatalogTestHelper.createInactiveCourse(token, TestCourse.defaultCourse());
+
+    given()
+        .when()
+        .get("/api/course/{id}", inactiveCourse.id())
+        .then()
+        .statusCode(HttpStatus.NOT_FOUND.value())
+        .contentType(ContentType.JSON)
+        .body("error", equalTo("NOT_FOUND"));
+  }
+
+  @Test
+  @DisplayName("happy path (GET /api/course/inactive/{id}): retorna 200 quando busca curso inativo")
+  void shouldGetInactiveCourseById() {
+    String token = IdentityTestHelper.registerAndLogin(TestUser.defaultUser());
+    CourseDTO inactiveCourse =
+        CatalogTestHelper.createInactiveCourse(token, TestCourse.defaultCourse());
+
+    CourseDTO course =
+        given()
+            .when()
+            .get("/api/course/inactive/{id}", inactiveCourse.id())
+            .then()
+            .statusCode(HttpStatus.OK.value())
+            .contentType(ContentType.JSON)
+            .extract()
+            .as(CourseDTO.class);
+
+    assertEquals(inactiveCourse.id(), course.id());
+    assertFalse(course.isActive());
+  }
+
+  @Test
   @DisplayName("exception (GET /api/course/{id}): retorna 400 quando id é invalido")
   void shouldReturn400WhenCourseIdIsInvalid() {
     given()
@@ -162,6 +199,58 @@ class CourseE2ETest extends BaseE2ETest {
 
   @Test
   @DisplayName(
+      "happy path (GET /api/course/search): retorna vazio quando curso está inativo por padrão")
+  void shouldNotSearchInactiveCoursesByDefault() {
+    String token = IdentityTestHelper.registerAndLogin(TestUser.defaultUser());
+    TestCourse course = TestCourse.defaultCourse();
+    CatalogTestHelper.createInactiveCourse(token, course);
+
+    List<CourseDTO> courses =
+        given()
+            .queryParam("name", course.name())
+            .queryParam("page", 0)
+            .queryParam("size", 10)
+            .when()
+            .get("/api/course/search")
+            .then()
+            .statusCode(HttpStatus.OK.value())
+            .contentType(ContentType.JSON)
+            .extract()
+            .jsonPath()
+            .getList(".", CourseDTO.class);
+
+    assertTrue(courses.isEmpty());
+  }
+
+  @Test
+  @DisplayName("happy path (GET /api/course/search): retorna cursos inativos quando active=false")
+  void shouldSearchInactiveCoursesWhenActiveIsFalse() {
+    String token = IdentityTestHelper.registerAndLogin(TestUser.defaultUser());
+    TestCourse course = TestCourse.defaultCourse();
+    CourseDTO inactiveCourse = CatalogTestHelper.createInactiveCourse(token, course);
+
+    List<CourseDTO> courses =
+        given()
+            .queryParam("name", course.name())
+            .queryParam("active", false)
+            .queryParam("page", 0)
+            .queryParam("size", 10)
+            .when()
+            .get("/api/course/search")
+            .then()
+            .statusCode(HttpStatus.OK.value())
+            .contentType(ContentType.JSON)
+            .extract()
+            .jsonPath()
+            .getList(".", CourseDTO.class);
+
+    assertEquals(1, courses.size());
+    assertEquals(inactiveCourse.id(), courses.getFirst().id());
+    assertFalse(courses.getFirst().isActive());
+  }
+
+  @Test
+  @DisplayName(
       "happy path (GET /api/course/search/details): retorna 200 com detalhes dos cursos paginada")
   void shouldSearchCourseDetails() {
     String token = IdentityTestHelper.registerAndLogin(TestUser.defaultUser());
@@ -178,6 +267,61 @@ class CourseE2ETest extends BaseE2ETest {
         .then()
         .statusCode(HttpStatus.OK.value())
         .contentType(ContentType.JSON);
+  }
+
+  @Test
+  @DisplayName(
+      "happy path (GET /api/course/search/details): retorna vazio por padrão quando curso está inativo")
+  void shouldNotSearchInactiveCourseDetailsByDefault() {
+    String token = IdentityTestHelper.registerAndLogin(TestUser.defaultUser());
+    TestCourse course = TestCourse.defaultCourse();
+    CatalogTestHelper.createInactiveCourse(token, course);
+
+    List<CourseDetailsDTO> details =
+        given()
+            .header("Authorization", "Bearer " + token)
+            .queryParam("name", course.name())
+            .queryParam("page", 0)
+            .queryParam("size", 10)
+            .when()
+            .get("/api/course/search/details")
+            .then()
+            .statusCode(HttpStatus.OK.value())
+            .contentType(ContentType.JSON)
+            .extract()
+            .jsonPath()
+            .getList(".", CourseDetailsDTO.class);
+
+    assertTrue(details.isEmpty());
+  }
+
+  @Test
+  @DisplayName(
+      "happy path (GET /api/course/search/details): retorna cursos inativos quando active=false")
+  void shouldSearchInactiveCourseDetailsWhenActiveIsFalse() {
+    String token = IdentityTestHelper.registerAndLogin(TestUser.defaultUser());
+    TestCourse course = TestCourse.defaultCourse();
+    CourseDTO inactiveCourse = CatalogTestHelper.createInactiveCourse(token, course);
+
+    List<CourseDetailsDTO> details =
+        given()
+            .header("Authorization", "Bearer " + token)
+            .queryParam("name", course.name())
+            .queryParam("active", false)
+            .queryParam("page", 0)
+            .queryParam("size", 10)
+            .when()
+            .get("/api/course/search/details")
+            .then()
+            .statusCode(HttpStatus.OK.value())
+            .contentType(ContentType.JSON)
+            .extract()
+            .jsonPath()
+            .getList(".", CourseDetailsDTO.class);
+
+    assertEquals(1, details.size());
+    assertEquals(inactiveCourse.id(), details.getFirst().course().id());
+    assertFalse(details.getFirst().course().isActive());
   }
 
   @Test
@@ -209,6 +353,46 @@ class CourseE2ETest extends BaseE2ETest {
         .contentType(ContentType.JSON)
         .extract()
         .as(CourseDetailsDTO.class);
+  }
+
+  @Test
+  @DisplayName("exception (GET /api/course/details/{id}): retorna 404 quando curso está inativo")
+  void shouldReturn404WhenCourseDetailsAreInactive() {
+    String token = IdentityTestHelper.registerAndLogin(TestUser.defaultUser());
+    CourseDTO inactiveCourse =
+        CatalogTestHelper.createInactiveCourse(token, TestCourse.defaultCourse());
+
+    given()
+        .header("Authorization", "Bearer " + token)
+        .when()
+        .get("/api/course/details/" + inactiveCourse.id())
+        .then()
+        .statusCode(HttpStatus.NOT_FOUND.value())
+        .contentType(ContentType.JSON)
+        .body("error", equalTo("NOT_FOUND"));
+  }
+
+  @Test
+  @DisplayName(
+      "happy path (GET /api/course/details/inactive/{id}): retorna 200 quando busca detalhes de curso inativo")
+  void shouldGetInactiveCourseDetailsById() {
+    String token = IdentityTestHelper.registerAndLogin(TestUser.defaultUser());
+    CourseDTO inactiveCourse =
+        CatalogTestHelper.createInactiveCourse(token, TestCourse.defaultCourse());
+
+    CourseDetailsDTO courseDetails =
+        given()
+            .when()
+            .get("/api/course/details/inactive/{id}", inactiveCourse.id())
+            .then()
+            .statusCode(HttpStatus.OK.value())
+            .contentType(ContentType.JSON)
+            .extract()
+            .as(CourseDetailsDTO.class);
+
+    assertEquals(inactiveCourse.id(), courseDetails.course().id());
+    assertFalse(courseDetails.course().isActive());
+    assertFalse(courseDetails.lessons().isEmpty());
   }
 
   @Test

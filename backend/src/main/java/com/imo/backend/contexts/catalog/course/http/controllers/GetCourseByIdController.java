@@ -42,7 +42,7 @@ public class GetCourseByIdController extends CourseController {
   @GetMapping("/{id}")
   public ResponseEntity<CourseDTO> execute(@PathVariable String id) {
     MongoDB.validateObjectId(id);
-    var course = this.courseRepository.findByIdOrThrow(id);
+    var course = this.courseRepository.findActiveByIdOrThrow(id);
     return ResponseEntity.ok(CourseDTO.fromEntity(course));
   }
 }

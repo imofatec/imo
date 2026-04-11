@@ -11,6 +11,16 @@ public interface CourseRepository extends MongoRepository<Course, String>, Custo
     return this.findById(id).orElseThrow(() -> new NotFoundException("Curso não Encontrado"));
   }
 
+  default Course findActiveByIdOrThrow(String id) {
+    return this.findByIdAndIsActive(id, true)
+        .orElseThrow(() -> new NotFoundException("Curso não Encontrado"));
+  }
+
+  default Course findInactiveByIdOrThrow(String id) {
+    return this.findByIdAndIsActive(id, false)
+        .orElseThrow(() -> new NotFoundException("Curso não Encontrado"));
+  }
+
   default Course findByLessonIdOrThrow(String lessonId) {
     return this.findByLessonId(lessonId)
         .orElseThrow(() -> new NotFoundException("Aula não Encontrada"));

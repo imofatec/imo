@@ -81,6 +81,19 @@ public final class CatalogTestHelper {
         .as(CourseDetailsDTO.class);
   }
 
+  public static CourseDTO createInactiveCourse(String token, TestCourse testCourse) {
+    CourseDetailsDTO createdCourse = createCourse(token, testCourse);
+
+    return given()
+        .header("Authorization", "Bearer " + token)
+        .when()
+        .patch("/api/course/{id}", createdCourse.course().id())
+        .then()
+        .statusCode(200)
+        .extract()
+        .as(CourseDTO.class);
+  }
+
   public static LessonDTO createLesson(String token, String courseId, TestLesson testLesson) {
     return given()
         .header("Authorization", "Bearer " + token)

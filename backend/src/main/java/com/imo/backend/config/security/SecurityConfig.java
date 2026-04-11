@@ -61,6 +61,8 @@ public class SecurityConfig {
                         "/api/user/ids",
                         "/api/user/{id:^(?!profile$).+}",
                         "/api/course/{id}",
+                        "/api/course/inactive/{id}",
+                        "/api/course/details/inactive/{id}",
                         "/api/course/search",
                         "/api/course/categories",
                         "/api/comment/{lessonId}",
