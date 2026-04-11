@@ -1,25 +1,23 @@
 import LessonFormEdit from '@/components/EditCourse/LessonFormEdit'
-import type { EditCourseData } from '@/components/EditCourse/types'
-import type { UseFormRegister } from 'react-hook-form'
-
-export type LessonPreview = {
-  id: string
-  title: string
-  youtubeLink: string
-  description: string
-  nameError?: string
-  linkError?: string
-  descriptionError?: string
-}
+import type { CreateCourseData } from '@/schemas/courses/CreateCourseSchema'
+import type { CourseDetailsLesson } from '@/types/course'
+import type { FieldErrors, UseFormRegister } from 'react-hook-form'
 
 type Props = {
-  lessons: LessonPreview[]
-  register: UseFormRegister<EditCourseData>
+  lessons: CourseDetailsLesson[]
+  register: UseFormRegister<CreateCourseData>
+  errors?: FieldErrors<CreateCourseData>['lessons']
   onSaveLesson: (lessonId: string, index: number) => void
   onDeleteLesson: (lessonId: string) => void
 }
 
-export default function LessonListEdit({ lessons, register, onSaveLesson, onDeleteLesson }: Props) {
+export default function LessonListEdit({
+  lessons,
+  register,
+  errors,
+  onSaveLesson,
+  onDeleteLesson,
+}: Props) {
   return (
     <div className="space-y-1">
       {lessons.map((lesson, index) => (
@@ -32,9 +30,9 @@ export default function LessonListEdit({ lessons, register, onSaveLesson, onDele
             namePlaceholder={lesson.title}
             linkPlaceholder={lesson.youtubeLink}
             descriptionPlaceholder={lesson.description}
-            nameError={lesson.nameError}
-            linkError={lesson.linkError}
-            descriptionError={lesson.descriptionError}
+            nameError={errors?.[index]?.nameLesson?.message}
+            linkError={errors?.[index]?.link?.message}
+            descriptionError={errors?.[index]?.descriptionL?.message}
             onSaveLesson={() => onSaveLesson(lesson.id, index)}
             onDeleteLesson={() => onDeleteLesson(lesson.id)}
           />

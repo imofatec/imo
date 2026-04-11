@@ -1,12 +1,12 @@
 import TextBoxInput from '@/components/CreateCourses/TextBoxInput'
 import Button from '@/components/ui/Button'
 import FormInput from '@/components/ui/FormInput'
-import type { EditCourseData } from '@/types/edit'
+import type { CreateCourseData } from '@/schemas/courses/CreateCourseSchema'
 import type { UseFormRegister } from 'react-hook-form'
 
 type Props = {
   index: number
-  register: UseFormRegister<EditCourseData>
+  register: UseFormRegister<CreateCourseData>
   namePlaceholder: string
   linkPlaceholder: string
   descriptionPlaceholder: string

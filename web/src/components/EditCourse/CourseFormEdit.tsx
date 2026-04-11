@@ -3,20 +3,14 @@ import TextBoxInput from '@/components/CreateCourses/TextBoxInput'
 import Button from '@/components/ui/Button'
 import FormInput from '@/components/ui/FormInput'
 import { categoryOptions, levelOptions } from '@/constants/courseOptions'
-import type { EditCourseData } from '@/types/edit'
+import type { CreateCourseData } from '@/schemas/courses/CreateCourseSchema'
+import type { CourseDetails } from '@/types/course'
 import type { FieldErrors, UseFormRegister } from 'react-hook-form'
 
-type CoursePreview = {
-  name: string
-  category: string
-  level: string
-  description: string
-}
-
 type Props = {
-  register: UseFormRegister<EditCourseData>
-  errors: FieldErrors<EditCourseData>
-  course: CoursePreview
+  register: UseFormRegister<CreateCourseData>
+  errors: FieldErrors<CreateCourseData>
+  course: CourseDetails | null
   onSaveCourse: () => void
 }
 
@@ -26,7 +20,7 @@ export default function CourseFormEdit({ register, errors, course, onSaveCourse 
       <div className="grid gap-5 md:grid-cols-2">
         <FormInput
           label="Nome do curso"
-          placeholder={course.name}
+          placeholder={course?.course.name.name ?? ''}
           className="h-12 rounded-xl bg-white/5"
           error={errors.nameCourse?.message}
           {...register('nameCourse')}
@@ -36,7 +30,7 @@ export default function CourseFormEdit({ register, errors, course, onSaveCourse 
           id="edit-category"
           label="Categoria"
           options={categoryOptions}
-          placeholder={course.category}
+          placeholder={course?.course.category.name ?? 'Selecione uma categoria'}
           className="h-12 rounded-xl bg-white/5"
           error={errors.category?.message}
           {...register('category')}
@@ -47,7 +41,7 @@ export default function CourseFormEdit({ register, errors, course, onSaveCourse 
         id="edit-level"
         label="Nível"
         options={levelOptions}
-        placeholder={course.level}
+        placeholder={course?.course.level.name ?? 'Selecione um nível'}
         className="h-12 rounded-xl bg-white/5"
         error={errors.level?.message}
         {...register('level')}
@@ -56,7 +50,7 @@ export default function CourseFormEdit({ register, errors, course, onSaveCourse 
       <TextBoxInput
         id="edit-description"
         label="Descrição"
-        placeholder={course.description}
+        placeholder={course?.course.description ?? ''}
         error={errors.description?.message}
         maxLength={500}
         {...register('description')}

@@ -12,7 +12,8 @@ export function useUsersByIds(ids: string[], { enabled = true }: UseUsersByIdsPa
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  const uniqueIds = useMemo(() => Array.from(new Set(ids.filter(Boolean))), [ids])
+  const idsKey = useMemo(() => ids.filter(Boolean).join(','), [ids])
+  const uniqueIds = useMemo(() => Array.from(new Set(idsKey.split(',').filter(Boolean))), [idsKey])
 
   const fetchUsers = useCallback(async () => {
     if (!enabled || uniqueIds.length === 0) {

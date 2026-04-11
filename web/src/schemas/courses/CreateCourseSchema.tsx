@@ -1,6 +1,6 @@
 ﻿import { z } from 'zod'
 
-const lessonSchema = z.object({
+export const lessonSchema = z.object({
   nameLesson: z
     .string({ message: 'Nome da aula obrigatório' })
     .trim()
