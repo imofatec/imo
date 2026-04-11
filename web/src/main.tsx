@@ -16,6 +16,7 @@ import MyCourses from './pages/MyCourses'
 import CreateCoursePage from './pages/CreateCourse'
 import WatchPage from './pages/Watch'
 import EditCoursePage from './pages/EditCourse'
+import UserConfigPage from './pages/UserConfig'
 
 const router = createBrowserRouter([
   {
@@ -38,6 +39,7 @@ const router = createBrowserRouter([
         element: <ProtectedRoutes />,
         children: [
           { path: 'user/cursos', element: <MyCourses /> },
+          { path: 'user/configuracoes', element: <UserConfigPage /> },
           { path: 'cursos/:courseId/:idLesson', element: <WatchPage /> },
           { path: 'criar-curso', element: <CreateCoursePage /> },
           { path: 'editar-curso/:courseId', element: <EditCoursePage /> },

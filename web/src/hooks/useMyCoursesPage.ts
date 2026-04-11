@@ -1,9 +1,10 @@
-import type { MyCoursesFilter } from '@/components/MyCourses/MyCoursesFilter'
+import { myCoursesFilters, type MyCoursesFilter } from '@/components/MyCourses/MyCoursesFilter'
 import { useUser } from '@/contexts/UserContext'
 import { useCourses } from '@/hooks/useCourses'
 import { useUserProgress } from '@/hooks/useUserProgress'
 import type { Course } from '@/types/course'
 import { useEffect, useMemo, useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 
 const PAGE_SIZE = 10
 
@@ -21,8 +22,11 @@ function getTitle(filter: MyCoursesFilter) {
 }
 
 export function useMyCoursesPage() {
+  const [searchParams, setSearchParams] = useSearchParams()
+  const queryFilter = searchParams.get('filtro')
+  const selectedFilter = myCoursesFilters.find((filter) => filter === queryFilter) ?? 'TODOS'
+
   const [page, setPage] = useState(0)
-  const [selectedFilter, setSelectedFilter] = useState<MyCoursesFilter>('TODOS')
   const { user, loading: userLoading } = useUser()
 
   const {
@@ -49,6 +53,15 @@ export function useMyCoursesPage() {
     // eslint-disable-next-line
     setPage(0)
   }, [selectedFilter])
+
+  function setSelectedFilter(filter: MyCoursesFilter) {
+    if (filter === 'TODOS') {
+      setSearchParams({})
+      return
+    }
+
+    setSearchParams({ filtro: filter })
+  }
 
   const filteredProgress = useMemo(() => {
     if (selectedFilter === 'FINALIZADOS') {
