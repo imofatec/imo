@@ -45,3 +45,5 @@ export type UserProgress = {
   course: Course
   lessons: Lesson[]
 }
+
+export type CurrentProgress = UserProgress

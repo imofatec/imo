@@ -14,6 +14,8 @@ import ProtectedRoutes from './components/auth/ProtectedRoutes'
 import GuestRoutes from './components/auth/GuestRoutes'
 import MyCourses from './pages/MyCourses'
 import CreateCoursePage from './pages/CreateCourse'
+import WatchPage from './pages/Watch'
+import EditCoursePage from './pages/EditCourse'
 
 const router = createBrowserRouter([
   {
@@ -21,28 +23,25 @@ const router = createBrowserRouter([
     element: <App />,
     children: [
       { index: true, element: <Home /> },
-      { path: 'categories/:categorySlug?', element: <AllCourses /> },
-
-      {
-        element: <GuestRoutes redirectTo="/" />,
-        children: [{ path: 'home', element: <Home /> }],
-      },
+      { path: 'categorias/:categorySlug?', element: <AllCourses /> },
 
       {
         element: <GuestRoutes redirectTo="/" />,
         children: [
+          { path: 'home', element: <Home /> },
           { path: 'login', element: <Login /> },
-          { path: 'register', element: <Register /> },
+          { path: 'cadastro', element: <Register /> },
         ],
       },
 
       {
         element: <ProtectedRoutes />,
-        children: [{ path: 'user/courses', element: <MyCourses /> }],
-      },
-      {
-        element: <ProtectedRoutes />,
-        children: [{ path: 'createcourse', element: <CreateCoursePage /> }],
+        children: [
+          { path: 'user/cursos', element: <MyCourses /> },
+          { path: 'cursos/:courseId/:idLesson', element: <WatchPage /> },
+          { path: 'criar-curso', element: <CreateCoursePage /> },
+          { path: 'editar-curso/:courseId', element: <EditCoursePage /> },
+        ],
       },
       { path: '*', element: <NotFoundPage /> },
     ],

@@ -17,7 +17,9 @@ export default function SearchBar() {
 
     const trimmedSearch = searchTerm.trim()
 
-    navigate(trimmedSearch ? `/allcourses?name=${encodeURIComponent(trimmedSearch)}` : '/allcourses')
+    navigate(
+      trimmedSearch ? `/categorias?name=${encodeURIComponent(trimmedSearch)}` : '/categorias'
+    )
   }
 
   return (

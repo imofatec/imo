@@ -41,7 +41,7 @@ export default function CoursesContent({ courses, loading, error, pageSize }: Pr
   return (
     <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5">
       {courses.map((course) => (
-        <CourseCard key={course.id} course={course} />
+        <CourseCard key={course.id} course={course} modalActionLabel="Inscrever-se" />
       ))}
     </div>
   )

@@ -26,7 +26,7 @@ export default function Header() {
               <LinkButton variant="cyanOutline" to={'/login'} className="bg-cyan text-cyan w-25">
                 Entrar
               </LinkButton>
-              <LinkButton variant="cyanOutline" to={'/register'} className="bg-cyan text-cyan w-25">
+              <LinkButton variant="cyanOutline" to={'/cadastro'} className="bg-cyan text-cyan w-25">
                 Cadastrar
               </LinkButton>
             </div>
@@ -38,13 +38,13 @@ export default function Header() {
         <LinkButton variant="default" to={'/home'} className="bg-cyan w-25 text-black">
           Página inicial
         </LinkButton>
-        <LinkButton variant="default" to={'/categories'} className="bg-cyan w-25 text-black">
+        <LinkButton variant="default" to={'/categorias'} className="bg-cyan w-25 text-black">
           Todos os cursos
         </LinkButton>
-        <LinkButton variant="default" to={'/user/courses'} className="bg-cyan w-25 text-black">
+        <LinkButton variant="default" to={'/user/cursos'} className="bg-cyan w-25 text-black">
           Meus cursos
         </LinkButton>
-        <LinkButton variant="default" to={'/createcourse'} className="bg-cyan w-25 text-black">
+        <LinkButton variant="default" to={'/criar-curso'} className="bg-cyan w-25 text-black">
           Contribuir com curso
         </LinkButton>
         <LinkButton variant="default" to={'/home'} className="bg-cyan w-25 text-black">

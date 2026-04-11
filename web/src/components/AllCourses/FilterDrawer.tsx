@@ -28,7 +28,7 @@ export default function FilterDrawer({ categories, selectedCategory }: Props) {
 
           <div className="p-2">
             <Link
-              to="/categories"
+              to="/categorias"
               className={`flex w-full items-center justify-between rounded-xl px-3 py-2 text-left text-sm transition ${
                 selectedCategory === null
                   ? 'bg-cyan/20 text-cyan'
@@ -41,7 +41,7 @@ export default function FilterDrawer({ categories, selectedCategory }: Props) {
 
             {categories.map((category) => (
               <Link
-                to={`/categories/${category.slug}`}
+                to={`/categorias/${category.slug}`}
                 key={category.slug}
                 className={`flex w-full items-center justify-between rounded-xl px-3 py-2 text-left text-sm transition ${
                   selectedCategory === category.slug

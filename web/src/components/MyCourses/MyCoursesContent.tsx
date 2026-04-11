@@ -7,6 +7,7 @@ type BaseProps = {
   loading: boolean
   error: string | null
   pageSize: number
+  enableEditCourseButton?: boolean
 }
 
 type CoursesProps = BaseProps & {
@@ -27,6 +28,7 @@ export default function MyCoursesContent({
   error,
   pageSize,
   mode,
+  enableEditCourseButton = false,
 }: Props) {
   if (loading) {
     return (
@@ -58,7 +60,14 @@ export default function MyCoursesContent({
     return (
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5">
         {items.map((course) => (
-          <CourseCard key={course.id} course={course} />
+          <CourseCard
+            key={course.id}
+            course={course}
+            actionLabel="Retomar curso"
+            modalActionLabel="Retomar curso"
+            showEditButton={enableEditCourseButton}
+            editTo={`/editar-curso/${course.id}`}
+          />
         ))}
       </div>
     )
@@ -67,7 +76,12 @@ export default function MyCoursesContent({
   return (
     <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5">
       {items.map((item) => (
-        <CourseCard key={item.progress.id} course={item.course} />
+        <CourseCard
+          key={item.progress.id}
+          course={item.course}
+          actionLabel="Retomar curso"
+          modalActionLabel="Retomar curso"
+        />
       ))}
     </div>
   )

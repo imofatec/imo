@@ -7,15 +7,24 @@ type Props = {
   course: Course
   onClick?: () => void
   actionLabel?: string
+  modalActionLabel?: string
+  showEditButton?: boolean
+  editTo?: string
+  editLabel?: string
 }
 
 export default function CourseCard({
   course,
   onClick,
   actionLabel = 'Ver mais',
+  modalActionLabel,
+  showEditButton = false,
+  editTo,
+  editLabel = 'Editar curso',
 }: Props) {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const videoId = course.firstLessonYoutubeLink
+  const resolvedModalLabel = modalActionLabel ?? actionLabel
 
   function handleOpenModal() {
     onClick?.()
@@ -48,13 +57,22 @@ export default function CourseCard({
           <Button variant="cyanOutline" className="text-cyan group-hover:bg-cyan/20 mt-auto!">
             {actionLabel}
           </Button>
+
+          {showEditButton && (
+            <Button className="inline-flex w-full items-center justify-center rounded-xl border border-white bg-white/5 px-4 py-3 mt-3 text-center text-sm font-medium text-white! transition-transform duration-200 hover:bg-white/10 focus-visible:ring-2 focus-visible:ring-white/30 focus-visible:outline-none">
+              Editar curso
+            </Button>
+          )}
         </div>
       </div>
 
       <CourseModal
         course={isModalOpen ? course : null}
         onClose={() => setIsModalOpen(false)}
-        actionLabel={actionLabel}
+        actionLabel={resolvedModalLabel}
+        showEditButton={showEditButton}
+        editTo={editTo}
+        editLabel={editLabel}
       />
     </>
   )

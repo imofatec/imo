@@ -1,20 +1,32 @@
+import { Link } from 'react-router-dom'
 import type { Course } from '@/types/course'
 
 type Props = {
   course: Course | null
   onClose: () => void
   actionLabel?: string
+  showEditButton?: boolean
+  editTo?: string
+  editLabel?: string
 }
 
 export default function CourseModal({
   course,
   onClose,
   actionLabel = 'Assistir primeira aula',
+  showEditButton = false,
+  editTo,
+  editLabel = 'Editar curso',
 }: Props) {
   if (!course) return null
 
   const videoId = course.firstLessonYoutubeLink
   const thumbnailUrl = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`
+  const actionClassName =
+    'inline-flex w-full items-center justify-center rounded-xl border border-cyan bg-cyan/10 px-4 py-3 text-center text-sm font-medium text-cyan transition-transform duration-200 hover:bg-cyan/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan/40'
+  const editButtonClassName =
+    'inline-flex w-full items-center justify-center rounded-xl border border-white/20 bg-white/5 px-4 py-3 text-center text-sm font-medium text-white transition-transform duration-200 hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/30'
+  const resolvedEditTo = editTo ?? `/editar-curso/${course.id}`
 
   return (
     <div
@@ -71,15 +83,29 @@ export default function CourseModal({
               </p>
             </div>
           </div>
+          {showEditButton ? (
+            <div className="grid gap-3 sm:grid-cols-2">
+              <Link
+                to={`/cursos/${course.id}/${course.firstLessonYoutubeLink}`}
+                onClick={onClose}
+                className={actionClassName}
+              >
+                {actionLabel}
+              </Link>
 
-          <a
-            href={course.firstLessonYoutubeLink}
-            target="_blank"
-            rel="noreferrer"
-            className="inline-flex w-full items-center justify-center rounded-xl border border-cyan bg-cyan/10 px-4 py-3 text-center text-sm font-medium text-cyan transition-transform duration-200 hover:bg-cyan/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan/40"
-          >
-            {actionLabel}
-          </a>
+              <Link to={resolvedEditTo} onClick={onClose} className={editButtonClassName}>
+                {editLabel}
+              </Link>
+            </div>
+          ) : (
+            <Link
+              to={`/cursos/${course.id}/${course.firstLessonYoutubeLink}`}
+              onClick={onClose}
+              className={actionClassName}
+            >
+              {actionLabel}
+            </Link>
+          )}
         </div>
       </div>
     </div>

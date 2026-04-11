@@ -13,3 +13,19 @@ export type Course = {
   lessonsCount: number
   isActive: boolean
 }
+
+export type CourseDetailsLesson = {
+  id: string
+  createdAt: string
+  updatedAt: string
+  courseId: string
+  indexInCourse: number
+  title: string
+  description: string
+  youtubeLink: string
+}
+
+export type CourseDetails = {
+  course: Course
+  lessons: CourseDetailsLesson[]
+}

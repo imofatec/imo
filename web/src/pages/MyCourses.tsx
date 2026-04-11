@@ -10,7 +10,10 @@ export default function MyCoursesPage() {
     pageSize,
     selectedFilter,
     setSelectedFilter,
+    isAllFilter,
     isContributionFilter,
+    isCoursesMode,
+    allOwnedCourses,
     contributedCourses,
     filteredProgress,
     currentLoading,
@@ -33,13 +36,14 @@ export default function MyCoursesPage() {
       <section className="flex justify-center px-4 py-8 sm:px-6 lg:px-8">
         <div className="max-w-8xl w-full items-center justify-center">
           <div className="min-h-130 items-center justify-center">
-            {isContributionFilter ? (
+            {isCoursesMode ? (
               <MyCoursesContent
-                items={contributedCourses}
+                items={isAllFilter ? allOwnedCourses : contributedCourses}
                 loading={currentLoading}
                 error={currentError}
                 pageSize={pageSize}
                 mode="courses"
+                enableEditCourseButton={isContributionFilter}
               />
             ) : (
               <MyCoursesContent

@@ -8,7 +8,7 @@ export default function AuthLinks() {
           Esqueceu a senha?
         </Link>
         {'•'}
-        <Link to="/register" className="text-white hover:underline">
+        <Link to="/login" className="text-white hover:underline">
           Já possui conta?
         </Link>
       </p>

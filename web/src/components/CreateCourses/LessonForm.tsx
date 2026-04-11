@@ -19,7 +19,7 @@ export default function LessonForm({
   descriptionError,
 }: Props) {
   return (
-    <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
+    <div>
       <h3 className="mb-4 text-lg font-semibold text-white">Aula {index + 1}</h3>
 
       <div className="space-y-4">
@@ -43,6 +43,7 @@ export default function LessonForm({
           label="Descrição da Aula"
           placeholder="Descreva a aula..."
           error={descriptionError}
+          maxLength={500}
           {...register(`lessons.${index}.descriptionL`)}
         />
       </div>
