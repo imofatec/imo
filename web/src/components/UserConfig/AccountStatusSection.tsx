@@ -20,7 +20,7 @@ export default function AccountStatusSection({ user }: Props) {
               : 'border border-amber-400/40 bg-amber-400/15 text-amber-200'
           }`}
         >
-          {isConfirmed ? 'Conta ativa' : 'Verifique sua conta!'}
+          {isConfirmed ? 'Conta ativa' : 'Confirme sua conta!'}
         </span>
       </div>
 
