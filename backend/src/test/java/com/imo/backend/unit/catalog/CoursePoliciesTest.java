@@ -38,6 +38,7 @@ class CoursePoliciesTest {
             "Descrição do curso",
             "https://www.youtube.com/watch?v=abc123XYZ89",
             1);
+    existingCourse.setId(new ObjectId().toString());
 
     Course existingCourse2 =
         new Course(
@@ -49,6 +50,7 @@ class CoursePoliciesTest {
             "Descrição do curso de Python",
             "https://www.youtube.com/watch?v=l9CZykYZkOQ",
             1);
+    existingCourse2.setId(new ObjectId().toString());
 
     return List.of(existingCourse, existingCourse2);
   }

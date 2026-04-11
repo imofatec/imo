@@ -1,11 +1,14 @@
 package com.imo.backend.unit.catalog;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.imo.backend.contexts.catalog.course.Course;
 import com.imo.backend.contexts.catalog.course.value_objects.Categories;
+import com.imo.backend.contexts.common.exceptions.custom.ForbiddenException;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -66,5 +69,22 @@ class CourseTest {
     course.setFirstLessonYoutubeLink("https://www.youtube.com/watch?v=SR1OfCAmTyI");
 
     assertEquals("SR1OfCAmTyI", course.getFirstLessonYoutubeLink());
+  }
+
+  @Test
+  @DisplayName("happy path (assertCanProgress): permitir progressão em curso ativo")
+  void shouldAllowProgressWhenCourseIsActive() {
+    Course course = createCourse();
+
+    assertDoesNotThrow(course::assertCanProgress);
+  }
+
+  @Test
+  @DisplayName("exception (assertCanProgress): bloquear progressão em curso inativo")
+  void shouldThrowWhenCourseIsInactive() {
+    Course course = createCourse();
+    course.toggleStatus();
+
+    assertThrows(ForbiddenException.class, course::assertCanProgress);
   }
 }

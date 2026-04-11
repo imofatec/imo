@@ -44,6 +44,9 @@ public class CourseDetailsSearchController extends CourseController {
       @Parameter(description = "Query params to search", example = "slugCategory=dev-web")
           @ParameterObject
           CourseSearchParams courseSearchParams,
+      @Parameter(description = "Filter by active status", example = "true")
+          @RequestParam(defaultValue = "true")
+          boolean active,
       @Parameter(description = "Query type of match", example = "PERFECT")
           @RequestParam(defaultValue = "PERFECT")
           MatchType matchType,
@@ -59,9 +62,10 @@ public class CourseDetailsSearchController extends CourseController {
 
     var details =
         (page == null || size == null)
-            ? this.courseRepository.searchDetails(courseSearchParams, matchType, combineWith)
+            ? this.courseRepository.searchDetails(
+                courseSearchParams, matchType, combineWith, active)
             : this.courseRepository.searchDetails(
-                courseSearchParams, page, size, matchType, combineWith);
+                courseSearchParams, page, size, matchType, combineWith, active);
 
     var response = details.stream().map(CourseDetailsDTO::fromCourseDetails).toList();
 

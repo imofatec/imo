@@ -30,10 +30,12 @@ class LessonPoliciesTest {
     Lesson existingLesson1 =
         new Lesson(
             courseId, 1, "Aula2", "Aula 2 de java", "https://www.youtube.com/watch?v=def456XYZ89");
+    existingLesson1.setId(new ObjectId().toString());
 
     Lesson existingLesson2 =
         new Lesson(
             courseId, 2, "Aula3", "Aula 3 de java", "https://www.youtube.com/watch?v=ghi789XYZ89");
+    existingLesson2.setId(new ObjectId().toString());
 
     return List.of(existingLesson1, existingLesson2);
   }
