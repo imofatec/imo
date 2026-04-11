@@ -6,6 +6,7 @@ import com.imo.backend.contexts.catalog.course.value_objects.CourseName;
 import com.imo.backend.contexts.catalog.course.value_objects.Level;
 import com.imo.backend.contexts.catalog.lesson.Lesson;
 import com.imo.backend.contexts.common.Entity;
+import com.imo.backend.contexts.common.exceptions.custom.ForbiddenException;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.bson.types.ObjectId;
@@ -68,5 +69,11 @@ public class Course extends Entity {
 
   public void toggleStatus() {
     this.isActive = !this.isActive;
+  }
+
+  public void assertCanProgress() {
+    if (!this.isActive) {
+      throw new ForbiddenException("Não é possível progredir em um curso desativado");
+    }
   }
 }

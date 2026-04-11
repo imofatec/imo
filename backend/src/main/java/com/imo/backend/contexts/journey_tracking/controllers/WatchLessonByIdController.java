@@ -52,6 +52,16 @@ public class WatchLessonByIdController extends ProgressController {
                                 com.imo.backend.contexts.common.exceptions.ErrorResponseDto
                                     .class))),
         @ApiResponse(
+            responseCode = "403",
+            description = "Não é possível progredir em um curso desativado",
+            content =
+                @Content(
+                    schema =
+                        @Schema(
+                            implementation =
+                                com.imo.backend.contexts.common.exceptions.ErrorResponseDto
+                                    .class))),
+        @ApiResponse(
             responseCode = "409",
             description = "Aula já concluída anteriormente",
             content =

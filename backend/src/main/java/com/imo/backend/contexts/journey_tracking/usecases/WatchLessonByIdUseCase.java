@@ -22,6 +22,7 @@ public class WatchLessonByIdUseCase {
 
   public Progress execute(String lessonId, String userId) {
     Course course = this.courseRepository.findByLessonIdOrThrow(lessonId);
+    course.assertCanProgress();
 
     Progress progress =
         this.progressRepository.findByUserIdAndCourseId(userId, course.getId()).orElse(null);
