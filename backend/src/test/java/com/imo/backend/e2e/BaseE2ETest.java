@@ -1,6 +1,7 @@
 package com.imo.backend.e2e;
 
 import com.imo.backend.singleton.MongoDBContainerSingleton;
+import com.imo.backend.singleton.RabbitMQContainerSingleton;
 import io.restassured.RestAssured;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,21 +16,27 @@ import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.testcontainers.containers.MongoDBContainer;
+import org.testcontainers.containers.RabbitMQContainer;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 @Testcontainers
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public abstract class BaseE2ETest {
-  static MongoDBContainer mongoDBContainerSingleton = MongoDBContainerSingleton.getInstance();
+  static MongoDBContainer mongoDBContainer = MongoDBContainerSingleton.getInstance();
+  static RabbitMQContainer rabbitMQContainer = RabbitMQContainerSingleton.getInstance();
 
   @DynamicPropertySource
   static void configureProperties(DynamicPropertyRegistry registry) {
-    if (!mongoDBContainerSingleton.isRunning()) {
-      mongoDBContainerSingleton.start();
+    if (!mongoDBContainer.isRunning()) {
+      mongoDBContainer.start();
+    }
+    if (!rabbitMQContainer.isRunning()) {
+      rabbitMQContainer.start();
     }
 
-    registry.add("spring.data.mongodb.uri", mongoDBContainerSingleton::getReplicaSetUrl);
+    registry.add("spring.data.mongodb.uri", mongoDBContainer::getReplicaSetUrl);
+    registry.add("spring.rabbitmq.addresses", rabbitMQContainer::getAmqpUrl);
   }
 
   @MockitoBean protected RabbitTemplate rabbitTemplate;
