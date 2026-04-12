@@ -12,7 +12,6 @@ export default function EditCoursePage() {
     errors,
     isSubmitting,
     statusMessage,
-    errorMessage,
     newLessonIndex,
     newLessonError,
     isDeleteModalOpen,
@@ -63,7 +62,6 @@ export default function EditCoursePage() {
           </FormSection>
 
           {statusMessage ? <p className="text-cyan text-sm">{statusMessage}</p> : null}
-          {errorMessage ? <p className="text-sm text-red-500">{errorMessage}</p> : null}
           {isSubmitting ? <p className="text-sm text-white/60">Salvando...</p> : null}
         </form>
       </section>

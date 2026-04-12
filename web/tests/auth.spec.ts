@@ -27,6 +27,7 @@ test.describe('Auth', () => {
     await fillLoginForm(page, registeredUser)
     await page.getByRole('button', { name: 'Entrar' }).click()
 
+    await page.locator('button[aria-haspopup="menu"]').click()
     await expect(page.getByRole('button', { name: 'Sair' })).toBeVisible()
 
     const storedToken = await page.evaluate(() => localStorage.getItem('token'))
@@ -41,12 +42,13 @@ test.describe('Auth', () => {
     await fillLoginForm(page, registeredUser)
     await page.getByRole('button', { name: 'Entrar' }).click()
 
+    await page.locator('button[aria-haspopup="menu"]').click()
     await expect(page.getByRole('button', { name: 'Sair' })).toBeVisible()
 
     await page.getByRole('button', { name: 'Sair' }).click()
 
-    await expect(page.getByRole('link', { name: 'Entrar' })).toBeVisible()
-    await expect(page.getByRole('link', { name: 'Cadastrar' })).toBeVisible()
+    await expect(page.getByRole('link', { name: 'Entrar', exact: true })).toBeVisible()
+    await expect(page.getByRole('link', { name: 'Cadastrar', exact: true })).toBeVisible()
 
     const storedToken = await page.evaluate(() => localStorage.getItem('token'))
     expect(storedToken).toBeFalsy()
@@ -63,7 +65,7 @@ test.describe('Auth', () => {
     await page.getByRole('button', { name: 'Entrar' }).click()
 
     await expect(page).toHaveURL(/\/login$/)
-    await expect(page.getByRole('alert')).toBeVisible()
+    await expect(page.getByText('Ocorreu um erro')).toBeVisible()
 
     const storedToken = await page.evaluate(() => localStorage.getItem('token'))
     expect(storedToken).toBeFalsy()
@@ -78,6 +80,6 @@ test.describe('Auth', () => {
     await page.getByRole('button', { name: 'Cadastrar' }).click()
 
     await expect(page).toHaveURL(/\/cadastro$/)
-    await expect(page.getByRole('alert')).toBeVisible()
+    await expect(page.getByText('Ocorreu um erro')).toBeVisible()
   })
 })

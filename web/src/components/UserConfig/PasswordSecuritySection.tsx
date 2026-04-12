@@ -9,7 +9,6 @@ type Props = {
   register: UseFormRegister<UpdateUserPasswordData>
   errors: FieldErrors<UpdateUserPasswordData>
   isSubmitting: boolean
-  errorMessage: string | null
   onSubmit: FormEventHandler<HTMLFormElement>
 }
 
@@ -17,7 +16,6 @@ export default function PasswordSecuritySection({
   register,
   errors,
   isSubmitting,
-  errorMessage,
   onSubmit,
 }: Props) {
   return (
@@ -60,12 +58,6 @@ export default function PasswordSecuritySection({
           {isSubmitting ? <LoaderCircle className="animate-spin" /> : 'Atualizar senha'}
         </Button>
       </div>
-
-      {errorMessage && (
-        <p role="alert" className="text-sm text-red-500">
-          {errorMessage}
-        </p>
-      )}
     </form>
   )
 }

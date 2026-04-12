@@ -4,6 +4,7 @@ import FilterDrawer from '@/components/AllCourses/FilterDrawer'
 import PaginationControls from '@/components/AllCourses/PaginationControls'
 import { useCourses } from '@/hooks/useCourses'
 import { useCategories } from '@/hooks/useCategories'
+import { useRequestErrorToast } from '@/lib/requestToast'
 import { useParams, useSearchParams } from 'react-router-dom'
 
 const PAGE_SIZE = 10
@@ -13,7 +14,7 @@ export default function AllCoursesPage() {
   const { categorySlug } = useParams()
   const [searchParams] = useSearchParams()
   const searchName = searchParams.get('name') ?? undefined
-  const { categories } = useCategories()
+  const { categories, error: categoriesError } = useCategories()
   const { courses, loading, error } = useCourses({
     matchType: searchName ? 'CONTAINS' : undefined,
     categorySlug,
@@ -21,6 +22,9 @@ export default function AllCoursesPage() {
     page,
     size: PAGE_SIZE,
   })
+
+  useRequestErrorToast(error, { id: 'all-courses-error' })
+  useRequestErrorToast(categoriesError, { id: 'categories-error' })
 
   const isPrevDisabled = page === 0
   const isNextDisabled = courses.length < PAGE_SIZE

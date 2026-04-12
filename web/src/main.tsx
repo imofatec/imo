@@ -2,6 +2,7 @@ import './index.css'
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import { Toaster } from 'sonner'
 import App from '@/App'
 import Home from '@/pages/Home'
 import Login from '@/pages/Login'
@@ -55,6 +56,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     <AuthProvider>
       <UserProvider>
         <RouterProvider router={router} />
+        <Toaster richColors position="top-center" />
       </UserProvider>
     </AuthProvider>
   </React.StrictMode>

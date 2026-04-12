@@ -2,6 +2,7 @@ import PaginationControls from '@/components/AllCourses/PaginationControls'
 import MyCoursesContent from '@/components/MyCourses/MyCoursesContent'
 import MyCoursesFilter from '@/components/MyCourses/MyCoursesFilter'
 import { useMyCoursesPage } from '@/hooks/useMyCoursesPage'
+import { useRequestErrorToast } from '@/lib/requestToast'
 
 export default function MyCoursesPage() {
   const {
@@ -23,6 +24,8 @@ export default function MyCoursesPage() {
     goToPreviousPage,
     goToNextPage,
   } = useMyCoursesPage()
+
+  useRequestErrorToast(currentError, { id: 'my-courses-error' })
 
   return (
     <main className="min-h-screen w-full bg-[#0C0424]">

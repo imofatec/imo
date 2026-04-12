@@ -1,5 +1,6 @@
 import { baseURL } from '@/api/environment'
 import { useUser } from '@/contexts/UserContext'
+import { showRequestErrorToast } from '@/lib/requestToast'
 import {
   type UpdateUserPasswordData,
   type UpdateUserProfileData,
@@ -15,9 +16,6 @@ import { useForm } from 'react-hook-form'
 
 type UserConfigErrors = {
   photo: string | null
-  profile: string | null
-  password: string | null
-  confirmation: string | null
 }
 
 function normalizeBirthDate(value: string) {
@@ -56,9 +54,6 @@ export function useUserConfigPage() {
   const [isResendingConfirmation, setIsResendingConfirmation] = useState(false)
   const [errors, setErrors] = useState<UserConfigErrors>({
     photo: null,
-    profile: null,
-    password: null,
-    confirmation: null,
   })
 
   const {
@@ -110,12 +105,12 @@ export function useUserConfigPage() {
     }
   }, [photoPreviewUrl])
 
-  function clearError(key: keyof UserConfigErrors) {
-    setErrors((current) => ({ ...current, [key]: null }))
+  function clearPhotoError() {
+    setErrors((current) => ({ ...current, photo: null }))
   }
 
   function handleSelectPhoto(file: File | null) {
-    clearError('photo')
+    clearPhotoError()
 
     if (photoPreviewUrl) {
       URL.revokeObjectURL(photoPreviewUrl)
@@ -132,8 +127,6 @@ export function useUserConfigPage() {
   }
 
   async function onSubmitProfile(data: UpdateUserProfileData) {
-    clearError('profile')
-
     try {
       const payload = {
         ...(data.name ? { name: data.name } : {}),
@@ -152,40 +145,35 @@ export function useUserConfigPage() {
       }
 
       await updateUserRequest(payload)
-
       await refetch()
       resetProfileForm()
-    } catch (error: any) {
-      setErrors((current) => ({
-        ...current,
-        profile:
-          error.response?.data?.message ||
-          'Ocorreu um erro ao tentar atualizar suas informações. Por favor, tente novamente.',
-      }))
+    } catch (error: unknown) {
+      showRequestErrorToast(
+        error,
+        'Ocorreu um erro ao tentar atualizar suas informações. Por favor, tente novamente.',
+        { id: 'user-profile-error' }
+      )
     }
   }
 
   async function onSubmitPassword(data: UpdateUserPasswordData) {
-    clearError('password')
-
     try {
       await updateUserRequest({
         password: data.password,
       })
 
       resetPasswordForm()
-    } catch (error: any) {
-      setErrors((current) => ({
-        ...current,
-        password:
-          error.response?.data?.message ||
-          'Ocorreu um erro ao tentar atualizar sua senha. Por favor, tente novamente.',
-      }))
+    } catch (error: unknown) {
+      showRequestErrorToast(
+        error,
+        'Ocorreu um erro ao tentar atualizar sua senha. Por favor, tente novamente.',
+        { id: 'user-password-error' }
+      )
     }
   }
 
   async function handleUploadPhoto() {
-    clearError('photo')
+    clearPhotoError()
 
     if (!selectedPhoto) {
       setErrors((current) => ({
@@ -207,31 +195,28 @@ export function useUserConfigPage() {
       }
 
       setPhotoPreviewUrl(null)
-    } catch (error: any) {
-      setErrors((current) => ({
-        ...current,
-        photo:
-          error.response?.data?.message ||
-          'Ocorreu um erro ao tentar atualizar sua foto. Por favor, tente novamente.',
-      }))
+    } catch (error: unknown) {
+      showRequestErrorToast(
+        error,
+        'Ocorreu um erro ao tentar atualizar sua foto. Por favor, tente novamente.',
+        { id: 'user-photo-error' }
+      )
     } finally {
       setIsUploadingPhoto(false)
     }
   }
 
   async function handleResendConfirmationEmail() {
-    clearError('confirmation')
     setIsResendingConfirmation(true)
 
     try {
       await resendConfirmationEmailRequest()
-    } catch (error: any) {
-      setErrors((current) => ({
-        ...current,
-        confirmation:
-          error.response?.data?.message ||
-          'Ocorreu um erro ao tentar reenviar o e-mail de confirmação. Por favor, tente novamente.',
-      }))
+    } catch (error: unknown) {
+      showRequestErrorToast(
+        error,
+        'Ocorreu um erro ao tentar reenviar o e-mail de confirmação. Por favor, tente novamente.',
+        { id: 'user-confirmation-error' }
+      )
     } finally {
       setIsResendingConfirmation(false)
     }
@@ -252,9 +237,6 @@ export function useUserConfigPage() {
     passwordErrors,
     isSubmittingPassword,
     photoErrorMessage: errors.photo,
-    profileErrorMessage: errors.profile,
-    passwordErrorMessage: errors.password,
-    confirmationErrorMessage: errors.confirmation,
     handleSelectPhoto,
     handleUploadPhoto,
     handleResendConfirmationEmail,

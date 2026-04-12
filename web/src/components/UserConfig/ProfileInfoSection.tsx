@@ -18,7 +18,6 @@ type Props = {
   register: UseFormRegister<UpdateUserProfileData>
   errors: FieldErrors<UpdateUserProfileData>
   isSubmitting: boolean
-  errorMessage: string | null
   onSubmit: FormEventHandler<HTMLFormElement>
 }
 
@@ -37,7 +36,6 @@ export default function ProfileInfoSection({
   register,
   errors,
   isSubmitting,
-  errorMessage,
   onSubmit,
 }: Props) {
   return (
@@ -159,12 +157,6 @@ export default function ProfileInfoSection({
           {isSubmitting ? <LoaderCircle className="animate-spin" /> : 'Salvar informações'}
         </Button>
       </div>
-
-      {errorMessage && (
-        <p role="alert" className="text-sm text-red-500">
-          {errorMessage}
-        </p>
-      )}
     </form>
   )
 }

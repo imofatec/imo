@@ -1,5 +1,6 @@
 import { categoryOptions, levelOptions } from '@/constants/courseOptions'
 import { useCurrentCourse } from '@/hooks/useCurrentCourse'
+import { showRequestErrorToast } from '@/lib/requestToast'
 import {
   createCourseSchema,
   lessonSchema,
@@ -28,7 +29,6 @@ export function useEditCoursePage() {
   const navigate = useNavigate()
   const { course, refetch } = useCurrentCourse(courseId ?? '')
   const [statusMessage, setStatusMessage] = useState<string | null>(null)
-  const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [newLessonIndex, setNewLessonIndex] = useState<number | null>(null)
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
 
@@ -87,7 +87,6 @@ export function useEditCoursePage() {
 
   async function handleSaveCourse() {
     setStatusMessage(null)
-    setErrorMessage(null)
 
     if (!courseId || !course) return
 
@@ -119,17 +118,17 @@ export function useEditCoursePage() {
 
       await refetch()
       setStatusMessage('Informações do curso atualizadas com sucesso.')
-    } catch (error: any) {
-      setErrorMessage(
-        error.response?.data?.message ||
-          'Ocorreu um erro ao tentar atualizar o curso. Por favor, tente novamente.'
+    } catch (error: unknown) {
+      showRequestErrorToast(
+        error,
+        'Ocorreu um erro ao tentar atualizar o curso. Por favor, tente novamente.',
+        { id: 'edit-course-error' }
       )
     }
   }
 
   async function handleSaveLesson(lessonId: string, index: number) {
     setStatusMessage(null)
-    setErrorMessage(null)
 
     const currentLesson = course?.lessons[index]
     if (!currentLesson) return
@@ -163,26 +162,27 @@ export function useEditCoursePage() {
       resetField(`lessons.${index}.nameLesson`, { defaultValue: '' })
       resetField(`lessons.${index}.link`, { defaultValue: '' })
       resetField(`lessons.${index}.descriptionL`, { defaultValue: '' })
-    } catch (error: any) {
-      setErrorMessage(
-        error.response?.data?.message ||
-          'Ocorreu um erro ao tentar atualizar a aula. Por favor, tente novamente.'
+    } catch (error: unknown) {
+      showRequestErrorToast(
+        error,
+        'Ocorreu um erro ao tentar atualizar a aula. Por favor, tente novamente.',
+        { id: 'edit-lesson-error' }
       )
     }
   }
 
   async function handleDeleteLesson(lessonId: string) {
     setStatusMessage(null)
-    setErrorMessage(null)
 
     try {
       await deleteLessonRequest(lessonId)
       await refetch()
       setStatusMessage('Aula excluída com sucesso.')
-    } catch (error: any) {
-      setErrorMessage(
-        error.response?.data?.message ||
-          'Ocorreu um erro ao tentar excluir a aula. Por favor, tente novamente.'
+    } catch (error: unknown) {
+      showRequestErrorToast(
+        error,
+        'Ocorreu um erro ao tentar excluir a aula. Por favor, tente novamente.',
+        { id: 'delete-lesson-error' }
       )
     }
   }
@@ -206,7 +206,6 @@ export function useEditCoursePage() {
 
   async function handleCreateNewLesson() {
     setStatusMessage(null)
-    setErrorMessage(null)
 
     if (!courseId || newLessonIndex === null) return
 
@@ -246,17 +245,17 @@ export function useEditCoursePage() {
       setNewLessonIndex(null)
       await refetch()
       setStatusMessage('Aula criada com sucesso.')
-    } catch (error: any) {
-      setErrorMessage(
-        error.response?.data?.message ||
-          'Ocorreu um erro ao tentar criar a aula. Por favor, tente novamente.'
+    } catch (error: unknown) {
+      showRequestErrorToast(
+        error,
+        'Ocorreu um erro ao tentar criar a aula. Por favor, tente novamente.',
+        { id: 'create-lesson-error' }
       )
     }
   }
 
   async function handleDeleteCourse() {
     setStatusMessage(null)
-    setErrorMessage(null)
 
     if (!courseId) return
 
@@ -264,10 +263,11 @@ export function useEditCoursePage() {
       await toggleCourseRequest(courseId)
       setIsDeleteModalOpen(false)
       navigate('/user/cursos')
-    } catch (error: any) {
-      setErrorMessage(
-        error.response?.data?.message ||
-          'Ocorreu um erro ao tentar excluir o curso. Por favor, tente novamente.'
+    } catch (error: unknown) {
+      showRequestErrorToast(
+        error,
+        'Ocorreu um erro ao tentar excluir o curso. Por favor, tente novamente.',
+        { id: 'delete-course-error' }
       )
     }
   }
@@ -280,7 +280,6 @@ export function useEditCoursePage() {
     errors,
     isSubmitting,
     statusMessage,
-    errorMessage,
     newLessonIndex,
     newLessonError,
     isDeleteModalOpen,

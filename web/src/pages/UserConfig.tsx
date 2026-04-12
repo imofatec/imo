@@ -13,9 +13,6 @@ export default function UserConfigPage() {
     isUploadingPhoto,
     isResendingConfirmation,
     photoErrorMessage,
-    profileErrorMessage,
-    passwordErrorMessage,
-    confirmationErrorMessage,
     registerProfile,
     handleProfileSubmit,
     profileErrors,
@@ -54,7 +51,6 @@ export default function UserConfigPage() {
           <AccountStatusSection
             user={user}
             isResendingConfirmation={isResendingConfirmation}
-            errorMessage={confirmationErrorMessage}
             onResendConfirmationEmail={handleResendConfirmationEmail}
           />
         </FormSection>
@@ -65,7 +61,6 @@ export default function UserConfigPage() {
             register={registerProfile}
             errors={profileErrors}
             isSubmitting={isSubmittingProfile}
-            errorMessage={profileErrorMessage}
             onSubmit={handleProfileSubmit(onSubmitProfile)}
           />
         </FormSection>
@@ -75,7 +70,6 @@ export default function UserConfigPage() {
             register={registerPassword}
             errors={passwordErrors}
             isSubmitting={isSubmittingPassword}
-            errorMessage={passwordErrorMessage}
             onSubmit={handlePasswordSubmit(onSubmitPassword)}
           />
         </FormSection>

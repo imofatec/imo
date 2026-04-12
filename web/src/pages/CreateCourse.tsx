@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useFieldArray, useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
@@ -10,12 +9,12 @@ import FormSection from '@/components/CreateCourses/FormSection'
 import { useUser } from '@/contexts/UserContext'
 import Button from '@/components/ui/Button'
 import { categoryOptions, levelOptions } from '@/constants/courseOptions'
+import { showRequestErrorToast } from '@/lib/requestToast'
 import { createCourseSchema, type CreateCourseData } from '@/schemas/courses/CreateCourseSchema'
 import { createCourseRequest } from '@/services/course/createCourse'
-import axios from 'axios'
+import { toast } from 'sonner'
 
 export default function CreateCoursePage() {
-  const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const { user } = useUser()
   const navigate = useNavigate()
 
@@ -53,10 +52,12 @@ export default function CreateCoursePage() {
   }
 
   async function handleCreateCourse(data: CreateCourseData) {
-    setErrorMessage(null)
-
     if (!user?.id) {
-      setErrorMessage('Usuário não identificado.')
+      toast.error('Ocorreu um erro', {
+        id: 'create-course-user-error',
+        description: 'Usuário não identificado.',
+        duration: 5000,
+      })
       return
     }
 
@@ -64,15 +65,11 @@ export default function CreateCoursePage() {
       await createCourseRequest(data, user.id)
       navigate('/categorias')
     } catch (error: unknown) {
-      if (axios.isAxiosError(error)) {
-        setErrorMessage(
-          error.response?.data?.message ||
-            'Ocorreu um erro ao tentar criar o curso. Por favor, tente novamente.'
-        )
-        return
-      }
-
-      setErrorMessage('Ocorreu um erro ao tentar criar o curso. Por favor, tente novamente.')
+      showRequestErrorToast(
+        error,
+        'Ocorreu um erro ao tentar criar o curso. Por favor, tente novamente.',
+        { id: 'create-course-error' }
+      )
     }
   }
 
@@ -86,7 +83,7 @@ export default function CreateCoursePage() {
 
       <section className="mx-auto w-full max-w-5xl px-4 py-8">
         <form onSubmit={handleSubmit(handleCreateCourse)} className="space-y-8">
-          <FormSection title="Informações do curso">
+          <FormSection title="Informacoes do curso">
             <div className="grid gap-5 md:grid-cols-2">
               <FormInput
                 label="Nome do curso"
@@ -110,9 +107,9 @@ export default function CreateCoursePage() {
             <div className="mt-5">
               <SelectInput
                 id="level"
-                label="Nível"
+                label="Nivel"
                 options={levelOptions}
-                placeholder="Selecione um nível"
+                placeholder="Selecione um nivel"
                 className="h-12 rounded-xl bg-white/5"
                 error={errors.level?.message}
                 {...register('level')}
@@ -122,8 +119,8 @@ export default function CreateCoursePage() {
             <div className="mt-5">
               <TextBoxInput
                 id="description"
-                label="Descrição"
-                placeholder="Descrição do curso..."
+                label="Descricao"
+                placeholder="Descricao do curso..."
                 error={errors.description?.message}
                 maxLength={500}
                 {...register('description')}
@@ -183,8 +180,6 @@ export default function CreateCoursePage() {
               {isSubmitting ? 'Criando...' : 'Criar Curso'}
             </Button>
           </div>
-
-          {errorMessage && <p className="mt-1 text-sm text-red-500">{errorMessage}</p>}
         </form>
       </section>
     </main>

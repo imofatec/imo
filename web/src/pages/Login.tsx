@@ -10,16 +10,44 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import type { LoginData } from '@/schemas/auth/loginSchema'
 import { loginSchema } from '@/schemas/auth/loginSchema'
 import { loginRequest } from '@/services/user/loginRequest'
+import { showRequestErrorToast } from '@/lib/requestToast'
 import { useNavigate, useLocation } from 'react-router-dom'
-import { useState } from 'react'
+import { useEffect, useRef } from 'react'
+import { toast } from 'sonner'
+
+type LoginLocationState = {
+  from?: string
+  registrationSuccess?: boolean
+  registeredEmail?: string
+}
 
 export default function Login() {
   const navigate = useNavigate()
   const location = useLocation()
   const { login } = useAuth()
-  const [errorMessage, setErrorMessage] = useState<string | null>(null)
+  const locationState = (location.state as LoginLocationState | null) ?? null
+  const hasShownRegistrationToast = useRef(false)
 
-  const from = location.state?.from || '/test'
+  const from = locationState?.from || '/test'
+
+  useEffect(() => {
+    if (!locationState?.registrationSuccess || hasShownRegistrationToast.current) return
+
+    hasShownRegistrationToast.current = true
+
+    toast.success('E-mail de confirmacao enviado', {
+      id: 'registration-success',
+      description: locationState.registeredEmail
+        ? `Enviamos um e-mail de confirmacao para ${locationState.registeredEmail}.`
+        : 'Enviamos um e-mail de confirmacao para o seu e-mail cadastrado.',
+      duration: 5000,
+    })
+
+    navigate(location.pathname, {
+      replace: true,
+      state: locationState.from ? { from: locationState.from } : null,
+    })
+  }, [location.pathname, locationState, navigate])
 
   const {
     register,
@@ -33,16 +61,16 @@ export default function Login() {
   })
 
   async function handleLogin(data: LoginData) {
-    setErrorMessage(null)
     try {
       const response = await loginRequest(data)
       login(response.accessToken)
       reset()
       navigate(from, { replace: true })
-    } catch (error: any) {
-      setErrorMessage(
-        error.response?.data?.message ||
-          'Ocorreu um erro ao tentar fazer login. Por favor, tente novamente.'
+    } catch (error: unknown) {
+      showRequestErrorToast(
+        error,
+        'Ocorreu um erro ao tentar fazer login. Por favor, tente novamente.',
+        { id: 'login-error' }
       )
     }
   }
@@ -73,11 +101,6 @@ export default function Login() {
         <Button variant="cyanOutline" className="text-cyan" disabled={isSubmitting}>
           {isSubmitting ? <LoaderCircle className="animate-spin" /> : 'Entrar'}
         </Button>
-        {errorMessage && (
-          <p role="alert" className="mt-1 text-sm text-red-500">
-            {errorMessage}
-          </p>
-        )}
       </form>
 
       <div className="flex flex-col gap-6">

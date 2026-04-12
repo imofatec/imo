@@ -5,14 +5,12 @@ import { LoaderCircle } from 'lucide-react'
 type Props = {
   user: User | null
   isResendingConfirmation: boolean
-  errorMessage: string | null
   onResendConfirmationEmail: () => Promise<void>
 }
 
 export default function AccountStatusSection({
   user,
   isResendingConfirmation,
-  errorMessage,
   onResendConfirmationEmail,
 }: Props) {
   const isConfirmed = Boolean(user?.isConfirmed)
@@ -52,12 +50,6 @@ export default function AccountStatusSection({
           )}
         </Button>
       </div>
-
-      {errorMessage && (
-        <p role="alert" className="text-sm text-red-500">
-          {errorMessage}
-        </p>
-      )}
     </div>
   )
 }
