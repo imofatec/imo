@@ -1,11 +1,20 @@
 import Button from '@/components/ui/Button'
 import type { User } from '@/types/user'
+import { LoaderCircle } from 'lucide-react'
 
 type Props = {
   user: User | null
+  isResendingConfirmation: boolean
+  errorMessage: string | null
+  onResendConfirmationEmail: () => Promise<void>
 }
 
-export default function AccountStatusSection({ user }: Props) {
+export default function AccountStatusSection({
+  user,
+  isResendingConfirmation,
+  errorMessage,
+  onResendConfirmationEmail,
+}: Props) {
   const isConfirmed = Boolean(user?.isConfirmed)
   const email = user?.email || 'E-mail'
 
@@ -32,12 +41,23 @@ export default function AccountStatusSection({ user }: Props) {
         <Button
           type="button"
           variant="cyanOutline"
+          onClick={onResendConfirmationEmail}
           className="border-cyan/40 text-cyan mt-0! w-auto rounded-full border px-4 py-2 text-sm"
-          disabled={isConfirmed}
+          disabled={isConfirmed || isResendingConfirmation}
         >
-          Reenviar e-mail de confirmação
+          {isResendingConfirmation ? (
+            <LoaderCircle className="animate-spin" />
+          ) : (
+            'Reenviar e-mail de confirmação'
+          )}
         </Button>
       </div>
+
+      {errorMessage && (
+        <p role="alert" className="text-sm text-red-500">
+          {errorMessage}
+        </p>
+      )}
     </div>
   )
 }

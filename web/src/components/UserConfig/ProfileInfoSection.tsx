@@ -1,37 +1,55 @@
 import SelectInput from '@/components/CreateCourses/SelectInput'
-import TextBoxInput from '@/components/CreateCourses/TextBoxInput'
 import Button from '@/components/ui/Button'
 import FormInput from '@/components/ui/FormInput'
+import { categoryOptions } from '@/constants/courseOptions'
+import {
+  academicDegreeOptions,
+  availableTimeOptions,
+  experienceOptions,
+} from '@/constants/userOptions'
+import type { UpdateUserProfileData } from '@/schemas/user/updateUserSchema'
 import type { User } from '@/types/user'
+import { LoaderCircle } from 'lucide-react'
+import type { FormEventHandler } from 'react'
+import type { FieldErrors, UseFormRegister } from 'react-hook-form'
 
 type Props = {
   user: User | null
+  register: UseFormRegister<UpdateUserProfileData>
+  errors: FieldErrors<UpdateUserProfileData>
+  isSubmitting: boolean
+  errorMessage: string | null
+  onSubmit: FormEventHandler<HTMLFormElement>
 }
 
-const experienceOptions = [
-  { label: 'Iniciante', value: 'BEGINNER' },
-  { label: 'Intermediário', value: 'INTERMEDIATE' },
-  { label: 'Avançado', value: 'ADVANCED' },
-]
+function getOptionLabel(
+  value: string | null | undefined,
+  options: { label: string; value: string }[],
+  fallback: string
+) {
+  if (!value) return fallback
 
-const availableTimeOptions = [
-  { label: 'Menos de 1h por dia', value: 'LESS_THAN_1H' },
-  { label: '1h a 2h por dia', value: 'BETWEEN_1H_2H' },
-  { label: '2h a 4h por dia', value: 'BETWEEN_2H_4H' },
-  { label: 'Mais de 4h por dia', value: 'MORE_THAN_4H' },
-]
+  return options.find((option) => option.value === value)?.label || value
+}
 
-export default function ProfileInfoSection({ user }: Props) {
-  const categoriesText = user?.categoriesOfInterest?.join(', ') || ''
-
+export default function ProfileInfoSection({
+  user,
+  register,
+  errors,
+  isSubmitting,
+  errorMessage,
+  onSubmit,
+}: Props) {
   return (
-    <div className="space-y-5">
+    <form onSubmit={onSubmit} className="space-y-5">
       <div className="grid gap-5 md:grid-cols-2">
         <FormInput
           id="user-name"
           label="Nome completo"
           placeholder={user?.name || 'Digite seu nome'}
           className="h-12 rounded-xl bg-white/5"
+          error={errors.name?.message}
+          {...register('name')}
         />
 
         <FormInput
@@ -40,6 +58,8 @@ export default function ProfileInfoSection({ user }: Props) {
           label="E-mail"
           placeholder={user?.email || 'Digite seu e-mail'}
           className="h-12 rounded-xl bg-white/5"
+          error={errors.email?.message}
+          {...register('email')}
         />
       </div>
 
@@ -48,15 +68,24 @@ export default function ProfileInfoSection({ user }: Props) {
           id="user-birth-date"
           label="Data de nascimento"
           type="date"
-          defaultValue={user?.birthDate ?? ''}
+          placeholder={user?.birthDate || ''}
           className="h-12 rounded-xl bg-white/5"
+          error={errors.birthDate?.message}
+          {...register('birthDate')}
         />
 
-        <FormInput
+        <SelectInput
           id="user-academic-degree"
-          label="Formação academica"
-          placeholder={user?.academicDegree || 'Ex: Graduação em Sistemas'}
+          label="Formação acadêmica"
+          options={academicDegreeOptions}
+          placeholder={getOptionLabel(
+            user?.academicDegree,
+            academicDegreeOptions,
+            'Selecione uma formação'
+          )}
           className="h-12 rounded-xl bg-white/5"
+          error={errors.academicDegree?.message}
+          {...register('academicDegree')}
         />
       </div>
 
@@ -65,36 +94,77 @@ export default function ProfileInfoSection({ user }: Props) {
           id="user-experience-level"
           label="Nível de experiência"
           options={experienceOptions}
-          placeholder={user?.experienceLevel || 'Selecione um nível'}
+          placeholder={getOptionLabel(
+            user?.experienceLevel,
+            experienceOptions,
+            'Selecione um nível'
+          )}
           className="h-12 rounded-xl bg-white/5"
+          error={errors.experienceLevel?.message}
+          {...register('experienceLevel')}
         />
 
         <SelectInput
           id="user-available-time"
           label="Tempo disponível por dia"
           options={availableTimeOptions}
-          placeholder={user?.availableTimePerDay || 'Selecione um tempo'}
+          placeholder={getOptionLabel(
+            user?.availableTimePerDay,
+            availableTimeOptions,
+            'Selecione um tempo'
+          )}
           className="h-12 rounded-xl bg-white/5"
+          error={errors.availableTimePerDay?.message}
+          {...register('availableTimePerDay')}
         />
       </div>
 
-      <TextBoxInput
-        id="user-categories"
-        label="Categorias de interesse"
-        placeholder="Ex: IA, Dados, Desenvolvimento web"
-        defaultValue={categoriesText}
-        maxLength={500}
-      />
+      <div className="grid gap-5 md:grid-cols-2">
+        <SelectInput
+          id="user-category-1"
+          label="Categoria de interesse 1"
+          options={categoryOptions}
+          placeholder={getOptionLabel(
+            user?.categoriesOfInterest?.[0],
+            categoryOptions,
+            'Selecione uma categoria'
+          )}
+          className="h-12 rounded-xl bg-white/5"
+          error={errors.categoryOfInterest1?.message}
+          {...register('categoryOfInterest1')}
+        />
+
+        <SelectInput
+          id="user-category-2"
+          label="Categoria de interesse 2"
+          options={categoryOptions}
+          placeholder={getOptionLabel(
+            user?.categoriesOfInterest?.[1],
+            categoryOptions,
+            'Selecione uma categoria'
+          )}
+          className="h-12 rounded-xl bg-white/5"
+          error={errors.categoryOfInterest2?.message}
+          {...register('categoryOfInterest2')}
+        />
+      </div>
 
       <div className="flex justify-end">
         <Button
-          type="button"
+          type="submit"
           variant="cyanOutline"
+          disabled={isSubmitting}
           className="border-cyan/40 text-cyan mt-0! w-auto rounded-full border px-4 py-2 text-sm"
         >
-          Salvar informações
+          {isSubmitting ? <LoaderCircle className="animate-spin" /> : 'Salvar informações'}
         </Button>
       </div>
-    </div>
+
+      {errorMessage && (
+        <p role="alert" className="text-sm text-red-500">
+          {errorMessage}
+        </p>
+      )}
+    </form>
   )
 }
