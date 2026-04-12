@@ -1,6 +1,7 @@
 import CommentsTabContent from '@/components/watch/CommentsTabContent'
 import { useAllComments } from '@/hooks/useAllComments'
 import { useUsersByIds } from '@/hooks/useUsersByIds'
+import { useRequestErrorToast } from '@/lib/requestToast'
 import type { CommentData } from '@/schemas/comments/commentSchema'
 import { createCommentRequest } from '@/services/comments/createComment'
 
@@ -9,14 +10,20 @@ type Props = {
 }
 
 export default function LessonCommentsSection({ lessonId }: Props) {
-  const { comments, refetch: refetchComments } = useAllComments(lessonId ?? '', {
-    enabled: Boolean(lessonId),
-  })
+  const { comments, error: commentsError, refetch: refetchComments } = useAllComments(
+    lessonId ?? '',
+    {
+      enabled: Boolean(lessonId),
+    }
+  )
 
   const commentUserIds = comments.map((comment) => comment.userId)
-  const { usersById } = useUsersByIds(commentUserIds, {
+  const { usersById, error: usersError } = useUsersByIds(commentUserIds, {
     enabled: commentUserIds.length > 0,
   })
+
+  useRequestErrorToast(commentsError, { id: 'comments-error' })
+  useRequestErrorToast(usersError, { id: 'comment-users-error' })
 
   async function handleSubmitComment(data: CommentData) {
     if (!lessonId) return

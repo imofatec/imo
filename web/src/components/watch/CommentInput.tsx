@@ -2,6 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { LoaderCircle } from 'lucide-react'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
+import { showRequestErrorToast } from '@/lib/requestToast'
 import type { CommentData } from '@/schemas/comments/commentSchema'
 import { commentSchema } from '@/schemas/comments/commentSchema'
 
@@ -11,7 +12,6 @@ type Props = {
 
 export default function CommentInput({ onSubmitComment }: Props) {
   const [isCommentInputActive, setIsCommentInputActive] = useState(false)
-  const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
   const {
     register,
@@ -32,21 +32,19 @@ export default function CommentInput({ onSubmitComment }: Props) {
 
   function handleCancelComment() {
     reset({ content: '' })
-    setErrorMessage(null)
     setIsCommentInputActive(false)
   }
 
   async function handleSubmitComment(data: CommentData) {
-    setErrorMessage(null)
-
     try {
       await onSubmitComment?.(data)
       reset({ content: '' })
       setIsCommentInputActive(false)
-    } catch (error: any) {
-      setErrorMessage(
-        error.response?.data?.message ||
-          'Ocorreu um erro ao enviar seu comentário. Por favor, tente novamente.'
+    } catch (error: unknown) {
+      showRequestErrorToast(
+        error,
+        'Ocorreu um erro ao enviar seu comentário. Por favor, tente novamente.',
+        { id: 'comment-submit-error' }
       )
     }
   }
@@ -54,7 +52,7 @@ export default function CommentInput({ onSubmitComment }: Props) {
   return (
     <form onSubmit={handleSubmit(handleSubmitComment)}>
       <label htmlFor="new-comment" className="text-sm font-medium text-white">
-        Novo comentário
+        Novo comentario
       </label>
 
       <input
@@ -63,12 +61,12 @@ export default function CommentInput({ onSubmitComment }: Props) {
         onFocus={() => setIsCommentInputActive(true)}
         {...register('content')}
         className="focus:border-cyan/40 mt-3 h-11 w-full rounded-xl border border-white/10 bg-[#0C0424] px-3 text-sm text-white outline-none placeholder:text-white/35"
-        placeholder="Escreva um comentário aqui..."
+        placeholder="Escreva um comentario aqui..."
       />
 
-      {(errors.content?.message || errorMessage) && (
+      {errors.content?.message && (
         <p role="alert" className="mt-2 text-sm text-red-500">
-          {errors.content?.message || errorMessage}
+          {errors.content?.message}
         </p>
       )}
 

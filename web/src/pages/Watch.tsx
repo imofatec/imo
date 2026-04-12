@@ -7,19 +7,26 @@ import PlayerHeader from '@/components/watch/PlayerHeader'
 import WatchHeader from '@/components/watch/WatchHeader'
 import { useCurrentCourse } from '@/hooks/useCurrentCourse'
 import { useCurrentProgress } from '@/hooks/useCurrentProgress'
+import { useRequestErrorToast } from '@/lib/requestToast'
 import type { CourseDetailsLesson } from '@/types/course'
 
 export default function WatchPage() {
   const { courseId, idLesson } = useParams()
   const navigate = useNavigate()
-  const { course } = useCurrentCourse(courseId ?? '')
-  const { watchedLessonIds, markingLessonIds, markLessonAsWatched } = useCurrentProgress(
-    courseId ?? ''
-  )
+  const { course, error: courseError } = useCurrentCourse(courseId ?? '')
+  const {
+    watchedLessonIds,
+    markingLessonIds,
+    markLessonAsWatched,
+    error: progressError,
+  } = useCurrentProgress(courseId ?? '')
   const [currentLesson, setCurrentLesson] = useState<CourseDetailsLesson | null>(null)
   const [currentLessonId, setCurrentLessonId] = useState('')
   const [isDownloadingCertificate, setIsDownloadingCertificate] = useState(false)
   const lessonsCount = course?.lessons.length ?? 0
+
+  useRequestErrorToast(courseError, { id: 'watch-course-error' })
+  useRequestErrorToast(progressError, { id: 'watch-progress-error' })
 
   useEffect(() => {
     if (!course?.lessons.length) {

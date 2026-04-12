@@ -9,12 +9,11 @@ import { registerSchema } from '@/schemas/auth/registerSchema'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useNavigate } from 'react-router-dom'
-import { useState } from 'react'
+import { showRequestErrorToast } from '@/lib/requestToast'
 import { registerRequest } from '@/services/user/registerRequest'
 
 export default function Register() {
   const navigate = useNavigate()
-  const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
   const {
     register,
@@ -28,15 +27,20 @@ export default function Register() {
   })
 
   async function handleRegister(data: RegisterData) {
-    setErrorMessage(null)
     try {
       await registerRequest(data)
-      navigate('/login')
+      navigate('/login', {
+        state: {
+          registrationSuccess: true,
+          registeredEmail: data.email,
+        },
+      })
       reset()
-    } catch (error: any) {
-      setErrorMessage(
-        error.response?.data?.message ||
-          'Ocorreu um erro ao tentar fazer seu cadastro. Por favor, tente novamente.'
+    } catch (error: unknown) {
+      showRequestErrorToast(
+        error,
+        'Ocorreu um erro ao tentar fazer seu cadastro. Por favor, tente novamente.',
+        { id: 'register-error' }
       )
     }
   }
@@ -86,11 +90,6 @@ export default function Register() {
         <Button variant="cyanOutline" className="bg-cyan text-cyan" disabled={isSubmitting}>
           {isSubmitting ? <LoaderCircle className="animate-spin" /> : 'Cadastrar'}
         </Button>
-        {errorMessage && (
-          <p role="alert" className="mt-1 text-sm text-red-500">
-            {errorMessage}
-          </p>
-        )}
       </form>
 
       <div className="flex flex-col gap-6">
