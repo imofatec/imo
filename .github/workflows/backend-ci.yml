@@ -42,7 +42,15 @@ jobs:
         run: ./src/test/resources/gen-test-keys.sh
 
       - name: Run backend test suite
-        run: ./mvnw -B -ntp test
+        run: ./mvnw -B -ntp verify
+
+      - name: Upload backend coverage report
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-code-coverage
+          path: backend/target/site/jacoco/**
+          if-no-files-found: error
 
       - name: Upload surefire reports on failure
         if: failure()

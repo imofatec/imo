@@ -41,7 +41,7 @@ Na prática, a plataforma oferece:
 
 - ~30 endpoints HTTP no backend
 - ~10 páginas
-- ~?% cobertura de testes do backend
+- ~76% cobertura de testes do backend
 - ~?% cobertura de testes do frontend web
 - ~?% cobertura de testes do mobile
 - Pipelines de CI e CD para homologação e produção
