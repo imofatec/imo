@@ -1,20 +1,12 @@
 # IMO
 
-Plataforma multiplataforma de aprendizagem que organiza conteúdos técnicos externos, especialmente vídeos do YouTube, em trilhas de estudo com progresso, interação e certificação.
+Software multiplataforma de aprendizagem que organiza conteúdos técnicos externos, especialmente vídeos do YouTube, em trilhas de estudo com progresso, interação e certificação.
 
 ## Visão geral
 
 Aprender tecnologia pela internet costuma significar navegar por conteúdos relevantes, porém dispersos, sem sequência clara e sem acompanhamento de progresso. Plataformas como o YouTube concentram muito material de qualidade, mas não foram desenhadas para organizar uma jornada estruturada de aprendizagem técnica.
 
 A IMO foi criada para atuar como uma camada de curadoria sobre esses conteúdos, organizando links e materiais externos em cursos e trilhas com começo, meio e fim. O objetivo é transformar consumo solto de conteúdo em uma experiência de estudo mais guiada, acompanhável e integrada entre web e mobile.
-
-## Destaques
-
-- Transforma conteúdos dispersos em trilhas com sequência e contexto
-- Reúne experiência web e mobile
-- Acompanha progresso por aula e por curso
-- Conecta aprendizado e interação por meio de comentários
-- Combina produto educacional com decisões reais de engenharia
 
 ## Exemplos de telas
 
@@ -28,7 +20,7 @@ A IMO foi criada para atuar como uma camada de curadoria sobre esses conteúdos,
 
 ## Como a IMO funciona
 
-A IMO permite que os próprios usuário submetam e organizem conteúdos técnicos já publicados na internet em cursos e trilhas estruturadas. Em vez de consumir vídeos isolados e materiais desconectados, o usuário percorre uma jornada que já foi estruturada por outra pessoa, acompanha a evolução por aula, interage com outros usuários e pode obter certificação ao concluir um percurso.
+A IMO permite que os próprios usuário submetam e organizem conteúdos técnicos já publicados na internet em cursos. Em vez de consumir vídeos isolados e materiais desconectados, o usuário percorre uma jornada que já foi estruturada por outra pessoa, acompanha a evolução por aula, interage com outros usuários e pode obter certificação ao concluir um percurso.
 
 Na prática, a plataforma oferece:
 
