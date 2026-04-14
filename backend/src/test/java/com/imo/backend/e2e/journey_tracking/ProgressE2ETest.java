@@ -79,6 +79,12 @@ class ProgressE2ETest extends BaseE2ETest {
     assertEquals(courseDetails.course().id(), progressDetails.course().id());
     assertEquals(1, progressDetails.progress().lessonsWatched().size());
     assertTrue(progressDetails.progress().lessonsWatched().contains(lessonId));
+    assertEquals(1, progressDetails.summary().watchedLessonsCount());
+    assertEquals(
+        courseDetails.course().lessonsCount(), progressDetails.summary().totalLessonsCount());
+    assertEquals(
+        100 / courseDetails.course().lessonsCount(),
+        progressDetails.summary().completionPercentage());
   }
 
   @Test
