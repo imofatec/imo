@@ -115,7 +115,8 @@ class UserE2ETest extends BaseE2ETest {
   @DisplayName("happy path (PUT /api/user/confirm): retorna 200 quando confirma conta do usuário")
   void shouldConfirmUser() {
     TestUser user = TestUser.defaultUser();
-    String token = IdentityTestHelper.registerAndLogin(user);
+    IdentityTestHelper.registerUser(user.toCreateRequest());
+    String token = IdentityTestHelper.login(user.toLoginRequest());
 
     UserDTO foundUser =
         given()
@@ -154,7 +155,7 @@ class UserE2ETest extends BaseE2ETest {
     assertNotNull(profile.id());
     assertEquals(user.name(), profile.name());
     assertEquals(user.email(), profile.email());
-    assertFalse(profile.isConfirmed());
+    assertTrue(profile.isConfirmed());
   }
 
   @Test

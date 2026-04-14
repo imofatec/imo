@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import com.imo.backend.contexts.catalog.course.value_objects.Categories;
 import com.imo.backend.contexts.common.exceptions.custom.BadRequestException;
+import com.imo.backend.contexts.common.exceptions.custom.ForbiddenException;
 import com.imo.backend.contexts.identity.user.User;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
@@ -64,5 +65,21 @@ class UserTest {
     assertThrows(
         BadRequestException.class,
         () -> user.assertUploadProfilePicture("doc.pdf", 1024, "application/pdf"));
+  }
+
+  @Test
+  @DisplayName("happy path (assertCanContributeCourse): usuário confirmado pode contribuir")
+  void shouldAllowConfirmedUserToContributeCourse() {
+    User user = new User(baseName, baseEmail, "123456", true);
+
+    assertDoesNotThrow(user::assertCanContributeCourse);
+  }
+
+  @Test
+  @DisplayName("exception (assertCanContributeCourse): usuário nao confirmado nao pode contribuir")
+  void shouldThrowForbiddenWhenUserIsNotConfirmed() {
+    User user = new User(baseName, baseEmail, "123456", false);
+
+    assertThrows(ForbiddenException.class, user::assertCanContributeCourse);
   }
 }

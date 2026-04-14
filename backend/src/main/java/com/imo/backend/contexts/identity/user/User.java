@@ -3,6 +3,7 @@ package com.imo.backend.contexts.identity.user;
 import com.imo.backend.contexts.catalog.course.value_objects.Categories;
 import com.imo.backend.contexts.common.Entity;
 import com.imo.backend.contexts.common.exceptions.custom.BadRequestException;
+import com.imo.backend.contexts.common.exceptions.custom.ForbiddenException;
 import com.imo.backend.contexts.identity.user.value_objects.AcademicDegree;
 import com.imo.backend.contexts.identity.user.value_objects.AvailableTimePerDay;
 import com.imo.backend.contexts.identity.user.value_objects.ExperienceLevel;
@@ -122,5 +123,12 @@ public class User extends Entity {
     }
 
     return filename;
+  }
+
+  public void assertCanContributeCourse() {
+    if (!Boolean.TRUE.equals(this.isConfirmed)) {
+      throw new ForbiddenException(
+          "Somente usuários com conta confirmada podem contribuir com cursos");
+    }
   }
 }

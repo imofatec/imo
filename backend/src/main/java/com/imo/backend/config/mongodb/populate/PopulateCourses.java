@@ -42,7 +42,7 @@ public class PopulateCourses {
               faker.lorem().characters(10, 300),
               lessons);
 
-      this.createCourseUseCase.execute(createCourseRequest.toCommand(contributorId), contributorId);
+      this.createCourseUseCase.execute(createCourseRequest.toCommand(contributorId));
     }
   }
 
