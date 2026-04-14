@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import authAxiosInstance from '@/api/authAxiosInstance'
 import LessonTabContent from '@/components/watch/LessonTabContent'
@@ -15,6 +15,7 @@ export default function WatchPage() {
   const navigate = useNavigate()
   const { course, error: courseError } = useCurrentCourse(courseId ?? '')
   const {
+    currentProgress,
     watchedLessonIds,
     markingLessonIds,
     markLessonAsWatched,
@@ -41,11 +42,8 @@ export default function WatchPage() {
     setCurrentLessonId(lessonFromUrl.id)
   }, [course, idLesson])
 
-  const watchedCount = useMemo(() => watchedLessonIds.size, [watchedLessonIds])
-  const progressPercent = useMemo(
-    () => (lessonsCount > 0 ? Math.round((watchedCount / lessonsCount) * 100) : 0),
-    [watchedCount, lessonsCount]
-  )
+  const watchedCount = watchedLessonIds.size
+  const progressPercent = currentProgress?.summary.completionPercentage ?? 0
 
   const allWatched = lessonsCount > 0 && watchedCount === lessonsCount
   const currentLessonIndex =

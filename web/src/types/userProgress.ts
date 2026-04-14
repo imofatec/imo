@@ -39,11 +39,18 @@ export type Lesson = {
   courseId: string
 }
 
+export type ProgressSummary = {
+  watchedLessonsCount: number
+  totalLessonsCount: number
+  completionPercentage: number
+}
+
 export type UserProgress = {
   progress: Progress
   user: UserProgressUser
   course: Course
   lessons: Lesson[]
+  summary: ProgressSummary
 }
 
 export type CurrentProgress = UserProgress
