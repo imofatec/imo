@@ -8,10 +8,9 @@ import com.imo.backend.contexts.catalog.course.http.dtos.CourseDetailsDTO;
 import com.imo.backend.contexts.catalog.course.repositories.CourseRepository;
 import com.imo.backend.contexts.catalog.lesson.usecases.CreateLessonUseCase;
 import com.imo.backend.contexts.common.Slug;
-import lombok.extern.slf4j.Slf4j;
+import com.imo.backend.contexts.identity.user.repositories.UserRepository;
 import org.springframework.stereotype.Service;
 
-@Slf4j
 @Service
 public class CreateCourseUseCase {
   private final CreateLessonUseCase createLessonUseCase;
@@ -20,18 +19,24 @@ public class CreateCourseUseCase {
 
   private final CoursePolicies coursePolicies;
 
+  private final UserRepository userRepository;
+
   public CreateCourseUseCase(
       CreateLessonUseCase createLessonUseCase,
       CourseRepository courseRepository,
-      CoursePolicies coursePolicies) {
+      CoursePolicies coursePolicies,
+      UserRepository userRepository) {
     this.createLessonUseCase = createLessonUseCase;
     this.courseRepository = courseRepository;
     this.coursePolicies = coursePolicies;
+    this.userRepository = userRepository;
   }
 
-  public CourseDetailsDTO execute(CreateCourseCommand cmd, String contributorId) {
+  public CourseDetailsDTO execute(CreateCourseCommand cmd) {
+    this.userRepository.findByIdOrThrow(cmd.contributorId()).assertCanContributeCourse();
+
     var potentialNewSlugCourse = Slug.create(cmd.name());
-    this.coursePolicies.checkSlugConflict(contributorId, potentialNewSlugCourse, null);
+    this.coursePolicies.checkSlugConflict(cmd.contributorId(), potentialNewSlugCourse, null);
 
     var newCourse =
         this.courseRepository.save(

@@ -67,6 +67,27 @@ class CourseE2ETest extends BaseE2ETest {
 
   @Test
   @DisplayName(
+      "exception (POST /api/course): retorna 403 quando usuário autenticado não confirmou a conta")
+  void shouldReturn403WhenUserIsNotConfirmed() {
+    TestUser user = TestUser.defaultUser();
+    IdentityTestHelper.registerUser(user.toCreateRequest());
+    String token = IdentityTestHelper.login(user.toLoginRequest());
+    TestCourse course = TestCourse.defaultCourse();
+
+    given()
+        .header("Authorization", "Bearer " + token)
+        .contentType(ContentType.JSON)
+        .body(course.toCreateRequest())
+        .when()
+        .post("/api/course")
+        .then()
+        .statusCode(HttpStatus.FORBIDDEN.value())
+        .contentType(ContentType.JSON)
+        .body("error", equalTo("FORBIDDEN"));
+  }
+
+  @Test
+  @DisplayName(
       "exception (POST /api/course): retorna 409 quando usuário ja cadastrou curso com mesmo slug")
   void shouldReturn409WhenCourseSlugAlreadyExistsForUser() {
     String token = IdentityTestHelper.registerAndLogin(TestUser.defaultUser());

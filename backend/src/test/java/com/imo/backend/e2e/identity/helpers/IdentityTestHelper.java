@@ -45,6 +45,17 @@ public final class IdentityTestHelper {
 
   public static String registerAndLogin(TestUser user) {
     registerUser(user.toCreateRequest());
-    return login(user.toLoginRequest());
+    String token = login(user.toLoginRequest());
+    confirmUser(token);
+    return token;
+  }
+
+  public static void confirmUser(String token) {
+    given()
+        .header("Authorization", "Bearer " + token)
+        .when()
+        .put("/api/user/confirm")
+        .then()
+        .statusCode(200);
   }
 }
