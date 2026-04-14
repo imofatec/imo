@@ -124,7 +124,7 @@ public class CustomProgressRepositoryImpl implements CustomProgressRepository {
     operations.add(Aggregation.unwind("course"));
 
     if (page != null && size != null) {
-      SortOperation sortOperation = Aggregation.sort(Sort.by(Sort.Direction.DESC, "createdAt"));
+      SortOperation sortOperation = Aggregation.sort(Sort.by(Sort.Direction.DESC, "updatedAt"));
       operations.add(sortOperation);
       operations.add(Aggregation.skip((long) page * size));
       operations.add(Aggregation.limit(size));
