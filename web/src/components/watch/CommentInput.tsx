@@ -1,8 +1,10 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { LoaderCircle } from 'lucide-react'
+import UserAvatar from '@/components/ui/UserAvatar'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import CharacterCount from '@/components/ui/CharacterCount'
+import { useUser } from '@/contexts/UserContext'
 import { showRequestErrorToast } from '@/lib/requestToast'
 import type { CommentData } from '@/schemas/comments/commentSchema'
 import { commentSchema } from '@/schemas/comments/commentSchema'
@@ -12,6 +14,7 @@ type Props = {
 }
 
 export default function CommentInput({ onSubmitComment }: Props) {
+  const { user } = useUser()
   const [isCommentInputActive, setIsCommentInputActive] = useState(false)
 
   const {
@@ -30,6 +33,8 @@ export default function CommentInput({ onSubmitComment }: Props) {
   })
 
   const content = watch('content') ?? ''
+  const profileImageSrc = user?.profilePicturePath ?? null
+  const currentUserName = user?.name?.trim() || 'Usuario'
 
   function handleCancelComment() {
     reset({ content: '' })
@@ -56,15 +61,18 @@ export default function CommentInput({ onSubmitComment }: Props) {
         Novo comentario
       </label>
 
-      <input
-        id="new-comment"
-        type="text"
-        onFocus={() => setIsCommentInputActive(true)}
-        {...register('content')}
-        maxLength={200}
-        className="focus:border-cyan/40 mt-3 h-11 w-full rounded-xl border border-white/10 bg-[#0C0424] px-3 text-sm text-white outline-none placeholder:text-white/35"
-        placeholder="Escreva um comentario aqui..."
-      />
+      <div className="mt-3 flex items-center gap-3">
+        <UserAvatar imageSrc={profileImageSrc} name={currentUserName} fallback="initials" />
+        <input
+          id="new-comment"
+          type="text"
+          onFocus={() => setIsCommentInputActive(true)}
+          {...register('content')}
+          maxLength={200}
+          className="focus:border-cyan/40 h-11 w-full rounded-xl border border-white/10 bg-[#0C0424] px-3 text-sm text-white outline-none placeholder:text-white/35"
+          placeholder="Escreva um comentario aqui..."
+        />
+      </div>
 
       <div className="mt-2 flex min-h-5 items-start justify-between gap-3 text-sm leading-5">
         <p
