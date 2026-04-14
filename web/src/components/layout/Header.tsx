@@ -1,9 +1,10 @@
 import LogoIMO from '@/assets/LogoIMO.svg'
 import SearchBar from '@/components/layout/SearchBar'
 import LinkButton from '@/components/ui/LinkButton'
+import UserAvatar from '@/components/ui/UserAvatar'
 import { useAuth } from '@/contexts/AuthContext'
 import { useUser } from '@/contexts/UserContext'
-import { ChevronDown, CircleUserRound } from 'lucide-react'
+import { ChevronDown } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 
@@ -66,12 +67,13 @@ export default function Header() {
     navigate('/login')
   }
 
-  const userName = user?.name?.trim() || 'Usuário'
+  const userName = user?.name?.trim() || 'Usuario'
+  const profileImageSrc = user?.profilePicturePath ?? null
 
   return (
     <header className="flex flex-col">
       <div className="bg-dark-purple flex min-h-14 items-center justify-around py-2">
-        <Link to={'/'}>
+        <Link to="/">
           <img src={LogoIMO} className="cursor-pointer" />
         </Link>
 
@@ -86,7 +88,13 @@ export default function Header() {
               aria-haspopup="menu"
               aria-expanded={isProfileOpen}
             >
-              <CircleUserRound size={32} className="text-cyan" />
+              <UserAvatar
+                imageSrc={profileImageSrc}
+                name={userName}
+                fallback="icon"
+                sizeClassName="h-8 w-8"
+                iconClassName="text-cyan"
+              />
               <span className="text-smx2 hidden max-w-26 truncate md:block">{userName}</span>
               <ChevronDown
                 size={22}
@@ -126,10 +134,10 @@ export default function Header() {
           </div>
         ) : (
           <div className="flex w-1/7 justify-end gap-4">
-            <LinkButton variant="cyanOutline" to={'/login'} className="bg-cyan text-cyan w-25">
+            <LinkButton variant="cyanOutline" to="/login" className="bg-cyan text-cyan w-25">
               Entrar
             </LinkButton>
-            <LinkButton variant="cyanOutline" to={'/cadastro'} className="bg-cyan text-cyan w-25">
+            <LinkButton variant="cyanOutline" to="/cadastro" className="bg-cyan text-cyan w-25">
               Cadastrar
             </LinkButton>
           </div>
@@ -137,19 +145,19 @@ export default function Header() {
       </div>
 
       <div className="bg-cyan mb-3 flex min-h-10 flex-wrap items-center justify-center gap-9 text-black">
-        <LinkButton variant="default" to={'/home'} className="bg-cyan w-25 text-black">
-          Página inicial
+        <LinkButton variant="default" to="/home" className="bg-cyan w-25 text-black">
+          Pagina inicial
         </LinkButton>
-        <LinkButton variant="default" to={'/categorias'} className="bg-cyan w-25 text-black">
+        <LinkButton variant="default" to="/categorias" className="bg-cyan w-25 text-black">
           Todos os cursos
         </LinkButton>
-        <LinkButton variant="default" to={'/user/cursos'} className="bg-cyan w-25 text-black">
+        <LinkButton variant="default" to="/user/cursos" className="bg-cyan w-25 text-black">
           Meus cursos
         </LinkButton>
-        <LinkButton variant="default" to={'/criar-curso'} className="bg-cyan w-25 text-black">
+        <LinkButton variant="default" to="/criar-curso" className="bg-cyan w-25 text-black">
           Contribuir com curso
         </LinkButton>
-        <LinkButton variant="default" to={'/home'} className="bg-cyan w-25 text-black">
+        <LinkButton variant="default" to="/home" className="bg-cyan w-25 text-black">
           Validar certificado
         </LinkButton>
       </div>

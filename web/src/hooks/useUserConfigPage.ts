@@ -1,4 +1,3 @@
-import { baseURL } from '@/api/environment'
 import { useUser } from '@/contexts/UserContext'
 import { showRequestErrorToast } from '@/lib/requestToast'
 import {
@@ -36,14 +35,9 @@ function normalizeBirthDate(value: string) {
   return trimmedValue
 }
 
-function getProfileImageSrc(profilePicturePath: string | null, photoPreviewUrl: string | null) {
+function resolveProfileImageSrc(profilePicturePath: string | null, photoPreviewUrl: string | null) {
   if (photoPreviewUrl) return photoPreviewUrl
-  if (!profilePicturePath) return null
-  if (profilePicturePath.startsWith('http://') || profilePicturePath.startsWith('https://')) {
-    return profilePicturePath
-  }
-
-  return `${baseURL}${profilePicturePath.startsWith('/') ? profilePicturePath : `/${profilePicturePath}`}`
+  return profilePicturePath
 }
 
 export function useUserConfigPage() {
@@ -224,7 +218,7 @@ export function useUserConfigPage() {
 
   return {
     user,
-    profileImageSrc: getProfileImageSrc(user?.profilePicturePath ?? null, photoPreviewUrl),
+    profileImageSrc: resolveProfileImageSrc(user?.profilePicturePath ?? null, photoPreviewUrl),
     hasPendingPhoto: Boolean(selectedPhoto),
     isUploadingPhoto,
     isResendingConfirmation,

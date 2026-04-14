@@ -1,4 +1,5 @@
 import { useState, type ChangeEvent, type TextareaHTMLAttributes } from 'react'
+import CharacterCount from '@/components/ui/CharacterCount'
 
 type TextBoxInputProps = TextareaHTMLAttributes<HTMLTextAreaElement> & {
   label: string
@@ -23,6 +24,8 @@ export default function TextBoxInput({
   })
 
   const activeLength = typeof value === 'string' ? value.length : currentLength
+  const shouldShowCharacterCount =
+    typeof props.minLength === 'number' || typeof maxLength === 'number'
 
   function handleChange(event: ChangeEvent<HTMLTextAreaElement>) {
     setCurrentLength(event.target.value.length)
@@ -49,8 +52,12 @@ export default function TextBoxInput({
       <div className="mt-1 flex min-h-5 items-start justify-between gap-3 text-sm leading-5">
         <p className={`${error ? 'text-red-500' : 'text-transparent'} min-h-5`}>{error ?? ' '}</p>
 
-        {typeof maxLength === 'number' ? (
-          <p className="text-right text-xs text-white/55">{activeLength}/{maxLength}</p>
+        {shouldShowCharacterCount ? (
+          <CharacterCount
+            currentLength={activeLength}
+            minLength={props.minLength}
+            maxLength={typeof maxLength === 'number' ? maxLength : undefined}
+          />
         ) : null}
       </div>
     </div>

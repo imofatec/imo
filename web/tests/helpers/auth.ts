@@ -33,7 +33,7 @@ export async function fillRegisterForm(page: Page, user: UserData) {
 
 export async function fillLoginForm(page: Page, user: Pick<UserData, 'email' | 'password'>) {
   await page.getByLabel('Email').fill(user.email)
-  await page.getByLabel('Senha').fill(user.password)
+  await page.getByLabel('Senha', { exact: true }).fill(user.password)
 }
 
 export async function registerUserByApi(request: APIRequestContext, user: UserData) {

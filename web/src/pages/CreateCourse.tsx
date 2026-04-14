@@ -90,6 +90,7 @@ export default function CreateCoursePage() {
                 placeholder="Curso de Python"
                 className="h-12 rounded-xl bg-white/5"
                 error={errors.nameCourse?.message}
+                minLength={15}
                 {...register('nameCourse')}
               />
 
@@ -122,6 +123,7 @@ export default function CreateCoursePage() {
                 label="Descricao"
                 placeholder="Descricao do curso..."
                 error={errors.description?.message}
+                minLength={25}
                 maxLength={500}
                 {...register('description')}
               />
