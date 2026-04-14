@@ -22,8 +22,20 @@ export default function PasswordSecuritySection({
     <form onSubmit={onSubmit} className="space-y-5">
       <div className="p-4">
         <p className="text-xl text-white/80">
-          Digite sua nova senha e confirme antes de salvar.
+          Informe sua senha atual e depois escolha a nova senha antes de salvar.
         </p>
+      </div>
+
+      <div>
+        <FormInput
+          id="old-password"
+          type="password"
+          label="Senha atual"
+          placeholder="Digite a senha atual"
+          className="h-12 rounded-xl bg-white/5"
+          error={errors.oldPassword?.message}
+          {...register('oldPassword')}
+        />
       </div>
 
       <div className="grid gap-5 md:grid-cols-2">

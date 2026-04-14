@@ -1,4 +1,4 @@
-import { z } from 'zod'
+﻿import { z } from 'zod'
 
 export const updateUserProfileSchema = z
   .object({
@@ -45,6 +45,9 @@ export const updateUserProfileSchema = z
 
 export const updateUserPasswordSchema = z
   .object({
+    oldPassword: z.string({ message: 'Senha atual obrigatória' }).min(1, {
+      message: 'Senha atual obrigatória',
+    }),
     password: z
       .string({ message: 'Senha obrigatória' })
       .min(8, { message: 'A senha precisa ter no mínimo 8 caracteres' })
