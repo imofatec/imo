@@ -44,4 +44,14 @@ public class UserPolicies {
 
     return foundUser;
   }
+
+  public void assertCurrentPassword(User user, String oldPassword) {
+    if (oldPassword == null || oldPassword.isEmpty()) {
+      throw new BadRequestException("Informe a senha atual");
+    }
+
+    if (!this.passwordEncoder.matches(oldPassword, user.getPassword())) {
+      throw new BadRequestException("A senha atual está incorreta");
+    }
+  }
 }

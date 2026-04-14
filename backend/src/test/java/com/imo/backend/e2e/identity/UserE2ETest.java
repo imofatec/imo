@@ -180,6 +180,7 @@ class UserE2ETest extends BaseE2ETest {
             "updated@email.com",
             "Updated Name",
             null,
+            null,
             "2026/03/31",
             AvailableTimePerDay.ONE_TO_TWO_HOURS,
             AcademicDegree.BACHELOR,

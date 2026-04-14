@@ -12,6 +12,7 @@ import java.util.List;
 public record UpdateUserByIdRequest(
     @Email(message = "Insira um email válido") String email,
     @Size(min = 5, max = 20, message = "O seu nome precisa ter no mínimo 5 caracteres") String name,
+    String oldPassword,
     @Pattern(
             regexp = "^(?=.*[A-Z])(?=.*\\d).+$",
             message = "A senha precisa ter no mínimo uma letra maiúscula e 1 número")

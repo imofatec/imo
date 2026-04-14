@@ -1,6 +1,7 @@
 package com.imo.backend.contexts.identity.user.usecases;
 
 import com.imo.backend.contexts.identity.user.User;
+import com.imo.backend.contexts.identity.user.UserPolicies;
 import com.imo.backend.contexts.identity.user.commands.UpdateUserByIdCommand;
 import com.imo.backend.contexts.identity.user.repositories.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -13,9 +14,13 @@ public class UpdateUserByIdUseCase {
 
   private final UserRepository userRepository;
 
-  public UpdateUserByIdUseCase(PasswordEncoder passwordEncoder, UserRepository userRepository) {
+  private final UserPolicies userPolicies;
+
+  public UpdateUserByIdUseCase(
+      PasswordEncoder passwordEncoder, UserRepository userRepository, UserPolicies userPolicies) {
     this.passwordEncoder = passwordEncoder;
     this.userRepository = userRepository;
+    this.userPolicies = userPolicies;
   }
 
   public User execute(String id, UpdateUserByIdCommand cmd) {
@@ -34,6 +39,7 @@ public class UpdateUserByIdUseCase {
     }
 
     if (cmd.password() != null && !cmd.password().isEmpty()) {
+      this.userPolicies.assertCurrentPassword(foundUser, cmd.oldPassword());
       foundUser.setPassword(this.passwordEncoder.encode(cmd.password()));
     }
 
