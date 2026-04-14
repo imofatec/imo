@@ -145,19 +145,19 @@ export default function Header() {
       </div>
 
       <div className="bg-cyan mb-3 flex min-h-10 flex-wrap items-center justify-center gap-9 text-black">
-        <LinkButton variant="default" to="/home" className="bg-cyan w-25 text-black">
+        <LinkButton variant="default" to="/home" className="bg-cyan text-black">
           Pagina inicial
         </LinkButton>
-        <LinkButton variant="default" to="/categorias" className="bg-cyan w-25 text-black">
+        <LinkButton variant="default" to="/categorias" className="bg-cyan text-black">
           Todos os cursos
         </LinkButton>
-        <LinkButton variant="default" to="/user/cursos" className="bg-cyan w-25 text-black">
+        <LinkButton variant="default" to="/user/cursos" className="bg-cyan text-black">
           Meus cursos
         </LinkButton>
-        <LinkButton variant="default" to="/criar-curso" className="bg-cyan w-25 text-black">
+        <LinkButton variant="default" to="/criar-curso" className="bg-cyan text-black">
           Contribuir com curso
         </LinkButton>
-        <LinkButton variant="default" to="/home" className="bg-cyan w-25 text-black">
+        <LinkButton variant="default" to="/home" className="bg-cyan text-black">
           Validar certificado
         </LinkButton>
       </div>
