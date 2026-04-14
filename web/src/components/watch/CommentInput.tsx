@@ -2,6 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { LoaderCircle } from 'lucide-react'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
+import CharacterCount from '@/components/ui/CharacterCount'
 import { showRequestErrorToast } from '@/lib/requestToast'
 import type { CommentData } from '@/schemas/comments/commentSchema'
 import { commentSchema } from '@/schemas/comments/commentSchema'
@@ -60,15 +61,22 @@ export default function CommentInput({ onSubmitComment }: Props) {
         type="text"
         onFocus={() => setIsCommentInputActive(true)}
         {...register('content')}
+        maxLength={200}
         className="focus:border-cyan/40 mt-3 h-11 w-full rounded-xl border border-white/10 bg-[#0C0424] px-3 text-sm text-white outline-none placeholder:text-white/35"
         placeholder="Escreva um comentario aqui..."
       />
 
-      {errors.content?.message && (
-        <p role="alert" className="mt-2 text-sm text-red-500">
-          {errors.content?.message}
+      <div className="mt-2 flex min-h-5 items-start justify-between gap-3 text-sm leading-5">
+        <p
+          role="alert"
+          className={`${errors.content?.message ? 'text-red-500' : 'text-transparent'} min-h-5`}
+        >
+          {errors.content?.message ?? ' '}
         </p>
-      )}
+        {isCommentInputActive ? (
+          <CharacterCount currentLength={content.length} minLength={1} maxLength={200} />
+        ) : null}
+      </div>
 
       {isCommentInputActive && (
         <div className="mt-3 flex items-center justify-end gap-3">

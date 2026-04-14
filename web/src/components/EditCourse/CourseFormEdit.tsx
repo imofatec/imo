@@ -23,6 +23,7 @@ export default function CourseFormEdit({ register, errors, course, onSaveCourse 
           placeholder={course?.course.name.name ?? ''}
           className="h-12 rounded-xl bg-white/5"
           error={errors.nameCourse?.message}
+          minLength={15}
           {...register('nameCourse')}
         />
 
@@ -52,6 +53,7 @@ export default function CourseFormEdit({ register, errors, course, onSaveCourse 
         label="Descrição"
         placeholder={course?.course.description ?? ''}
         error={errors.description?.message}
+        minLength={25}
         maxLength={500}
         {...register('description')}
       />

@@ -28,6 +28,7 @@ export default function LessonForm({
           placeholder="Ex: Introdução"
           className="h-12 rounded-xl bg-white/5"
           error={nameLessonError}
+          minLength={15}
           {...register(`lessons.${index}.nameLesson`)}
         />
 
@@ -43,6 +44,7 @@ export default function LessonForm({
           label="Descrição da Aula"
           placeholder="Descreva a aula..."
           error={descriptionError}
+          minLength={25}
           maxLength={500}
           {...register(`lessons.${index}.descriptionL`)}
         />

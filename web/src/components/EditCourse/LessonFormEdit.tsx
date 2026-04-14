@@ -38,6 +38,7 @@ export default function LessonFormEdit({
         placeholder={namePlaceholder}
         className="h-12 rounded-xl bg-white/5"
         error={nameError}
+        minLength={15}
         {...register(`lessons.${index}.nameLesson` as const)}
       />
 
@@ -53,6 +54,7 @@ export default function LessonFormEdit({
         label="Descrição da aula"
         placeholder={descriptionPlaceholder}
         error={descriptionError}
+        minLength={25}
         maxLength={500}
         {...register(`lessons.${index}.descriptionL` as const)}
       />
