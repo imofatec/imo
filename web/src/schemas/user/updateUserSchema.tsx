@@ -5,8 +5,8 @@ export const updateUserProfileSchema = z
     name: z
       .string()
       .trim()
-      .refine((value) => value === '' || value.length >= 5, {
-        message: 'Nome deve ter no mínimo 5 caracteres',
+      .refine((value) => value === '' || value.length >= 4, {
+        message: 'Nome deve ter no mínimo 4 caracteres',
       }),
     email: z
       .string()
