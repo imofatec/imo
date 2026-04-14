@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import java.util.List;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.ResponseEntity;
@@ -40,6 +41,7 @@ public class CourseDetailsSearchController extends CourseController {
                         @ArraySchema(schema = @Schema(implementation = CourseDetailsDTO.class))))
       })
   @GetMapping("/search/details")
+  @SecurityRequirement(name = "Authorization")
   public ResponseEntity<List<CourseDetailsDTO>> handle(
       @Parameter(description = "Query params to search", example = "slugCategory=dev-web")
           @ParameterObject
