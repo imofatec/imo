@@ -4,7 +4,7 @@ export const registerSchema = z
   .object({
     name: z
       .string({ message: 'Nome obrigatório' })
-      .min(5, { message: 'Nome deve ter no mínimo 5 caracteres' }),
+      .min(4, { message: 'Nome deve ter no mínimo 4 caracteres' }),
     email: z.string({ message: 'Email obrigatório' }).email({ message: 'Email inválido' }),
     password: z
       .string({ message: 'Senha obrigatório' })

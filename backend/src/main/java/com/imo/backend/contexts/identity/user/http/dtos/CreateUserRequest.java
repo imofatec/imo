@@ -7,7 +7,7 @@ import jakarta.validation.constraints.Size;
 
 public record CreateUserRequest(
     @NotBlank(message = "Preencha o seu nome")
-        @Size(min = 5, max = 20, message = "O seu nome precisa ter no mínimo 5 caracteres")
+        @Size(min = 4, max = 20, message = "O seu nome precisa ter no mínimo 4 caracteres")
         String name,
     @Email(message = "Insira um email válido") @NotBlank(message = "Preencha o email") String email,
     @NotBlank(message = "Preencha a senha")
