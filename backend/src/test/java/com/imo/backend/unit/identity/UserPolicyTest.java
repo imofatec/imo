@@ -124,4 +124,30 @@ class UserPolicyTest {
     verify(this.userRepository).findByEmail(baseEmail);
     verify(this.passwordEncoder).matches(null, "encoded123");
   }
+
+  @Test
+  @DisplayName("happy path (assertCurrentPassword): senha atual correta")
+  void shouldAllowPasswordUpdateWhenOldPasswordMatches() {
+    User userInPersistence = new User(baseName, baseEmail, "encoded123", true);
+
+    when(this.passwordEncoder.matches("123456", "encoded123")).thenReturn(true);
+
+    assertDoesNotThrow(() -> this.policies.assertCurrentPassword(userInPersistence, "123456"));
+
+    verify(this.passwordEncoder).matches("123456", "encoded123");
+  }
+
+  @Test
+  @DisplayName("exception (assertCurrentPassword): senha atual incorreta")
+  void shouldThrowBadRequestWhenOldPasswordDoesNotMatch() {
+    User userInPersistence = new User(baseName, baseEmail, "encoded123", true);
+
+    when(this.passwordEncoder.matches("senhaErrada", "encoded123")).thenReturn(false);
+
+    assertThrows(
+        BadRequestException.class,
+        () -> this.policies.assertCurrentPassword(userInPersistence, "senhaErrada"));
+
+    verify(this.passwordEncoder).matches("senhaErrada", "encoded123");
+  }
 }

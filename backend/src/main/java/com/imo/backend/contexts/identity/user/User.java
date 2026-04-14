@@ -69,7 +69,7 @@ public class User extends Entity {
     this.setEmail(email);
     this.password = password;
     this.isConfirmed = isConfirmed;
-    this.birthDate = birthDate;
+    this.setBirthDate(birthDate);
     this.availableTimePerDay = availableTimePerDay;
     this.academicDegree = academicDegree;
     this.experienceLevel = experienceLevel;
@@ -97,6 +97,14 @@ public class User extends Entity {
       throw new BadRequestException("São permitido no máximo 2 categorias de interesse");
     }
     this.categoriesOfInterest = categoriesOfInterest;
+  }
+
+  public void setBirthDate(LocalDate birthDate) {
+    if (birthDate != null && birthDate.isAfter(LocalDate.now())) {
+      throw new BadRequestException("A data de nascimento não pode ser maior que hoje");
+    }
+
+    this.birthDate = birthDate;
   }
 
   public String assertUploadProfilePicture(String filename, long sizeInBytes, String contentType) {

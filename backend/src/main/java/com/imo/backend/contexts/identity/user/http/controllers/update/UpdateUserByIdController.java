@@ -81,6 +81,7 @@ public class UpdateUserByIdController extends UserController {
         new UpdateUserByIdCommand(
             fieldsToUpdateUser.email(),
             fieldsToUpdateUser.name(),
+            fieldsToUpdateUser.oldPassword(),
             fieldsToUpdateUser.password(),
             null,
             parsedBirthDate,

@@ -6,6 +6,7 @@ import com.imo.backend.contexts.catalog.course.value_objects.Categories;
 import com.imo.backend.contexts.common.exceptions.custom.BadRequestException;
 import com.imo.backend.contexts.common.exceptions.custom.ForbiddenException;
 import com.imo.backend.contexts.identity.user.User;
+import java.time.LocalDate;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -81,5 +82,13 @@ class UserTest {
     User user = new User(baseName, baseEmail, "123456", false);
 
     assertThrows(ForbiddenException.class, user::assertCanContributeCourse);
+  }
+
+  @Test
+  @DisplayName("exception (setBirthDate): data maior que hoje")
+  void shouldThrowBadRequestWhenBirthDateIsInFuture() {
+    User user = new User(baseName, baseEmail, "123456");
+
+    assertThrows(BadRequestException.class, () -> user.setBirthDate(LocalDate.now().plusDays(1)));
   }
 }
