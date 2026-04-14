@@ -1,3 +1,4 @@
+import axios from 'axios'
 import authAxiosInstance from '@/api/authAxiosInstance'
 import { safeAwait } from '@/lib/safeAwait'
 import type { CurrentProgress } from '@/types/userProgress'
@@ -23,6 +24,13 @@ export function useCurrentProgress(courseId: string) {
     )
 
     if (err || !response) {
+      if (axios.isAxiosError(err) && err.response?.status === 404) {
+        setCurrentProgress(null)
+        setError(null)
+        setLoading(false)
+        return
+      }
+
       setError(err?.message || 'Erro ao buscar progresso do curso')
       setLoading(false)
       return
