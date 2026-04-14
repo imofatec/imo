@@ -82,6 +82,7 @@ export function useUserConfigPage() {
     mode: 'onBlur',
     reValidateMode: 'onChange',
     defaultValues: {
+      oldPassword: '',
       password: '',
       confPassword: '',
     },
@@ -153,6 +154,7 @@ export function useUserConfigPage() {
   async function onSubmitPassword(data: UpdateUserPasswordData) {
     try {
       await updateUserRequest({
+        oldPassword: data.oldPassword,
         password: data.password,
       })
 
