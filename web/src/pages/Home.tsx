@@ -3,8 +3,10 @@ import ContinueLearningCard from '@/components/Home/ContinueLearningCard'
 import HomeSectionHeader from '@/components/Home/HomeSectionHeader'
 import CourseCard from '@/components/AllCourses/CourseCard'
 import { categoryOptions } from '@/constants/courseOptions'
+import { useContinueProgress } from '@/hooks/useContinueProgress'
 import LinkButton from '@/components/ui/LinkButton'
 import type { Course } from '@/types/course'
+import { useMemo } from 'react'
 
 function toSlug(value: string) {
   return value
@@ -28,13 +30,6 @@ function getCategoryTerm(value: string) {
 
 function getCategoryPath(value: string) {
   return `/categorias/${getCategoryTerm(value).slug}`
-}
-
-const continueCourse = {
-  title: 'Fundamentos de IA aplicada a produtos',
-  instructor: 'Nome do instrutor',
-  progress: 40,
-  imageUrl: 'https://img.odcdn.com.br/wp-content/uploads/2024/06/ia_cursos-1024x683.jpg',
 }
 
 const recommendedCourses: Course[] = [
@@ -114,13 +109,33 @@ const trendingCourses: Course[] = [
 ]
 
 export default function HomePage() {
+  const { continueProgress } = useContinueProgress()
+
+  const continueCourse = useMemo(() => {
+    if (!continueProgress) {
+      return null
+    }
+
+    const firstLesson = continueProgress.lessons[0]
+    const lessonLink = firstLesson?.youtubeLink || continueProgress.course.firstLessonYoutubeLink
+    const thumbnailUrl = `https://img.youtube.com/vi/${continueProgress.course.firstLessonYoutubeLink}/maxresdefault.jpg`
+
+    return {
+      title: continueProgress.course.name.name,
+      instructor: continueProgress.course.category.name,
+      progress: continueProgress.summary.completionPercentage,
+      imageUrl: thumbnailUrl,
+      to: lessonLink ? `/cursos/${continueProgress.course.id}/${lessonLink}` : '/user/cursos',
+    }
+  }, [continueProgress])
+
   return (
     <main className="min-h-screen w-full bg-[#0C0424]">
       <section className="border-b border-white/10 bg-linear-to-r from-[#130738] via-[#0E0530] to-[#0B0326]">
         <div className="mx-auto w-full max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
           <p className="text-cyan text-xs font-medium tracking-[0.2em] uppercase">Início</p>
           <h1 className="mt-3 max-w-2xl text-3xl leading-tight font-bold text-white md:text-4xl">
-            Seu aprendizado continua aqui
+            Seu aprendizado se inicia aqui
           </h1>
           <p className="mt-3 max-w-2xl text-sm text-white/70 md:text-base">
             Explore cursos, continue seu aprendizado em andamento e descubra conteúdos de alta
@@ -139,10 +154,12 @@ export default function HomePage() {
       </section>
 
       <section className="mx-auto w-full max-w-6xl space-y-10 px-4 py-8 sm:px-6 lg:px-8">
-        <div>
-          <HomeSectionHeader title="Continue seu aprendizado" />
-          <ContinueLearningCard {...continueCourse} />
-        </div>
+        {continueCourse ? (
+          <div>
+            <HomeSectionHeader title="Continue seu aprendizado" />
+            <ContinueLearningCard {...continueCourse} />
+          </div>
+        ) : null}
 
         <div>
           <HomeSectionHeader title="Categorias" to="/categorias" />
