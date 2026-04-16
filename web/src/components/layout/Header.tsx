@@ -134,30 +134,42 @@ export default function Header() {
           </div>
         ) : (
           <div className="flex w-1/7 justify-end gap-4">
-            <LinkButton variant="cyanOutline" to="/login" className="bg-cyan text-cyan w-25">
+            <LinkButton variant="cyanOutline" to="/login" className="bg-cyan text-cyan mt-0! w-25">
               Entrar
             </LinkButton>
-            <LinkButton variant="cyanOutline" to="/cadastro" className="bg-cyan text-cyan w-25">
+            <LinkButton
+              variant="cyanOutline"
+              to="/cadastro"
+              className="bg-cyan text-cyan mt-0! w-25"
+            >
               Cadastrar
             </LinkButton>
           </div>
         )}
       </div>
 
-      <div className="bg-cyan mb-3 flex min-h-10 flex-wrap items-center justify-center gap-9 text-black">
-        <LinkButton variant="default" to="/home" className="bg-cyan text-black">
-          Pagina inicial
+      <div className="bg-cyan flex min-h-10 flex-wrap items-center justify-center gap-9 text-black">
+        <LinkButton variant="default" to="/home" className="bg-cyan font-semibold text-black">
+          Página inicial
         </LinkButton>
-        <LinkButton variant="default" to="/categorias" className="bg-cyan text-black">
+        <LinkButton variant="default" to="/categorias" className="bg-cyan font-semibold text-black">
           Todos os cursos
         </LinkButton>
-        <LinkButton variant="default" to="/user/cursos" className="bg-cyan text-black">
+        <LinkButton
+          variant="default"
+          to="/user/cursos"
+          className="bg-cyan font-semibold text-black"
+        >
           Meus cursos
         </LinkButton>
-        <LinkButton variant="default" to="/criar-curso" className="bg-cyan text-black">
+        <LinkButton
+          variant="default"
+          to="/criar-curso"
+          className="bg-cyan font-semibold text-black"
+        >
           Contribuir com curso
         </LinkButton>
-        <LinkButton variant="default" to="/home" className="bg-cyan text-black">
+        <LinkButton variant="default" to="/home" className="bg-cyan font-semibold text-black">
           Validar certificado
         </LinkButton>
       </div>
