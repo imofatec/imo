@@ -20,7 +20,7 @@ export default function WatchHeader({ courseTitle }: Props) {
 
         <div className="min-w-0 flex-1">
           <p className="text-xs tracking-[0.22em] text-white/50 uppercase">Curso</p>
-          <h1 className="truncate text-2xl font-bold text-white">{courseTitle}</h1>
+          <h1 className="text-2xl font-bold wrap-break-word text-white">{courseTitle}</h1>
         </div>
       </div>
     </section>

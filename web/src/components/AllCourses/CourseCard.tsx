@@ -48,9 +48,9 @@ export default function CourseCard({
             {course.category.name}
           </span>
 
-          <h2 className="mt-3 text-lg font-semibold text-white">{course.name.name}</h2>
+          <h2 className="mt-3 truncate text-lg font-semibold text-white">{course.name.name}</h2>
 
-          <p className="mt-3 mb-4 [display:-webkit-box] h-6 overflow-hidden text-sm leading-6 text-white [-webkit-box-orient:vertical] [-webkit-line-clamp:1]">
+          <p className="mt-3 mb-4 truncate text-sm leading-6 text-white">
             {course.description}
           </p>
 

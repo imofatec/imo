@@ -83,7 +83,7 @@ export default function CreateCoursePage() {
 
       <section className="mx-auto w-full max-w-5xl px-4 py-8">
         <form onSubmit={handleSubmit(handleCreateCourse)} className="space-y-8">
-          <FormSection title="Informacoes do curso">
+          <FormSection title="Informações do curso">
             <div className="grid gap-5 md:grid-cols-2">
               <FormInput
                 label="Nome do curso"
@@ -108,9 +108,9 @@ export default function CreateCoursePage() {
             <div className="mt-5">
               <SelectInput
                 id="level"
-                label="Nivel"
+                label="Nível"
                 options={levelOptions}
-                placeholder="Selecione um nivel"
+                placeholder="Selecione um nível"
                 className="h-12 rounded-xl bg-white/5"
                 error={errors.level?.message}
                 {...register('level')}
@@ -120,11 +120,11 @@ export default function CreateCoursePage() {
             <div className="mt-5">
               <TextBoxInput
                 id="description"
-                label="Descricao"
-                placeholder="Descricao do curso..."
+                label="Descrição"
+                placeholder="Descrição do curso..."
                 error={errors.description?.message}
                 minLength={25}
-                maxLength={500}
+                maxLength={300}
                 {...register('description')}
               />
             </div>
