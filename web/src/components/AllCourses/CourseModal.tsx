@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { X } from 'lucide-react'
 import type { Course } from '@/types/course'
 
 type Props = {
@@ -31,26 +32,29 @@ export default function CourseModal({
   return (
     <div
       onClick={onClose}
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4 py-6"
     >
       <div
         onClick={(event) => event.stopPropagation()}
-        className="w-full max-w-2xl rounded-2xl border border-white/10 bg-[#14082f] p-6 shadow-2xl"
+        className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl border border-white/10 bg-[#14082f] p-6 shadow-2xl"
       >
         <div className="flex items-start justify-between gap-4">
-          <div>
+          <div className="min-w-0 flex-1">
             <span className="bg-cyan/20 text-cyan inline-block rounded-full px-3 py-1 text-xs font-medium">
               {course.category.name}
             </span>
 
-            <h2 className="mt-3 text-2xl font-bold text-white">{course.name.name}</h2>
+            <h2 className="mt-3 text-2xl font-bold wrap-break-word text-white">
+              {course.name.name}
+            </h2>
           </div>
 
           <button
             onClick={onClose}
-            className="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white hover:bg-white/10"
+            type="button"
+            className="shrink-0 self-start rounded-lg border border-white/10 bg-white/5 p-2 text-white/80 transition hover:bg-white/10 hover:text-white"
           >
-            Fechar
+            <X size={18} />
           </button>
         </div>
 
@@ -61,7 +65,7 @@ export default function CourseModal({
         />
 
         <div className="mt-5 space-y-4">
-          <p className="text-sm leading-7 text-white">{course.description}</p>
+          <p className="text-sm leading-7 wrap-break-word text-white">{course.description}</p>
 
           <div className="grid gap-3 sm:grid-cols-3">
             <div className="rounded-xl bg-white/5 p-4">

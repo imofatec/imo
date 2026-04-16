@@ -24,7 +24,7 @@ export default function SelectInput({
 
       <select
         id={id}
-        className={`${error ? 'border-red-500' : 'border-white/10'} [color-scheme:dark] flex h-10 w-full rounded-md border px-3 py-2 text-sm text-white focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 ${className}`}
+        className={`${error ? 'border-red-500' : 'border-white/10'} flex h-10 w-full rounded-md border px-3 py-2 text-sm text-white scheme-dark focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 ${className}`}
         {...props}
       >
         <option value="" disabled hidden style={{ backgroundColor: '#14082f', color: 'white' }}>
@@ -42,7 +42,9 @@ export default function SelectInput({
         ))}
       </select>
 
-      <p className={`mt-1 min-h-5 text-sm leading-5 ${error ? 'text-red-500' : 'text-transparent'}`}>
+      <p
+        className={`mt-1 min-h-5 text-sm leading-5 ${error ? 'text-red-500' : 'text-transparent'}`}
+      >
         {error ?? ' '}
       </p>
     </div>

@@ -32,7 +32,7 @@ export const createCourseSchema = z.object({
     .string({ message: 'O curso deve conter uma descrição' })
     .trim()
     .min(25, { message: 'Descrição muito curta' })
-    .max(500, { message: 'A descrição do curso deve ter no máximo 500 caracteres' }),
+    .max(300, { message: 'A descrição do curso deve ter no máximo 300 caracteres' }),
   lessons: z.array(lessonSchema).min(1, { message: 'O curso precisa de pelo menos uma aula' }),
 })
 

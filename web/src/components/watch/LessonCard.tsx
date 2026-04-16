@@ -24,7 +24,9 @@ export default function LessonCard({
           <p className="text-xs tracking-[0.16em] text-white/45 uppercase">
             Aula {lesson.indexInCourse}
           </p>
-          <p className={`mt-1 text-sm font-medium ${isActive ? 'text-cyan' : 'text-white'}`}>
+          <p
+            className={`mt-1 text-sm font-medium wrap-break-word ${isActive ? 'text-cyan' : 'text-white'}`}
+          >
             {lesson.title}
           </p>
         </button>
