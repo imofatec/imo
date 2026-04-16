@@ -66,7 +66,8 @@ public class SecurityConfig {
                         "/api/course/search",
                         "/api/course/categories",
                         "/api/comment/{lessonId}",
-                        "/api/certificate/details/{id}")
+                        "/api/certificate/details/{id}",
+                        "/uploads/**")
                     .permitAll()
                     .requestMatchers(
                         HttpMethod.POST,
