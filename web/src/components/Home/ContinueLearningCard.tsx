@@ -8,7 +8,13 @@ type Props = {
   to?: string
 }
 
-export default function ContinueLearningCard({ title, instructor, progress, imageUrl }: Props) {
+export default function ContinueLearningCard({
+  title,
+  instructor,
+  progress,
+  imageUrl,
+  to = '/user/cursos',
+}: Props) {
   return (
     <div className="overflow-hidden rounded-3xl border border-white/10 bg-[#14082f]">
       <div className="grid md:grid-cols-[280px_1fr]">
@@ -39,7 +45,7 @@ export default function ContinueLearningCard({ title, instructor, progress, imag
 
           <div className="flex justify-end">
             <LinkButton
-              to={'/user/cursos'}
+              to={to}
               variant="cyanOutline"
               className="text-cyan border-cyan/40 mt-0! w-auto rounded-full border px-4 py-2"
             >
