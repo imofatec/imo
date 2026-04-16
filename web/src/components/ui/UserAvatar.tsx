@@ -1,4 +1,5 @@
 import { CircleUserRound } from 'lucide-react'
+import { resolveProfileImageSrc } from '@/lib/resolveProfileImageSrc'
 
 type UserAvatarProps = {
   imageSrc?: string | null
@@ -26,10 +27,12 @@ export default function UserAvatar({
   className = '',
   iconClassName = 'text-cyan',
 }: UserAvatarProps) {
-  if (imageSrc) {
+  const resolvedImageSrc = resolveProfileImageSrc(imageSrc ?? null)
+
+  if (resolvedImageSrc) {
     return (
       <img
-        src={imageSrc}
+        src={resolvedImageSrc}
         alt={name ? `Foto de perfil de ${name}` : 'Foto de perfil do usuário'}
         className={`${sizeClassName} rounded-full object-cover ${className}`}
       />

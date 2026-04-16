@@ -1,4 +1,5 @@
 import { useUser } from '@/contexts/UserContext'
+import { resolveProfileImageSrc } from '@/lib/resolveProfileImageSrc'
 import { showRequestErrorToast } from '@/lib/requestToast'
 import {
   type UpdateUserPasswordData,
@@ -35,9 +36,15 @@ function normalizeBirthDate(value: string) {
   return trimmedValue
 }
 
-function resolveProfileImageSrc(profilePicturePath: string | null, photoPreviewUrl: string | null) {
-  if (photoPreviewUrl) return photoPreviewUrl
-  return profilePicturePath
+function resolveCurrentProfileImageSrc(
+  profilePicturePath: string | null,
+  photoPreviewUrl: string | null
+) {
+  if (photoPreviewUrl) {
+    return photoPreviewUrl
+  }
+
+  return resolveProfileImageSrc(profilePicturePath)
 }
 
 export function useUserConfigPage() {
@@ -220,7 +227,10 @@ export function useUserConfigPage() {
 
   return {
     user,
-    profileImageSrc: resolveProfileImageSrc(user?.profilePicturePath ?? null, photoPreviewUrl),
+    profileImageSrc: resolveCurrentProfileImageSrc(
+      user?.profilePicturePath ?? null,
+      photoPreviewUrl
+    ),
     hasPendingPhoto: Boolean(selectedPhoto),
     isUploadingPhoto,
     isResendingConfirmation,
