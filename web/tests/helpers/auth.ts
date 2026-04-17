@@ -1,5 +1,6 @@
 import { expect, type APIRequestContext, type Page } from '@playwright/test'
 import { loadEnv } from 'vite'
+import type { User } from '../../src/types/user'
 
 const env = loadEnv('test', process.cwd(), '')
 
@@ -11,6 +12,11 @@ export type UserData = {
   email: string
   password: string
   confPassword: string
+}
+
+export type AuthSession = UserData & {
+  id: string
+  accessToken: string
 }
 
 export function createUserData(): UserData {
@@ -44,4 +50,67 @@ export async function registerUserByApi(request: APIRequestContext, user: UserDa
   expect(response.ok()).toBeTruthy()
 
   return user
+}
+
+export async function loginUserByApi(
+  request: APIRequestContext,
+  user: Pick<UserData, 'email' | 'password'>
+) {
+  const response = await request.post(`${apiBaseUrl}/api/user/login`, {
+    data: user,
+  })
+
+  expect(response.ok()).toBeTruthy()
+
+  return (await response.json()) as { accessToken: string }
+}
+
+export async function getUserProfileByApi(request: APIRequestContext, accessToken: string) {
+  const response = await request.get(`${apiBaseUrl}/api/user/profile`, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  })
+
+  expect(response.ok()).toBeTruthy()
+
+  return (await response.json()) as User
+}
+
+export async function confirmUserByApi(request: APIRequestContext, accessToken: string) {
+  const response = await request.put(`${apiBaseUrl}/api/user/confirm`, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  })
+
+  expect(response.ok()).toBeTruthy()
+}
+
+export async function createAuthenticatedUser(request: APIRequestContext): Promise<AuthSession> {
+  const user = createUserData()
+  await registerUserByApi(request, user)
+
+  const { accessToken } = await loginUserByApi(request, user)
+  const profile = await getUserProfileByApi(request, accessToken)
+
+  return {
+    ...user,
+    id: profile.id,
+    accessToken,
+  }
+}
+
+export async function createConfirmedUser(request: APIRequestContext): Promise<AuthSession> {
+  const session = await createAuthenticatedUser(request)
+  await confirmUserByApi(request, session.accessToken)
+
+  return session
+}
+
+export async function authenticatePage(page: Page, accessToken: string) {
+  await page.addInitScript((token: string) => {
+    window.localStorage.clear()
+    window.localStorage.setItem('token', token)
+  }, accessToken)
 }
