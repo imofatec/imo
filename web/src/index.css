@@ -27,6 +27,7 @@ body {
 }
 
 .home-trending-scrollbar::-webkit-scrollbar {
+  width: 10px;
   height: 10px;
 }
 
@@ -43,4 +44,16 @@ body {
 
 .home-trending-scrollbar::-webkit-scrollbar-thumb:hover {
   background: linear-gradient(90deg, rgba(45, 239, 216, 0.85), rgba(45, 239, 216, 1));
+}
+
+.search-input::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.search-input::-ms-clear,
+.search-input::-ms-reveal {
+  display: none;
+  width: 0;
+  height: 0;
 }
