@@ -5,6 +5,7 @@ import PaginationControls from '@/components/AllCourses/PaginationControls'
 import { useCourses } from '@/hooks/useCourses'
 import { useCategories } from '@/hooks/useCategories'
 import { useRequestErrorToast } from '@/lib/requestToast'
+import { getCategorySlugFromSearchTerm } from '@/lib/categorySearch'
 import { useParams, useSearchParams } from 'react-router-dom'
 
 const PAGE_SIZE = 10
@@ -14,11 +15,14 @@ export default function AllCoursesPage() {
   const { categorySlug } = useParams()
   const [searchParams] = useSearchParams()
   const searchName = searchParams.get('name') ?? undefined
+  const categoryBySearchName = searchName ? getCategorySlugFromSearchTerm(searchName) : undefined
+  const resolvedCategorySlug = categorySlug ?? categoryBySearchName
+  const resolvedSearchName = resolvedCategorySlug ? undefined : searchName
   const { categories, error: categoriesError } = useCategories()
   const { courses, loading, error } = useCourses({
-    matchType: searchName ? 'CONTAINS' : undefined,
-    categorySlug,
-    name: searchName,
+    matchType: resolvedSearchName ? 'CONTAINS' : undefined,
+    categorySlug: resolvedCategorySlug,
+    name: resolvedSearchName,
     page,
     size: PAGE_SIZE,
   })
@@ -32,7 +36,7 @@ export default function AllCoursesPage() {
   useEffect(() => {
     // eslint-disable-next-line
     setPage(0)
-  }, [categorySlug])
+  }, [resolvedCategorySlug, resolvedSearchName])
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -43,7 +47,7 @@ export default function AllCoursesPage() {
       <section className="border-b border-white/10">
         <div className="max-w-8xl mx-auto flex w-full items-center px-4 py-5 sm:px-6 lg:px-8">
           <h1 className="pl-3 text-2xl font-bold text-white">Cursos</h1>
-          <FilterDrawer categories={categories} selectedCategory={categorySlug || null} />
+          <FilterDrawer categories={categories} selectedCategory={resolvedCategorySlug || null} />
         </div>
       </section>
 
