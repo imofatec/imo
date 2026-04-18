@@ -1,5 +1,12 @@
 import { expect, test } from './fixtures'
-import { apiBaseUrl, createUserData, defaultPassword, fillLoginForm, fillRegisterForm } from './helpers/auth'
+import {
+  apiBaseUrl,
+  createUserData,
+  defaultPassword,
+  fillLoginForm,
+  fillRegisterForm,
+} from './helpers/auth'
+import { LoginPage } from './page-objects/LoginPage'
 
 test.describe('Auth', () => {
   test.beforeAll(() => {
@@ -23,9 +30,10 @@ test.describe('Auth', () => {
     page,
     registeredUser,
   }) => {
-    await page.goto('/login')
-    await fillLoginForm(page, registeredUser)
-    await page.getByRole('button', { name: 'Entrar' }).click()
+    const loginPage = new LoginPage(page)
+
+    await loginPage.goto()
+    await loginPage.loginAs(registeredUser)
 
     await page.locator('button[aria-haspopup="menu"]').click()
     await expect(page.getByRole('button', { name: 'Sair' })).toBeVisible()
@@ -38,9 +46,10 @@ test.describe('Auth', () => {
     page,
     registeredUser,
   }) => {
-    await page.goto('/login')
-    await fillLoginForm(page, registeredUser)
-    await page.getByRole('button', { name: 'Entrar' }).click()
+    const loginPage = new LoginPage(page)
+
+    await loginPage.goto()
+    await loginPage.loginAs(registeredUser)
 
     await page.locator('button[aria-haspopup="menu"]').click()
     await expect(page.getByRole('button', { name: 'Sair' })).toBeVisible()
@@ -55,7 +64,9 @@ test.describe('Auth', () => {
   })
 
   test('should show an error for invalid login credentials', async ({ page }) => {
-    await page.goto('/login')
+    const loginPage = new LoginPage(page)
+
+    await loginPage.goto()
 
     await fillLoginForm(page, {
       email: 'inexistente@email.com',
