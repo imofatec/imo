@@ -1,20 +1,18 @@
 package com.imo.backend.contexts.catalog.lesson.http.controllers;
 
-import com.imo.backend.contexts.catalog.course.repositories.CourseRepository;
-import com.imo.backend.contexts.catalog.course.repositories.CourseSearchParams;
 import com.imo.backend.contexts.catalog.lesson.http.dtos.LessonDTO;
+import com.imo.backend.contexts.catalog.lesson.repositories.LessonRepository;
 import com.imo.backend.contexts.catalog.lesson.repositories.LessonSearchParams;
 import com.imo.backend.contexts.common.CombineWith;
 import com.imo.backend.contexts.common.MatchType;
+import com.imo.backend.contexts.common.http.dtos.PaginatedResponseDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import java.util.List;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,10 +21,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class LessonSearchController extends LessonController {
-  private final CourseRepository courseRepository;
+  private final LessonRepository lessonRepository;
 
-  public LessonSearchController(CourseRepository courseRepository) {
-    this.courseRepository = courseRepository;
+  public LessonSearchController(LessonRepository lessonRepository) {
+    this.lessonRepository = lessonRepository;
   }
 
   @Operation(summary = "Search lesson")
@@ -36,8 +34,7 @@ public class LessonSearchController extends LessonController {
         @ApiResponse(
             responseCode = "200",
             description = "Aulas encontradas",
-            content =
-                @Content(array = @ArraySchema(schema = @Schema(implementation = LessonDTO.class)))),
+            content = @Content(schema = @Schema(implementation = PaginatedResponseDTO.class))),
         @ApiResponse(
             responseCode = "401",
             description = "Não autenticado",
@@ -49,7 +46,7 @@ public class LessonSearchController extends LessonController {
                                 com.imo.backend.contexts.common.exceptions.ErrorResponseDto.class)))
       })
   @GetMapping("/search")
-  public ResponseEntity<List<LessonDTO>> handle(
+  public ResponseEntity<PaginatedResponseDTO<LessonDTO>> handle(
       @Parameter(description = "Query params to search", example = "slugCategory=dev-web")
           @ParameterObject
           LessonSearchParams lessonSearchParams,
@@ -59,30 +56,13 @@ public class LessonSearchController extends LessonController {
       @Parameter(description = "Query params to search", example = "AND")
           @RequestParam(defaultValue = "AND")
           CombineWith combineWith,
-      @Parameter(description = "Page number to retrieve", example = "0", required = false)
-          @RequestParam(required = false)
-          Integer page,
-      @Parameter(description = "Size of each page", example = "10", required = false)
-          @RequestParam(required = false)
-          Integer size) {
+      @Parameter(description = "Page number to retrieve", example = "0") @RequestParam Integer page,
+      @Parameter(description = "Size of each page", example = "10") @RequestParam Integer size) {
+    var lessons =
+        this.lessonRepository.search(lessonSearchParams, page, size, matchType, combineWith);
+    long totalItems = this.lessonRepository.countSearch(lessonSearchParams, matchType, combineWith);
+    var items = lessons.stream().map(LessonDTO::fromEntity).toList();
 
-    CourseSearchParams searchParams =
-        new CourseSearchParams(
-            lessonSearchParams.courseName(), lessonSearchParams.courseNameSlug(), null, null, null);
-
-    var courseDetailsStream =
-        (page == null || size == null)
-            ? this.courseRepository.searchDetails(searchParams, matchType, combineWith).stream()
-            : this.courseRepository
-                .searchDetails(searchParams, page, size, matchType, combineWith)
-                .stream();
-
-    var response =
-        courseDetailsStream
-            .flatMap(courseDetails -> courseDetails.lessons().stream())
-            .map(LessonDTO::fromEntity)
-            .toList();
-
-    return ResponseEntity.ok(response);
+    return ResponseEntity.ok(PaginatedResponseDTO.from(items, page, size, totalItems));
   }
 }

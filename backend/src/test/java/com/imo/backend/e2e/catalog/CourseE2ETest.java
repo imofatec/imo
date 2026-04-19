@@ -215,7 +215,9 @@ class CourseE2ETest extends BaseE2ETest {
         .get("/api/course/search")
         .then()
         .statusCode(HttpStatus.OK.value())
-        .contentType(ContentType.JSON);
+        .contentType(ContentType.JSON)
+        .body("pagination.currentPage", equalTo(0))
+        .body("pagination.remainingPages", equalTo(0));
   }
 
   @Test
@@ -238,7 +240,7 @@ class CourseE2ETest extends BaseE2ETest {
             .contentType(ContentType.JSON)
             .extract()
             .jsonPath()
-            .getList(".", CourseDTO.class);
+            .getList("items", CourseDTO.class);
 
     assertTrue(courses.isEmpty());
   }
@@ -263,7 +265,7 @@ class CourseE2ETest extends BaseE2ETest {
             .contentType(ContentType.JSON)
             .extract()
             .jsonPath()
-            .getList(".", CourseDTO.class);
+            .getList("items", CourseDTO.class);
 
     assertEquals(1, courses.size());
     assertEquals(inactiveCourse.id(), courses.getFirst().id());
@@ -287,7 +289,9 @@ class CourseE2ETest extends BaseE2ETest {
         .get("/api/course/search/details")
         .then()
         .statusCode(HttpStatus.OK.value())
-        .contentType(ContentType.JSON);
+        .contentType(ContentType.JSON)
+        .body("pagination.currentPage", equalTo(0))
+        .body("pagination.remainingPages", equalTo(0));
   }
 
   @Test
@@ -311,7 +315,7 @@ class CourseE2ETest extends BaseE2ETest {
             .contentType(ContentType.JSON)
             .extract()
             .jsonPath()
-            .getList(".", CourseDetailsDTO.class);
+            .getList("items", CourseDetailsDTO.class);
 
     assertTrue(details.isEmpty());
   }
@@ -338,7 +342,7 @@ class CourseE2ETest extends BaseE2ETest {
             .contentType(ContentType.JSON)
             .extract()
             .jsonPath()
-            .getList(".", CourseDetailsDTO.class);
+            .getList("items", CourseDetailsDTO.class);
 
     assertEquals(1, details.size());
     assertEquals(inactiveCourse.id(), details.getFirst().course().id());
@@ -350,6 +354,8 @@ class CourseE2ETest extends BaseE2ETest {
   void shouldReturn401WhenSearchingCourseDetailsNotAuthenticated() {
     given()
         .queryParam("name", "curso")
+        .queryParam("page", 0)
+        .queryParam("size", 10)
         .when()
         .get("/api/course/search/details")
         .then()

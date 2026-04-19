@@ -299,7 +299,9 @@ class LessonE2ETest extends BaseE2ETest {
         .get("/api/lesson/search")
         .then()
         .statusCode(HttpStatus.OK.value())
-        .contentType(ContentType.JSON);
+        .contentType(ContentType.JSON)
+        .body("pagination.currentPage", equalTo(0))
+        .body("pagination.remainingPages", equalTo(0));
   }
 
   @Test

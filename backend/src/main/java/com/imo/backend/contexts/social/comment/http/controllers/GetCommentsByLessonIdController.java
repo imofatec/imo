@@ -2,17 +2,15 @@ package com.imo.backend.contexts.social.comment.http.controllers;
 
 import com.imo.backend.contexts.common.MongoDB;
 import com.imo.backend.contexts.common.Pageable;
+import com.imo.backend.contexts.common.http.dtos.PaginatedResponseDTO;
 import com.imo.backend.contexts.social.comment.http.dtos.CommentDTO;
 import com.imo.backend.contexts.social.comment.repositories.CommentRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import java.util.List;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,23 +32,20 @@ public class GetCommentsByLessonIdController extends CommentController {
         @ApiResponse(
             responseCode = "200",
             description = "Comentários encontrados",
-            content =
-                @Content(array = @ArraySchema(schema = @Schema(implementation = CommentDTO.class))))
+            content = @Content(schema = @Schema(implementation = PaginatedResponseDTO.class)))
       })
   @GetMapping("/{lessonId}")
-  public ResponseEntity<List<CommentDTO>> handle(
+  public ResponseEntity<PaginatedResponseDTO<CommentDTO>> handle(
       @PathVariable String lessonId,
-      @RequestParam(required = false) Integer page,
-      @Parameter(description = "Size of each page", example = "10") @RequestParam(required = false)
-          Integer size) {
+      @Parameter(description = "Page number to retrieve", example = "0") @RequestParam Integer page,
+      @Parameter(description = "Size of each page", example = "10") @RequestParam Integer size) {
     MongoDB.validateObjectId(lessonId);
     var comments =
-        (page != null && size != null)
-            ? this.commentRepository.findAllByLessonId(lessonId, Pageable.fromPageSize(page, size))
-            : this.commentRepository.findAllByLessonId(lessonId);
+        this.commentRepository.findAllByLessonId(lessonId, Pageable.fromPageSize(page, size));
+    long totalItems = this.commentRepository.countByLessonId(lessonId);
 
-    var commentsDTO = comments.stream().map(CommentDTO::fromEntity).toList();
+    var items = comments.stream().map(CommentDTO::fromEntity).toList();
 
-    return new ResponseEntity<>(commentsDTO, HttpStatus.OK);
+    return ResponseEntity.ok(PaginatedResponseDTO.from(items, page, size, totalItems));
   }
 }

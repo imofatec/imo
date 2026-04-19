@@ -83,6 +83,12 @@ public class CustomProgressRepositoryImpl implements CustomProgressRepository {
         .getMappedResults();
   }
 
+  @Override
+  public long countAllProgressDetailsByUserId(String userId) {
+    Query query = new Query().addCriteria(Criteria.where("userId").is(new ObjectId(userId)));
+    return this.mongoTemplate.count(query, Progress.class);
+  }
+
   private Aggregation buildAggregationProgressDetailsByUserId(
       MatchOperation matchOperaion, Integer page, Integer size) {
     List<AggregationOperation> operations = new ArrayList<>();

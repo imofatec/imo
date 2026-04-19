@@ -1,16 +1,15 @@
 package com.imo.backend.contexts.journey_tracking.controllers;
 
+import com.imo.backend.contexts.common.http.dtos.PaginatedResponseDTO;
 import com.imo.backend.contexts.journey_tracking.controllers.dtos.ProgressDetailsDTO;
 import com.imo.backend.contexts.journey_tracking.repositories.ProgressRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,10 +31,7 @@ public class GetProgressByUserIdController extends ProgressController {
         @ApiResponse(
             responseCode = "200",
             description = "Progresso obtido com sucesso",
-            content =
-                @Content(
-                    array =
-                        @ArraySchema(schema = @Schema(implementation = ProgressDetailsDTO.class)))),
+            content = @Content(schema = @Schema(implementation = PaginatedResponseDTO.class))),
         @ApiResponse(
             responseCode = "401",
             description = "Não autenticado",
@@ -47,22 +43,16 @@ public class GetProgressByUserIdController extends ProgressController {
                                 com.imo.backend.contexts.common.exceptions.ErrorResponseDto.class)))
       })
   @GetMapping("/details")
-  public ResponseEntity<List<ProgressDetailsDTO>> handle(
-      @Parameter(description = "Page number to retrieve", example = "0", required = false)
-          @RequestParam(required = false)
-          Integer page,
-      @Parameter(description = "Size of each page", example = "10", required = false)
-          @RequestParam(required = false)
-          Integer size) {
+  public ResponseEntity<PaginatedResponseDTO<ProgressDetailsDTO>> handle(
+      @Parameter(description = "Page number to retrieve", example = "0") @RequestParam Integer page,
+      @Parameter(description = "Size of each page", example = "10") @RequestParam Integer size) {
     var userId = SecurityContextHolder.getContext().getAuthentication().getName();
     var progressDetailsList =
-        (page == null || size == null)
-            ? this.progressRepository.findAllProgressDetailsByUserId(userId)
-            : this.progressRepository.findAllProgressDetailsByUserId(userId, page, size);
+        this.progressRepository.findAllProgressDetailsByUserId(userId, page, size);
+    long totalItems = this.progressRepository.countAllProgressDetailsByUserId(userId);
 
-    var response =
-        progressDetailsList.stream().map(ProgressDetailsDTO::fromProgressDetails).toList();
+    var items = progressDetailsList.stream().map(ProgressDetailsDTO::fromProgressDetails).toList();
 
-    return ResponseEntity.ok(response);
+    return ResponseEntity.ok(PaginatedResponseDTO.from(items, page, size, totalItems));
   }
 }
