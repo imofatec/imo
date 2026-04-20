@@ -21,7 +21,7 @@ class SkillTest {
     assertAll(
         () -> assertEquals("Fundamentos", skill.getCategory().name()),
         () -> assertEquals("POO", skill.getName()),
-        () -> assertEquals(3, skill.getIsEssential().value()));
+        () -> assertEquals(3, skill.getIsEssential()));
   }
 
   @Test
@@ -43,7 +43,7 @@ class SkillTest {
   void shouldAcceptIsEssentialAtLowerBound() {
     Skill skill = new Skill(BASE_CATEGORY, "POO", 0);
 
-    assertEquals(0, skill.getIsEssential().value());
+    assertEquals(0, skill.getIsEssential());
   }
 
   @Test
@@ -51,6 +51,6 @@ class SkillTest {
   void shouldAcceptIsEssentialAtUpperBound() {
     Skill skill = new Skill(BASE_CATEGORY, "POO", 3);
 
-    assertEquals(3, skill.getIsEssential().value());
+    assertEquals(3, skill.getIsEssential());
   }
 }

@@ -2,7 +2,6 @@ package com.imo.backend.contexts.catalog.skill;
 
 import com.imo.backend.contexts.catalog.course.value_objects.Categories;
 import com.imo.backend.contexts.catalog.course.value_objects.Category;
-import com.imo.backend.contexts.catalog.skill.value_objects.IsEssential;
 import com.imo.backend.contexts.common.Entity;
 import com.imo.backend.contexts.common.exceptions.custom.BadRequestException;
 import lombok.Data;
@@ -17,14 +16,14 @@ public class Skill extends Entity {
 
   private String name;
 
-  private IsEssential isEssential;
+  private int isEssential;
 
   public Skill() {}
 
   public Skill(Categories category, String name, int isEssential) {
     this.setCategory(new Category(category));
     this.setName(name);
-    this.setIsEssential(new IsEssential(isEssential));
+    this.setIsEssential(isEssential);
   }
 
   public void setName(String name) {
@@ -32,5 +31,12 @@ public class Skill extends Entity {
       throw new BadRequestException("O nome da skill é obrigatório");
     }
     this.name = name.trim();
+  }
+
+  public void setIsEssential(int isEssential) {
+    if (isEssential < 0 || isEssential > 3) {
+      throw new BadRequestException("IsEssential nao pode ser maior que 3");
+    }
+    this.isEssential = isEssential;
   }
 }
