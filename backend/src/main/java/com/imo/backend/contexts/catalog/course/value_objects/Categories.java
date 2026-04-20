@@ -10,7 +10,8 @@ public enum Categories {
   CLOUD("Computação em nuvem"),
   DEV_WEB("Desenvolvimento web"),
   SECURITY("Segurança"),
-  DEV_MOBILE("Desenvolvimento mobile");
+  DEV_MOBILE("Desenvolvimento mobile"),
+  FUNDAMENTALS("Fundamentos");
 
   private final String value;
 
@@ -25,6 +26,7 @@ public enum Categories {
         Categories.CLOUD,
         Categories.DEV_WEB,
         Categories.SECURITY,
-        Categories.DEV_MOBILE);
+        Categories.DEV_MOBILE,
+        Categories.FUNDAMENTALS);
   }
 }
