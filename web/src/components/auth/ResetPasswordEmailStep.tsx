@@ -1,37 +1,50 @@
 import Button from '@/components/ui/Button'
 import FormInput from '@/components/ui/FormInput'
+import { LoaderCircle } from 'lucide-react'
+import { useEffect } from 'react'
+import { useForm } from 'react-hook-form'
 
-type Props = {
+type FormData = {
   email: string
-  onEmailChange: (value: string) => void
-  onContinue: () => void
 }
 
-export default function ResetPasswordEmailStep({
-  email,
-  onEmailChange,
-  onContinue,
-}: Props) {
+type Props = {
+  defaultEmail: string
+  onContinue: (data: FormData) => void | Promise<void>
+  isSubmitting: boolean
+}
+
+export default function ResetPasswordEmailStep({ defaultEmail, onContinue, isSubmitting }: Props) {
+  const { register, handleSubmit, reset, watch } = useForm<FormData>({
+    defaultValues: {
+      email: defaultEmail,
+    },
+  })
+
+  const email = watch('email')
+
+  useEffect(() => {
+    reset({ email: defaultEmail })
+  }, [defaultEmail, reset])
+
   return (
-    <>
+    <form onSubmit={handleSubmit(onContinue)} className="flex flex-col gap-2">
       <FormInput
         id="recovery-email"
         type="email"
         label="E-mail"
         placeholder="Digite seu e-mail"
-        value={email}
-        onChange={(event) => onEmailChange(event.target.value)}
+        {...register('email')}
       />
 
       <Button
-        type="button"
+        type="submit"
         variant="cyanOutline"
         className="text-cyan"
-        onClick={onContinue}
-        disabled={!email.trim()}
+        disabled={!email.trim() || isSubmitting}
       >
-        Continuar
+        {isSubmitting ? <LoaderCircle className="animate-spin" /> : 'Continuar'}
       </Button>
-    </>
+    </form>
   )
 }
