@@ -1,4 +1,5 @@
 import { expect, type APIRequestContext } from '@playwright/test'
+import { extractPaginatedArray } from '../../src/lib/pagination'
 import type { Category } from '../../src/types/category'
 import type { Course, CourseDetails } from '../../src/types/course'
 import type { AuthSession } from './auth'
@@ -67,7 +68,10 @@ export async function searchCoursesByApi(
 
   expect(response.ok()).toBeTruthy()
 
-  return (await response.json()) as Course[]
+  const payload = (await response.json()) as unknown
+  const { data } = extractPaginatedArray<Course>(payload)
+
+  return data
 }
 
 export async function getCourseDetailsByApi(
