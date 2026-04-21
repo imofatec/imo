@@ -18,6 +18,7 @@ import CreateCoursePage from './pages/CreateCourse'
 import WatchPage from './pages/Watch'
 import EditCoursePage from './pages/EditCourse'
 import UserConfigPage from './pages/UserConfig'
+import UserConfirmation from './pages/UserConfirmation'
 
 const router = createBrowserRouter([
   {
@@ -44,6 +45,8 @@ const router = createBrowserRouter([
           { path: 'cursos/:courseId/:idLesson', element: <WatchPage /> },
           { path: 'criar-curso', element: <CreateCoursePage /> },
           { path: 'editar-curso/:courseId', element: <EditCoursePage /> },
+          { path: 'user/confirmar-email', element: <UserConfirmation /> },
+
         ],
       },
       { path: '*', element: <NotFoundPage /> },
