@@ -18,18 +18,24 @@ public class MongoDB {
 
   public static MatchOperation buildMatchOperation(
       Map<String, Object> fieldsToSearch, MatchType matchType, CombineWith combineWith) {
+    return Aggregation.match(buildCombinedCriteria(fieldsToSearch, matchType, combineWith));
+  }
+
+  public static Criteria buildCombinedCriteria(
+      Map<String, Object> fieldsToSearch, MatchType matchType, CombineWith combineWith) {
     List<Criteria> criteriaList =
         fieldsToSearch.entrySet().stream()
             .map(entry -> buildCriteria(entry.getKey(), entry.getValue(), matchType))
             .toList();
 
-    Criteria combinedCriteria =
-        switch (combineWith) {
-          case OR -> new Criteria().orOperator(criteriaList.toArray(new Criteria[0]));
-          case AND -> new Criteria().andOperator(criteriaList.toArray(new Criteria[0]));
-        };
+    if (criteriaList.isEmpty()) {
+      return new Criteria();
+    }
 
-    return Aggregation.match(combinedCriteria);
+    return switch (combineWith) {
+      case OR -> new Criteria().orOperator(criteriaList.toArray(new Criteria[0]));
+      case AND -> new Criteria().andOperator(criteriaList.toArray(new Criteria[0]));
+    };
   }
 
   public static Criteria buildCriteria(String key, Object value, MatchType matchType) {

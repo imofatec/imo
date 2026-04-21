@@ -16,33 +16,17 @@ public interface CustomCourseRepository {
 
   List<Course> search(
       CourseSearchParams searchParams,
-      MatchType matchType,
-      CombineWith combineWith,
-      boolean isActive);
-
-  List<Course> search(
-      CourseSearchParams searchParams,
       int page,
       int size,
       MatchType matchType,
       CombineWith combineWith,
       boolean isActive);
 
-  List<CourseDetails> searchDetails(
-      CourseSearchParams searchParams, MatchType matchType, CombineWith combineWith);
-
-  List<CourseDetails> searchDetails(
+  long countSearch(
       CourseSearchParams searchParams,
       MatchType matchType,
       CombineWith combineWith,
       boolean isActive);
-
-  List<CourseDetails> searchDetails(
-      CourseSearchParams searchParams,
-      int page,
-      int size,
-      MatchType matchType,
-      CombineWith combineWith);
 
   List<CourseDetails> searchDetails(
       CourseSearchParams searchParams,

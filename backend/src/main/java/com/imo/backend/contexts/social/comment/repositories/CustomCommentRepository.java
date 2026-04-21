@@ -8,4 +8,6 @@ public interface CustomCommentRepository {
   List<Comment> findAllByLessonId(String lessonId);
 
   List<Comment> findAllByLessonId(String lessonId, Pageable pageable);
+
+  long countByLessonId(String lessonId);
 }

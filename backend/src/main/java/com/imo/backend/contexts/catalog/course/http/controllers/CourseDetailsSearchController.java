@@ -5,15 +5,14 @@ import com.imo.backend.contexts.catalog.course.repositories.CourseRepository;
 import com.imo.backend.contexts.catalog.course.repositories.CourseSearchParams;
 import com.imo.backend.contexts.common.CombineWith;
 import com.imo.backend.contexts.common.MatchType;
+import com.imo.backend.contexts.common.http.dtos.PaginatedResponseDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import java.util.List;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,14 +34,11 @@ public class CourseDetailsSearchController extends CourseController {
         @ApiResponse(
             responseCode = "200",
             description = "Detalhes dos cursos encontrados",
-            content =
-                @Content(
-                    array =
-                        @ArraySchema(schema = @Schema(implementation = CourseDetailsDTO.class))))
+            content = @Content(schema = @Schema(implementation = PaginatedResponseDTO.class)))
       })
   @GetMapping("/search/details")
   @SecurityRequirement(name = "Authorization")
-  public ResponseEntity<List<CourseDetailsDTO>> handle(
+  public ResponseEntity<PaginatedResponseDTO<CourseDetailsDTO>> handle(
       @Parameter(description = "Query params to search", example = "slugCategory=dev-web")
           @ParameterObject
           CourseSearchParams courseSearchParams,
@@ -55,22 +51,17 @@ public class CourseDetailsSearchController extends CourseController {
       @Parameter(description = "Query params to search", example = "AND")
           @RequestParam(defaultValue = "AND")
           CombineWith combineWith,
-      @Parameter(description = "Page number to retrieve", example = "0", required = false)
-          @RequestParam(required = false)
-          Integer page,
-      @Parameter(description = "Size of each page", example = "10", required = false)
-          @RequestParam(required = false)
-          Integer size) {
+      @Parameter(description = "Page number to retrieve", example = "0") @RequestParam Integer page,
+      @Parameter(description = "Size of each page", example = "10") @RequestParam Integer size) {
 
     var details =
-        (page == null || size == null)
-            ? this.courseRepository.searchDetails(
-                courseSearchParams, matchType, combineWith, active)
-            : this.courseRepository.searchDetails(
-                courseSearchParams, page, size, matchType, combineWith, active);
+        this.courseRepository.searchDetails(
+            courseSearchParams, page, size, matchType, combineWith, active);
+    long totalItems =
+        this.courseRepository.countSearch(courseSearchParams, matchType, combineWith, active);
 
-    var response = details.stream().map(CourseDetailsDTO::fromCourseDetails).toList();
+    var items = details.stream().map(CourseDetailsDTO::fromCourseDetails).toList();
 
-    return ResponseEntity.ok(response);
+    return ResponseEntity.ok(PaginatedResponseDTO.from(items, page, size, totalItems));
   }
 }

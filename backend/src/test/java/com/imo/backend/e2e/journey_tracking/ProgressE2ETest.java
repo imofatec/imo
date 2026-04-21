@@ -38,7 +38,10 @@ class ProgressE2ETest extends BaseE2ETest {
         .get("/api/progress/details")
         .then()
         .statusCode(HttpStatus.OK.value())
-        .contentType(ContentType.JSON);
+        .contentType(ContentType.JSON)
+        .body("items.size()", equalTo(1))
+        .body("pagination.currentPage", equalTo(0))
+        .body("pagination.remainingPages", equalTo(0));
   }
 
   @Test

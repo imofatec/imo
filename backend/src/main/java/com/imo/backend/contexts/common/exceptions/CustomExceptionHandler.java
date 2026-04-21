@@ -13,9 +13,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 @Slf4j
@@ -45,6 +47,28 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
     log.warn("JSON malformado em {}", request.getDescription(false));
     return new ResponseEntity<>(
         new ErrorResponseDto("VALIDATION_ERROR", "Argumento inválido"), HttpStatus.BAD_REQUEST);
+  }
+
+  @Override
+  protected ResponseEntity<Object> handleMissingServletRequestParameter(
+      MissingServletRequestParameterException ex,
+      HttpHeaders headers,
+      HttpStatusCode status,
+      WebRequest request) {
+    return new ResponseEntity<>(
+        new ErrorResponseDto(
+            "VALIDATION_ERROR",
+            String.format("O parâmetro %s é obrigatório", ex.getParameterName())),
+        HttpStatus.BAD_REQUEST);
+  }
+
+  @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+  public final ResponseEntity<Object> handleMethodArgumentTypeMismatchException(
+      MethodArgumentTypeMismatchException ex) {
+    return new ResponseEntity<>(
+        new ErrorResponseDto(
+            "VALIDATION_ERROR", String.format("O parâmetro %s é inválido", ex.getName())),
+        HttpStatus.BAD_REQUEST);
   }
 
   @ExceptionHandler(BadRequestException.class)

@@ -6,6 +6,7 @@ import com.imo.backend.contexts.catalog.lesson.Lesson;
 import com.imo.backend.contexts.common.CombineWith;
 import com.imo.backend.contexts.common.MatchType;
 import com.imo.backend.contexts.common.MongoDB;
+import com.imo.backend.contexts.common.Pageable;
 import com.imo.backend.contexts.common.exceptions.custom.NotFoundException;
 import java.util.ArrayList;
 import java.util.List;
@@ -59,10 +60,13 @@ public class CustomCourseRepositoryImpl implements CustomCourseRepository {
   @Override
   public List<Course> search(
       CourseSearchParams searchParams,
+      int page,
+      int size,
       MatchType matchType,
       CombineWith combineWith,
       boolean isActive) {
     var filters = buildSearchFilters(searchParams, isActive);
+    var pagination = Pageable.toMongodbAggregation(page, size);
 
     List<AggregationOperation> operations = new ArrayList<>();
 
@@ -71,6 +75,8 @@ public class CustomCourseRepositoryImpl implements CustomCourseRepository {
     }
 
     operations.add(Aggregation.sort(Sort.by(Sort.Direction.DESC, "createdAt")));
+    operations.add(Aggregation.skip(pagination.get("skip")));
+    operations.add(Aggregation.limit(pagination.get("limit")));
 
     return this.mongoTemplate
         .aggregate(Aggregation.newAggregation(operations), Course.class, Course.class)
@@ -78,66 +84,19 @@ public class CustomCourseRepositoryImpl implements CustomCourseRepository {
   }
 
   @Override
-  public List<Course> search(
+  public long countSearch(
       CourseSearchParams searchParams,
-      int page,
-      int size,
       MatchType matchType,
       CombineWith combineWith,
       boolean isActive) {
     var filters = buildSearchFilters(searchParams, isActive);
-
-    List<AggregationOperation> operations = new ArrayList<>();
+    Query query = new Query();
 
     if (!filters.isEmpty()) {
-      operations.add(MongoDB.buildMatchOperation(filters, matchType, combineWith));
+      query.addCriteria(MongoDB.buildCombinedCriteria(filters, matchType, combineWith));
     }
 
-    operations.add(Aggregation.sort(Sort.by(Sort.Direction.DESC, "createdAt")));
-    operations.add(Aggregation.skip((long) page * size));
-    operations.add(Aggregation.limit(size));
-
-    return this.mongoTemplate
-        .aggregate(Aggregation.newAggregation(operations), Course.class, Course.class)
-        .getMappedResults();
-  }
-
-  @Override
-  public List<CourseDetails> searchDetails(
-      CourseSearchParams searchParams, MatchType matchType, CombineWith combineWith) {
-    Aggregation aggregation =
-        buildCourseSearchDetailsAggregation(searchParams, matchType, combineWith, null, null, null);
-    return this.mongoTemplate
-        .aggregate(aggregation, "courses", CourseDetails.class)
-        .getMappedResults();
-  }
-
-  @Override
-  public List<CourseDetails> searchDetails(
-      CourseSearchParams searchParams,
-      MatchType matchType,
-      CombineWith combineWith,
-      boolean isActive) {
-    Aggregation aggregation =
-        buildCourseSearchDetailsAggregation(
-            searchParams, matchType, combineWith, null, null, isActive);
-    return this.mongoTemplate
-        .aggregate(aggregation, "courses", CourseDetails.class)
-        .getMappedResults();
-  }
-
-  @Override
-  public List<CourseDetails> searchDetails(
-      CourseSearchParams searchParams,
-      int page,
-      int size,
-      MatchType matchType,
-      CombineWith combineWith) {
-    Aggregation aggregation =
-        buildCourseSearchDetailsAggregation(searchParams, matchType, combineWith, page, size, null);
-    return this.mongoTemplate
-        .aggregate(aggregation, "courses", CourseDetails.class)
-        .getMappedResults();
+    return this.mongoTemplate.count(query, Course.class);
   }
 
   @Override
@@ -169,6 +128,8 @@ public class CustomCourseRepositoryImpl implements CustomCourseRepository {
       Integer size,
       Boolean isActive) {
     var filters = buildSearchFilters(searchParams, isActive);
+    var pagination =
+        page != null && size != null ? Pageable.toMongodbAggregation(page, size) : null;
 
     List<AggregationOperation> operations = new ArrayList<>();
 
@@ -191,8 +152,8 @@ public class CustomCourseRepositoryImpl implements CustomCourseRepository {
     if (page != null && size != null) {
       SortOperation sortOperation = Aggregation.sort(Sort.by(Sort.Direction.DESC, "createdAt"));
       operations.add(sortOperation);
-      operations.add(Aggregation.skip((long) page * size));
-      operations.add(Aggregation.limit(size));
+      operations.add(Aggregation.skip(pagination.get("skip")));
+      operations.add(Aggregation.limit(pagination.get("limit")));
     }
 
     operations.add(project);

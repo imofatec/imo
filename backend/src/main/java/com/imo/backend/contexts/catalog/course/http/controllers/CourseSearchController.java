@@ -5,14 +5,13 @@ import com.imo.backend.contexts.catalog.course.repositories.CourseRepository;
 import com.imo.backend.contexts.catalog.course.repositories.CourseSearchParams;
 import com.imo.backend.contexts.common.CombineWith;
 import com.imo.backend.contexts.common.MatchType;
+import com.imo.backend.contexts.common.http.dtos.PaginatedResponseDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import java.util.List;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,11 +32,10 @@ public class CourseSearchController extends CourseController {
         @ApiResponse(
             responseCode = "200",
             description = "Cursos encontrados",
-            content =
-                @Content(array = @ArraySchema(schema = @Schema(implementation = CourseDTO.class))))
+            content = @Content(schema = @Schema(implementation = PaginatedResponseDTO.class)))
       })
   @GetMapping("/search")
-  public ResponseEntity<List<CourseDTO>> handle(
+  public ResponseEntity<PaginatedResponseDTO<CourseDTO>> handle(
       @Parameter(description = "Query params to search", example = "slugCategory=dev-web")
           @ParameterObject
           CourseSearchParams courseSearchParams,
@@ -50,20 +48,16 @@ public class CourseSearchController extends CourseController {
       @Parameter(description = "Query params to search", example = "AND")
           @RequestParam(defaultValue = "AND")
           CombineWith combineWith,
-      @Parameter(description = "Page number to retrieve", example = "0", required = false)
-          @RequestParam(required = false)
-          Integer page,
-      @Parameter(description = "Size of each page", example = "10", required = false)
-          @RequestParam(required = false)
-          Integer size) {
+      @Parameter(description = "Page number to retrieve", example = "0") @RequestParam Integer page,
+      @Parameter(description = "Size of each page", example = "10") @RequestParam Integer size) {
     var courses =
-        (page == null || size == null)
-            ? this.courseRepository.search(courseSearchParams, matchType, combineWith, active)
-            : this.courseRepository.search(
-                courseSearchParams, page, size, matchType, combineWith, active);
+        this.courseRepository.search(
+            courseSearchParams, page, size, matchType, combineWith, active);
+    long totalItems =
+        this.courseRepository.countSearch(courseSearchParams, matchType, combineWith, active);
 
-    var response = courses.stream().map(CourseDTO::fromEntity).toList();
+    var items = courses.stream().map(CourseDTO::fromEntity).toList();
 
-    return ResponseEntity.ok(response);
+    return ResponseEntity.ok(PaginatedResponseDTO.from(items, page, size, totalItems));
   }
 }

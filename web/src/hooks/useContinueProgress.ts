@@ -1,5 +1,6 @@
 import authAxiosInstance from '@/api/authAxiosInstance'
 import { useAuth } from '@/contexts/AuthContext'
+import { extractPaginatedArray, type PaginationInfo } from '@/lib/pagination'
 import { safeAwait } from '@/lib/safeAwait'
 import type { UserProgress } from '@/types/userProgress'
 import { useCallback, useEffect, useMemo, useState } from 'react'
@@ -12,12 +13,14 @@ type UseContinueProgressParams = {
 export function useContinueProgress({ page = 0, size = 20 }: UseContinueProgressParams = {}) {
   const { isAuthenticated } = useAuth()
   const [progressList, setProgressList] = useState<UserProgress[]>([])
+  const [pagination, setPagination] = useState<PaginationInfo | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
   const fetchContinueProgress = useCallback(async () => {
     if (!isAuthenticated) {
       setProgressList([])
+      setPagination(null)
       setError(null)
       setLoading(false)
       return
@@ -31,7 +34,7 @@ export function useContinueProgress({ page = 0, size = 20 }: UseContinueProgress
     }).toString()
 
     const [err, response] = await safeAwait(
-      authAxiosInstance.get<UserProgress[]>(`/api/progress/details?${query}`)
+      authAxiosInstance.get<unknown>(`/api/progress/details?${query}`)
     )
 
     if (err || !response) {
@@ -40,7 +43,10 @@ export function useContinueProgress({ page = 0, size = 20 }: UseContinueProgress
       return
     }
 
-    setProgressList(response.data || [])
+    const { data, pagination: paginationInfo } = extractPaginatedArray<UserProgress>(response.data)
+
+    setProgressList(data)
+    setPagination(paginationInfo)
     setError(null)
     setLoading(false)
   }, [isAuthenticated, page, size])
@@ -62,6 +68,7 @@ export function useContinueProgress({ page = 0, size = 20 }: UseContinueProgress
   return {
     continueProgress,
     progressList,
+    pagination,
     loading,
     error,
     refetch: fetchContinueProgress,
