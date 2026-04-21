@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import authAxiosInstance from '@/api/authAxiosInstance'
+import { extractPaginatedArray, type PaginationInfo } from '@/lib/pagination'
 import { safeAwait } from '@/lib/safeAwait'
 import type { LessonComment } from '@/types/watch'
 
@@ -14,12 +15,14 @@ export function useAllComments(
   { page = 0, size = 10, enabled = true }: UseAllCommentsParams = {}
 ) {
   const [comments, setComments] = useState<LessonComment[]>([])
+  const [pagination, setPagination] = useState<PaginationInfo | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
   const fetchComments = useCallback(async () => {
     if (!enabled || !lessonId) {
       setComments([])
+      setPagination(null)
       setError(null)
       setLoading(false)
       return
@@ -33,7 +36,7 @@ export function useAllComments(
     }).toString()
 
     const [err, response] = await safeAwait(
-      authAxiosInstance.get<LessonComment[]>(`/api/comment/${lessonId}?${query}`)
+      authAxiosInstance.get<unknown>(`/api/comment/${lessonId}?${query}`)
     )
 
     if (err || !response) {
@@ -42,7 +45,10 @@ export function useAllComments(
       return
     }
 
-    setComments(response.data)
+    const { data, pagination: paginationInfo } = extractPaginatedArray<LessonComment>(response.data)
+
+    setComments(data)
+    setPagination(paginationInfo)
     setError(null)
     setLoading(false)
   }, [page, size, enabled, lessonId])
@@ -52,5 +58,5 @@ export function useAllComments(
     void fetchComments()
   }, [fetchComments])
 
-  return { comments, loading, error, refetch: fetchComments }
+  return { comments, pagination, loading, error, refetch: fetchComments }
 }

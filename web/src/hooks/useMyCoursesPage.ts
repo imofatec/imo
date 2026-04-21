@@ -31,6 +31,7 @@ export function useMyCoursesPage() {
 
   const {
     userProgress,
+    pagination: userProgressPagination,
     loading: userProgressLoading,
     error: userProgressError,
   } = useUserProgress({
@@ -40,6 +41,7 @@ export function useMyCoursesPage() {
 
   const {
     courses: contributedCourses,
+    pagination: contributedCoursesPagination,
     loading: contributedCoursesLoading,
     error: contributedCoursesError,
   } = useCourses({
@@ -105,19 +107,30 @@ export function useMyCoursesPage() {
       ? contributedCoursesError
       : userProgressError
 
-  const currentItemsLength = isAllFilter
-    ? allOwnedCourses.length
-    : isContributionFilter
-      ? contributedCourses.length
-      : filteredProgress.length
+  const hasNextForUserProgress = userProgressPagination
+    ? page + 1 < userProgressPagination.totalPages
+    : userProgress.length >= PAGE_SIZE
+
+  const hasNextForContributedCourses = contributedCoursesPagination
+    ? page + 1 < contributedCoursesPagination.totalPages
+    : contributedCourses.length >= PAGE_SIZE
 
   const isNextDisabled = isAllFilter
-    ? userProgress.length < PAGE_SIZE && contributedCourses.length < PAGE_SIZE
-    : currentItemsLength < PAGE_SIZE
+    ? !(hasNextForUserProgress || hasNextForContributedCourses)
+    : isContributionFilter
+      ? !hasNextForContributedCourses
+      : !hasNextForUserProgress
+
+  const totalPages = isAllFilter
+    ? Math.max(userProgressPagination?.totalPages ?? 1, contributedCoursesPagination?.totalPages ?? 1)
+    : isContributionFilter
+      ? contributedCoursesPagination?.totalPages ?? 1
+      : userProgressPagination?.totalPages ?? 1
 
   return {
     title: getTitle(selectedFilter),
     page,
+    totalPages,
     pageSize: PAGE_SIZE,
     selectedFilter,
     setSelectedFilter,
@@ -131,6 +144,7 @@ export function useMyCoursesPage() {
     currentError,
     isPrevDisabled: page === 0,
     isNextDisabled,
+    goToPage: (nextPage: number) => setPage(Math.max(nextPage, 0)),
     goToPreviousPage: () => setPage((currentPage) => Math.max(currentPage - 1, 0)),
     goToNextPage: () => setPage((currentPage) => currentPage + 1),
   }

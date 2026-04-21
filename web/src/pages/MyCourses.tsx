@@ -8,6 +8,7 @@ export default function MyCoursesPage() {
   const {
     title,
     page,
+    totalPages,
     pageSize,
     selectedFilter,
     setSelectedFilter,
@@ -21,6 +22,7 @@ export default function MyCoursesPage() {
     currentError,
     isPrevDisabled,
     isNextDisabled,
+    goToPage,
     goToPreviousPage,
     goToNextPage,
   } = useMyCoursesPage()
@@ -61,8 +63,10 @@ export default function MyCoursesPage() {
 
           <PaginationControls
             page={page + 1}
+            totalPages={totalPages}
             isPrevDisabled={isPrevDisabled}
             isNextDisabled={isNextDisabled}
+            onPageChange={(nextPage) => goToPage(nextPage - 1)}
             onPrev={goToPreviousPage}
             onNext={goToNextPage}
           />

@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import authAxiosInstance from '@/api/authAxiosInstance'
+import { extractPaginatedArray, type PaginationInfo } from '@/lib/pagination'
 import { safeAwait } from '@/lib/safeAwait'
 import type { Course } from '@/types/course'
 
@@ -30,12 +31,14 @@ export function useCourses({
   contributorId,
 }: UseCoursesParams = {}) {
   const [courses, setCourses] = useState<Course[]>([])
+  const [pagination, setPagination] = useState<PaginationInfo | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
   const fetchCourses = useCallback(async () => {
     if (!enabled) {
       setCourses([])
+      setPagination(null)
       setError(null)
       setLoading(false)
       return
@@ -54,9 +57,7 @@ export function useCourses({
       ...(contributorId ? { contributorId } : {}),
     }).toString()
 
-    const [err, response] = await safeAwait(
-      authAxiosInstance.get<Course[]>(`/api/course/search?${query}`)
-    )
+    const [err, response] = await safeAwait(authAxiosInstance.get<unknown>(`/api/course/search?${query}`))
 
     if (err || !response) {
       setError(err?.message || 'Erro ao buscar cursos')
@@ -64,7 +65,10 @@ export function useCourses({
       return
     }
 
-    setCourses(response.data || [])
+    const { data, pagination: paginationInfo } = extractPaginatedArray<Course>(response.data)
+
+    setCourses(data)
+    setPagination(paginationInfo)
     setError(null)
     setLoading(false)
   }, [matchType, combineWith, page, size, enabled, categorySlug, name, nameSlug, contributorId])
@@ -74,5 +78,5 @@ export function useCourses({
     void fetchCourses()
   }, [fetchCourses])
 
-  return { courses, loading, error, refetch: fetchCourses }
+  return { courses, pagination, loading, error, refetch: fetchCourses }
 }
