@@ -13,6 +13,7 @@ import { uploadPfpRequest } from '@/services/user/uploadPfpRequest'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
+import { toast } from 'sonner'
 
 type UserConfigErrors = {
   photo: string | null
@@ -213,7 +214,15 @@ export function useUserConfigPage() {
     setIsResendingConfirmation(true)
 
     try {
-      await resendConfirmationEmailRequest()
+      if (!user?.email) return
+
+      await resendConfirmationEmailRequest({ email: user.email })
+
+      toast.success('E-mail reenviado', {
+        id: 'user-confirmation-success',
+        description: `Enviamos um novo e-mail de confirmação para ${user!.email}.`,
+        duration: 3000,
+      })
     } catch (error: unknown) {
       showRequestErrorToast(
         error,
