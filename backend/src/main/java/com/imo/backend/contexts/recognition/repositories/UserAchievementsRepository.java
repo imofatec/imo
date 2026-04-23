@@ -1,6 +1,6 @@
-package com.imo.backend.contexts.identity.achievement.repositories;
+package com.imo.backend.contexts.recognition.repositories;
 
-import com.imo.backend.contexts.identity.achievement.UserAchievement;
+import com.imo.backend.contexts.recognition.UserAchievement;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 

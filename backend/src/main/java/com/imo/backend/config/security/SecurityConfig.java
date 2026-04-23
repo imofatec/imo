@@ -67,6 +67,7 @@ public class SecurityConfig {
                         "/api/course/categories",
                         "/api/comment/{lessonId}",
                         "/api/certificate/details/{id}",
+                        "/images/achievements/**",
                         "/uploads/**")
                     .permitAll()
                     .requestMatchers(

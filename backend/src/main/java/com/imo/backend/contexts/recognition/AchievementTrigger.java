@@ -1,4 +1,4 @@
-package com.imo.backend.contexts.identity.achievement;
+package com.imo.backend.contexts.recognition;
 
 public enum AchievementTrigger {
   COURSE_FINISHED,

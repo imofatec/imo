@@ -1,8 +1,8 @@
-package com.imo.backend.contexts.identity.achievement.events;
+package com.imo.backend.contexts.recognition.events;
 
-import com.imo.backend.contexts.identity.achievement.usecases.EvaluateTriggeredAchievementsUseCase;
 import com.imo.backend.contexts.journey_tracking.events.CourseFinishedEvent;
 import com.imo.backend.contexts.journey_tracking.events.LessonWatchedEvent;
+import com.imo.backend.contexts.recognition.usecases.EvaluateTriggeredAchievementsUseCase;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;

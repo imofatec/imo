@@ -1,4 +1,4 @@
-package com.imo.backend.contexts.identity.achievement;
+package com.imo.backend.contexts.recognition;
 
 import com.imo.backend.contexts.common.Entity;
 import lombok.Data;
@@ -11,17 +11,17 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document("user_achievements")
 @CompoundIndex(
     name = "uk_user_achievement",
-    def = "{ 'userId': 1, 'achievementCode': 1 }",
+    def = "{ 'userId': 1, 'achievementKey': 1 }",
     unique = true)
 @Data
 public class UserAchievement extends Entity {
   private ObjectId userId;
 
-  private AchievementCode achievementCode;
+  private String achievementKey;
 
-  public UserAchievement(String userId, AchievementCode achievementCode) {
+  public UserAchievement(String userId, String achievementKey) {
     this.setUserId(userId);
-    this.achievementCode = achievementCode;
+    this.achievementKey = achievementKey;
   }
 
   public UserAchievement() {}
