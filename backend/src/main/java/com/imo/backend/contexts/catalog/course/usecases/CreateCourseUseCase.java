@@ -37,6 +37,7 @@ public class CreateCourseUseCase {
 
     var potentialNewSlugCourse = Slug.create(cmd.name());
     this.coursePolicies.checkSlugConflict(cmd.contributorId(), potentialNewSlugCourse, null);
+    this.coursePolicies.validateCourseSkills(cmd.category(), cmd.skillIds());
 
     var newCourse =
         this.courseRepository.save(
@@ -48,7 +49,8 @@ public class CreateCourseUseCase {
                 cmd.category(),
                 cmd.description(),
                 cmd.lessons().getFirst().youtubeLink(),
-                cmd.lessons().size()));
+                cmd.lessons().size(),
+                cmd.skillIds()));
 
     var newLessons = this.createLessonUseCase.execute(cmd.lessons(), newCourse.getId());
 
