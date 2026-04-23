@@ -1,4 +1,4 @@
-package com.imo.backend.contexts.identity.achievement.gateways;
+package com.imo.backend.contexts.recognition.gateways;
 
 public interface AchievementMetricsGateway {
   long countFinishedCoursesByUserId(String userId);
