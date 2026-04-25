@@ -6,6 +6,7 @@ import com.imo.backend.contexts.catalog.course.commands.CreateCourseCommand;
 import com.imo.backend.contexts.catalog.course.http.dtos.CourseDTO;
 import com.imo.backend.contexts.catalog.course.http.dtos.CourseDetailsDTO;
 import com.imo.backend.contexts.catalog.course.repositories.CourseRepository;
+import com.imo.backend.contexts.catalog.course.value_objects.Category;
 import com.imo.backend.contexts.catalog.lesson.usecases.CreateLessonUseCase;
 import com.imo.backend.contexts.common.Slug;
 import com.imo.backend.contexts.identity.user.repositories.UserRepository;
@@ -39,16 +40,21 @@ public class CreateCourseUseCase {
     this.coursePolicies.checkSlugConflict(cmd.contributorId(), potentialNewSlugCourse, null);
 
     var newCourse =
-        this.courseRepository.save(
-            new Course(
-                true,
-                cmd.contributorId(),
-                cmd.name(),
-                cmd.level(),
-                cmd.category(),
-                cmd.description(),
-                cmd.lessons().getFirst().youtubeLink(),
-                cmd.lessons().size()));
+        new Course(
+            true,
+            cmd.contributorId(),
+            cmd.name(),
+            cmd.level(),
+            cmd.category(),
+            cmd.description(),
+            cmd.lessons().getFirst().youtubeLink(),
+            cmd.lessons().size(),
+            cmd.skillIds());
+
+    this.coursePolicies.validateCourseSkills(
+        new Category(cmd.category()), newCourse.getSkillIdsAsString());
+
+    newCourse = this.courseRepository.save(newCourse);
 
     var newLessons = this.createLessonUseCase.execute(cmd.lessons(), newCourse.getId());
 

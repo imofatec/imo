@@ -51,6 +51,14 @@ public class UpdateCourseByIdUseCase {
       course.setFirstLessonYoutubeLink(cmd.firstLessonYoutubeLink());
     }
 
+    if (cmd.skillIds() != null) {
+      course.setSkillIds(cmd.skillIds());
+    }
+
+    if (cmd.category() != null || cmd.skillIds() != null) {
+      this.coursePolicies.validateCourseSkills(course.getCategory(), course.getSkillIdsAsString());
+    }
+
     return this.courseRepository.save(course);
   }
 }

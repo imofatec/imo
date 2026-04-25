@@ -19,14 +19,16 @@ public final class CatalogTestHelper {
       Categories category,
       String level,
       String description,
-      List<CreateLessonRequest> lessons) {
+      List<CreateLessonRequest> lessons,
+      List<String> skillIds) {
     public static TestCourse defaultCourse() {
       return new TestCourse(
           "Curso de Java Completo",
           Categories.DEV_WEB,
           "Iniciante",
           "Um curso completo para aprender Java do zero",
-          List.of(TestLesson.defaultLesson().toCreateRequest()));
+          List.of(TestLesson.defaultLesson().toCreateRequest()),
+          CatalogSkillTestHelper.getSkillIdsForCategory(Categories.DEV_WEB, 2));
     }
 
     public static TestCourse defaultCourseWithThreeLessons() {
@@ -48,11 +50,16 @@ public final class CatalogTestHelper {
           Categories.DEV_WEB,
           "Iniciante",
           "Um curso com " + numberOfLessons + " aulas para teste",
-          lessons);
+          lessons,
+          CatalogSkillTestHelper.getSkillIdsForCategory(Categories.DEV_WEB, 2));
+    }
+
+    public TestCourse withSkillIds(List<String> skillIds) {
+      return new TestCourse(name, category, level, description, lessons, skillIds);
     }
 
     public CreateCourseRequest toCreateRequest() {
-      return new CreateCourseRequest(name, category, level, description, lessons);
+      return new CreateCourseRequest(name, category, level, description, lessons, skillIds);
     }
   }
 

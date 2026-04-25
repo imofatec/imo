@@ -4,7 +4,9 @@ import com.imo.backend.contexts.catalog.course.http.dtos.CreateCourseRequest;
 import com.imo.backend.contexts.catalog.course.usecases.CreateCourseUseCase;
 import com.imo.backend.contexts.catalog.course.value_objects.Categories;
 import com.imo.backend.contexts.catalog.lesson.http.dtos.CreateLessonRequest;
+import com.imo.backend.contexts.catalog.skill.repositories.SkillRepository;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import net.datafaker.Faker;
@@ -15,14 +17,17 @@ public class PopulateCourses {
   private final Faker faker = new Faker();
 
   private final CreateCourseUseCase createCourseUseCase;
+  private final SkillRepository skillRepository;
 
-  public PopulateCourses(CreateCourseUseCase createCourseUseCase) {
+  public PopulateCourses(CreateCourseUseCase createCourseUseCase, SkillRepository skillRepository) {
     this.createCourseUseCase = createCourseUseCase;
+    this.skillRepository = skillRepository;
   }
 
   public void execute(String contributorId, int qyt) {
     for (int i = 0; i < qyt; i++) {
       List<CreateLessonRequest> lessons = new ArrayList<>();
+      Categories category = faker.options().option(Categories.class);
 
       for (int j = 0; j < this.generateBiasedLessonsQty(3, 10); j++) {
         String videoId = faker.regexify("[\\w-]{11}");
@@ -37,10 +42,11 @@ public class PopulateCourses {
       CreateCourseRequest createCourseRequest =
           new CreateCourseRequest(
               faker.lorem().characters(10, 100),
-              faker.options().option(Categories.class),
+              category,
               faker.options().option("Iniciante", "Intermediário", "Avançado"),
               faker.lorem().characters(10, 300),
-              lessons);
+              lessons,
+              this.pickSkillIds(category));
 
       this.createCourseUseCase.execute(createCourseRequest.toCommand(contributorId));
     }
@@ -50,5 +56,20 @@ public class PopulateCourses {
     double biasFactor = 2.5;
     double rand = Math.pow(ThreadLocalRandom.current().nextDouble(), biasFactor);
     return (int) (min + (max - min) * rand);
+  }
+
+  private List<String> pickSkillIds(Categories category) {
+    List<String> categorySkillIds =
+        this.skillRepository.findAll().stream()
+            .filter(skill -> skill.getCategory().name().equals(category.getValue()))
+            .map(skill -> skill.getId())
+            .toList();
+
+    List<String> shuffledSkillIds = new ArrayList<>(categorySkillIds);
+    Collections.shuffle(shuffledSkillIds);
+
+    int maxSkills = Math.min(2, shuffledSkillIds.size());
+    int skillsCount = ThreadLocalRandom.current().nextInt(1, maxSkills + 1);
+    return shuffledSkillIds.subList(0, skillsCount);
   }
 }
