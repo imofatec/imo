@@ -6,9 +6,11 @@ import com.imo.backend.contexts.catalog.course.value_objects.CourseName;
 import com.imo.backend.contexts.catalog.course.value_objects.Level;
 import com.imo.backend.contexts.catalog.lesson.Lesson;
 import com.imo.backend.contexts.common.Entity;
+import com.imo.backend.contexts.common.MongoDB;
 import com.imo.backend.contexts.common.exceptions.custom.BadRequestException;
 import com.imo.backend.contexts.common.exceptions.custom.ForbiddenException;
 import java.util.List;
+import java.util.Set;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.bson.types.ObjectId;
@@ -74,9 +76,20 @@ public class Course extends Entity {
   }
 
   public void setSkillIds(List<String> skillIds) {
-    if (skillIds == null) {
-      throw new BadRequestException("O curso precisa de no minimo uma skill");
+    if (skillIds == null || skillIds.isEmpty()) {
+      throw new BadRequestException("O curso deve possuir ao menos 1 skill");
     }
+
+    if (skillIds.size() > 2) {
+      throw new BadRequestException("Um curso não pode ter mais do que 2 skills");
+    }
+
+    if (Set.copyOf(skillIds).size() != skillIds.size()) {
+      throw new BadRequestException("O curso não pode ter skills duplicadas");
+    }
+
+    skillIds.forEach(MongoDB::validateObjectId);
+
     this.skillIds = skillIds.stream().map(ObjectId::new).toList();
   }
 

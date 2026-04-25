@@ -21,7 +21,7 @@ public class CourseEventListener {
     this.updateCourseByIdUseCase.execute(
         event.courseId(),
         new UpdateCourseByIdCommand(
-            event.courseId(), null, null, null, null, event.newCount(), null));
+            event.courseId(), null, null, null, null, event.newCount(), null, null));
   }
 
   @Async
@@ -30,6 +30,6 @@ public class CourseEventListener {
     this.updateCourseByIdUseCase.execute(
         event.courseId(),
         new UpdateCourseByIdCommand(
-            event.courseId(), null, null, null, null, null, event.newFirstYoutubeLink()));
+            event.courseId(), null, null, null, null, null, event.newFirstYoutubeLink(), null));
   }
 }

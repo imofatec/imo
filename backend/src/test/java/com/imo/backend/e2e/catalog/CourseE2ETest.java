@@ -10,12 +10,14 @@ import com.imo.backend.contexts.catalog.course.http.dtos.CourseDetailsDTO;
 import com.imo.backend.contexts.catalog.course.http.dtos.UpdateCourseByIdRequest;
 import com.imo.backend.contexts.catalog.course.value_objects.Categories;
 import com.imo.backend.e2e.BaseE2ETest;
+import com.imo.backend.e2e.catalog.helpers.CatalogSkillTestHelper;
 import com.imo.backend.e2e.catalog.helpers.CatalogTestHelper;
 import com.imo.backend.e2e.catalog.helpers.CatalogTestHelper.TestCourse;
 import com.imo.backend.e2e.identity.helpers.IdentityTestHelper;
 import com.imo.backend.e2e.identity.helpers.IdentityTestHelper.TestUser;
 import io.restassured.http.ContentType;
 import java.util.List;
+import org.bson.types.ObjectId;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -47,7 +49,87 @@ class CourseE2ETest extends BaseE2ETest {
     assertEquals(course.level(), created.course().level().name());
     assertEquals(course.description(), created.course().description());
     assertTrue(created.course().isActive());
+    assertEquals(course.skillIds(), created.course().skillIds());
     assertEquals(1, created.lessons().size());
+  }
+
+  @Test
+  @DisplayName("exception (POST /api/course): retorna 400 quando alguma skill não existe")
+  void shouldReturn400WhenSkillDoesNotExist() {
+    String token = IdentityTestHelper.registerAndLogin(TestUser.defaultUser());
+    TestCourse course = TestCourse.defaultCourse().withSkillIds(List.of(new ObjectId().toString()));
+
+    given()
+        .header("Authorization", "Bearer " + token)
+        .contentType(ContentType.JSON)
+        .body(course.toCreateRequest())
+        .when()
+        .post("/api/course")
+        .then()
+        .statusCode(HttpStatus.BAD_REQUEST.value())
+        .body("error", equalTo("BAD_REQUEST"));
+  }
+
+  @Test
+  @DisplayName("exception (POST /api/course): retorna 400 quando skill é de outra categoria")
+  void shouldReturn400WhenSkillIsFromAnotherCategory() {
+    String token = IdentityTestHelper.registerAndLogin(TestUser.defaultUser());
+    TestCourse course =
+        TestCourse.defaultCourse()
+            .withSkillIds(CatalogSkillTestHelper.getSkillIdsForCategory(Categories.DATA, 1));
+
+    given()
+        .header("Authorization", "Bearer " + token)
+        .contentType(ContentType.JSON)
+        .body(course.toCreateRequest())
+        .when()
+        .post("/api/course")
+        .then()
+        .statusCode(HttpStatus.BAD_REQUEST.value())
+        .body("error", equalTo("BAD_REQUEST"));
+  }
+
+  @Test
+  @DisplayName("exception (POST /api/course): retorna 400 quando envia mais de 2 skills")
+  void shouldReturn400WhenCourseHasMoreThanTwoSkills() {
+    String token = IdentityTestHelper.registerAndLogin(TestUser.defaultUser());
+    TestCourse course =
+        TestCourse.defaultCourse()
+            .withSkillIds(
+                List.of(
+                    new ObjectId().toString(),
+                    new ObjectId().toString(),
+                    new ObjectId().toString()));
+
+    given()
+        .header("Authorization", "Bearer " + token)
+        .contentType(ContentType.JSON)
+        .body(course.toCreateRequest())
+        .when()
+        .post("/api/course")
+        .then()
+        .statusCode(HttpStatus.BAD_REQUEST.value())
+        .body("error", equalTo("BAD_REQUEST"));
+  }
+
+  @Test
+  @DisplayName("exception (POST /api/course): retorna 400 quando envia skills duplicadas")
+  void shouldReturn400WhenCourseHasDuplicatedSkills() {
+    String token = IdentityTestHelper.registerAndLogin(TestUser.defaultUser());
+    String duplicatedSkillId =
+        CatalogSkillTestHelper.getSkillIdsForCategory(Categories.DEV_WEB, 1).getFirst();
+    TestCourse course =
+        TestCourse.defaultCourse().withSkillIds(List.of(duplicatedSkillId, duplicatedSkillId));
+
+    given()
+        .header("Authorization", "Bearer " + token)
+        .contentType(ContentType.JSON)
+        .body(course.toCreateRequest())
+        .when()
+        .post("/api/course")
+        .then()
+        .statusCode(HttpStatus.BAD_REQUEST.value())
+        .body("error", equalTo("BAD_REQUEST"));
   }
 
   @Test
@@ -132,6 +214,7 @@ class CourseE2ETest extends BaseE2ETest {
     assertEquals(createdDetails.course().id(), course.id());
     assertEquals(createdDetails.course().name().name(), course.name().name());
     assertEquals(createdDetails.course().description(), course.description());
+    assertEquals(createdDetails.course().skillIds(), course.skillIds());
   }
 
   @Test
@@ -442,10 +525,12 @@ class CourseE2ETest extends BaseE2ETest {
 
     String updatedName = "Curso de Java Atualizado";
     String updatedDescription = "Descrição atualizada do curso de Java";
+    List<String> updatedSkillIds =
+        CatalogSkillTestHelper.getSkillIdsForCategory(Categories.DATA, 2);
 
     UpdateCourseByIdRequest updateRequest =
         new UpdateCourseByIdRequest(
-            updatedName, Categories.DATA, "Intermediário", updatedDescription);
+            updatedName, Categories.DATA, "Intermediário", updatedDescription, updatedSkillIds);
 
     CourseDTO updated =
         given()
@@ -463,6 +548,30 @@ class CourseE2ETest extends BaseE2ETest {
     assertEquals(createdDetails.course().id(), updated.id());
     assertEquals(updatedName, updated.name().name());
     assertEquals(updatedDescription, updated.description());
+    assertEquals(Categories.DATA.getValue(), updated.category().name());
+    assertEquals(updatedSkillIds, updated.skillIds());
+  }
+
+  @Test
+  @DisplayName(
+      "exception (PUT /api/course/{id}): retorna 400 quando altera categoria sem skills compatíveis")
+  void shouldReturn400WhenUpdatingCourseCategoryWithoutCompatibleSkills() {
+    String token = IdentityTestHelper.registerAndLogin(TestUser.defaultUser());
+    CourseDetailsDTO createdDetails =
+        CatalogTestHelper.createCourse(token, TestCourse.defaultCourse());
+
+    UpdateCourseByIdRequest updateRequest =
+        new UpdateCourseByIdRequest("Curso de Java Atualizado", Categories.DATA, null, null, null);
+
+    given()
+        .header("Authorization", "Bearer " + token)
+        .contentType(ContentType.JSON)
+        .body(updateRequest)
+        .when()
+        .put("/api/course/{id}", createdDetails.course().id())
+        .then()
+        .statusCode(HttpStatus.BAD_REQUEST.value())
+        .body("error", equalTo("BAD_REQUEST"));
   }
 
   @Test
@@ -473,7 +582,7 @@ class CourseE2ETest extends BaseE2ETest {
         CatalogTestHelper.createCourse(token, TestCourse.defaultCourse());
 
     UpdateCourseByIdRequest updateRequest =
-        new UpdateCourseByIdRequest("Curso de Java Atualizado", null, null, null);
+        new UpdateCourseByIdRequest("Curso de Java Atualizado", null, null, null, null);
 
     given()
         .contentType(ContentType.JSON)
@@ -497,7 +606,7 @@ class CourseE2ETest extends BaseE2ETest {
             new TestUser("Outro Usuário", "outro@email.com", "Teste123"));
 
     UpdateCourseByIdRequest updateRequest =
-        new UpdateCourseByIdRequest("Curso Hackeado", null, null, null);
+        new UpdateCourseByIdRequest("Curso Hackeado", null, null, null, null);
 
     given()
         .header("Authorization", "Bearer " + tokenB)
@@ -517,7 +626,7 @@ class CourseE2ETest extends BaseE2ETest {
     String token = IdentityTestHelper.registerAndLogin(TestUser.defaultUser());
 
     UpdateCourseByIdRequest updateRequest =
-        new UpdateCourseByIdRequest("Curso Inexistente", null, null, null);
+        new UpdateCourseByIdRequest("Curso Inexistente", null, null, null, null);
 
     String nonExistentId = "000000000000000000000001";
 

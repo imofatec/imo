@@ -8,7 +8,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.imo.backend.contexts.catalog.course.Course;
 import com.imo.backend.contexts.catalog.course.value_objects.Categories;
+import com.imo.backend.contexts.common.exceptions.custom.BadRequestException;
 import com.imo.backend.contexts.common.exceptions.custom.ForbiddenException;
+import java.util.List;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,7 +26,8 @@ class CourseTest {
         Categories.AI,
         "Curso sobre ia no java",
         "https://www.youtube.com/watch?v=abc123XYZ89&pp=test",
-        1);
+        1,
+        List.of(new ObjectId().toString(), new ObjectId().toString()));
   }
 
   @Test
@@ -69,6 +72,69 @@ class CourseTest {
     course.setFirstLessonYoutubeLink("https://www.youtube.com/watch?v=SR1OfCAmTyI");
 
     assertEquals("SR1OfCAmTyI", course.getFirstLessonYoutubeLink());
+  }
+
+  @Test
+  @DisplayName(
+      "happy path (constructor): armazenar ids de skills como ObjectId e expor como string")
+  void shouldStoreSkillIds() {
+    List<String> skillIds = List.of(new ObjectId().toString(), new ObjectId().toString());
+
+    Course course =
+        new Course(
+            true,
+            new ObjectId().toString(),
+            "Curso Java",
+            "Iniciante",
+            Categories.AI,
+            "Curso sobre ia no java",
+            "https://www.youtube.com/watch?v=abc123XYZ89&pp=test",
+            1,
+            skillIds);
+
+    assertEquals(skillIds, course.getSkillIdsAsString());
+  }
+
+  @Test
+  @DisplayName("exception (setSkillIds): rejeitar curso sem skills")
+  void shouldRejectCourseWithoutSkills() {
+    Course course = createCourse();
+
+    assertThrows(BadRequestException.class, () -> course.setSkillIds(List.of()));
+  }
+
+  @Test
+  @DisplayName("exception (setSkillIds): rejeitar curso com mais de 2 skills")
+  void shouldRejectCourseWithMoreThanTwoSkills() {
+    Course course = createCourse();
+
+    assertThrows(
+        BadRequestException.class,
+        () ->
+            course.setSkillIds(
+                List.of(
+                    new ObjectId().toString(),
+                    new ObjectId().toString(),
+                    new ObjectId().toString())));
+  }
+
+  @Test
+  @DisplayName("exception (setSkillIds): rejeitar skills duplicadas")
+  void shouldRejectDuplicatedSkills() {
+    Course course = createCourse();
+    String duplicatedSkillId = new ObjectId().toString();
+
+    assertThrows(
+        BadRequestException.class,
+        () -> course.setSkillIds(List.of(duplicatedSkillId, duplicatedSkillId)));
+  }
+
+  @Test
+  @DisplayName("exception (setSkillIds): rejeitar skillId inválido")
+  void shouldRejectInvalidSkillId() {
+    Course course = createCourse();
+
+    assertThrows(BadRequestException.class, () -> course.setSkillIds(List.of("invalid-id")));
   }
 
   @Test

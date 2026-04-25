@@ -9,7 +9,11 @@ import com.imo.backend.contexts.catalog.course.Course;
 import com.imo.backend.contexts.catalog.course.CoursePolicies;
 import com.imo.backend.contexts.catalog.course.repositories.CourseRepository;
 import com.imo.backend.contexts.catalog.course.value_objects.Categories;
+import com.imo.backend.contexts.catalog.course.value_objects.Category;
+import com.imo.backend.contexts.catalog.skill.Skill;
+import com.imo.backend.contexts.catalog.skill.repositories.SkillRepository;
 import com.imo.backend.contexts.common.Slug;
+import com.imo.backend.contexts.common.exceptions.custom.BadRequestException;
 import com.imo.backend.contexts.common.exceptions.custom.ConflictException;
 import java.util.List;
 import org.bson.types.ObjectId;
@@ -24,6 +28,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class CoursePoliciesTest {
 
   @Mock private CourseRepository courseRepository;
+  @Mock private SkillRepository skillRepository;
 
   @InjectMocks private CoursePolicies coursePolicies;
 
@@ -37,7 +42,8 @@ class CoursePoliciesTest {
             Categories.AI,
             "Descrição do curso",
             "https://www.youtube.com/watch?v=abc123XYZ89",
-            1);
+            1,
+            List.of(new ObjectId().toString()));
     existingCourse.setId(new ObjectId().toString());
 
     Course existingCourse2 =
@@ -49,10 +55,17 @@ class CoursePoliciesTest {
             Categories.DATA,
             "Descrição do curso de Python",
             "https://www.youtube.com/watch?v=l9CZykYZkOQ",
-            1);
+            1,
+            List.of(new ObjectId().toString()));
     existingCourse2.setId(new ObjectId().toString());
 
     return List.of(existingCourse, existingCourse2);
+  }
+
+  private List<String> createSkillIds(int quantity) {
+    return java.util.stream.Stream.generate(() -> new ObjectId().toString())
+        .limit(quantity)
+        .toList();
   }
 
   @Test
@@ -102,5 +115,52 @@ class CoursePoliciesTest {
             this.coursePolicies.checkSlugConflict(contributorId, sameSlug, existingCourse.getId()));
 
     verify(this.courseRepository).findAllByContributorId(contributorId);
+  }
+
+  @Test
+  @DisplayName("happy path (validateCourseSkills): aceitar skills existentes da mesma categoria")
+  void shouldAcceptValidCourseSkills() {
+    List<String> skillIds = createSkillIds(2);
+    Skill firstSkill = new Skill(Categories.DEV_WEB, "HTML", 2);
+    firstSkill.setId(skillIds.getFirst());
+    Skill secondSkill = new Skill(Categories.DEV_WEB, "CSS", 2);
+    secondSkill.setId(skillIds.getLast());
+
+    when(this.skillRepository.findAllById(skillIds)).thenReturn(List.of(firstSkill, secondSkill));
+
+    assertDoesNotThrow(
+        () -> this.coursePolicies.validateCourseSkills(new Category(Categories.DEV_WEB), skillIds));
+
+    verify(this.skillRepository).findAllById(skillIds);
+  }
+
+  @Test
+  @DisplayName("exception (validateCourseSkills): rejeitar skill inexistente")
+  void shouldRejectMissingSkill() {
+    List<String> skillIds = createSkillIds(2);
+    Skill existingSkill = new Skill(Categories.DEV_WEB, "HTML", 2);
+    existingSkill.setId(skillIds.getFirst());
+
+    when(this.skillRepository.findAllById(skillIds)).thenReturn(List.of(existingSkill));
+
+    assertThrows(
+        BadRequestException.class,
+        () -> this.coursePolicies.validateCourseSkills(new Category(Categories.DEV_WEB), skillIds));
+  }
+
+  @Test
+  @DisplayName("exception (validateCourseSkills): rejeitar skill de outra categoria")
+  void shouldRejectSkillsFromAnotherCategory() {
+    List<String> skillIds = createSkillIds(2);
+    Skill firstSkill = new Skill(Categories.DEV_WEB, "HTML", 2);
+    firstSkill.setId(skillIds.getFirst());
+    Skill secondSkill = new Skill(Categories.DATA, "SQL", 3);
+    secondSkill.setId(skillIds.getLast());
+
+    when(this.skillRepository.findAllById(skillIds)).thenReturn(List.of(firstSkill, secondSkill));
+
+    assertThrows(
+        BadRequestException.class,
+        () -> this.coursePolicies.validateCourseSkills(new Category(Categories.DEV_WEB), skillIds));
   }
 }
