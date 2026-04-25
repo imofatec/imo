@@ -2,15 +2,13 @@ package com.imo.backend.contexts.skill_profile;
 
 import com.imo.backend.contexts.common.Entity;
 import com.imo.backend.contexts.common.exceptions.custom.BadRequestException;
-import java.util.ArrayList;
-import java.util.List;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @EqualsAndHashCode(callSuper = true)
-@Document("skillProfile")
+@Document("skill_profile")
 @Data
 public class SkillProfile extends Entity {
   private ObjectId userId;
@@ -18,8 +16,6 @@ public class SkillProfile extends Entity {
   private ObjectId skillId;
 
   private int coverage;
-
-  private List<ObjectId> completedCourseIds = new ArrayList<>();
 
   public SkillProfile() {}
 
@@ -51,30 +47,5 @@ public class SkillProfile extends Entity {
     }
 
     this.coverage = coverage;
-  }
-
-  public List<String> getCompletedCourseIds() {
-    this.ensureCompletedCourseIds();
-    return this.completedCourseIds.stream().map(ObjectId::toString).toList();
-  }
-
-  public boolean hasCompletedCourse(String courseId) {
-    this.ensureCompletedCourseIds();
-    return this.completedCourseIds.contains(new ObjectId(courseId));
-  }
-
-  public void addCompletedCourseId(String courseId) {
-    this.ensureCompletedCourseIds();
-    ObjectId courseObjectId = new ObjectId(courseId);
-
-    if (!this.completedCourseIds.contains(courseObjectId)) {
-      this.completedCourseIds.add(courseObjectId);
-    }
-  }
-
-  private void ensureCompletedCourseIds() {
-    if (this.completedCourseIds == null) {
-      this.completedCourseIds = new ArrayList<>();
-    }
   }
 }
