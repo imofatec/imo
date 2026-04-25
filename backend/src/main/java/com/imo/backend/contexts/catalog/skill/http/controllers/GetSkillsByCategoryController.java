@@ -12,7 +12,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -32,9 +32,9 @@ public class GetSkillsByCategoryController extends SkillController {
             content =
                 @Content(array = @ArraySchema(schema = @Schema(implementation = SkillDTO.class))))
       })
-  @GetMapping
+  @GetMapping("/{categorySlug}")
   public ResponseEntity<List<SkillDTO>> handle(
-      @Parameter(description = "Category slug", example = "desenvolvimento-web") @RequestParam
+      @Parameter(description = "Category slug", example = "desenvolvimento-web") @PathVariable
           String categorySlug) {
     var response =
         this.skillRepository.findAllByCategorySlug(categorySlug).stream()
