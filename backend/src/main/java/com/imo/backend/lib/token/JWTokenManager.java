@@ -1,10 +1,15 @@
 package com.imo.backend.lib.token;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.imo.backend.contexts.common.exceptions.custom.UnauthorizedException;
 import com.imo.backend.contexts.identity.user.http.dtos.auth.LoginResponseDTO;
 import com.imo.backend.contexts.identity.user.lib.TokenManager;
 import java.time.Instant;
-import org.springframework.security.oauth2.jwt.*;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.jwt.JwtClaimsSet;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.jwt.JwtEncoder;
+import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
+import org.springframework.security.oauth2.jwt.JwtException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -14,12 +19,9 @@ public class JWTokenManager implements TokenManager {
 
   private final JwtDecoder jwtDecoder;
 
-  private final ObjectMapper objectMapper;
-
-  public JWTokenManager(JwtEncoder jwtEncoder, JwtDecoder jwtDecoder, ObjectMapper objectMapper) {
+  public JWTokenManager(JwtEncoder jwtEncoder, JwtDecoder jwtDecoder) {
     this.jwtEncoder = jwtEncoder;
     this.jwtDecoder = jwtDecoder;
-    this.objectMapper = objectMapper;
   }
 
   public LoginResponseDTO generateToken(String userId) {
@@ -40,8 +42,19 @@ public class JWTokenManager implements TokenManager {
   }
 
   public String getUserId(String token) {
-    Jwt payload = jwtDecoder.decode(token.substring(7));
+    try {
+      Jwt payload = jwtDecoder.decode(normalizeToken(token));
+      return payload.getSubject();
+    } catch (JwtException ex) {
+      throw new UnauthorizedException("Token inválido ou expirado");
+    }
+  }
 
-    return payload.getSubject();
+  private String normalizeToken(String token) {
+    if (token.startsWith("Bearer ")) {
+      return token.substring(7);
+    }
+
+    return token;
   }
 }

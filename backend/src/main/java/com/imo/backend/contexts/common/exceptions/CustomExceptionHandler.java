@@ -4,6 +4,7 @@ import com.imo.backend.contexts.common.exceptions.custom.BadRequestException;
 import com.imo.backend.contexts.common.exceptions.custom.ConflictException;
 import com.imo.backend.contexts.common.exceptions.custom.ForbiddenException;
 import com.imo.backend.contexts.common.exceptions.custom.NotFoundException;
+import com.imo.backend.contexts.common.exceptions.custom.UnauthorizedException;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -93,6 +94,12 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
   public final ResponseEntity<Object> handleConflictException(ConflictException ex) {
     return new ResponseEntity<>(
         new ErrorResponseDto("CONFLICT", ex.getMessage()), HttpStatus.CONFLICT);
+  }
+
+  @ExceptionHandler(UnauthorizedException.class)
+  public final ResponseEntity<Object> handleUnauthorizedException(UnauthorizedException ex) {
+    return new ResponseEntity<>(
+        new ErrorResponseDto("UNAUTHORIZED", ex.getMessage()), HttpStatus.UNAUTHORIZED);
   }
 
   @ExceptionHandler(Exception.class)
