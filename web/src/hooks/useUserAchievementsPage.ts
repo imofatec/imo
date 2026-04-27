@@ -1,7 +1,11 @@
 import authAxiosInstance from '@/api/authAxiosInstance'
 import { resolveAchievementImageSrc } from '@/lib/resolveAchievementImageSrc'
 import { safeAwait } from '@/lib/safeAwait'
-import type { Achievement, AchievementListItem, UserAchievementsResponse } from '@/types/achievement'
+import type {
+  Achievement,
+  AchievementListItem,
+  UserAchievementsResponse,
+} from '@/types/achievement'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 const emptyAchievements: UserAchievementsResponse = {

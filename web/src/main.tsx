@@ -21,6 +21,7 @@ import UserConfigPage from './pages/UserConfig'
 import UserConfirmation from './pages/UserConfirmation'
 import ResetPasswordPage from './pages/ResetPassword'
 import UserAchievementsPage from './pages/UserAchievements'
+import SocialProfilePage from './pages/SocialProfile'
 
 const router = createBrowserRouter([
   {
@@ -29,6 +30,7 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <Home /> },
       { path: 'categorias/:categorySlug?', element: <AllCourses /> },
+      { path: 'social/:userId', element: <SocialProfilePage /> },
 
       {
         element: <GuestRoutes redirectTo="/" />,
