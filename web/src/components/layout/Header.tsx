@@ -15,6 +15,7 @@ type ProfileMenuItem = {
 
 const profileMenuItems: ProfileMenuItem[] = [
   { label: 'Editar perfil', to: '/user/configuracoes' },
+  { label: 'Conquistas', to: '/user/conquistas' },
   { label: 'Meu aprendizado', to: '/user/cursos' },
   { label: 'Todos os cursos', to: '/categorias' },
   { label: 'Criar curso', to: '/criar-curso' },

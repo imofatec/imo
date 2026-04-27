@@ -20,6 +20,7 @@ import EditCoursePage from './pages/EditCourse'
 import UserConfigPage from './pages/UserConfig'
 import UserConfirmation from './pages/UserConfirmation'
 import ResetPasswordPage from './pages/ResetPassword'
+import UserAchievementsPage from './pages/UserAchievements'
 
 const router = createBrowserRouter([
   {
@@ -44,6 +45,7 @@ const router = createBrowserRouter([
         children: [
           { path: 'user/cursos', element: <MyCourses /> },
           { path: 'user/configuracoes', element: <UserConfigPage /> },
+          { path: 'user/conquistas', element: <UserAchievementsPage /> },
           { path: 'cursos/:courseId/:idLesson', element: <WatchPage /> },
           { path: 'criar-curso', element: <CreateCoursePage /> },
           { path: 'editar-curso/:courseId', element: <EditCoursePage /> },
