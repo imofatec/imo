@@ -10,10 +10,11 @@ import com.imo.backend.contexts.common.MatchType;
 import com.imo.backend.contexts.identity.user.repositories.UserRepository;
 import com.imo.backend.contexts.journey_tracking.repositories.ProgressRepository;
 import com.imo.backend.contexts.recommendation.Recommendation;
+import com.imo.backend.contexts.recommendation.lib.RecommendationEngine;
+import com.imo.backend.contexts.recommendation.lib.RecommendationInput;
 import com.imo.backend.contexts.recommendation.repositories.RecommendationRepository;
 import com.imo.backend.contexts.skill_profile.SkillProfile;
 import com.imo.backend.contexts.skill_profile.repositories.SkillProfileRepository;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -31,6 +32,7 @@ public class RefreshRecommendationsForUserUseCase {
   private final ProgressRepository progressRepository;
   private final CourseRepository courseRepository;
   private final SkillRepository skillRepository;
+  private final RecommendationEngine recommendationEngine;
   private final RecommendationRepository recommendationRepository;
 
   public RefreshRecommendationsForUserUseCase(
@@ -39,12 +41,14 @@ public class RefreshRecommendationsForUserUseCase {
       ProgressRepository progressRepository,
       CourseRepository courseRepository,
       SkillRepository skillRepository,
+      RecommendationEngine recommendationEngine,
       RecommendationRepository recommendationRepository) {
     this.userRepository = userRepository;
     this.skillProfileRepository = skillProfileRepository;
     this.progressRepository = progressRepository;
     this.courseRepository = courseRepository;
     this.skillRepository = skillRepository;
+    this.recommendationEngine = recommendationEngine;
     this.recommendationRepository = recommendationRepository;
   }
 
@@ -52,21 +56,14 @@ public class RefreshRecommendationsForUserUseCase {
     this.userRepository.findByIdOrThrow(userId);
 
     Map<String, Integer> coverageBySkillId = this.loadCoverageBySkillId(userId);
-
-    if (coverageBySkillId.isEmpty()) {
-      return this.recommendationRepository.upsertByUserId(userId, List.of());
-    }
-
+    List<Course> activeCourses = this.loadActiveCourses();
+    Map<String, Skill> skillsById = this.loadSkillsById(activeCourses);
     Set<String> finishedCourseIds =
         Set.copyOf(this.progressRepository.findFinishedCourseIdsByUserId(userId));
-
-    List<Course> candidateCourses =
-        this.loadCandidateCourses(finishedCourseIds, coverageBySkillId.keySet());
-
-    Map<String, Skill> skillsById = this.loadSkillsById(candidateCourses);
-
     List<String> recommendedCourseIds =
-        this.rankCourses(candidateCourses, coverageBySkillId, skillsById);
+        this.recommendationEngine.rankRecommendedCourseIds(
+            new RecommendationInput(
+                activeCourses, skillsById, finishedCourseIds, coverageBySkillId));
 
     return this.recommendationRepository.upsertByUserId(userId, recommendedCourseIds);
   }
@@ -78,14 +75,9 @@ public class RefreshRecommendationsForUserUseCase {
                 SkillProfile::getSkillId, SkillProfile::getCoverage, (left, right) -> right));
   }
 
-  private List<Course> loadCandidateCourses(
-      Set<String> finishedCourseIds, Set<String> knownSkillIds) {
-    return this.courseRepository
-        .search(EMPTY_COURSE_SEARCH_PARAMS, MatchType.PERFECT, CombineWith.AND, true)
-        .stream()
-        .filter(course -> !finishedCourseIds.contains(course.getId()))
-        .filter(course -> this.hasRelevantSkill(course, knownSkillIds))
-        .toList();
+  private List<Course> loadActiveCourses() {
+    return this.courseRepository.search(
+        EMPTY_COURSE_SEARCH_PARAMS, MatchType.PERFECT, CombineWith.AND, true);
   }
 
   private Map<String, Skill> loadSkillsById(List<Course> courses) {
@@ -101,56 +93,4 @@ public class RefreshRecommendationsForUserUseCase {
     return this.skillRepository.findAllById(skillIds).stream()
         .collect(Collectors.toMap(Skill::getId, Function.identity()));
   }
-
-  private List<String> rankCourses(
-      List<Course> candidateCourses,
-      Map<String, Integer> coverageBySkillId,
-      Map<String, Skill> skillsById) {
-    return candidateCourses.stream()
-        .map(
-            course ->
-                new CourseRecommendationScore(
-                    course,
-                    this.calculateScore(
-                        course, coverageBySkillId, coverageBySkillId.keySet(), skillsById)))
-        .filter(courseRecommendationScore -> courseRecommendationScore.score() > 0)
-        .sorted(Comparator.comparingInt(CourseRecommendationScore::score).reversed())
-        .map(CourseRecommendationScore::course)
-        .map(Course::getId)
-        .toList();
-  }
-
-  private int calculateScore(
-      Course course,
-      Map<String, Integer> coverageBySkillId,
-      Set<String> knownSkillIds,
-      Map<String, Skill> skillsById) {
-    int score = 0;
-
-    List<String> relevantSkillIds =
-        course.getSkillIdsAsString().stream().filter(knownSkillIds::contains).toList();
-
-    if (relevantSkillIds.isEmpty()) {
-      return 0;
-    }
-
-    for (String skillId : relevantSkillIds) {
-      Skill skill = skillsById.get(skillId);
-
-      if (skill == null) {
-        return 0;
-      }
-
-      int userCoverage = coverageBySkillId.getOrDefault(skillId, 0);
-      score += skill.getIsEssential() * (100 - userCoverage);
-    }
-
-    return score;
-  }
-
-  private boolean hasRelevantSkill(Course course, Set<String> knownSkillIds) {
-    return course.getSkillIdsAsString().stream().anyMatch(knownSkillIds::contains);
-  }
-
-  private record CourseRecommendationScore(Course course, int score) {}
 }

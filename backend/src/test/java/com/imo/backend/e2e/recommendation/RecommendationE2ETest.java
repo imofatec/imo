@@ -35,7 +35,7 @@ class RecommendationE2ETest extends BaseE2ETest {
   @Test
   @DisplayName(
       "happy path (GET /api/recommendation/me): retorna 200 com cursos recomendados sem incluir os concluídos")
-  void shouldGetMyRecommendations() throws InterruptedException {
+  void shouldGetMyRecommendations() {
     TestUser user = TestUser.defaultUser();
     String token = IdentityTestHelper.registerAndLogin(user);
 
@@ -71,7 +71,7 @@ class RecommendationE2ETest extends BaseE2ETest {
   @Test
   @DisplayName(
       "functional (GET /api/recommendation/me): incluir novo curso relevante após mudança no catálogo")
-  void shouldRefreshRecommendationsWhenRelevantCourseIsCreated() throws InterruptedException {
+  void shouldRefreshRecommendationsWhenRelevantCourseIsCreated() {
     TestUser user = TestUser.defaultUser();
     String token = IdentityTestHelper.registerAndLogin(user);
 
@@ -107,7 +107,7 @@ class RecommendationE2ETest extends BaseE2ETest {
   @Test
   @DisplayName(
       "functional (GET /api/recommendation/me): remover curso recomendado quando skills do curso mudam")
-  void shouldRefreshRecommendationsWhenCourseSkillsChange() throws InterruptedException {
+  void shouldRefreshRecommendationsWhenCourseSkillsChange() {
     TestUser user = TestUser.defaultUser();
     String token = IdentityTestHelper.registerAndLogin(user);
 
