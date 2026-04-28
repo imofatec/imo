@@ -18,6 +18,17 @@ public class CustomRecommendationRepositoryImpl implements CustomRecommendationR
   }
 
   @Override
+  public List<String> findDistinctUserIdsByCourseId(String courseId) {
+    Query query = new Query().addCriteria(Criteria.where("courseIds").is(new ObjectId(courseId)));
+    query.fields().include("userId").exclude("_id");
+
+    return this.mongoTemplate.find(query, Recommendation.class).stream()
+        .map(Recommendation::getUserId)
+        .distinct()
+        .toList();
+  }
+
+  @Override
   public Recommendation upsertByUserId(String userId, List<String> courseIds) {
     LocalDateTime now = LocalDateTime.now();
     Query query = new Query().addCriteria(Criteria.where("userId").is(new ObjectId(userId)));

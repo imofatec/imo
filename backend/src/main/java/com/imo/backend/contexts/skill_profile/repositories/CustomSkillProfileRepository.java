@@ -5,4 +5,6 @@ import java.util.List;
 
 public interface CustomSkillProfileRepository {
   List<SkillProfileDetails> findAllDetailsByUserId(String userId);
+
+  List<String> findDistinctUserIdsBySkillIds(List<String> skillIds);
 }
