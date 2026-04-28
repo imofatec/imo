@@ -31,7 +31,7 @@ class SkillProfileE2ETest extends BaseE2ETest {
   @Test
   @DisplayName(
       "happy path (GET /api/skill-profile/me): retorna 200 com perfil de skills do usuário autenticado")
-  void shouldGetMySkillProfile() throws InterruptedException {
+  void shouldGetMySkillProfile() {
     TestUser user = TestUser.defaultUser();
     String token = IdentityTestHelper.registerAndLogin(user);
     CourseDetailsDTO courseDetails =

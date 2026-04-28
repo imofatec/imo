@@ -194,7 +194,7 @@ class ProgressE2ETest extends BaseE2ETest {
   @Test
   @DisplayName(
       "functional (PUT /api/progress/{lessonId}): atualizar skillProfile quando usuário finaliza curso")
-  void shouldUpdateSkillProfileWhenCourseIsFinished() throws InterruptedException {
+  void shouldUpdateSkillProfileWhenCourseIsFinished() {
     TestUser user = TestUser.defaultUser();
     String token = IdentityTestHelper.registerAndLogin(user);
     CourseDetailsDTO courseDetails =

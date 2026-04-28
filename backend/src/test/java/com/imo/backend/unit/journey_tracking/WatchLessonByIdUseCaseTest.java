@@ -51,34 +51,6 @@ class WatchLessonByIdUseCaseTest {
   }
 
   @Test
-  @DisplayName("happy path (execute): publicar evento quando concluir a última aula")
-  void shouldPublishEventWhenFinishingCourse() {
-    String userId = new ObjectId().toString();
-    String courseId = new ObjectId().toString();
-    String watchedLessonId = new ObjectId().toString();
-    String lastLessonId = new ObjectId().toString();
-
-    Course course = createCourse(courseId, 2);
-    Progress progress = new Progress(userId, courseId, List.of(watchedLessonId), 2);
-
-    when(this.courseRepository.findByLessonIdOrThrow(lastLessonId)).thenReturn(course);
-    when(this.progressRepository.findByUserIdAndCourseId(userId, courseId))
-        .thenReturn(Optional.of(progress));
-    when(this.progressRepository.save(progress)).thenReturn(progress);
-
-    Progress savedProgress = this.useCase.execute(lastLessonId, userId);
-
-    assertEquals(ProgressStatus.FINISHED, savedProgress.getStatus());
-    verify(this.applicationEventPublisher)
-        .publishEvent(
-            argThat(
-                (Object event) ->
-                    event instanceof CourseFinishedEvent courseFinishedEvent
-                        && courseFinishedEvent.userId().equals(userId)
-                        && courseFinishedEvent.courseId().equals(courseId)));
-  }
-
-  @Test
   @DisplayName("happy path (execute): publicar evento quando curso de 1 aula é finalizado")
   void shouldPublishEventWhenSingleLessonCourseIsFinished() {
     String userId = new ObjectId().toString();

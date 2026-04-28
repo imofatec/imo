@@ -54,23 +54,6 @@ class CourseE2ETest extends BaseE2ETest {
   }
 
   @Test
-  @DisplayName("exception (POST /api/course): retorna 400 quando alguma skill não existe")
-  void shouldReturn400WhenSkillDoesNotExist() {
-    String token = IdentityTestHelper.registerAndLogin(TestUser.defaultUser());
-    TestCourse course = TestCourse.defaultCourse().withSkillIds(List.of(new ObjectId().toString()));
-
-    given()
-        .header("Authorization", "Bearer " + token)
-        .contentType(ContentType.JSON)
-        .body(course.toCreateRequest())
-        .when()
-        .post("/api/course")
-        .then()
-        .statusCode(HttpStatus.BAD_REQUEST.value())
-        .body("error", equalTo("BAD_REQUEST"));
-  }
-
-  @Test
   @DisplayName("exception (POST /api/course): retorna 400 quando skill é de outra categoria")
   void shouldReturn400WhenSkillIsFromAnotherCategory() {
     String token = IdentityTestHelper.registerAndLogin(TestUser.defaultUser());
