@@ -3,6 +3,7 @@ package com.imo.backend.contexts.journey_tracking.repositories;
 import com.imo.backend.contexts.common.Pageable;
 import com.imo.backend.contexts.journey_tracking.Progress;
 import com.imo.backend.contexts.journey_tracking.ProgressDetails;
+import com.imo.backend.contexts.journey_tracking.value_objects.ProgressStatus;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -81,6 +82,22 @@ public class CustomProgressRepositoryImpl implements CustomProgressRepository {
     return mongoTemplate
         .aggregate(aggregation, "progress", ProgressDetails.class)
         .getMappedResults();
+  }
+
+  @Override
+  public List<String> findFinishedCourseIdsByUserId(String userId) {
+    Query query =
+        new Query()
+            .addCriteria(
+                Criteria.where("userId")
+                    .is(new ObjectId(userId))
+                    .and("status")
+                    .is(ProgressStatus.FINISHED));
+    query.fields().include("courseId").exclude("_id");
+
+    return this.mongoTemplate.find(query, Progress.class).stream()
+        .map(Progress::getCourseId)
+        .toList();
   }
 
   private Aggregation buildAggregationProgressDetailsByUserId(
