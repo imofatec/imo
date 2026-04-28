@@ -8,9 +8,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.imo.backend.contexts.catalog.course.http.dtos.CourseDTO;
 import com.imo.backend.contexts.catalog.course.http.dtos.CourseDetailsDTO;
+import com.imo.backend.contexts.catalog.course.http.dtos.UpdateCourseByIdRequest;
+import com.imo.backend.contexts.catalog.course.value_objects.Categories;
 import com.imo.backend.contexts.identity.user.repositories.UserRepository;
 import com.imo.backend.contexts.recommendation.repositories.RecommendationRepository;
 import com.imo.backend.e2e.BaseE2ETest;
+import com.imo.backend.e2e.catalog.helpers.CatalogSkillTestHelper;
 import com.imo.backend.e2e.catalog.helpers.CatalogTestHelper;
 import com.imo.backend.e2e.catalog.helpers.CatalogTestHelper.TestCourse;
 import com.imo.backend.e2e.identity.helpers.IdentityTestHelper;
@@ -63,6 +66,93 @@ class RecommendationE2ETest extends BaseE2ETest {
     assertTrue(
         recommendations.stream()
             .noneMatch(course -> course.id().equals(finishedCourse.course().id())));
+  }
+
+  @Test
+  @DisplayName(
+      "functional (GET /api/recommendation/me): incluir novo curso relevante após mudança no catálogo")
+  void shouldRefreshRecommendationsWhenRelevantCourseIsCreated() throws InterruptedException {
+    TestUser user = TestUser.defaultUser();
+    String token = IdentityTestHelper.registerAndLogin(user);
+
+    TestCourse finishedCourseFixture = TestCourse.defaultCourse();
+    CourseDetailsDTO finishedCourse = CatalogTestHelper.createCourse(token, finishedCourseFixture);
+    String lessonId = finishedCourse.lessons().getFirst().getId();
+    String userId = this.userRepository.findByEmail(user.email()).orElseThrow().getId();
+
+    JourneyTrackingTestHelper.watchLesson(token, lessonId);
+    RecommendationTestHelper.waitForRecommendation(this.recommendationRepository, userId, 0);
+
+    List<CourseDTO> recommendationsBefore = RecommendationTestHelper.getMyRecommendations(token);
+    assertTrue(recommendationsBefore.isEmpty());
+
+    TestCourse newlyRelevantCourseFixture =
+        new TestCourse(
+            "Curso novo de HTML e CSS",
+            finishedCourseFixture.category(),
+            finishedCourseFixture.level(),
+            "Curso novo para recomendar",
+            finishedCourseFixture.lessons(),
+            finishedCourseFixture.skillIds());
+    CourseDetailsDTO newlyRelevantCourse =
+        CatalogTestHelper.createCourse(token, newlyRelevantCourseFixture);
+
+    RecommendationTestHelper.waitForRecommendation(this.recommendationRepository, userId, 1);
+    List<CourseDTO> recommendationsAfter = RecommendationTestHelper.getMyRecommendations(token);
+
+    assertEquals(1, recommendationsAfter.size());
+    assertEquals(newlyRelevantCourse.course().id(), recommendationsAfter.getFirst().id());
+  }
+
+  @Test
+  @DisplayName(
+      "functional (GET /api/recommendation/me): remover curso recomendado quando skills do curso mudam")
+  void shouldRefreshRecommendationsWhenCourseSkillsChange() throws InterruptedException {
+    TestUser user = TestUser.defaultUser();
+    String token = IdentityTestHelper.registerAndLogin(user);
+
+    TestCourse finishedCourseFixture = TestCourse.defaultCourse();
+    TestCourse recommendedCourseFixture =
+        new TestCourse(
+            "Curso recomendado de frontend",
+            finishedCourseFixture.category(),
+            finishedCourseFixture.level(),
+            "Curso para ser removido da recommendation",
+            finishedCourseFixture.lessons(),
+            finishedCourseFixture.skillIds());
+
+    CourseDetailsDTO finishedCourse = CatalogTestHelper.createCourse(token, finishedCourseFixture);
+    CourseDetailsDTO recommendedCourse =
+        CatalogTestHelper.createCourse(token, recommendedCourseFixture);
+    String lessonId = finishedCourse.lessons().getFirst().getId();
+    String userId = this.userRepository.findByEmail(user.email()).orElseThrow().getId();
+
+    JourneyTrackingTestHelper.watchLesson(token, lessonId);
+    RecommendationTestHelper.waitForRecommendation(this.recommendationRepository, userId, 1);
+
+    List<String> updatedSkillIds =
+        CatalogSkillTestHelper.getSkillIdsForCategory(Categories.DATA, 2);
+    UpdateCourseByIdRequest updateRequest =
+        new UpdateCourseByIdRequest(
+            "Curso migrado para dados",
+            Categories.DATA,
+            "Intermediário",
+            "Curso alterado para outra trilha",
+            updatedSkillIds);
+
+    given()
+        .header("Authorization", "Bearer " + token)
+        .contentType(ContentType.JSON)
+        .body(updateRequest)
+        .when()
+        .put("/api/course/{id}", recommendedCourse.course().id())
+        .then()
+        .statusCode(HttpStatus.OK.value());
+
+    RecommendationTestHelper.waitForRecommendation(this.recommendationRepository, userId, 0);
+    List<CourseDTO> recommendationsAfter = RecommendationTestHelper.getMyRecommendations(token);
+
+    assertTrue(recommendationsAfter.isEmpty());
   }
 
   @Test

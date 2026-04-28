@@ -10,6 +10,8 @@ import com.imo.backend.contexts.catalog.course.value_objects.Category;
 import com.imo.backend.contexts.catalog.lesson.usecases.CreateLessonUseCase;
 import com.imo.backend.contexts.common.Slug;
 import com.imo.backend.contexts.identity.user.repositories.UserRepository;
+import com.imo.backend.contexts.recommendation.events.RecommendationContextChangedEvent;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -22,15 +24,19 @@ public class CreateCourseUseCase {
 
   private final UserRepository userRepository;
 
+  private final ApplicationEventPublisher applicationEventPublisher;
+
   public CreateCourseUseCase(
       CreateLessonUseCase createLessonUseCase,
       CourseRepository courseRepository,
       CoursePolicies coursePolicies,
-      UserRepository userRepository) {
+      UserRepository userRepository,
+      ApplicationEventPublisher applicationEventPublisher) {
     this.createLessonUseCase = createLessonUseCase;
     this.courseRepository = courseRepository;
     this.coursePolicies = coursePolicies;
     this.userRepository = userRepository;
+    this.applicationEventPublisher = applicationEventPublisher;
   }
 
   public CourseDetailsDTO execute(CreateCourseCommand cmd) {
@@ -57,6 +63,8 @@ public class CreateCourseUseCase {
     newCourse = this.courseRepository.save(newCourse);
 
     var newLessons = this.createLessonUseCase.execute(cmd.lessons(), newCourse.getId());
+    this.applicationEventPublisher.publishEvent(
+        new RecommendationContextChangedEvent(newCourse.getId(), newCourse.getSkillIdsAsString()));
 
     return new CourseDetailsDTO(CourseDTO.fromEntity(newCourse), newLessons);
   }
