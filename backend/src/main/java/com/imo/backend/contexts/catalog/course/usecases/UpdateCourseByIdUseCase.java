@@ -8,7 +8,7 @@ import com.imo.backend.contexts.catalog.course.value_objects.Category;
 import com.imo.backend.contexts.catalog.course.value_objects.CourseName;
 import com.imo.backend.contexts.catalog.course.value_objects.Level;
 import com.imo.backend.contexts.common.Slug;
-import com.imo.backend.contexts.recommendation.events.RecommendationContextChangedEvent;
+import com.imo.backend.contexts.learning_path.recommendation.events.RecommendationContextChangedEvent;
 import java.util.List;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;

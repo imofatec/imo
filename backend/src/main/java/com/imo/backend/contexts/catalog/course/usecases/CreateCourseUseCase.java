@@ -10,7 +10,7 @@ import com.imo.backend.contexts.catalog.course.value_objects.Category;
 import com.imo.backend.contexts.catalog.lesson.usecases.CreateLessonUseCase;
 import com.imo.backend.contexts.common.Slug;
 import com.imo.backend.contexts.identity.user.repositories.UserRepository;
-import com.imo.backend.contexts.recommendation.events.RecommendationContextChangedEvent;
+import com.imo.backend.contexts.learning_path.recommendation.events.RecommendationContextChangedEvent;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 

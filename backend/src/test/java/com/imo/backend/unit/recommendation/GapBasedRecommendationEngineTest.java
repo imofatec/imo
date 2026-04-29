@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import com.imo.backend.contexts.catalog.course.Course;
 import com.imo.backend.contexts.catalog.course.value_objects.Categories;
 import com.imo.backend.contexts.catalog.skill.Skill;
-import com.imo.backend.contexts.recommendation.lib.RecommendationInput;
+import com.imo.backend.contexts.learning_path.recommendation.lib.RecommendationInput;
 import com.imo.backend.lib.recommendation.GapBasedRecommendationEngine;
 import java.util.List;
 import java.util.Map;

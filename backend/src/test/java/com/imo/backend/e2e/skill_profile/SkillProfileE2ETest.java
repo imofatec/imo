@@ -7,8 +7,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.imo.backend.contexts.catalog.course.http.dtos.CourseDetailsDTO;
 import com.imo.backend.contexts.identity.user.repositories.UserRepository;
-import com.imo.backend.contexts.skill_profile.http.dtos.SkillProfileDTO;
-import com.imo.backend.contexts.skill_profile.repositories.SkillProfileRepository;
+import com.imo.backend.contexts.learning_path.skill_profile.http.dtos.SkillProfileDTO;
+import com.imo.backend.contexts.learning_path.skill_profile.repositories.SkillProfileRepository;
 import com.imo.backend.e2e.BaseE2ETest;
 import com.imo.backend.e2e.catalog.helpers.CatalogTestHelper;
 import com.imo.backend.e2e.catalog.helpers.CatalogTestHelper.TestCourse;

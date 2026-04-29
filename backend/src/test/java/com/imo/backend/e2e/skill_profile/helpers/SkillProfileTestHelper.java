@@ -2,8 +2,8 @@ package com.imo.backend.e2e.skill_profile.helpers;
 
 import static org.awaitility.Awaitility.await;
 
-import com.imo.backend.contexts.skill_profile.SkillProfile;
-import com.imo.backend.contexts.skill_profile.repositories.SkillProfileRepository;
+import com.imo.backend.contexts.learning_path.skill_profile.SkillProfile;
+import com.imo.backend.contexts.learning_path.skill_profile.repositories.SkillProfileRepository;
 import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;

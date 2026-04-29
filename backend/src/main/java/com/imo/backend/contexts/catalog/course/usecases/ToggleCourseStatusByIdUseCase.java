@@ -2,7 +2,7 @@ package com.imo.backend.contexts.catalog.course.usecases;
 
 import com.imo.backend.contexts.catalog.course.Course;
 import com.imo.backend.contexts.catalog.course.repositories.CourseRepository;
-import com.imo.backend.contexts.recommendation.events.RecommendationContextChangedEvent;
+import com.imo.backend.contexts.learning_path.recommendation.events.RecommendationContextChangedEvent;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 

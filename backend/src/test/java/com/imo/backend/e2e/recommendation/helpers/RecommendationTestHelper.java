@@ -4,8 +4,8 @@ import static io.restassured.RestAssured.given;
 import static org.awaitility.Awaitility.await;
 
 import com.imo.backend.contexts.catalog.course.http.dtos.CourseDTO;
-import com.imo.backend.contexts.recommendation.Recommendation;
-import com.imo.backend.contexts.recommendation.repositories.RecommendationRepository;
+import com.imo.backend.contexts.learning_path.recommendation.Recommendation;
+import com.imo.backend.contexts.learning_path.recommendation.repositories.RecommendationRepository;
 import io.restassured.http.ContentType;
 import java.time.Duration;
 import java.util.List;

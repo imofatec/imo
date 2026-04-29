@@ -2,8 +2,8 @@ package com.imo.backend.lib.recommendation;
 
 import com.imo.backend.contexts.catalog.course.Course;
 import com.imo.backend.contexts.catalog.skill.Skill;
-import com.imo.backend.contexts.recommendation.lib.RecommendationEngine;
-import com.imo.backend.contexts.recommendation.lib.RecommendationInput;
+import com.imo.backend.contexts.learning_path.recommendation.lib.RecommendationEngine;
+import com.imo.backend.contexts.learning_path.recommendation.lib.RecommendationInput;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
