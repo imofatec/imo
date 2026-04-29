@@ -1,8 +1,8 @@
 package com.imo.backend.contexts.catalog.course.usecases;
 
 import com.imo.backend.contexts.catalog.course.Course;
+import com.imo.backend.contexts.catalog.course.events.CourseStatusToggledEvent;
 import com.imo.backend.contexts.catalog.course.repositories.CourseRepository;
-import com.imo.backend.contexts.learning_path.recommendation.events.RecommendationContextChangedEvent;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
@@ -24,8 +24,8 @@ public class ToggleCourseStatusByIdUseCase {
     foundCourse.toggleStatus();
     Course savedCourse = this.courseRepository.save(foundCourse);
     this.applicationEventPublisher.publishEvent(
-        new RecommendationContextChangedEvent(
-            savedCourse.getId(), savedCourse.getSkillIdsAsString()));
+        new CourseStatusToggledEvent(
+            savedCourse.getId(), savedCourse.getSkillIdsAsString(), savedCourse.isActive()));
 
     return savedCourse;
   }

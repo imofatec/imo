@@ -3,6 +3,7 @@ package com.imo.backend.contexts.catalog.course.usecases;
 import com.imo.backend.contexts.catalog.course.Course;
 import com.imo.backend.contexts.catalog.course.CoursePolicies;
 import com.imo.backend.contexts.catalog.course.commands.CreateCourseCommand;
+import com.imo.backend.contexts.catalog.course.events.CourseCreatedEvent;
 import com.imo.backend.contexts.catalog.course.http.dtos.CourseDTO;
 import com.imo.backend.contexts.catalog.course.http.dtos.CourseDetailsDTO;
 import com.imo.backend.contexts.catalog.course.repositories.CourseRepository;
@@ -10,7 +11,6 @@ import com.imo.backend.contexts.catalog.course.value_objects.Category;
 import com.imo.backend.contexts.catalog.lesson.usecases.CreateLessonUseCase;
 import com.imo.backend.contexts.common.Slug;
 import com.imo.backend.contexts.identity.user.repositories.UserRepository;
-import com.imo.backend.contexts.learning_path.recommendation.events.RecommendationContextChangedEvent;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
@@ -64,7 +64,7 @@ public class CreateCourseUseCase {
 
     var newLessons = this.createLessonUseCase.execute(cmd.lessons(), newCourse.getId());
     this.applicationEventPublisher.publishEvent(
-        new RecommendationContextChangedEvent(newCourse.getId(), newCourse.getSkillIdsAsString()));
+        new CourseCreatedEvent(newCourse.getId(), newCourse.getSkillIdsAsString()));
 
     return new CourseDetailsDTO(CourseDTO.fromEntity(newCourse), newLessons);
   }

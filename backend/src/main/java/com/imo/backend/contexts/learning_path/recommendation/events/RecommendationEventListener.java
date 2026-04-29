@@ -1,7 +1,6 @@
 package com.imo.backend.contexts.learning_path.recommendation.events;
 
 import com.imo.backend.contexts.learning_path.recommendation.usecases.RefreshRecommendationsForUserUseCase;
-import com.imo.backend.contexts.learning_path.recommendation.usecases.RefreshRecommendationsImpactedByCourseChangeUseCase;
 import com.imo.backend.contexts.learning_path.skill_profile.events.SkillProfileUpdatedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
@@ -10,28 +9,15 @@ import org.springframework.stereotype.Component;
 @Component
 public class RecommendationEventListener {
   private final RefreshRecommendationsForUserUseCase refreshRecommendationsForUserUseCase;
-  private final RefreshRecommendationsImpactedByCourseChangeUseCase
-      refreshRecommendationsImpactedByCourseChangeUseCase;
 
   public RecommendationEventListener(
-      RefreshRecommendationsForUserUseCase refreshRecommendationsForUserUseCase,
-      RefreshRecommendationsImpactedByCourseChangeUseCase
-          refreshRecommendationsImpactedByCourseChangeUseCase) {
+      RefreshRecommendationsForUserUseCase refreshRecommendationsForUserUseCase) {
     this.refreshRecommendationsForUserUseCase = refreshRecommendationsForUserUseCase;
-    this.refreshRecommendationsImpactedByCourseChangeUseCase =
-        refreshRecommendationsImpactedByCourseChangeUseCase;
   }
 
   @Async
   @EventListener
   public void handle(SkillProfileUpdatedEvent event) {
     this.refreshRecommendationsForUserUseCase.execute(event.userId());
-  }
-
-  @Async
-  @EventListener
-  public void handle(RecommendationContextChangedEvent event) {
-    this.refreshRecommendationsImpactedByCourseChangeUseCase.execute(
-        event.courseId(), event.skillIds());
   }
 }
