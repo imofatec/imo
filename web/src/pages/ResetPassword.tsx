@@ -201,7 +201,7 @@ export default function ResetPasswordPage() {
             </p>
           </div>
 
-          <div className="flex min-h-[280px] flex-col gap-2">{renderCurrentStepForm()}</div>
+          <div className="flex min-h-70 flex-col gap-2">{renderCurrentStepForm()}</div>
         </div>
 
         <p className="text-center text-sm text-white/60">

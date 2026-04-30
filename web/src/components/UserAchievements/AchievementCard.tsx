@@ -9,13 +9,13 @@ export default function AchievementCard({ achievement }: AchievementCardProps) {
   const progress = Math.min(Math.max(achievement.progressPercentage ?? 0, 0), 100)
 
   return (
-    <article className="group relative overflow-visible rounded-3xl border border-white/10 bg-[#14082f] p-4 transition hover:-translate-y-1 hover:border-cyan/30 hover:bg-[#1a0d3c]">
+    <article className="group hover:border-cyan/30 relative overflow-visible rounded-3xl border border-white/10 bg-[#14082f] p-4 transition hover:-translate-y-1 hover:bg-[#1a0d3c]">
       <div className="relative flex aspect-square items-center justify-center overflow-hidden rounded-2xl border border-white/10 bg-[#0f0628] p-4">
         {achievement.imageSrc ? (
           <img
             src={achievement.imageSrc}
             alt={achievement.title}
-            className={`h-full w-full object-contain transition ${achievement.isUnlocked ? '' : 'grayscale opacity-45'}`}
+            className={`h-full w-full object-contain transition ${achievement.isUnlocked ? '' : 'opacity-45 grayscale'}`}
           />
         ) : (
           <Trophy size={46} className={achievement.isUnlocked ? 'text-cyan' : 'text-white/35'} />
@@ -41,7 +41,10 @@ export default function AchievementCard({ achievement }: AchievementCardProps) {
         </div>
 
         <div className="h-2 overflow-hidden rounded-full bg-white/8">
-          <div className="bg-cyan h-full rounded-full transition-all" style={{ width: `${progress}%` }} />
+          <div
+            className="bg-cyan h-full rounded-full transition-all"
+            style={{ width: `${progress}%` }}
+          />
         </div>
 
         <p className="text-xs text-white/55">

@@ -16,8 +16,8 @@ export default function AchievementsOverview({
         <p className="mt-2 text-3xl font-bold text-white">{total}</p>
       </div>
 
-      <div className="rounded-3xl border border-cyan/20 bg-cyan/10 p-5">
-        <p className="text-sm text-cyan/80">Desbloqueadas</p>
+      <div className="border-cyan/20 bg-cyan/10 rounded-3xl border p-5">
+        <p className="text-cyan/80 text-sm">Desbloqueadas</p>
         <p className="mt-2 text-3xl font-bold text-white">{unlockedCount}</p>
       </div>
 
