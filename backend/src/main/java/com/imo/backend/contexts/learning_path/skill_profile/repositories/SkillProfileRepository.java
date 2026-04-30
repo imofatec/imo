@@ -1,6 +1,6 @@
-package com.imo.backend.contexts.skill_profile.repositories;
+package com.imo.backend.contexts.learning_path.skill_profile.repositories;
 
-import com.imo.backend.contexts.skill_profile.SkillProfile;
+import com.imo.backend.contexts.learning_path.skill_profile.SkillProfile;
 import java.util.List;
 import java.util.Optional;
 import org.bson.types.ObjectId;

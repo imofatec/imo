@@ -1,14 +1,16 @@
-package com.imo.backend.contexts.skill_profile.usecases;
+package com.imo.backend.contexts.learning_path.skill_profile.usecases;
 
 import com.imo.backend.contexts.catalog.course.repositories.CourseRepository;
 import com.imo.backend.contexts.catalog.skill.Skill;
 import com.imo.backend.contexts.catalog.skill.repositories.SkillRepository;
 import com.imo.backend.contexts.common.exceptions.custom.NotFoundException;
 import com.imo.backend.contexts.identity.user.repositories.UserRepository;
-import com.imo.backend.contexts.skill_profile.SkillProfile;
-import com.imo.backend.contexts.skill_profile.lib.SkillCoverageCalculator;
-import com.imo.backend.contexts.skill_profile.repositories.SkillProfileRepository;
+import com.imo.backend.contexts.learning_path.skill_profile.SkillProfile;
+import com.imo.backend.contexts.learning_path.skill_profile.events.SkillProfileUpdatedEvent;
+import com.imo.backend.contexts.learning_path.skill_profile.lib.SkillCoverageCalculator;
+import com.imo.backend.contexts.learning_path.skill_profile.repositories.SkillProfileRepository;
 import java.util.List;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -18,18 +20,21 @@ public class UpdateSkillProfileOnCourseFinishedUseCase {
   private final SkillRepository skillRepository;
   private final SkillProfileRepository skillProfileRepository;
   private final SkillCoverageCalculator skillCoverageCalculator;
+  private final ApplicationEventPublisher applicationEventPublisher;
 
   public UpdateSkillProfileOnCourseFinishedUseCase(
       UserRepository userRepository,
       CourseRepository courseRepository,
       SkillRepository skillRepository,
       SkillProfileRepository skillProfileRepository,
-      SkillCoverageCalculator skillCoverageCalculator) {
+      SkillCoverageCalculator skillCoverageCalculator,
+      ApplicationEventPublisher applicationEventPublisher) {
     this.userRepository = userRepository;
     this.courseRepository = courseRepository;
     this.skillRepository = skillRepository;
     this.skillProfileRepository = skillProfileRepository;
     this.skillCoverageCalculator = skillCoverageCalculator;
+    this.applicationEventPublisher = applicationEventPublisher;
   }
 
   public List<SkillProfile> execute(String userId, String courseId) {
@@ -46,7 +51,11 @@ public class UpdateSkillProfileOnCourseFinishedUseCase {
     List<SkillProfile> skillProfilesToSave =
         courseSkills.stream().map(skill -> this.upsertSkillProfile(userId, skill)).toList();
 
-    return this.skillProfileRepository.saveAll(skillProfilesToSave);
+    List<SkillProfile> savedSkillProfiles =
+        this.skillProfileRepository.saveAll(skillProfilesToSave);
+    this.applicationEventPublisher.publishEvent(new SkillProfileUpdatedEvent(userId));
+
+    return savedSkillProfiles;
   }
 
   private SkillProfile upsertSkillProfile(String userId, Skill skill) {

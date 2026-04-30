@@ -1,6 +1,6 @@
 package com.imo.backend.lib.skill_profile;
 
-import com.imo.backend.contexts.skill_profile.lib.SkillCoverageCalculator;
+import com.imo.backend.contexts.learning_path.skill_profile.lib.SkillCoverageCalculator;
 import org.springframework.stereotype.Service;
 
 @Service

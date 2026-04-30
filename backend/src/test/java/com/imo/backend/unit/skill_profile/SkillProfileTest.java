@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.imo.backend.contexts.common.exceptions.custom.BadRequestException;
-import com.imo.backend.contexts.skill_profile.SkillProfile;
+import com.imo.backend.contexts.learning_path.skill_profile.SkillProfile;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

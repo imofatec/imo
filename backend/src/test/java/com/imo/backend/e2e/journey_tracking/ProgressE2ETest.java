@@ -9,8 +9,8 @@ import com.imo.backend.contexts.identity.user.repositories.UserRepository;
 import com.imo.backend.contexts.journey_tracking.controllers.dtos.ProgressDTO;
 import com.imo.backend.contexts.journey_tracking.controllers.dtos.ProgressDetailsDTO;
 import com.imo.backend.contexts.journey_tracking.value_objects.ProgressStatus;
-import com.imo.backend.contexts.skill_profile.SkillProfile;
-import com.imo.backend.contexts.skill_profile.repositories.SkillProfileRepository;
+import com.imo.backend.contexts.learning_path.skill_profile.SkillProfile;
+import com.imo.backend.contexts.learning_path.skill_profile.repositories.SkillProfileRepository;
 import com.imo.backend.e2e.BaseE2ETest;
 import com.imo.backend.e2e.catalog.helpers.CatalogTestHelper;
 import com.imo.backend.e2e.catalog.helpers.CatalogTestHelper.TestCourse;
@@ -194,7 +194,7 @@ class ProgressE2ETest extends BaseE2ETest {
   @Test
   @DisplayName(
       "functional (PUT /api/progress/{lessonId}): atualizar skillProfile quando usuário finaliza curso")
-  void shouldUpdateSkillProfileWhenCourseIsFinished() throws InterruptedException {
+  void shouldUpdateSkillProfileWhenCourseIsFinished() {
     TestUser user = TestUser.defaultUser();
     String token = IdentityTestHelper.registerAndLogin(user);
     CourseDetailsDTO courseDetails =

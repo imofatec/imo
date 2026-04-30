@@ -1,9 +1,9 @@
-package com.imo.backend.contexts.skill_profile.http.dtos;
+package com.imo.backend.contexts.learning_path.skill_profile.http.dtos;
 
 import com.imo.backend.contexts.catalog.course.value_objects.Category;
 import com.imo.backend.contexts.catalog.skill.Skill;
-import com.imo.backend.contexts.skill_profile.SkillProfile;
-import com.imo.backend.contexts.skill_profile.SkillProfileDetails;
+import com.imo.backend.contexts.learning_path.skill_profile.SkillProfile;
+import com.imo.backend.contexts.learning_path.skill_profile.SkillProfileDetails;
 
 public record SkillProfileDTO(String id, String userId, SkillProfileSkillDTO skill, int coverage) {
   public static SkillProfileDTO fromEntity(SkillProfile skillProfile, Skill skill) {

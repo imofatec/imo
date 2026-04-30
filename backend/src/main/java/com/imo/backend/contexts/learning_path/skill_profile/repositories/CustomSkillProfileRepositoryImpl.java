@@ -1,13 +1,16 @@
-package com.imo.backend.contexts.skill_profile.repositories;
+package com.imo.backend.contexts.learning_path.skill_profile.repositories;
 
-import com.imo.backend.contexts.skill_profile.SkillProfileDetails;
+import com.imo.backend.contexts.learning_path.skill_profile.SkillProfile;
+import com.imo.backend.contexts.learning_path.skill_profile.SkillProfileDetails;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationOperation;
 import org.springframework.data.mongodb.core.aggregation.ProjectionOperation;
 import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 
 public class CustomSkillProfileRepositoryImpl implements CustomSkillProfileRepository {
   private final MongoTemplate mongoTemplate;
@@ -35,5 +38,23 @@ public class CustomSkillProfileRepositoryImpl implements CustomSkillProfileRepos
     return this.mongoTemplate
         .aggregate(aggregation, "skill_profile", SkillProfileDetails.class)
         .getMappedResults();
+  }
+
+  @Override
+  public List<String> findDistinctUserIdsBySkillIds(List<String> skillIds) {
+    if (skillIds == null || skillIds.isEmpty()) {
+      return List.of();
+    }
+
+    Query query =
+        new Query()
+            .addCriteria(
+                Criteria.where("skillId").in(skillIds.stream().map(ObjectId::new).toList()));
+    query.fields().include("userId").exclude("_id");
+
+    return this.mongoTemplate.find(query, SkillProfile.class).stream()
+        .map(SkillProfile::getUserId)
+        .distinct()
+        .collect(Collectors.toList());
   }
 }

@@ -1,9 +1,8 @@
-package com.imo.backend.contexts.skill_profile.http.controllers;
+package com.imo.backend.contexts.learning_path.skill_profile.http.controllers;
 
 import com.imo.backend.contexts.common.exceptions.ErrorResponseDto;
-import com.imo.backend.contexts.identity.user.http.controllers.UserController;
-import com.imo.backend.contexts.skill_profile.http.dtos.SkillProfileDTO;
-import com.imo.backend.contexts.skill_profile.repositories.SkillProfileRepository;
+import com.imo.backend.contexts.learning_path.skill_profile.http.dtos.SkillProfileDTO;
+import com.imo.backend.contexts.learning_path.skill_profile.repositories.SkillProfileRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -18,7 +17,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class GetMySkillProfileController extends UserController {
+public class GetMySkillProfileController extends SkillProfileController {
   private final SkillProfileRepository skillProfileRepository;
 
   public GetMySkillProfileController(SkillProfileRepository skillProfileRepository) {
@@ -45,7 +44,7 @@ public class GetMySkillProfileController extends UserController {
             description = "Skill do perfil não encontrada",
             content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
       })
-  @GetMapping("/skill-profile")
+  @GetMapping("/me")
   public ResponseEntity<List<SkillProfileDTO>> handle() {
     String userId = SecurityContextHolder.getContext().getAuthentication().getName();
     var response =
