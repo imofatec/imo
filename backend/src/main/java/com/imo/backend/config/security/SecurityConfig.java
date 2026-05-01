@@ -59,6 +59,7 @@ public class SecurityConfig {
                         "/docs/**",
                         "/api/health-check",
                         "/api/user/ids",
+                        "/api/user/public/{id}",
                         "/api/user/{id:^(?!profile$).+}",
                         "/api/course/{id}",
                         "/api/course/inactive/{id}",
@@ -67,6 +68,8 @@ public class SecurityConfig {
                         "/api/course/categories",
                         "/api/comment/{lessonId}",
                         "/api/certificate/details/{id}",
+                        "/api/notification/stream/**",
+                        "/images/achievements/**",
                         "/uploads/**")
                     .permitAll()
                     .requestMatchers(

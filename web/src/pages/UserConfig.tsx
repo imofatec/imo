@@ -1,5 +1,6 @@
 import FormSection from '@/components/CreateCourses/FormSection'
 import AccountStatusSection from '@/components/UserConfig/AccountStatusSection'
+import BioSection from '@/components/UserConfig/BioSection'
 import PasswordSecuritySection from '@/components/UserConfig/PasswordSecuritySection'
 import ProfileInfoSection from '@/components/UserConfig/ProfileInfoSection'
 import UserConfigSummary from '@/components/UserConfig/UserConfigSummary'
@@ -17,6 +18,11 @@ export default function UserConfigPage() {
     handleProfileSubmit,
     profileErrors,
     isSubmittingProfile,
+    registerBio,
+    handleBioSubmit,
+    bioErrors,
+    isSubmittingBio,
+    bioValue,
     registerPassword,
     handlePasswordSubmit,
     passwordErrors,
@@ -25,6 +31,7 @@ export default function UserConfigPage() {
     handleUploadPhoto,
     handleResendConfirmationEmail,
     onSubmitProfile,
+    onSubmitBio,
     onSubmitPassword,
   } = useUserConfigPage()
 
@@ -52,6 +59,16 @@ export default function UserConfigPage() {
             user={user}
             isResendingConfirmation={isResendingConfirmation}
             onResendConfirmationEmail={handleResendConfirmationEmail}
+          />
+        </FormSection>
+
+        <FormSection title="Bio">
+          <BioSection
+            register={registerBio}
+            errors={bioErrors}
+            isSubmitting={isSubmittingBio}
+            bioValue={bioValue}
+            onSubmit={handleBioSubmit(onSubmitBio)}
           />
         </FormSection>
 

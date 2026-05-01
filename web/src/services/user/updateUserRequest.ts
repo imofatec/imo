@@ -4,6 +4,7 @@ import { safeAwait } from '@/lib/safeAwait'
 type UpdateUserRequestData = {
   email?: string
   name?: string
+  bio?: string
   oldPassword?: string
   password?: string
   birthDate?: string

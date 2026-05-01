@@ -19,7 +19,7 @@ public record ProgressDTO(
         progress.getUserId(),
         progress.getCourseId(),
         progress.getLessonsWatched(),
-        progress.getLessonsWatched().size(),
+        progress.getWatchedLessonsCount(),
         progress.getStatus(),
         progress.getProgressPeriod());
   }

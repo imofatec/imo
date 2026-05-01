@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
+import org.bson.Document;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.mongodb.MongoDatabaseFactory;
@@ -43,13 +44,25 @@ public class Populate implements CommandLineRunner {
       return;
     }
 
-    log.info("Populando banco com %d usuários e %d cursos...%n", userQty, courseQty);
+    log.info("Populando banco com {} usuários e {} cursos...", userQty, courseQty);
 
-    this.mongoDatabaseFactory.getMongoDatabase().drop();
+    this.clearCollections();
 
     User adminUser = this.populateUsers.execute(userQty);
     this.populateCourses.execute(adminUser.getId(), courseQty);
     this.populateProgress.execute();
+  }
+
+  private void clearCollections() {
+    var database = this.mongoDatabaseFactory.getMongoDatabase();
+
+    for (String collectionName : database.listCollectionNames()) {
+      if (collectionName.startsWith("system.")) {
+        continue;
+      }
+
+      database.getCollection(collectionName).deleteMany(new Document());
+    }
   }
 
   private Map<String, String> parseArgs(String... args) {
