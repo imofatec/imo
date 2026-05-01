@@ -8,18 +8,35 @@ export function getSocialProfileOptionLabel(
   return options.find((option) => option.value === value)?.label ?? value
 }
 
-export function formatSocialProfileBirthDate(value: string | null) {
-  if (!value) return 'Nao informado'
+export function formatSocialProfileDateTime(
+  value: string | null,
+  fallback = 'Data não encontrada'
+) {
+  if (!value) return fallback
 
   const parsedDate = new Date(value)
 
   if (Number.isNaN(parsedDate.getTime())) {
-    return value
+    return fallback
   }
 
   return new Intl.DateTimeFormat('pt-BR', {
-    dateStyle: 'long',
+    dateStyle: 'medium',
+    timeStyle: 'short',
   }).format(parsedDate)
+}
+
+export function getSocialProfileWatchPath(
+  courseId: string,
+  lessonYoutubeLink: string | null | undefined
+) {
+  const normalizedLessonLink = lessonYoutubeLink?.trim()
+
+  if (!courseId || !normalizedLessonLink) {
+    return null
+  }
+
+  return `/cursos/${courseId}/${normalizedLessonLink}`
 }
 
 export function getSocialProfileInitials(name: string) {

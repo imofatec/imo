@@ -1,43 +1,47 @@
-import axiosInstance from '@/api/axiosInstance'
-import authAxiosInstance from '@/api/authAxiosInstance'
-import { getSocialProfileMockContent } from '@/constants/socialProfileMocks'
-import { safeAwait } from '@/lib/safeAwait'
-import type { User } from '@/types/user'
-import { useCallback, useEffect, useState } from 'react'
+import axios from 'axios'
+import { resolveAchievementImageSrc } from '@/lib/resolveAchievementImageSrc'
+import { formatSocialProfileDateTime } from '@/lib/socialProfile'
+import { getPublicUserProfileRequest } from '@/services/user/getPublicUserProfileRequest'
+import type { AchievementListItem } from '@/types/achievement'
+import type { PublicUserProfile } from '@/types/publicUserProfile'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
 type UseSocialProfilePageParams = {
   userId: string | undefined
 }
 
-async function fetchUserById(userId: string) {
-  const query = new URLSearchParams({ ids: userId }).toString()
-  const endpoint = `/api/user/ids?${query}`
+type SocialProfileErrorType = 'not_found' | 'request_error' | null
 
-  const [publicError, publicResponse] = await safeAwait(axiosInstance.get<User[]>(endpoint))
-
-  if (!publicError && publicResponse) {
-    return publicResponse.data?.[0] ?? null
+function mapAchievementItem(
+  achievement: PublicUserProfile['highlightedAchievements'][number]
+): AchievementListItem {
+  return {
+    trigger: achievement.key,
+    key: achievement.key,
+    title: achievement.title,
+    description: achievement.description,
+    imageUrl: achievement.imageUrl ?? '',
+    unlockedAt: achievement.unlockedAt,
+    currentValue: 1,
+    targetValue: 1,
+    progressPercentage: 100,
+    imageSrc: resolveAchievementImageSrc(achievement.imageUrl),
+    unlockedLabel: formatSocialProfileDateTime(achievement.unlockedAt, 'Data não encontrada'),
+    isUnlocked: Boolean(achievement.unlockedAt),
   }
-
-  const [authError, authResponse] = await safeAwait(authAxiosInstance.get<User[]>(endpoint))
-
-  if (authError || !authResponse) {
-    throw authError ?? publicError ?? new Error('Erro ao buscar perfil do usuario')
-  }
-
-  return authResponse.data?.[0] ?? null
 }
 
 export function useSocialProfilePage({ userId }: UseSocialProfilePageParams) {
-  const [user, setUser] = useState<User | null>(null)
+  const [profile, setProfile] = useState<PublicUserProfile | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const mockContent = getSocialProfileMockContent(userId)
+  const [errorType, setErrorType] = useState<SocialProfileErrorType>(null)
 
   const fetchProfile = useCallback(async () => {
     if (!userId) {
-      setUser(null)
+      setProfile(null)
       setError('Perfil invalido')
+      setErrorType('request_error')
       setIsLoading(false)
       return
     }
@@ -45,23 +49,24 @@ export function useSocialProfilePage({ userId }: UseSocialProfilePageParams) {
     setIsLoading(true)
 
     try {
-      const responseUser = await fetchUserById(userId)
+      const responseProfile = await getPublicUserProfileRequest(userId)
 
-      if (!responseUser) {
-        setUser(null)
-        setError('Perfil nao encontrado')
-        setIsLoading(false)
+      setProfile(responseProfile)
+      setError(null)
+      setErrorType(null)
+    } catch (requestError) {
+      if (axios.isAxiosError(requestError) && requestError.response?.status === 404) {
+        setProfile(null)
+        setError(requestError.response?.data?.message || 'Usuario nao encontrado')
+        setErrorType('not_found')
         return
       }
 
-      setUser(responseUser)
-      setError(null)
-    } catch (requestError) {
-      const message =
-        requestError instanceof Error ? requestError.message : 'Erro ao buscar perfil do usuario'
+      const message = requestError instanceof Error ? requestError.message : 'Erro ao buscar perfil'
 
-      setUser(null)
+      setProfile(null)
       setError(message)
+      setErrorType('request_error')
     } finally {
       setIsLoading(false)
     }
@@ -71,12 +76,17 @@ export function useSocialProfilePage({ userId }: UseSocialProfilePageParams) {
     void fetchProfile()
   }, [fetchProfile])
 
+  const highlightedAchievements = useMemo(
+    () => profile?.highlightedAchievements.map((achievement) => mapAchievementItem(achievement)) ?? [],
+    [profile?.highlightedAchievements]
+  )
+
   return {
-    user,
+    profile,
     isLoading,
     error,
-    bio: mockContent.bio,
-    featuredAchievements: mockContent.featuredAchievements,
+    errorType,
+    highlightedAchievements,
     refetch: fetchProfile,
   }
 }

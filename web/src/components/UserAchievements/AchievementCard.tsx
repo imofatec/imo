@@ -3,9 +3,10 @@ import { Lock, Trophy } from 'lucide-react'
 
 type AchievementCardProps = {
   achievement: AchievementListItem
+  hideProgress?: boolean
 }
 
-export default function AchievementCard({ achievement }: AchievementCardProps) {
+export default function AchievementCard({ achievement, hideProgress = false }: AchievementCardProps) {
   const progress = Math.min(Math.max(achievement.progressPercentage ?? 0, 0), 100)
 
   return (
@@ -37,19 +38,23 @@ export default function AchievementCard({ achievement }: AchievementCardProps) {
       <div className="mt-4 space-y-2">
         <div className="flex items-center justify-between gap-3">
           <h3 className="line-clamp-1 text-sm font-semibold text-white">{achievement.title}</h3>
-          <span className="shrink-0 text-xs text-white/45">{progress}%</span>
+          {!hideProgress ? <span className="shrink-0 text-xs text-white/45">{progress}%</span> : null}
         </div>
 
-        <div className="h-2 overflow-hidden rounded-full bg-white/8">
-          <div
-            className="bg-cyan h-full rounded-full transition-all"
-            style={{ width: `${progress}%` }}
-          />
-        </div>
+        {!hideProgress ? (
+          <>
+            <div className="h-2 overflow-hidden rounded-full bg-white/8">
+              <div
+                className="bg-cyan h-full rounded-full transition-all"
+                style={{ width: `${progress}%` }}
+              />
+            </div>
 
-        <p className="text-xs text-white/55">
-          {achievement.currentValue}/{achievement.targetValue || 0}
-        </p>
+            <p className="text-xs text-white/55">
+              {achievement.currentValue}/{achievement.targetValue || 0}
+            </p>
+          </>
+        ) : null}
       </div>
 
       <div className="pointer-events-none absolute inset-x-2 bottom-[calc(100%+0.75rem)] z-20 translate-y-2 rounded-2xl border border-white/10 bg-[#0a031d]/96 p-4 opacity-0 shadow-2xl transition duration-200 group-hover:translate-y-0 group-hover:opacity-100">

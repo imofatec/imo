@@ -59,6 +59,7 @@ public class SecurityConfig {
                         "/docs/**",
                         "/api/health-check",
                         "/api/user/ids",
+                        "/api/user/public/{id}",
                         "/api/user/{id:^(?!profile$).+}",
                         "/api/course/{id}",
                         "/api/course/inactive/{id}",

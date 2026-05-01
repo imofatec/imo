@@ -7,18 +7,28 @@ export default function SocialProfileSkeleton() {
             <div className="h-10 w-44 rounded-2xl bg-white/8" />
           </div>
           <div className="grid gap-8 px-6 py-8 lg:grid-cols-[320px_minmax(0,1fr)]">
-            <div className="space-y-4">
+            <div>
               <div className="h-72 rounded-3xl bg-white/8" />
-              <div className="h-52 rounded-3xl bg-white/6" />
             </div>
-            <div className="space-y-4">
-              <div className="h-32 rounded-3xl bg-white/6" />
-              <div className="grid gap-4 md:grid-cols-2">
-                <div className="h-24 rounded-3xl bg-white/6" />
-                <div className="h-24 rounded-3xl bg-white/6" />
-                <div className="h-24 rounded-3xl bg-white/6" />
-                <div className="h-24 rounded-3xl bg-white/6" />
+            <div className="space-y-4 rounded-3xl bg-white/6 p-4">
+              <div className="h-8 w-48 rounded-2xl bg-white/8" />
+              <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+                <div className="h-64 rounded-3xl bg-white/8" />
+                <div className="h-64 rounded-3xl bg-white/8" />
+                <div className="h-64 rounded-3xl bg-white/8" />
               </div>
+            </div>
+          </div>
+          <div className="space-y-4 px-6 pb-8 lg:px-8">
+            <div className="h-32 rounded-3xl bg-white/6" />
+            <div className="space-y-4 rounded-3xl bg-white/6 p-4">
+              <div className="h-8 w-40 rounded-2xl bg-white/8" />
+              <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+                <div className="h-56 rounded-3xl bg-white/8" />
+                <div className="h-56 rounded-3xl bg-white/8" />
+                <div className="h-56 rounded-3xl bg-white/8" />
+              </div>
+              <div className="h-40 rounded-3xl bg-white/8" />
             </div>
           </div>
         </div>
