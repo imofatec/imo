@@ -91,4 +91,22 @@ class UserTest {
 
     assertThrows(BadRequestException.class, () -> user.setBirthDate(LocalDate.now().plusDays(1)));
   }
+
+  @Test
+  @DisplayName("happy path (setBio): bio com até 300 caracteres")
+  void shouldAcceptBioWithUpTo300Characters() {
+    User user = new User(baseName, baseEmail, "123456");
+    String bio = "a".repeat(300);
+
+    assertDoesNotThrow(() -> user.setBio(bio));
+    assertEquals(bio, user.getBio());
+  }
+
+  @Test
+  @DisplayName("exception (setBio): bio maior que 300 caracteres")
+  void shouldThrowBadRequestWhenBioExceeds300Characters() {
+    User user = new User(baseName, baseEmail, "123456");
+
+    assertThrows(BadRequestException.class, () -> user.setBio("a".repeat(301)));
+  }
 }

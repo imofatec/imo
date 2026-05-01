@@ -2,8 +2,10 @@ import { useUser } from '@/contexts/UserContext'
 import { resolveProfileImageSrc } from '@/lib/resolveProfileImageSrc'
 import { showRequestErrorToast } from '@/lib/requestToast'
 import {
+  type UpdateUserBioData,
   type UpdateUserPasswordData,
   type UpdateUserProfileData,
+  updateUserBioSchema,
   updateUserPasswordSchema,
   updateUserProfileSchema,
 } from '@/schemas/user/updateUserSchema'
@@ -81,6 +83,21 @@ export function useUserConfigPage() {
   })
 
   const {
+    register: registerBio,
+    handleSubmit: handleBioSubmit,
+    reset: resetBioForm,
+    watch: watchBio,
+    formState: { errors: bioErrors, isSubmitting: isSubmittingBio },
+  } = useForm<UpdateUserBioData>({
+    resolver: zodResolver(updateUserBioSchema),
+    mode: 'onBlur',
+    reValidateMode: 'onChange',
+    defaultValues: {
+      bio: '',
+    },
+  })
+
+  const {
     register: registerPassword,
     handleSubmit: handlePasswordSubmit,
     reset: resetPasswordForm,
@@ -99,6 +116,10 @@ export function useUserConfigPage() {
   useEffect(() => {
     setProfileValue('birthDate', user?.birthDate ?? '')
   }, [user?.birthDate, setProfileValue])
+
+  useEffect(() => {
+    resetBioForm({ bio: user?.bio ?? '' })
+  }, [resetBioForm, user?.bio])
 
   useEffect(() => {
     return () => {
@@ -155,6 +176,22 @@ export function useUserConfigPage() {
         error,
         'Ocorreu um erro ao tentar atualizar suas informações. Por favor, tente novamente.',
         { id: 'user-profile-error' }
+      )
+    }
+  }
+
+  async function onSubmitBio(data: UpdateUserBioData) {
+    try {
+      const normalizedBio = data.bio.trim()
+
+      await updateUserRequest({ bio: normalizedBio })
+      await refetch()
+      resetBioForm({ bio: normalizedBio })
+    } catch (error: unknown) {
+      showRequestErrorToast(
+        error,
+        'Ocorreu um erro ao tentar atualizar sua bio. Por favor, tente novamente.',
+        { id: 'user-bio-error' }
       )
     }
   }
@@ -247,6 +284,11 @@ export function useUserConfigPage() {
     handleProfileSubmit,
     profileErrors,
     isSubmittingProfile,
+    registerBio,
+    handleBioSubmit,
+    bioErrors,
+    isSubmittingBio,
+    bioValue: watchBio('bio') ?? '',
     registerPassword,
     handlePasswordSubmit,
     passwordErrors,
@@ -256,6 +298,7 @@ export function useUserConfigPage() {
     handleUploadPhoto,
     handleResendConfirmationEmail,
     onSubmitProfile,
+    onSubmitBio,
     onSubmitPassword,
   }
 }

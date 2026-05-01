@@ -179,6 +179,7 @@ class UserE2ETest extends BaseE2ETest {
         new UpdateUserByIdRequest(
             "updated@email.com",
             "Updated Name",
+            "Bio atualizada",
             null,
             null,
             "2026/03/31",
@@ -203,8 +204,28 @@ class UserE2ETest extends BaseE2ETest {
     assertNotNull(updated.id());
     assertEquals("Updated Name", updated.name());
     assertEquals("updated@email.com", updated.email());
+    assertEquals("Bio atualizada", updated.bio());
     assertEquals(AcademicDegree.BACHELOR, updated.academicDegree());
     assertEquals(AvailableTimePerDay.ONE_TO_TWO_HOURS, updated.availableTimePerDay());
+  }
+
+  @Test
+  @DisplayName("happy path (PUT /api/user): retorna 204 quando só oldPassword é enviado")
+  void shouldReturn204WhenOnlyOldPasswordIsSent() {
+    TestUser user = TestUser.defaultUser();
+    String token = IdentityTestHelper.registerAndLogin(user);
+
+    UpdateUserByIdRequest updateRequest =
+        new UpdateUserByIdRequest(null, null, null, "Teste123", null, null, null, null, null, null);
+
+    given()
+        .header("Authorization", "Bearer " + token)
+        .contentType(ContentType.JSON)
+        .body(updateRequest)
+        .when()
+        .put("/api/user")
+        .then()
+        .statusCode(HttpStatus.NO_CONTENT.value());
   }
 
   @Test

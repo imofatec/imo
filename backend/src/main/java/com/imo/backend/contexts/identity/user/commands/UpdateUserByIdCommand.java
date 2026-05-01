@@ -10,6 +10,7 @@ import java.util.List;
 public record UpdateUserByIdCommand(
     String email,
     String name,
+    String bio,
     String oldPassword,
     String password,
     String profilePicturePath,

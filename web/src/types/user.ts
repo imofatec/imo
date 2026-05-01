@@ -2,6 +2,7 @@ export type User = {
   id: string
   name: string
   email: string
+  bio: string | null
   isConfirmed: boolean
   profilePicturePath: string | null
   birthDate: string | null

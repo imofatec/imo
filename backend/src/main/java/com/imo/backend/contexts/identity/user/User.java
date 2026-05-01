@@ -27,6 +27,8 @@ public class User extends Entity {
 
   private Boolean isConfirmed;
 
+  private String bio;
+
   private String profilePicturePath;
 
   private LocalDate birthDate;
@@ -90,6 +92,14 @@ public class User extends Entity {
       throw new BadRequestException("O nome deve ter no máximo 20 caracteres");
     }
     this.name = name;
+  }
+
+  public void setBio(String bio) {
+    if (bio != null && bio.length() > 300) {
+      throw new BadRequestException("A bio deve ter no máximo 300 caracteres");
+    }
+
+    this.bio = bio;
   }
 
   public void setCategoriesOfInterest(List<Categories> categoriesOfInterest) {
