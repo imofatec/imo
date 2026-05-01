@@ -5,12 +5,15 @@ import LessonTabContent from '@/components/watch/LessonTabContent'
 import LessonCommentsSection from '@/components/watch/LessonCommentsSection'
 import PlayerHeader from '@/components/watch/PlayerHeader'
 import WatchHeader from '@/components/watch/WatchHeader'
+import { useAchievementNotificationStream } from '@/hooks/useAchievementNotificationStream'
 import { useCurrentCourse } from '@/hooks/useCurrentCourse'
 import { useCurrentProgress } from '@/hooks/useCurrentProgress'
 import { useRequestErrorToast } from '@/lib/requestToast'
 import type { CourseDetailsLesson } from '@/types/course'
 
 export default function WatchPage() {
+  useAchievementNotificationStream()
+
   const { courseId, idLesson } = useParams()
   const navigate = useNavigate()
   const { course, error: courseError } = useCurrentCourse(courseId ?? '')
