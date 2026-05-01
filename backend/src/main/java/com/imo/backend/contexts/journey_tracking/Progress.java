@@ -65,6 +65,14 @@ public class Progress extends Entity {
     return this.lessonsWatched.stream().map(ObjectId::toString).toList();
   }
 
+  public int getWatchedLessonsCount() {
+    return this.lessonsWatched.size();
+  }
+
+  public int calculateCompletionPercentage(int totalLessonsCount) {
+    return totalLessonsCount == 0 ? 0 : (this.getWatchedLessonsCount() * 100) / totalLessonsCount;
+  }
+
   public void watchLesson(String lessonToWatch, int totalLessonsInCourse) {
     if (this.getLessonsWatched().size() >= totalLessonsInCourse) {
       throw new BadRequestException("Total de aulas no curso estão excedendo");

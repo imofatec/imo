@@ -1,13 +1,13 @@
 package com.imo.backend.contexts.journey_tracking.controllers.dtos;
 
+import com.imo.backend.contexts.journey_tracking.Progress;
+
 public record CourseProgressSummaryDTO(
     int watchedLessonsCount, int totalLessonsCount, int completionPercentage) {
-  public static CourseProgressSummaryDTO fromCounts(
-      int watchedLessonsCount, int totalLessonsCount) {
-    int completionPercentage =
-        totalLessonsCount == 0 ? 0 : (watchedLessonsCount * 100) / totalLessonsCount;
-
+  public static CourseProgressSummaryDTO fromProgress(Progress progress, int totalLessonsCount) {
     return new CourseProgressSummaryDTO(
-        watchedLessonsCount, totalLessonsCount, completionPercentage);
+        progress.getWatchedLessonsCount(),
+        totalLessonsCount,
+        progress.calculateCompletionPercentage(totalLessonsCount));
   }
 }
