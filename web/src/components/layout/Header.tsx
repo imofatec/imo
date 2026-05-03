@@ -13,15 +13,6 @@ type ProfileMenuItem = {
   to: string
 }
 
-const profileMenuItems: ProfileMenuItem[] = [
-  { label: 'Editar perfil', to: '/user/configuracoes' },
-  { label: 'Meu aprendizado', to: '/user/cursos' },
-  { label: 'Todos os cursos', to: '/categorias' },
-  { label: 'Criar curso', to: '/criar-curso' },
-  { label: 'Editar curso', to: '/user/cursos?filtro=CONTRIBUICAO' },
-  { label: 'Validar certificado', to: '/home' },
-]
-
 export default function Header() {
   const { isAuthenticated, logout } = useAuth()
   const { user } = useUser()
@@ -69,6 +60,19 @@ export default function Header() {
 
   const userName = user?.name?.trim() || 'Usuario'
   const profileImageSrc = user?.profilePicturePath ?? null
+  const profileMenuItems: ProfileMenuItem[] = [
+    {
+      label: 'Ver meu perfil',
+      to: user?.id ? `/social/${user.id}` : '/user/configuracoes',
+    },
+    { label: 'Editar perfil', to: '/user/configuracoes' },
+    { label: 'Conquistas', to: '/user/conquistas' },
+    { label: 'Meu aprendizado', to: '/user/cursos' },
+    { label: 'Todos os cursos', to: '/categorias' },
+    { label: 'Criar curso', to: '/criar-curso' },
+    { label: 'Editar curso', to: '/user/cursos?filtro=CONTRIBUICAO' },
+    { label: 'Validar certificado', to: '/home' },
+  ]
 
   return (
     <header className="flex flex-col">

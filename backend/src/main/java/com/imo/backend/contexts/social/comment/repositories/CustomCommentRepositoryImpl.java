@@ -29,4 +29,10 @@ public class CustomCommentRepositoryImpl implements CustomCommentRepository {
             .with(pageable);
     return this.mongoTemplate.find(query, Comment.class);
   }
+
+  @Override
+  public long countByLessonId(String lessonId) {
+    Query query = new Query().addCriteria(Criteria.where("lessonId").is(new ObjectId(lessonId)));
+    return this.mongoTemplate.count(query, Comment.class);
+  }
 }

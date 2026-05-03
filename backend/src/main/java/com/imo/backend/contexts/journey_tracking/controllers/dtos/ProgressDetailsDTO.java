@@ -13,7 +13,6 @@ public record ProgressDetailsDTO(
     List<LessonDTO> lessons,
     CourseProgressSummaryDTO summary) {
   public static ProgressDetailsDTO fromProgressDetails(ProgressDetails progressDetails) {
-    int watchedLessonsCount = progressDetails.progress().getLessonsWatched().size();
     int totalLessonsCount = progressDetails.course().getLessonsCount();
 
     return new ProgressDetailsDTO(
@@ -21,6 +20,6 @@ public record ProgressDetailsDTO(
         UserDTO.fromUser(progressDetails.user()),
         CourseDTO.fromEntity(progressDetails.course()),
         progressDetails.lessons().stream().map(LessonDTO::fromEntity).toList(),
-        CourseProgressSummaryDTO.fromCounts(watchedLessonsCount, totalLessonsCount));
+        CourseProgressSummaryDTO.fromProgress(progressDetails.progress(), totalLessonsCount));
   }
 }

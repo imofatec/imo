@@ -2,8 +2,10 @@ import { useUser } from '@/contexts/UserContext'
 import { resolveProfileImageSrc } from '@/lib/resolveProfileImageSrc'
 import { showRequestErrorToast } from '@/lib/requestToast'
 import {
+  type UpdateUserBioData,
   type UpdateUserPasswordData,
   type UpdateUserProfileData,
+  updateUserBioSchema,
   updateUserPasswordSchema,
   updateUserProfileSchema,
 } from '@/schemas/user/updateUserSchema'
@@ -13,6 +15,7 @@ import { uploadPfpRequest } from '@/services/user/uploadPfpRequest'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
+import { toast } from 'sonner'
 
 type UserConfigErrors = {
   photo: string | null
@@ -80,6 +83,21 @@ export function useUserConfigPage() {
   })
 
   const {
+    register: registerBio,
+    handleSubmit: handleBioSubmit,
+    reset: resetBioForm,
+    watch: watchBio,
+    formState: { errors: bioErrors, isSubmitting: isSubmittingBio },
+  } = useForm<UpdateUserBioData>({
+    resolver: zodResolver(updateUserBioSchema),
+    mode: 'onBlur',
+    reValidateMode: 'onChange',
+    defaultValues: {
+      bio: '',
+    },
+  })
+
+  const {
     register: registerPassword,
     handleSubmit: handlePasswordSubmit,
     reset: resetPasswordForm,
@@ -98,6 +116,10 @@ export function useUserConfigPage() {
   useEffect(() => {
     setProfileValue('birthDate', user?.birthDate ?? '')
   }, [user?.birthDate, setProfileValue])
+
+  useEffect(() => {
+    resetBioForm({ bio: user?.bio ?? '' })
+  }, [resetBioForm, user?.bio])
 
   useEffect(() => {
     return () => {
@@ -158,6 +180,22 @@ export function useUserConfigPage() {
     }
   }
 
+  async function onSubmitBio(data: UpdateUserBioData) {
+    try {
+      const normalizedBio = data.bio.trim()
+
+      await updateUserRequest({ bio: normalizedBio })
+      await refetch()
+      resetBioForm({ bio: normalizedBio })
+    } catch (error: unknown) {
+      showRequestErrorToast(
+        error,
+        'Ocorreu um erro ao tentar atualizar sua bio. Por favor, tente novamente.',
+        { id: 'user-bio-error' }
+      )
+    }
+  }
+
   async function onSubmitPassword(data: UpdateUserPasswordData) {
     try {
       await updateUserRequest({
@@ -213,7 +251,15 @@ export function useUserConfigPage() {
     setIsResendingConfirmation(true)
 
     try {
-      await resendConfirmationEmailRequest()
+      if (!user?.email) return
+
+      await resendConfirmationEmailRequest({ email: user.email })
+
+      toast.success('E-mail reenviado', {
+        id: 'user-confirmation-success',
+        description: `Enviamos um novo e-mail de confirmação para ${user!.email}.`,
+        duration: 3000,
+      })
     } catch (error: unknown) {
       showRequestErrorToast(
         error,
@@ -238,6 +284,11 @@ export function useUserConfigPage() {
     handleProfileSubmit,
     profileErrors,
     isSubmittingProfile,
+    registerBio,
+    handleBioSubmit,
+    bioErrors,
+    isSubmittingBio,
+    bioValue: watchBio('bio') ?? '',
     registerPassword,
     handlePasswordSubmit,
     passwordErrors,
@@ -247,6 +298,7 @@ export function useUserConfigPage() {
     handleUploadPhoto,
     handleResendConfirmationEmail,
     onSubmitProfile,
+    onSubmitBio,
     onSubmitPassword,
   }
 }

@@ -30,6 +30,8 @@ function buildLabel(segment: string, segments: string[], index: number) {
   if (segment === 'categorias') return 'Todos os cursos'
   if (segment === 'criar-curso') return 'Criar curso'
   if (segment === 'editar-curso') return 'Editar curso'
+  if (segment === 'social') return 'Perfil publico'
+  if (segment === 'conquistas') return 'Conquistas'
   if (segment === 'configuracoes') return 'Configurações'
   if (segment === 'login') return 'Entrar'
   if (segment === 'cadastro') return 'Cadastrar'

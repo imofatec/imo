@@ -12,9 +12,9 @@ public interface CustomProgressRepository {
 
   Optional<ProgressDetails> findDetailsByUserIdAndCourseId(String userId, String courseId);
 
-  List<ProgressDetails> findAllProgressDetailsByUserId(String userId);
-
   List<ProgressDetails> findAllProgressDetailsByUserId(String userId, int page, int pageSize);
 
   List<String> findFinishedCourseIdsByUserId(String userId);
+
+  long countAllProgressDetailsByUserId(String userId);
 }

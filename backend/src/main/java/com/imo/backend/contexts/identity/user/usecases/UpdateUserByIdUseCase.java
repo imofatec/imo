@@ -38,6 +38,10 @@ public class UpdateUserByIdUseCase {
       foundUser.setEmail(cmd.email());
     }
 
+    if (cmd.bio() != null) {
+      foundUser.setBio(cmd.bio());
+    }
+
     if (cmd.password() != null && !cmd.password().isEmpty()) {
       this.userPolicies.assertCurrentPassword(foundUser, cmd.oldPassword());
       foundUser.setPassword(this.passwordEncoder.encode(cmd.password()));

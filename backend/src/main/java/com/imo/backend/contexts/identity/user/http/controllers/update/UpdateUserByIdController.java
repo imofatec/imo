@@ -16,14 +16,12 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 import java.util.stream.Stream;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-@Slf4j
 @RestController
 public class UpdateUserByIdController extends UserController {
   private final UpdateUserByIdUseCase updateUserByIdUseCase;
@@ -81,6 +79,7 @@ public class UpdateUserByIdController extends UserController {
         new UpdateUserByIdCommand(
             fieldsToUpdateUser.email(),
             fieldsToUpdateUser.name(),
+            fieldsToUpdateUser.bio(),
             fieldsToUpdateUser.oldPassword(),
             fieldsToUpdateUser.password(),
             null,
@@ -94,6 +93,16 @@ public class UpdateUserByIdController extends UserController {
   }
 
   private static boolean checkNoContent(UpdateUserByIdRequest fieldsToUpdateUser) {
-    return Stream.of(fieldsToUpdateUser).allMatch(Objects::isNull);
+    return Stream.of(
+            fieldsToUpdateUser.email(),
+            fieldsToUpdateUser.name(),
+            fieldsToUpdateUser.bio(),
+            fieldsToUpdateUser.password(),
+            fieldsToUpdateUser.birthDate(),
+            fieldsToUpdateUser.availableTimePerDay(),
+            fieldsToUpdateUser.academicDegree(),
+            fieldsToUpdateUser.experienceLevel(),
+            fieldsToUpdateUser.categoriesOfInterest())
+        .allMatch(Objects::isNull);
   }
 }

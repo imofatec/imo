@@ -1,6 +1,7 @@
 import UserAvatar from '@/components/ui/UserAvatar'
 import type { User } from '@/types/user'
 import type { LessonComment } from '@/types/watch'
+import { Link } from 'react-router-dom'
 
 type Props = {
   comment: LessonComment
@@ -10,6 +11,7 @@ type Props = {
 export default function CommentItem({ comment, author }: Props) {
   const authorName = author?.name ?? comment.userId
   const profileImageSrc = author?.profilePicturePath ?? null
+  const profilePath = `/social/${comment.userId}`
 
   return (
     <article className="p-4">
@@ -23,7 +25,12 @@ export default function CommentItem({ comment, author }: Props) {
 
         <div className="min-w-0 flex-1">
           <div className="flex items-center justify-between gap-3">
-            <p className="truncate text-sm font-medium text-white">{authorName}</p>
+            <Link
+              to={profilePath}
+              className="truncate text-sm font-medium text-white transition hover:text-cyan hover:underline"
+            >
+              {authorName}
+            </Link>
           </div>
           <p className="mt-2 text-sm leading-6 text-white/80">{comment.content}</p>
         </div>

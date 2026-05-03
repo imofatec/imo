@@ -6,6 +6,7 @@ import com.imo.backend.e2e.catalog.helpers.CatalogSkillTestHelper;
 import com.imo.backend.singleton.MongoDBContainerSingleton;
 import com.imo.backend.singleton.RabbitMQContainerSingleton;
 import io.restassured.RestAssured;
+import org.bson.Document;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -54,7 +55,16 @@ public abstract class BaseE2ETest {
 
   @AfterEach
   void cleanDatabase() {
-    mongoTemplate.getCollectionNames().forEach(mongoTemplate::dropCollection);
+    mongoTemplate
+        .getCollectionNames()
+        .forEach(
+            collectionName -> {
+              if (collectionName.startsWith("system.")) {
+                return;
+              }
+
+              mongoTemplate.getCollection(collectionName).deleteMany(new Document());
+            });
     CatalogSkillTestHelper.clear();
   }
 

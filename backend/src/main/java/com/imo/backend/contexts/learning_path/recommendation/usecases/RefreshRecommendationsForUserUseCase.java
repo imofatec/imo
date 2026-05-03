@@ -2,11 +2,8 @@ package com.imo.backend.contexts.learning_path.recommendation.usecases;
 
 import com.imo.backend.contexts.catalog.course.Course;
 import com.imo.backend.contexts.catalog.course.repositories.CourseRepository;
-import com.imo.backend.contexts.catalog.course.repositories.CourseSearchParams;
 import com.imo.backend.contexts.catalog.skill.Skill;
 import com.imo.backend.contexts.catalog.skill.repositories.SkillRepository;
-import com.imo.backend.contexts.common.CombineWith;
-import com.imo.backend.contexts.common.MatchType;
 import com.imo.backend.contexts.identity.user.repositories.UserRepository;
 import com.imo.backend.contexts.journey_tracking.repositories.ProgressRepository;
 import com.imo.backend.contexts.learning_path.recommendation.Recommendation;
@@ -24,9 +21,6 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class RefreshRecommendationsForUserUseCase {
-  private static final CourseSearchParams EMPTY_COURSE_SEARCH_PARAMS =
-      new CourseSearchParams(null, null, null, null, null);
-
   private final UserRepository userRepository;
   private final SkillProfileRepository skillProfileRepository;
   private final ProgressRepository progressRepository;
@@ -76,8 +70,7 @@ public class RefreshRecommendationsForUserUseCase {
   }
 
   private List<Course> loadActiveCourses() {
-    return this.courseRepository.search(
-        EMPTY_COURSE_SEARCH_PARAMS, MatchType.PERFECT, CombineWith.AND, true);
+    return this.courseRepository.findAllByIsActive(true);
   }
 
   private Map<String, Skill> loadSkillsById(List<Course> courses) {

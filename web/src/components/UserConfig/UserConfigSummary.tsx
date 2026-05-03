@@ -2,6 +2,7 @@ import Button from '@/components/ui/Button'
 import type { User } from '@/types/user'
 import { Camera, LoaderCircle } from 'lucide-react'
 import { useRef, type ChangeEvent } from 'react'
+import { Link } from 'react-router-dom'
 
 type Props = {
   user: User | null
@@ -72,7 +73,19 @@ export default function UserConfigSummary({
           </div>
         </div>
 
-        <div className="flex justify-end">
+        <div className="flex flex-wrap justify-end gap-3">
+          <Link
+            to={user?.id ? `/social/${user.id}` : '/user/configuracoes'}
+            className="border-cyan/30 bg-cyan/10 text-cyan hover:bg-cyan/20 inline-flex items-center justify-center rounded-full border px-4 py-2 text-sm font-medium transition"
+          >
+            Ver meu perfil
+          </Link>
+          <Link
+            to="/user/conquistas"
+            className="inline-flex items-center justify-center rounded-full border border-white/15 bg-white/5 px-4 py-2 text-sm font-medium text-white transition hover:bg-white/10"
+          >
+            Ver conquistas
+          </Link>
           <Button
             type="button"
             variant="cyanOutline"

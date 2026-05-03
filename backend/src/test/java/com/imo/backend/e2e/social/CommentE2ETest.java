@@ -85,7 +85,7 @@ class CommentE2ETest extends BaseE2ETest {
             .contentType(ContentType.JSON)
             .extract()
             .jsonPath()
-            .getList(".", CommentDTO.class);
+            .getList("items", CommentDTO.class);
 
     assertNotNull(comments);
   }

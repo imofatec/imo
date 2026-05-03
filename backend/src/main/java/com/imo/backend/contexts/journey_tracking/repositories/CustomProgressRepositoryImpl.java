@@ -4,6 +4,7 @@ import com.imo.backend.contexts.common.Pageable;
 import com.imo.backend.contexts.journey_tracking.Progress;
 import com.imo.backend.contexts.journey_tracking.ProgressDetails;
 import com.imo.backend.contexts.journey_tracking.value_objects.ProgressStatus;
+import com.imo.backend.contexts.recognition.gateways.AchievementMetricsGateway;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -13,10 +14,14 @@ import org.bson.types.ObjectId;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.*;
+import org.springframework.data.mongodb.core.aggregation.ArrayOperators.Size;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.stereotype.Repository;
 
-public class CustomProgressRepositoryImpl implements CustomProgressRepository {
+@Repository
+public class CustomProgressRepositoryImpl
+    implements CustomProgressRepository, AchievementMetricsGateway {
   private final MongoTemplate mongoTemplate;
 
   public CustomProgressRepositoryImpl(MongoTemplate mongoTemplate) {
@@ -66,15 +71,6 @@ public class CustomProgressRepositoryImpl implements CustomProgressRepository {
     return Optional.ofNullable(results.isEmpty() ? null : results.getFirst());
   }
 
-  public List<ProgressDetails> findAllProgressDetailsByUserId(String userId) {
-    MatchOperation match = Aggregation.match(Criteria.where("userId").is(new ObjectId(userId)));
-
-    Aggregation aggregation = buildAggregationProgressDetailsByUserId(match, null, null);
-    return mongoTemplate
-        .aggregate(aggregation, "progress", ProgressDetails.class)
-        .getMappedResults();
-  }
-
   public List<ProgressDetails> findAllProgressDetailsByUserId(String userId, int page, int size) {
     MatchOperation match = Aggregation.match(Criteria.where("userId").is(new ObjectId(userId)));
 
@@ -98,6 +94,12 @@ public class CustomProgressRepositoryImpl implements CustomProgressRepository {
     return this.mongoTemplate.find(query, Progress.class).stream()
         .map(Progress::getCourseId)
         .toList();
+  }
+
+  @Override
+  public long countAllProgressDetailsByUserId(String userId) {
+    Query query = new Query().addCriteria(Criteria.where("userId").is(new ObjectId(userId)));
+    return this.mongoTemplate.count(query, Progress.class);
   }
 
   private Aggregation buildAggregationProgressDetailsByUserId(
@@ -150,5 +152,39 @@ public class CustomProgressRepositoryImpl implements CustomProgressRepository {
     operations.add(projection);
 
     return Aggregation.newAggregation(operations);
+  }
+
+  @Override
+  public long countFinishedCoursesByUserId(String userId) {
+    Query query =
+        new Query()
+            .addCriteria(
+                Criteria.where("userId")
+                    .is(new ObjectId(userId))
+                    .and("status")
+                    .is(ProgressStatus.FINISHED));
+
+    return this.mongoTemplate.count(query, Progress.class);
+  }
+
+  @Override
+  public long countWatchedLessonsByUserId(String userId) {
+    MatchOperation match = Aggregation.match(Criteria.where("userId").is(new ObjectId(userId)));
+    ProjectionOperation project =
+        Aggregation.project().and(Size.lengthOfArray("lessonsWatched")).as("lessonsWatchedCount");
+    GroupOperation group = Aggregation.group().sum("lessonsWatchedCount").as("total");
+
+    Aggregation aggregation = Aggregation.newAggregation(match, project, group);
+
+    Document result =
+        this.mongoTemplate
+            .aggregate(aggregation, "progress", Document.class)
+            .getUniqueMappedResult();
+
+    if (result == null) {
+      return 0;
+    }
+
+    return result.get("total", 0);
   }
 }

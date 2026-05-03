@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import authAxiosInstance from '@/api/authAxiosInstance'
+import { extractPaginatedArray, type PaginationInfo } from '@/lib/pagination'
 import { safeAwait } from '@/lib/safeAwait'
 import type { UserProgress } from '@/types/userProgress'
 
@@ -10,6 +11,7 @@ type UseUserProgressParams = {
 
 export function useUserProgress({ page = 0, size = 10 }: UseUserProgressParams = {}) {
   const [userProgress, setUserProgress] = useState<UserProgress[]>([])
+  const [pagination, setPagination] = useState<PaginationInfo | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -22,7 +24,7 @@ export function useUserProgress({ page = 0, size = 10 }: UseUserProgressParams =
     }).toString()
 
     const [err, response] = await safeAwait(
-      authAxiosInstance.get<UserProgress[]>(`/api/progress/details?${query}`)
+      authAxiosInstance.get<unknown>(`/api/progress/details?${query}`)
     )
 
     if (err || !response) {
@@ -31,7 +33,10 @@ export function useUserProgress({ page = 0, size = 10 }: UseUserProgressParams =
       return
     }
 
-    setUserProgress(response.data || [])
+    const { data, pagination: paginationInfo } = extractPaginatedArray<UserProgress>(response.data)
+
+    setUserProgress(data)
+    setPagination(paginationInfo)
     setError(null)
     setLoading(false)
   }, [page, size])
@@ -43,6 +48,7 @@ export function useUserProgress({ page = 0, size = 10 }: UseUserProgressParams =
 
   return {
     userProgress,
+    pagination,
     loading,
     error,
     refetch: fetchUserProgress,

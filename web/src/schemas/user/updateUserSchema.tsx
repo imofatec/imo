@@ -43,6 +43,12 @@ export const updateUserProfileSchema = z
     }
   )
 
+export const updateUserBioSchema = z.object({
+  bio: z.string().trim().max(300, {
+    message: 'A bio deve ter no máximo 300 caracteres',
+  }),
+})
+
 export const updateUserPasswordSchema = z
   .object({
     oldPassword: z.string({ message: 'Senha atual obrigatória' }).min(1, {
@@ -64,4 +70,5 @@ export const updateUserPasswordSchema = z
   })
 
 export type UpdateUserProfileData = z.infer<typeof updateUserProfileSchema>
+export type UpdateUserBioData = z.infer<typeof updateUserBioSchema>
 export type UpdateUserPasswordData = z.infer<typeof updateUserPasswordSchema>

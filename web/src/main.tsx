@@ -18,6 +18,10 @@ import CreateCoursePage from './pages/CreateCourse'
 import WatchPage from './pages/Watch'
 import EditCoursePage from './pages/EditCourse'
 import UserConfigPage from './pages/UserConfig'
+import UserConfirmation from './pages/UserConfirmation'
+import ResetPasswordPage from './pages/ResetPassword'
+import UserAchievementsPage from './pages/UserAchievements'
+import SocialProfilePage from './pages/SocialProfile'
 
 const router = createBrowserRouter([
   {
@@ -26,6 +30,7 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <Home /> },
       { path: 'categorias/:categorySlug?', element: <AllCourses /> },
+      { path: 'social/:userId', element: <SocialProfilePage /> },
 
       {
         element: <GuestRoutes redirectTo="/" />,
@@ -33,6 +38,7 @@ const router = createBrowserRouter([
           { path: 'home', element: <Home /> },
           { path: 'login', element: <Login /> },
           { path: 'cadastro', element: <Register /> },
+          { path: 'user/redefinir-senha', element: <ResetPasswordPage /> },
         ],
       },
 
@@ -41,9 +47,12 @@ const router = createBrowserRouter([
         children: [
           { path: 'user/cursos', element: <MyCourses /> },
           { path: 'user/configuracoes', element: <UserConfigPage /> },
+          { path: 'user/conquistas', element: <UserAchievementsPage /> },
           { path: 'cursos/:courseId/:idLesson', element: <WatchPage /> },
           { path: 'criar-curso', element: <CreateCoursePage /> },
           { path: 'editar-curso/:courseId', element: <EditCoursePage /> },
+          { path: 'user/confirmar-email', element: <UserConfirmation /> },
+
         ],
       },
       { path: '*', element: <NotFoundPage /> },

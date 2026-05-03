@@ -4,6 +4,7 @@ import com.imo.backend.contexts.common.exceptions.custom.BadRequestException;
 import com.imo.backend.contexts.common.exceptions.custom.ConflictException;
 import com.imo.backend.contexts.common.exceptions.custom.ForbiddenException;
 import com.imo.backend.contexts.common.exceptions.custom.NotFoundException;
+import com.imo.backend.contexts.common.exceptions.custom.UnauthorizedException;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -13,9 +14,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 @Slf4j
@@ -47,6 +50,28 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         new ErrorResponseDto("VALIDATION_ERROR", "Argumento inválido"), HttpStatus.BAD_REQUEST);
   }
 
+  @Override
+  protected ResponseEntity<Object> handleMissingServletRequestParameter(
+      MissingServletRequestParameterException ex,
+      HttpHeaders headers,
+      HttpStatusCode status,
+      WebRequest request) {
+    return new ResponseEntity<>(
+        new ErrorResponseDto(
+            "VALIDATION_ERROR",
+            String.format("O parâmetro %s é obrigatório", ex.getParameterName())),
+        HttpStatus.BAD_REQUEST);
+  }
+
+  @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+  public final ResponseEntity<Object> handleMethodArgumentTypeMismatchException(
+      MethodArgumentTypeMismatchException ex) {
+    return new ResponseEntity<>(
+        new ErrorResponseDto(
+            "VALIDATION_ERROR", String.format("O parâmetro %s é inválido", ex.getName())),
+        HttpStatus.BAD_REQUEST);
+  }
+
   @ExceptionHandler(BadRequestException.class)
   public final ResponseEntity<Object> handleBadRequestException(BadRequestException ex) {
     return new ResponseEntity<>(
@@ -69,6 +94,12 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
   public final ResponseEntity<Object> handleConflictException(ConflictException ex) {
     return new ResponseEntity<>(
         new ErrorResponseDto("CONFLICT", ex.getMessage()), HttpStatus.CONFLICT);
+  }
+
+  @ExceptionHandler(UnauthorizedException.class)
+  public final ResponseEntity<Object> handleUnauthorizedException(UnauthorizedException ex) {
+    return new ResponseEntity<>(
+        new ErrorResponseDto("UNAUTHORIZED", ex.getMessage()), HttpStatus.UNAUTHORIZED);
   }
 
   @ExceptionHandler(Exception.class)
