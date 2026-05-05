@@ -67,8 +67,10 @@ public class SecurityConfig {
                         "/api/course/search",
                         "/api/course/categories",
                         "/api/comment/{lessonId}",
+                        "/api/progress/milestones/public/**",
                         "/api/certificate/details/{id}",
                         "/api/notification/stream/**",
+                        "/m/**",
                         "/images/achievements/**",
                         "/uploads/**")
                     .permitAll()
