@@ -36,7 +36,23 @@ export class WatchCoursePage {
     await expect(this.page.getByText(content, { exact: true })).toBeVisible()
   }
 
-  certificateButton() {
-    return this.page.getByRole('button', { name: 'Certificado' })
+  shareProgressButton() {
+    return this.page.getByRole('button', { name: 'Compartilhar progresso' }).first()
+  }
+
+  progressMilestoneModal() {
+    return this.page.getByTestId('progress-milestone-modal')
+  }
+
+  progressMilestonePreviewImage() {
+    return this.page.getByTestId('progress-milestone-preview-image')
+  }
+
+  progressMilestoneDownloadButton() {
+    return this.progressMilestoneModal().getByRole('button', { name: 'Baixar imagem' })
+  }
+
+  progressMilestoneShareButton() {
+    return this.progressMilestoneModal().getByRole('button', { name: /Compartilhar|Copiar link/ })
   }
 }
