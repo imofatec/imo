@@ -1,7 +1,7 @@
-package com.imo.backend.contexts.journey_tracking.repositories;
+package com.imo.backend.contexts.journey_tracking.progress.repositories;
 
-import com.imo.backend.contexts.journey_tracking.Progress;
-import com.imo.backend.contexts.journey_tracking.ProgressDetails;
+import com.imo.backend.contexts.journey_tracking.progress.Progress;
+import com.imo.backend.contexts.journey_tracking.progress.ProgressDetails;
 import java.util.List;
 import java.util.Optional;
 

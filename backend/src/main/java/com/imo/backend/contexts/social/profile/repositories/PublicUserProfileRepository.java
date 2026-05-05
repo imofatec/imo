@@ -4,7 +4,7 @@ import com.imo.backend.contexts.catalog.course.Course;
 import com.imo.backend.contexts.catalog.lesson.Lesson;
 import com.imo.backend.contexts.common.exceptions.custom.NotFoundException;
 import com.imo.backend.contexts.identity.user.User;
-import com.imo.backend.contexts.journey_tracking.Progress;
+import com.imo.backend.contexts.journey_tracking.progress.Progress;
 import com.imo.backend.contexts.recognition.UserAchievement;
 import com.imo.backend.contexts.recognition.repositories.AchievementRepository;
 import com.imo.backend.contexts.social.comment.Comment;

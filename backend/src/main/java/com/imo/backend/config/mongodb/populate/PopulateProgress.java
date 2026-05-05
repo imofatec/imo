@@ -6,7 +6,7 @@ import com.imo.backend.contexts.catalog.lesson.Lesson;
 import com.imo.backend.contexts.catalog.lesson.repositories.LessonRepository;
 import com.imo.backend.contexts.identity.user.User;
 import com.imo.backend.contexts.identity.user.repositories.UserRepository;
-import com.imo.backend.contexts.journey_tracking.usecases.WatchLessonByIdUseCase;
+import com.imo.backend.contexts.journey_tracking.progress.usecases.WatchLessonByIdUseCase;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;

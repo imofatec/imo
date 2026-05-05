@@ -1,4 +1,4 @@
-package com.imo.backend.contexts.journey_tracking;
+package com.imo.backend.contexts.journey_tracking.progress;
 
 import com.imo.backend.contexts.catalog.course.Course;
 import com.imo.backend.contexts.catalog.lesson.Lesson;

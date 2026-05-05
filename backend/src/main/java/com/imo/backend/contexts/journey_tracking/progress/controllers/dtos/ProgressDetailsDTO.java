@@ -1,9 +1,9 @@
-package com.imo.backend.contexts.journey_tracking.controllers.dtos;
+package com.imo.backend.contexts.journey_tracking.progress.controllers.dtos;
 
 import com.imo.backend.contexts.catalog.course.http.dtos.CourseDTO;
 import com.imo.backend.contexts.catalog.lesson.http.dtos.LessonDTO;
 import com.imo.backend.contexts.identity.user.http.dtos.UserDTO;
-import com.imo.backend.contexts.journey_tracking.ProgressDetails;
+import com.imo.backend.contexts.journey_tracking.progress.ProgressDetails;
 import java.util.List;
 
 public record ProgressDetailsDTO(

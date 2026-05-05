@@ -5,9 +5,9 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.imo.backend.contexts.catalog.course.http.dtos.CourseDetailsDTO;
-import com.imo.backend.contexts.journey_tracking.controllers.dtos.ProgressDTO;
-import com.imo.backend.contexts.journey_tracking.controllers.dtos.ProgressDetailsDTO;
-import com.imo.backend.contexts.journey_tracking.value_objects.ProgressStatus;
+import com.imo.backend.contexts.journey_tracking.progress.controllers.dtos.ProgressDTO;
+import com.imo.backend.contexts.journey_tracking.progress.controllers.dtos.ProgressDetailsDTO;
+import com.imo.backend.contexts.journey_tracking.progress.value_objects.ProgressStatus;
 import com.imo.backend.e2e.BaseE2ETest;
 import com.imo.backend.e2e.catalog.helpers.CatalogTestHelper;
 import com.imo.backend.e2e.catalog.helpers.CatalogTestHelper.TestCourse;

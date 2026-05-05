@@ -1,8 +1,8 @@
-package com.imo.backend.contexts.journey_tracking.controllers;
+package com.imo.backend.contexts.journey_tracking.progress.controllers;
 
 import com.imo.backend.contexts.common.http.dtos.PaginatedResponseDTO;
-import com.imo.backend.contexts.journey_tracking.controllers.dtos.ProgressDetailsDTO;
-import com.imo.backend.contexts.journey_tracking.repositories.ProgressRepository;
+import com.imo.backend.contexts.journey_tracking.progress.controllers.dtos.ProgressDetailsDTO;
+import com.imo.backend.contexts.journey_tracking.progress.repositories.ProgressRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;

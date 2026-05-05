@@ -1,8 +1,8 @@
-package com.imo.backend.contexts.journey_tracking.controllers.dtos;
+package com.imo.backend.contexts.journey_tracking.progress.controllers.dtos;
 
-import com.imo.backend.contexts.journey_tracking.Progress;
-import com.imo.backend.contexts.journey_tracking.value_objects.ProgressPeriod;
-import com.imo.backend.contexts.journey_tracking.value_objects.ProgressStatus;
+import com.imo.backend.contexts.journey_tracking.progress.Progress;
+import com.imo.backend.contexts.journey_tracking.progress.value_objects.ProgressPeriod;
+import com.imo.backend.contexts.journey_tracking.progress.value_objects.ProgressStatus;
 import java.util.List;
 
 public record ProgressDTO(

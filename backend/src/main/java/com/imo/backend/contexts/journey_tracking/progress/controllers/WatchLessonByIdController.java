@@ -1,8 +1,8 @@
-package com.imo.backend.contexts.journey_tracking.controllers;
+package com.imo.backend.contexts.journey_tracking.progress.controllers;
 
 import com.imo.backend.contexts.common.MongoDB;
-import com.imo.backend.contexts.journey_tracking.controllers.dtos.ProgressDTO;
-import com.imo.backend.contexts.journey_tracking.usecases.WatchLessonByIdUseCase;
+import com.imo.backend.contexts.journey_tracking.progress.controllers.dtos.ProgressDTO;
+import com.imo.backend.contexts.journey_tracking.progress.usecases.WatchLessonByIdUseCase;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;

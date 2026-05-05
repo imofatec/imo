@@ -6,7 +6,7 @@ import com.imo.backend.contexts.catalog.lesson.LessonFactory;
 import com.imo.backend.contexts.catalog.lesson.LessonPolicies;
 import com.imo.backend.contexts.catalog.lesson.commands.CreateLessonCommand;
 import com.imo.backend.contexts.catalog.lesson.repositories.LessonRepository;
-import com.imo.backend.contexts.journey_tracking.events.ReevaluateProgressEvent;
+import com.imo.backend.contexts.journey_tracking.progress.events.ReevaluateProgressEvent;
 import java.util.List;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;

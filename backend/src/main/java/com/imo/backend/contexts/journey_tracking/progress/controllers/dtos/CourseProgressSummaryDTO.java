@@ -1,6 +1,6 @@
-package com.imo.backend.contexts.journey_tracking.controllers.dtos;
+package com.imo.backend.contexts.journey_tracking.progress.controllers.dtos;
 
-import com.imo.backend.contexts.journey_tracking.Progress;
+import com.imo.backend.contexts.journey_tracking.progress.Progress;
 
 public record CourseProgressSummaryDTO(
     int watchedLessonsCount, int totalLessonsCount, int completionPercentage) {
