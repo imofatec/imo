@@ -52,20 +52,21 @@ public class Java2DProgressMilestoneImageRenderer implements ProgressMilestoneIm
       DIV_X + (CARD_X + CARD_W - DIV_X) / 2; // centro da col. direita
 
   // ── Paleta ────────────────────────────────────────────────────────────────
-  private static final Color PAGE_BG = new Color(0x0B, 0x0F, 0x1A);
-  private static final Color CARD_BG = new Color(0x11, 0x18, 0x27);
-  private static final Color CARD_BG_SOFT = new Color(0x0D, 0x15, 0x26);
-  private static final Color CARD_BORDER = new Color(0x1E, 0x2D, 0x4A);
-  private static final Color ACCENT = new Color(0x3B, 0x82, 0xF6);
-  private static final Color ACCENT_DIM = new Color(0x3B, 0x82, 0xF6, 28);
-  private static final Color ACCENT_MID = new Color(0x3B, 0x82, 0xF6, 70);
-  private static final Color BADGE_BG = new Color(0x1A, 0x27, 0x44);
-  private static final Color TEXT_PRIMARY = new Color(0xF0, 0xF4, 0xFF);
-  private static final Color TEXT_SECOND = new Color(0x8A, 0xA4, 0xC8);
-  private static final Color TEXT_MUTED = new Color(0x4A, 0x6A, 0x96);
-  private static final Color TEXT_FOOTER = new Color(0x2E, 0x4A, 0x6E);
-  private static final Color TRACK_BG = new Color(0x1E, 0x2D, 0x4A);
-  private static final Color SHADOW = new Color(0x02, 0x06, 0x10, 110);
+  private static final Color PAGE_BG = new Color(0x0C, 0x04, 0x24);
+  private static final Color CARD_BG = new Color(0x14, 0x08, 0x2F);
+  private static final Color CARD_BG_SOFT = new Color(0x10, 0x05, 0x27);
+  private static final Color CARD_BORDER = new Color(0x2D, 0xEF, 0xD8, 75);
+  private static final Color ACCENT = new Color(0x2D, 0xEF, 0xD8);
+  private static final Color ACCENT_ALT = new Color(0x4B, 0x8C, 0xFF);
+  private static final Color ACCENT_DIM = new Color(0x2D, 0xEF, 0xD8, 28);
+  private static final Color ACCENT_MID = new Color(0x2D, 0xEF, 0xD8, 120);
+  private static final Color BADGE_BG = new Color(0x2D, 0xEF, 0xD8, 24);
+  private static final Color TEXT_PRIMARY = new Color(0xF5, 0xF7, 0xFF);
+  private static final Color TEXT_SECOND = new Color(0xD2, 0xDC, 0xF6);
+  private static final Color TEXT_MUTED = new Color(0x9E, 0xB1, 0xD4);
+  private static final Color TEXT_FOOTER = new Color(0x6B, 0x80, 0xAA);
+  private static final Color TRACK_BG = new Color(0x2D, 0xEF, 0xD8, 40);
+  private static final Color SHADOW = new Color(0x04, 0x02, 0x10, 130);
 
   private static final DateTimeFormatter DATE_FMT = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
@@ -115,11 +116,12 @@ public class Java2DProgressMilestoneImageRenderer implements ProgressMilestoneIm
   // ── Background ────────────────────────────────────────────────────────────
 
   private void drawBackground(Graphics2D g) {
-    g.setColor(PAGE_BG);
+    g.setPaint(new GradientPaint(0, 0, new Color(0x15, 0x08, 0x36), 0, H, PAGE_BG));
     g.fillRect(0, 0, W, H);
-    g.setColor(ACCENT_DIM);
-    g.fillOval(-160, -200, 600, 600);
-    g.fillOval(W - 380, H - 320, 560, 560);
+    g.setColor(new Color(0x2D, 0xEF, 0xD8, 24));
+    g.fillOval(-180, -230, 640, 640);
+    g.setColor(new Color(0x4B, 0x8C, 0xFF, 20));
+    g.fillOval(W - 420, H - 360, 620, 620);
   }
 
   // ── Card shell ────────────────────────────────────────────────────────────
@@ -130,11 +132,21 @@ public class Java2DProgressMilestoneImageRenderer implements ProgressMilestoneIm
     g.fillRoundRect(CARD_X + 10, CARD_Y + 16, CARD_W, CARD_H, CARD_RADIUS, CARD_RADIUS);
 
     // Fundo
-    g.setColor(CARD_BG);
+    g.setPaint(
+        new GradientPaint(
+            CARD_X,
+            CARD_Y,
+            new Color(0x18, 0x09, 0x38),
+            CARD_X + CARD_W,
+            CARD_Y + CARD_H,
+            CARD_BG));
     g.fillRoundRect(CARD_X, CARD_Y, CARD_W, CARD_H, CARD_RADIUS, CARD_RADIUS);
 
-    // Faixa azul topo
-    g.setColor(ACCENT);
+    g.setColor(new Color(0x2D, 0xEF, 0xD8, 12));
+    g.fillOval(CARD_X + CARD_W - 360, CARD_Y + CARD_H - 240, 420, 280);
+
+    // Faixa topo em gradiente ciano
+    g.setPaint(new GradientPaint(CARD_X, CARD_Y, ACCENT, CARD_X + CARD_W, CARD_Y, ACCENT_ALT));
     g.fillRoundRect(CARD_X, CARD_Y, CARD_W, TOP_BAR_H + 6, CARD_RADIUS, CARD_RADIUS);
     g.fillRect(CARD_X, CARD_Y + 6, CARD_W, TOP_BAR_H);
 
@@ -142,6 +154,10 @@ public class Java2DProgressMilestoneImageRenderer implements ProgressMilestoneIm
     g.setStroke(new BasicStroke(1.5f));
     g.setColor(CARD_BORDER);
     g.drawRoundRect(CARD_X, CARD_Y, CARD_W, CARD_H, CARD_RADIUS, CARD_RADIUS);
+
+    g.setColor(new Color(0xFF, 0xFF, 0xFF, 16));
+    g.drawRoundRect(
+        CARD_X + 2, CARD_Y + 2, CARD_W - 4, CARD_H - 4, CARD_RADIUS - 2, CARD_RADIUS - 2);
 
     drawLeftColumn(g, milestone);
     drawRightDecorator(g, milestone);
@@ -172,7 +188,7 @@ public class Java2DProgressMilestoneImageRenderer implements ProgressMilestoneIm
 
     // ── Badge
     int badgeTop = logoBaseline + 20;
-    int badgeBottom = drawBadge(g, x, badgeTop, "CURSO CONCLUÍDO");
+    int badgeBottom = drawBadge(g, x, badgeTop, "CURSO CONCLUIDO");
 
     // ── Título do curso
     int titleTop = badgeBottom + 20;
@@ -192,7 +208,7 @@ public class Java2DProgressMilestoneImageRenderer implements ProgressMilestoneIm
     int autorBaseline = titleEnd + 18;
     g.setFont(jetBrainsMono.deriveFont(Font.PLAIN, 15f));
     g.setColor(TEXT_MUTED);
-    g.drawString("por " + safe(milestone.getAuthorNameSnapshot()), x, autorBaseline);
+    g.drawString("Emitido para " + safe(milestone.getAuthorNameSnapshot()), x, autorBaseline);
 
     // ── Divisor
     int dividerTop = autorBaseline + 22;
@@ -225,7 +241,7 @@ public class Java2DProgressMilestoneImageRenderer implements ProgressMilestoneIm
     g.setColor(ACCENT);
     g.fillPolygon(xs, ys, 3);
     g.setFont(spaceGrotesk.deriveFont(Font.BOLD, 18f));
-    g.setColor(TEXT_PRIMARY);
+    g.setColor(TEXT_SECOND);
     g.drawString("IMO", x + bw + 9, baseline + 6);
   }
 
@@ -246,7 +262,7 @@ public class Java2DProgressMilestoneImageRenderer implements ProgressMilestoneIm
     // Checkmark
     g.setFont(spaceGrotesk.deriveFont(Font.BOLD, 15f));
     g.setColor(ACCENT);
-    g.drawString("✓", x + hPad, y + 21);
+    g.drawString("\u2713", x + hPad, y + 21);
 
     g.setFont(font);
     g.drawString(text, x + hPad + 18, y + 21);
@@ -325,7 +341,7 @@ public class Java2DProgressMilestoneImageRenderer implements ProgressMilestoneIm
 
     int fillW = (int) Math.round(w * Math.min(pct, 100) / 100.0);
     if (fillW > 0) {
-      g.setPaint(new GradientPaint(x, y, ACCENT, x + fillW, y, new Color(0x60, 0xA5, 0xFA)));
+      g.setPaint(new GradientPaint(x, y, ACCENT, x + fillW, y, ACCENT_ALT));
       g.fillRoundRect(x, y, fillW, trackH, r * 2, r * 2);
     }
 
@@ -338,8 +354,10 @@ public class Java2DProgressMilestoneImageRenderer implements ProgressMilestoneIm
     int lblX = x + w - lblW;
     int lblY = y + trackH + 8;
 
-    g.setColor(BADGE_BG);
+    g.setColor(new Color(0x2D, 0xEF, 0xD8, 20));
     g.fillRoundRect(lblX, lblY, lblW, lblH, 6, 6);
+    g.setColor(new Color(0x2D, 0xEF, 0xD8, 65));
+    g.drawRoundRect(lblX, lblY, lblW, lblH, 6, 6);
     g.setFont(font);
     g.setColor(ACCENT);
     g.drawString(label, lblX + 9, lblY + 17);
@@ -359,7 +377,7 @@ public class Java2DProgressMilestoneImageRenderer implements ProgressMilestoneIm
     int[] alphas = {8, 14, 20, 28};
     int[] radii = {outer + 56, outer + 38, outer + 20, outer + 6};
     for (int i = 0; i < alphas.length; i++) {
-      g.setColor(new Color(0x3B, 0x82, 0xF6, alphas[i]));
+      g.setColor(new Color(0x2D, 0xEF, 0xD8, alphas[i]));
       int gr = radii[i];
       g.fillOval(cx - gr, cy - gr, gr * 2, gr * 2);
     }
@@ -376,8 +394,7 @@ public class Java2DProgressMilestoneImageRenderer implements ProgressMilestoneIm
 
     // Arco — fill
     float sweep = 360f * pct / 100f;
-    g.setPaint(
-        new GradientPaint(cx - ring, cy, ACCENT, cx + ring, cy, new Color(0x60, 0xA5, 0xFA)));
+    g.setPaint(new GradientPaint(cx - ring, cy, ACCENT, cx + ring, cy, ACCENT_ALT));
     g.draw(new Arc2D.Float(cx - ring, cy - ring, ring * 2, ring * 2, 90, -sweep, Arc2D.OPEN));
 
     // Disco interno escuro
@@ -400,11 +417,11 @@ public class Java2DProgressMilestoneImageRenderer implements ProgressMilestoneIm
 
   private void drawSpark(Graphics2D g, int x, int y, int size) {
     g.setStroke(new BasicStroke(1.5f));
-    g.setColor(new Color(0x3B, 0x82, 0xF6, 120));
+    g.setColor(new Color(0x2D, 0xEF, 0xD8, 120));
     g.drawLine(x, y - size, x, y + size);
     g.drawLine(x - size, y, x + size, y);
     int d = (int) (size * 0.55);
-    g.setColor(new Color(0x3B, 0x82, 0xF6, 55));
+    g.setColor(new Color(0x2D, 0xEF, 0xD8, 55));
     g.drawLine(x - d, y - d, x + d, y + d);
     g.drawLine(x + d, y - d, x - d, y + d);
   }

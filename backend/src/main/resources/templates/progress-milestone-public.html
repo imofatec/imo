@@ -20,17 +20,18 @@
 
     :root {
       color-scheme: dark;
-      --page-bg: #0B0F1A;
-      --card-bg: #111827;
-      --card-bg-soft: #0D1526;
-      --card-border: #1E2D4A;
-      --accent: #3B82F6;
-      --accent-soft: rgba(59, 130, 246, 0.16);
-      --text-primary: #F0F4FF;
-      --text-secondary: #8AA4C8;
-      --text-muted: #4A6A96;
-      --text-footer: #2E4A6E;
-      --shadow: 0 28px 70px rgba(2, 6, 16, 0.45);
+      --page-bg: #0C0424;
+      --card-bg: #14082F;
+      --card-bg-soft: #100527;
+      --card-border: rgba(45, 239, 216, 0.2);
+      --accent: #2DEFD8;
+      --accent-alt: #4B8CFF;
+      --accent-soft: rgba(45, 239, 216, 0.16);
+      --text-primary: #F5F7FF;
+      --text-secondary: #D2DCF6;
+      --text-muted: #9EB1D4;
+      --text-footer: #6B80AA;
+      --shadow: 0 28px 70px rgba(4, 2, 16, 0.45);
     }
 
     * {
@@ -42,8 +43,8 @@
     body {
       min-height: 100vh;
       background:
-        radial-gradient(circle at top left, rgba(59, 130, 246, 0.14), transparent 26%),
-        radial-gradient(circle at bottom right, rgba(59, 130, 246, 0.12), transparent 22%),
+        radial-gradient(circle at top left, rgba(45, 239, 216, 0.14), transparent 26%),
+        radial-gradient(circle at bottom right, rgba(75, 140, 255, 0.14), transparent 22%),
         var(--page-bg);
       color: var(--text-primary);
       font-family: 'Space Grotesk', Arial, sans-serif;
@@ -94,7 +95,7 @@
       margin-bottom: 18px;
       border-radius: 8px;
       background: var(--accent-soft);
-      border: 1px solid rgba(59, 130, 246, 0.18);
+      border: 1px solid rgba(45, 239, 216, 0.24);
       color: var(--accent);
       font-family: 'JetBrains Mono', monospace;
       font-size: 11px;
@@ -120,7 +121,7 @@
     .record-card,
     .context-card,
     .preview-frame {
-      background: rgba(17, 24, 39, 0.92);
+      background: rgba(20, 8, 47, 0.92);
       border: 1px solid var(--card-border);
       border-radius: 22px;
       box-shadow: var(--shadow);
@@ -251,7 +252,7 @@
     }
 
     .share-url {
-      color: #6B8DB8;
+      color: var(--text-secondary);
       background: var(--card-bg-soft);
       border: 1px solid var(--card-border);
       border-radius: 10px;
