@@ -8,7 +8,9 @@ import com.imo.backend.contexts.catalog.course.http.dtos.CourseDetailsDTO;
 import com.imo.backend.contexts.catalog.course.value_objects.Categories;
 import com.imo.backend.contexts.identity.user.http.dtos.UpdateUserByIdRequest;
 import com.imo.backend.contexts.identity.user.http.dtos.UserDTO;
+import com.imo.backend.contexts.journey_tracking.progress_milestone.http.dtos.ProgressMilestoneDTO;
 import com.imo.backend.contexts.social.profile.http.dtos.PublicUserProfileDTO;
+import com.imo.backend.contexts.social.profile.http.dtos.SharedProgressMilestoneDTO;
 import com.imo.backend.e2e.BaseE2ETest;
 import com.imo.backend.e2e.catalog.helpers.CatalogTestHelper;
 import com.imo.backend.e2e.catalog.helpers.CatalogTestHelper.TestCourse;
@@ -27,7 +29,7 @@ import org.springframework.http.HttpStatus;
 class PublicUserProfileE2ETest extends BaseE2ETest {
   @Test
   @DisplayName(
-      "happy path (GET /api/user/public/{id}): retorna perfil público com bio, conquistas e última atividade")
+      "happy path (GET /api/user/public/{id}): retorna perfil público com bio, conquistas, marcos compartilhados e última atividade")
   void shouldReturnPublicUserProfile() {
     String token = IdentityTestHelper.registerAndLogin(TestUser.defaultUser());
     UserDTO currentUser = this.getCurrentUserProfile(token);
@@ -57,6 +59,11 @@ class PublicUserProfileE2ETest extends BaseE2ETest {
     this.watchAllLessons(token, courseThree);
     JourneyTrackingTestHelper.watchLesson(token, courseFour.lessons().getFirst().getId());
 
+    ProgressMilestoneDTO firstSharedMilestone =
+        this.createProgressMilestone(token, courseOne.course().id());
+    ProgressMilestoneDTO secondSharedMilestone =
+        this.createProgressMilestone(token, courseThree.course().id());
+
     SocialTestHelper.createComment(
         token,
         courseFour.lessons().getFirst().getId(),
@@ -78,6 +85,16 @@ class PublicUserProfileE2ETest extends BaseE2ETest {
         publicProfile.highlightedAchievements().stream()
             .noneMatch(
                 highlightedAchievement -> highlightedAchievement.key().equals("FIRST_LESSON")));
+
+    assertEquals(1, publicProfile.sharedProgressMilestones().size());
+    SharedProgressMilestoneDTO latestSharedMilestone =
+        publicProfile.sharedProgressMilestones().get(0);
+
+    assertEquals(secondSharedMilestone.publicCode(), latestSharedMilestone.publicCode());
+    assertEquals("Curso Perfil 3", latestSharedMilestone.courseName());
+    assertNotNull(latestSharedMilestone.generatedAt());
+    assertTrue(latestSharedMilestone.shareUrl().contains("/m/"));
+    assertTrue(latestSharedMilestone.imageUrl().contains("/image.png"));
 
     assertEquals(3, publicProfile.lastActivity().recentCourses().size());
     assertEquals(
@@ -153,5 +170,17 @@ class PublicUserProfileE2ETest extends BaseE2ETest {
     courseDetails
         .lessons()
         .forEach(lesson -> JourneyTrackingTestHelper.watchLesson(token, lesson.getId()));
+  }
+
+  private ProgressMilestoneDTO createProgressMilestone(String token, String courseId) {
+    return given()
+        .header("Authorization", "Bearer " + token)
+        .when()
+        .put("/api/progress/milestones/course/{courseId}", courseId)
+        .then()
+        .statusCode(HttpStatus.OK.value())
+        .contentType(ContentType.JSON)
+        .extract()
+        .as(ProgressMilestoneDTO.class);
   }
 }

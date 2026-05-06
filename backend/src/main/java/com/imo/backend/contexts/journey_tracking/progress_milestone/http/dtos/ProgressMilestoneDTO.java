@@ -1,6 +1,6 @@
 package com.imo.backend.contexts.journey_tracking.progress_milestone.http.dtos;
 
-import com.imo.backend.contexts.common.FormatDateTime;
+import com.imo.backend.contexts.common.HttpDateTimeFormatter;
 import com.imo.backend.contexts.journey_tracking.progress_milestone.ProgressMilestone;
 
 public record ProgressMilestoneDTO(
@@ -26,9 +26,9 @@ public record ProgressMilestoneDTO(
         progressMilestone.getWatchedLessonsCountSnapshot(),
         progressMilestone.getTotalLessonsCountSnapshot(),
         progressMilestone.getCompletionPercentageSnapshot(),
-        toDate(progressMilestone.getCourseStartedAtSnapshot()),
-        toDate(progressMilestone.getCourseFinishedAtSnapshot()),
-        toDateTime(progressMilestone.getGeneratedAt()),
+        HttpDateTimeFormatter.toDate(progressMilestone.getCourseStartedAtSnapshot()),
+        HttpDateTimeFormatter.toDate(progressMilestone.getCourseFinishedAtSnapshot()),
+        HttpDateTimeFormatter.toDateTime(progressMilestone.getGeneratedAt()),
         buildShareUrl(baseUrl, progressMilestone.getPublicCode()),
         buildImageUrl(baseUrl, progressMilestone.getPublicCode()));
   }
@@ -39,13 +39,5 @@ public record ProgressMilestoneDTO(
 
   public static String buildImageUrl(String baseUrl, String publicCode) {
     return baseUrl + "/api/progress/milestones/public/" + publicCode + "/image.png";
-  }
-
-  private static String toDate(java.time.LocalDateTime value) {
-    return FormatDateTime.toDate(value).replaceAll("-", "/");
-  }
-
-  private static String toDateTime(java.time.LocalDateTime value) {
-    return FormatDateTime.toDateTime(value).replaceAll("-", "/");
   }
 }

@@ -93,8 +93,8 @@ export default function SocialProfileActivitySection({
   const hasRecentCourses = recentCourses.length > 0
 
   return (
-    <section className="rounded-[1.75rem] border border-white/10 bg-[#10052b] p-6">
-      <div className="mb-5 border-b border-white/10 pb-4">
+    <section>
+      <div className="mb-5">
         <h2 className="text-lg font-semibold text-white">Atividade recente</h2>
       </div>
 

@@ -1,7 +1,7 @@
 package com.imo.backend.contexts.certification.http.dtos;
 
 import com.imo.backend.contexts.certification.CertificateDetails;
-import com.imo.backend.contexts.common.FormatDateTime;
+import com.imo.backend.contexts.common.HttpDateTimeFormatter;
 
 public record CertificateDTO(
     String username,
@@ -13,13 +13,10 @@ public record CertificateDTO(
         certificateDetails.user().getName().toUpperCase(),
         certificateDetails.course().getName().name().toUpperCase(),
         new CertificatePeriodDTO(
-            FormatDateTime.toDate(
-                    certificateDetails.certificate().getCertificatePeriod().courseStartedAt())
-                .replaceAll("-", "/"),
-            FormatDateTime.toDate(
-                    certificateDetails.certificate().getCertificatePeriod().courseFinishedAt())
-                .replaceAll("-", "/")),
-        FormatDateTime.toDateTime(certificateDetails.certificate().getIssuedAt())
-            .replaceAll("-", "/"));
+            HttpDateTimeFormatter.toDate(
+                certificateDetails.certificate().getCertificatePeriod().courseStartedAt()),
+            HttpDateTimeFormatter.toDate(
+                certificateDetails.certificate().getCertificatePeriod().courseFinishedAt())),
+        HttpDateTimeFormatter.toDateTime(certificateDetails.certificate().getIssuedAt()));
   }
 }
