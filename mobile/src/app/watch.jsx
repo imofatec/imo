@@ -11,7 +11,6 @@ import { useLessons } from "../hooks/useLessons";
 import { useLessonComments } from "../hooks/useLessonComments";
 import { useProgressByCourseId } from "../hooks/useProgressByCourseId";
 import { markLessonAsWatchedRequest } from "../requests/courses/markLessonAsWatchedRequest";
-import { downloadCertificate } from "../utils/downloadCertificate";
 import SkeletonPlayerHeader from "../components/skeletonScreens/skeletonPlayerHeader";
 
 export default function Watch() {
@@ -19,13 +18,12 @@ export default function Watch() {
   const params = useLocalSearchParams();
   const { courseID, courseSlug } = params;
 
-  const { lessons, loading, error, refetch } = useLessons({ courseNameSlug: courseSlug });
+  const { lessons, loading } = useLessons({ courseNameSlug: courseSlug });
   const { progress, refetch: refetchProgress } = useProgressByCourseId(courseID);
 
   const [tab, setTab] = useState("lessons");
   const [currentLesson, setCurrentLesson] = useState(null);
   const [watched, setWatched] = useState(new Set());
-  const [isCertificateLoading, setIsCertificateLoading] = useState(false);
   const [commentInputY, setCommentInputY] = useState(0);
   const [commentsMap, setCommentsMap] = useState({});
 
@@ -70,7 +68,6 @@ export default function Watch() {
 
   const currentComments = commentsMap[currentLesson?.id] ?? [];
   const latest = currentComments[0] || null;
-  const allWatched = lessons.length > 0 && watched.size === lessons.length;
 
   const scrollToComment = () => {
     requestAnimationFrame(() => {
@@ -122,11 +119,6 @@ export default function Watch() {
               progressPercent={progressPercent}
               onSelectLesson={(lesson) => setCurrentLesson(lesson)}
               onToggleWatched={handleToggleWatched}
-              allWatched={allWatched}
-              isCertificateLoading={isCertificateLoading}
-              onCertificatePress={() =>
-                downloadCertificate(courseID, setIsCertificateLoading)
-              }
               disabledLessons={new Set(progress?.lessonsWatched || [])}
             />
           ) : (

@@ -19,7 +19,6 @@ export default function Drawer() {
         { icon: 'search', label: 'Todos os cursos', route: '(tabs)/allCourses' },
         { icon: 'add-circle', label: 'Criar curso', route: '(tabs)/createCourse' },
         { icon: 'create', label: 'Editar curso', route: '(tabs)/myCourses' },
-        { icon: 'checkmark', label: 'Validar Cetificado', route: './validateCertificate' }, 
     ];
 
     return (
