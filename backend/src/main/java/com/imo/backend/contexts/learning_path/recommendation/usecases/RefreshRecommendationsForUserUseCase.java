@@ -1,12 +1,9 @@
 package com.imo.backend.contexts.learning_path.recommendation.usecases;
 
-import com.imo.backend.contexts.catalog.course.Course;
-import com.imo.backend.contexts.catalog.course.repositories.CourseRepository;
-import com.imo.backend.contexts.catalog.skill.Skill;
-import com.imo.backend.contexts.catalog.skill.repositories.SkillRepository;
-import com.imo.backend.contexts.identity.user.repositories.UserRepository;
-import com.imo.backend.contexts.journey_tracking.repositories.ProgressRepository;
 import com.imo.backend.contexts.learning_path.recommendation.Recommendation;
+import com.imo.backend.contexts.learning_path.recommendation.RecommendationCourseDetails;
+import com.imo.backend.contexts.learning_path.recommendation.RecommendationSkillDetails;
+import com.imo.backend.contexts.learning_path.recommendation.gateways.RecommendationDataGateway;
 import com.imo.backend.contexts.learning_path.recommendation.lib.RecommendationEngine;
 import com.imo.backend.contexts.learning_path.recommendation.lib.RecommendationInput;
 import com.imo.backend.contexts.learning_path.recommendation.repositories.RecommendationRepository;
@@ -15,49 +12,50 @@ import com.imo.backend.contexts.learning_path.skill_profile.repositories.SkillPr
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 @Service
 public class RefreshRecommendationsForUserUseCase {
-  private final UserRepository userRepository;
+  private final RecommendationDataGateway recommendationDataGateway;
   private final SkillProfileRepository skillProfileRepository;
-  private final ProgressRepository progressRepository;
-  private final CourseRepository courseRepository;
-  private final SkillRepository skillRepository;
   private final RecommendationEngine recommendationEngine;
   private final RecommendationRepository recommendationRepository;
 
   public RefreshRecommendationsForUserUseCase(
-      UserRepository userRepository,
+      RecommendationDataGateway recommendationDataGateway,
       SkillProfileRepository skillProfileRepository,
-      ProgressRepository progressRepository,
-      CourseRepository courseRepository,
-      SkillRepository skillRepository,
       RecommendationEngine recommendationEngine,
       RecommendationRepository recommendationRepository) {
-    this.userRepository = userRepository;
+    this.recommendationDataGateway = recommendationDataGateway;
     this.skillProfileRepository = skillProfileRepository;
-    this.progressRepository = progressRepository;
-    this.courseRepository = courseRepository;
-    this.skillRepository = skillRepository;
     this.recommendationEngine = recommendationEngine;
     this.recommendationRepository = recommendationRepository;
   }
 
   public Recommendation execute(String userId) {
-    this.userRepository.findByIdOrThrow(userId);
+    this.recommendationDataGateway.assertUserExists(userId);
 
     Map<String, Integer> coverageBySkillId = this.loadCoverageBySkillId(userId);
-    List<Course> activeCourses = this.loadActiveCourses();
-    Map<String, Skill> skillsById = this.loadSkillsById(activeCourses);
+    if (coverageBySkillId.isEmpty()) {
+      return this.recommendationRepository.upsertByUserId(userId, List.of());
+    }
+
     Set<String> finishedCourseIds =
-        Set.copyOf(this.progressRepository.findFinishedCourseIdsByUserId(userId));
+        this.recommendationDataGateway.findFinishedCourseIdsByUserId(userId);
+    List<RecommendationCourseDetails> candidateCourses =
+        this.recommendationDataGateway.findRecommendationCandidateCourseDetails(
+            coverageBySkillId.keySet(), finishedCourseIds);
+
+    if (candidateCourses.isEmpty()) {
+      return this.recommendationRepository.upsertByUserId(userId, List.of());
+    }
+
+    Map<String, RecommendationSkillDetails> skillsById = this.loadSkillsById(candidateCourses);
     List<String> recommendedCourseIds =
         this.recommendationEngine.rankRecommendedCourseIds(
             new RecommendationInput(
-                activeCourses, skillsById, finishedCourseIds, coverageBySkillId));
+                candidateCourses, skillsById, finishedCourseIds, coverageBySkillId));
 
     return this.recommendationRepository.upsertByUserId(userId, recommendedCourseIds);
   }
@@ -69,21 +67,11 @@ public class RefreshRecommendationsForUserUseCase {
                 SkillProfile::getSkillId, SkillProfile::getCoverage, (left, right) -> right));
   }
 
-  private List<Course> loadActiveCourses() {
-    return this.courseRepository.findAllByIsActive(true);
-  }
-
-  private Map<String, Skill> loadSkillsById(List<Course> courses) {
+  private Map<String, RecommendationSkillDetails> loadSkillsById(
+      List<RecommendationCourseDetails> courses) {
     Set<String> skillIds =
-        courses.stream()
-            .flatMap(course -> course.getSkillIdsAsString().stream())
-            .collect(Collectors.toSet());
+        courses.stream().flatMap(course -> course.skillIds().stream()).collect(Collectors.toSet());
 
-    if (skillIds.isEmpty()) {
-      return Map.of();
-    }
-
-    return this.skillRepository.findAllById(skillIds).stream()
-        .collect(Collectors.toMap(Skill::getId, Function.identity()));
+    return this.recommendationDataGateway.findRecommendationSkillDetailsByIds(skillIds);
   }
 }

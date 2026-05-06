@@ -1,7 +1,7 @@
 package com.imo.backend.lib.recommendation;
 
-import com.imo.backend.contexts.catalog.course.Course;
-import com.imo.backend.contexts.catalog.skill.Skill;
+import com.imo.backend.contexts.learning_path.recommendation.RecommendationCourseDetails;
+import com.imo.backend.contexts.learning_path.recommendation.RecommendationSkillDetails;
 import com.imo.backend.contexts.learning_path.recommendation.lib.RecommendationEngine;
 import com.imo.backend.contexts.learning_path.recommendation.lib.RecommendationInput;
 import java.util.Comparator;
@@ -18,9 +18,9 @@ public class GapBasedRecommendationEngine implements RecommendationEngine {
       return List.of();
     }
 
-    List<Course> candidateCourses =
-        input.activeCourses().stream()
-            .filter(course -> !input.finishedCourseIds().contains(course.getId()))
+    List<RecommendationCourseDetails> candidateCourses =
+        input.candidateCourses().stream()
+            .filter(course -> !input.finishedCourseIds().contains(course.id()))
             .filter(course -> this.hasRelevantSkill(course, input.coverageBySkillId().keySet()))
             .toList();
 
@@ -28,9 +28,9 @@ public class GapBasedRecommendationEngine implements RecommendationEngine {
   }
 
   private List<String> rankCourses(
-      List<Course> candidateCourses,
+      List<RecommendationCourseDetails> candidateCourses,
       Map<String, Integer> coverageBySkillId,
-      Map<String, Skill> skillsById) {
+      Map<String, RecommendationSkillDetails> skillsById) {
     return candidateCourses.stream()
         .map(
             course ->
@@ -41,41 +41,41 @@ public class GapBasedRecommendationEngine implements RecommendationEngine {
         .filter(courseRecommendationScore -> courseRecommendationScore.score() > 0)
         .sorted(Comparator.comparingInt(CourseRecommendationScore::score).reversed())
         .map(CourseRecommendationScore::course)
-        .map(Course::getId)
+        .map(RecommendationCourseDetails::id)
         .toList();
   }
 
   private int calculateScore(
-      Course course,
+      RecommendationCourseDetails course,
       Map<String, Integer> coverageBySkillId,
       Set<String> knownSkillIds,
-      Map<String, Skill> skillsById) {
+      Map<String, RecommendationSkillDetails> skillsById) {
     int score = 0;
 
     List<String> relevantSkillIds =
-        course.getSkillIdsAsString().stream().filter(knownSkillIds::contains).toList();
+        course.skillIds().stream().filter(knownSkillIds::contains).toList();
 
     if (relevantSkillIds.isEmpty()) {
       return 0;
     }
 
     for (String skillId : relevantSkillIds) {
-      Skill skill = skillsById.get(skillId);
+      RecommendationSkillDetails skill = skillsById.get(skillId);
 
       if (skill == null) {
         return 0;
       }
 
       int userCoverage = coverageBySkillId.getOrDefault(skillId, 0);
-      score += skill.getIsEssential() * (100 - userCoverage);
+      score += skill.isEssential() * (100 - userCoverage);
     }
 
     return score;
   }
 
-  private boolean hasRelevantSkill(Course course, Set<String> knownSkillIds) {
-    return course.getSkillIdsAsString().stream().anyMatch(knownSkillIds::contains);
+  private boolean hasRelevantSkill(RecommendationCourseDetails course, Set<String> knownSkillIds) {
+    return course.skillIds().stream().anyMatch(knownSkillIds::contains);
   }
 
-  private record CourseRecommendationScore(Course course, int score) {}
+  private record CourseRecommendationScore(RecommendationCourseDetails course, int score) {}
 }

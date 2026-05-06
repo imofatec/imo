@@ -34,6 +34,51 @@ class RecommendationE2ETest extends BaseE2ETest {
 
   @Test
   @DisplayName(
+      "functional (GET /api/recommendation/me): completar cold start com os cursos ativos mais recentes")
+  void shouldFallbackToGlobalCatalogWhenPersonalizedRecommendationsAreMissing() {
+    TestUser user = TestUser.defaultUser();
+    String token = IdentityTestHelper.registerAndLogin(user);
+
+    TestCourse webCourseFixture =
+        new TestCourse(
+            "Curso de HTML",
+            Categories.DEV_WEB,
+            "Iniciante",
+            "Curso geral do catálogo",
+            TestCourse.defaultCourse().lessons(),
+            CatalogSkillTestHelper.getSkillIdsForCategory(Categories.DEV_WEB, 2));
+    TestCourse dataCourseFixture =
+        new TestCourse(
+            "Curso de SQL",
+            Categories.DATA,
+            "Iniciante",
+            "Curso intermediário do catálogo",
+            TestCourse.defaultCourse().lessons(),
+            CatalogSkillTestHelper.getSkillIdsForCategory(Categories.DATA, 2));
+    TestCourse latestWebCourseFixture =
+        new TestCourse(
+            "Curso de CSS",
+            Categories.DEV_WEB,
+            "Iniciante",
+            "Curso mais recente do catálogo",
+            TestCourse.defaultCourse().lessons(),
+            CatalogSkillTestHelper.getSkillIdsForCategory(Categories.DEV_WEB, 2));
+
+    CourseDetailsDTO firstWebCourse = CatalogTestHelper.createCourse(token, webCourseFixture);
+    CourseDetailsDTO dataCourse = CatalogTestHelper.createCourse(token, dataCourseFixture);
+    CourseDetailsDTO latestWebCourse =
+        CatalogTestHelper.createCourse(token, latestWebCourseFixture);
+
+    List<CourseDTO> recommendations = RecommendationTestHelper.getMyRecommendations(token);
+
+    assertEquals(3, recommendations.size());
+    assertEquals(latestWebCourse.course().id(), recommendations.getFirst().id());
+    assertEquals(dataCourse.course().id(), recommendations.get(1).id());
+    assertEquals(firstWebCourse.course().id(), recommendations.get(2).id());
+  }
+
+  @Test
+  @DisplayName(
       "happy path (GET /api/recommendation/me): retorna 200 com cursos recomendados sem incluir os concluídos")
   void shouldGetMyRecommendations() {
     TestUser user = TestUser.defaultUser();
@@ -106,7 +151,7 @@ class RecommendationE2ETest extends BaseE2ETest {
 
   @Test
   @DisplayName(
-      "functional (GET /api/recommendation/me): remover curso recomendado quando skills do curso mudam")
+      "functional (GET /api/recommendation/me): manter fallback do catálogo quando um curso deixa de ser personalizado")
   void shouldRefreshRecommendationsWhenCourseSkillsChange() {
     TestUser user = TestUser.defaultUser();
     String token = IdentityTestHelper.registerAndLogin(user);
@@ -152,7 +197,8 @@ class RecommendationE2ETest extends BaseE2ETest {
     RecommendationTestHelper.waitForRecommendation(this.recommendationRepository, userId, 0);
     List<CourseDTO> recommendationsAfter = RecommendationTestHelper.getMyRecommendations(token);
 
-    assertTrue(recommendationsAfter.isEmpty());
+    assertEquals(1, recommendationsAfter.size());
+    assertEquals(recommendedCourse.course().id(), recommendationsAfter.getFirst().id());
   }
 
   @Test

@@ -81,22 +81,6 @@ public class CustomProgressRepositoryImpl
   }
 
   @Override
-  public List<String> findFinishedCourseIdsByUserId(String userId) {
-    Query query =
-        new Query()
-            .addCriteria(
-                Criteria.where("userId")
-                    .is(new ObjectId(userId))
-                    .and("status")
-                    .is(ProgressStatus.FINISHED));
-    query.fields().include("courseId").exclude("_id");
-
-    return this.mongoTemplate.find(query, Progress.class).stream()
-        .map(Progress::getCourseId)
-        .toList();
-  }
-
-  @Override
   public long countAllProgressDetailsByUserId(String userId) {
     Query query = new Query().addCriteria(Criteria.where("userId").is(new ObjectId(userId)));
     return this.mongoTemplate.count(query, Progress.class);

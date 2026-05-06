@@ -14,7 +14,5 @@ public interface CustomProgressRepository {
 
   List<ProgressDetails> findAllProgressDetailsByUserId(String userId, int page, int pageSize);
 
-  List<String> findFinishedCourseIdsByUserId(String userId);
-
   long countAllProgressDetailsByUserId(String userId);
 }

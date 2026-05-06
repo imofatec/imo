@@ -1,13 +1,13 @@
 package com.imo.backend.contexts.learning_path.recommendation.lib;
 
-import com.imo.backend.contexts.catalog.course.Course;
-import com.imo.backend.contexts.catalog.skill.Skill;
+import com.imo.backend.contexts.learning_path.recommendation.RecommendationCourseDetails;
+import com.imo.backend.contexts.learning_path.recommendation.RecommendationSkillDetails;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 public record RecommendationInput(
-    List<Course> activeCourses,
-    Map<String, Skill> skillsById,
+    List<RecommendationCourseDetails> candidateCourses,
+    Map<String, RecommendationSkillDetails> skillsById,
     Set<String> finishedCourseIds,
     Map<String, Integer> coverageBySkillId) {}

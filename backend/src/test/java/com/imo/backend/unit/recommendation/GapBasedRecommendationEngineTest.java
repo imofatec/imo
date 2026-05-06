@@ -3,9 +3,8 @@ package com.imo.backend.unit.recommendation;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import com.imo.backend.contexts.catalog.course.Course;
-import com.imo.backend.contexts.catalog.course.value_objects.Categories;
-import com.imo.backend.contexts.catalog.skill.Skill;
+import com.imo.backend.contexts.learning_path.recommendation.RecommendationCourseDetails;
+import com.imo.backend.contexts.learning_path.recommendation.RecommendationSkillDetails;
 import com.imo.backend.contexts.learning_path.recommendation.lib.RecommendationInput;
 import com.imo.backend.lib.recommendation.GapBasedRecommendationEngine;
 import java.util.List;
@@ -19,56 +18,41 @@ class GapBasedRecommendationEngineTest {
   private final GapBasedRecommendationEngine recommendationEngine =
       new GapBasedRecommendationEngine();
 
-  private Skill createSkill(String skillId, Categories category, String name, int isEssential) {
-    Skill skill = new Skill(category, name, isEssential);
-    skill.setId(skillId);
-    return skill;
+  private RecommendationSkillDetails createSkill(String skillId, int isEssential) {
+    return new RecommendationSkillDetails(skillId, isEssential);
   }
 
-  private Course createCourse(String courseId, String contributorId, List<String> skillIds) {
-    Course course =
-        new Course(
-            true,
-            contributorId,
-            "Curso " + courseId.substring(0, 6),
-            "Iniciante",
-            Categories.DEV_WEB,
-            "Descrição do curso",
-            "https://www.youtube.com/watch?v=abc123XYZ89",
-            1,
-            skillIds);
-    course.setId(courseId);
-    return course;
+  private RecommendationCourseDetails createCourse(String courseId, List<String> skillIds) {
+    return new RecommendationCourseDetails(courseId, skillIds);
   }
 
   @Test
   @DisplayName(
       "happy path (rankRecommendedCourseIds): ordenar por maior gap, excluir concluídos e preservar apenas cursos elegíveis")
   void shouldRankRecommendationsByGapAndExcludeFinishedCourses() {
-    String contributorId = new ObjectId().toString();
     String htmlSkillId = new ObjectId().toString();
     String gitSkillId = new ObjectId().toString();
 
-    Skill htmlSkill = this.createSkill(htmlSkillId, Categories.DEV_WEB, "HTML", 3);
-    Skill gitSkill = this.createSkill(gitSkillId, Categories.DEV_WEB, "Git", 1);
+    RecommendationSkillDetails htmlSkill = this.createSkill(htmlSkillId, 3);
+    RecommendationSkillDetails gitSkill = this.createSkill(gitSkillId, 1);
 
-    Course finishedCourse =
-        this.createCourse(new ObjectId().toString(), contributorId, List.of(htmlSkillId));
-    Course higherGapCourse =
-        this.createCourse(new ObjectId().toString(), contributorId, List.of(htmlSkillId));
-    Course lowerGapCourse =
-        this.createCourse(new ObjectId().toString(), contributorId, List.of(gitSkillId));
+    RecommendationCourseDetails finishedCourse =
+        this.createCourse(new ObjectId().toString(), List.of(htmlSkillId));
+    RecommendationCourseDetails higherGapCourse =
+        this.createCourse(new ObjectId().toString(), List.of(htmlSkillId));
+    RecommendationCourseDetails lowerGapCourse =
+        this.createCourse(new ObjectId().toString(), List.of(gitSkillId));
 
     RecommendationInput input =
         new RecommendationInput(
             List.of(finishedCourse, higherGapCourse, lowerGapCourse),
             Map.of(htmlSkillId, htmlSkill, gitSkillId, gitSkill),
-            Set.of(finishedCourse.getId()),
+            Set.of(finishedCourse.id()),
             Map.of(htmlSkillId, 40, gitSkillId, 40));
 
     List<String> rankedCourseIds = this.recommendationEngine.rankRecommendedCourseIds(input);
 
-    assertEquals(List.of(higherGapCourse.getId(), lowerGapCourse.getId()), rankedCourseIds);
+    assertEquals(List.of(higherGapCourse.id(), lowerGapCourse.id()), rankedCourseIds);
   }
 
   @Test
@@ -86,19 +70,17 @@ class GapBasedRecommendationEngineTest {
   @DisplayName(
       "functional (rankRecommendedCourseIds): recomendar somente cursos com skills já conhecidas")
   void shouldRecommendOnlyCoursesWithKnownSkills() {
-    String contributorId = new ObjectId().toString();
     String reactSkillId = new ObjectId().toString();
     String dockerSkillId = new ObjectId().toString();
     String unknownSkillId = new ObjectId().toString();
 
-    Skill reactSkill = this.createSkill(reactSkillId, Categories.DEV_WEB, "React", 3);
-    Skill dockerSkill = this.createSkill(dockerSkillId, Categories.CLOUD, "Docker", 2);
+    RecommendationSkillDetails reactSkill = this.createSkill(reactSkillId, 3);
+    RecommendationSkillDetails dockerSkill = this.createSkill(dockerSkillId, 2);
 
-    Course relatedCourse =
-        this.createCourse(
-            new ObjectId().toString(), contributorId, List.of(reactSkillId, unknownSkillId));
-    Course unrelatedCourse =
-        this.createCourse(new ObjectId().toString(), contributorId, List.of(dockerSkillId));
+    RecommendationCourseDetails relatedCourse =
+        this.createCourse(new ObjectId().toString(), List.of(reactSkillId, unknownSkillId));
+    RecommendationCourseDetails unrelatedCourse =
+        this.createCourse(new ObjectId().toString(), List.of(dockerSkillId));
 
     RecommendationInput input =
         new RecommendationInput(
@@ -109,6 +91,6 @@ class GapBasedRecommendationEngineTest {
 
     List<String> rankedCourseIds = this.recommendationEngine.rankRecommendedCourseIds(input);
 
-    assertEquals(List.of(relatedCourse.getId()), rankedCourseIds);
+    assertEquals(List.of(relatedCourse.id()), rankedCourseIds);
   }
 }
