@@ -1,7 +1,6 @@
 import React from "react";
 import { View, Text } from "react-native";
 import LessonList from "./lessonList";
-import CertificateButton from "./certificateButton";
 import SkeletonLessonProgress from "../skeletonScreens/skeletonLessonProgress";
 import SkeletonLessonList from "../skeletonScreens/skeletonLessonList";
 
@@ -14,9 +13,6 @@ export default function LessonTabContent({
   progressPercent,
   onSelectLesson,
   onToggleWatched,
-  allWatched,
-  isCertificateLoading,
-  onCertificatePress,
   disabledLessons
 }) {
   return (
@@ -46,14 +42,6 @@ export default function LessonTabContent({
               watchedSet={watched}
               onToggleWatched={onToggleWatched}
               disabledLessons={disabledLessons}
-            />
-          </View>
-
-          <View className="px-2 mt-6 mb-8">
-            <CertificateButton
-              disabled={!allWatched}
-              loading={isCertificateLoading}
-              onPress={onCertificatePress}
             />
           </View>
         </>

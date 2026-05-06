@@ -1,6 +1,6 @@
 # IMO
 
-Software multiplataforma de aprendizagem que organiza conteúdos técnicos externos, especialmente vídeos do YouTube, em trilhas de estudo com progresso, interação e certificação.
+Software multiplataforma de aprendizagem que organiza conteúdos técnicos externos, especialmente vídeos do YouTube, em trilhas de estudo com progresso, interação.
 
 ## Visão geral
 
@@ -20,7 +20,7 @@ A IMO foi criada para atuar como uma camada de curadoria sobre esses conteúdos,
 
 ## Como a IMO funciona
 
-A IMO permite que os próprios usuário submetam e organizem conteúdos técnicos já publicados na internet em cursos. Em vez de consumir vídeos isolados e materiais desconectados, o usuário percorre uma jornada que já foi estruturada por outra pessoa, acompanha a evolução por aula, interage com outros usuários e pode obter certificação ao concluir um percurso.
+A IMO permite que os próprios usuário submetam e organizem conteúdos técnicos já publicados na internet em cursos. Em vez de consumir vídeos isolados e materiais desconectados, o usuário percorre uma jornada que já foi estruturada por outra pessoa, acompanha a evolução por aula, interage com outros usuários.
 
 Na prática, a plataforma oferece:
 
@@ -90,7 +90,6 @@ Do ponto de vista de negócio, a plataforma está organizada em seis contextos:
 - `Catálogo`: cursos, aulas e organização do conteúdo
 - `Jornada de aprendizagem`: progresso, consumo de aulas e conclusão
 - `Social`: comentários e interação entre usuários
-- `Certificação`: emissão, consulta e validação de certificados
 - `Notificação`: orquestra o envio assíncrono de comunicações disparadas por diferentes operações da plataforma
 
 ## Stack principal
