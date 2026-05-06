@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title th:text="${pageTitle}">Marco de progresso</title>
+  <meta name="description" th:content="${pageDescription}" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" th:content="${pageTitle}" />
+  <meta property="og:description" th:content="${pageDescription}" />
+  <meta property="og:url" th:content="${shareUrl}" />
+  <meta property="og:image" th:content="${imageUrl}" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" th:content="${pageTitle}" />
+  <meta name="twitter:description" th:content="${pageDescription}" />
+  <meta name="twitter:image" th:content="${imageUrl}" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+    :root {
+      color-scheme: dark;
+      --page-bg: #0C0424;
+      --card-bg: #14082F;
+      --card-bg-soft: #100527;
+      --card-border: rgba(45, 239, 216, 0.2);
+      --accent: #2DEFD8;
+      --accent-alt: #4B8CFF;
+      --accent-soft: rgba(45, 239, 216, 0.16);
+      --text-primary: #F5F7FF;
+      --text-secondary: #D2DCF6;
+      --text-muted: #9EB1D4;
+      --text-footer: #6B80AA;
+      --shadow: 0 28px 70px rgba(4, 2, 16, 0.45);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at top left, rgba(45, 239, 216, 0.14), transparent 26%),
+        radial-gradient(circle at bottom right, rgba(75, 140, 255, 0.14), transparent 22%),
+        var(--page-bg);
+      color: var(--text-primary);
+      font-family: 'Space Grotesk', Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      padding: 48px 20px 56px;
+    }
+
+    main {
+      width: 100%;
+      max-width: 1080px;
+      margin: 0 auto;
+    }
+
+    .logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 36px;
+    }
+
+    .logo-arrow {
+      width: 0;
+      height: 0;
+      border-top: 9px solid transparent;
+      border-bottom: 9px solid transparent;
+      border-left: 16px solid var(--accent);
+      display: inline-block;
+    }
+
+    .logo-text {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text-primary);
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.6fr) minmax(280px, 0.9fr);
+      gap: 24px;
+      align-items: start;
+      margin-bottom: 28px;
+    }
+
+    .eyebrow {
+      display: inline-block;
+      padding: 6px 12px;
+      margin-bottom: 18px;
+      border-radius: 8px;
+      background: var(--accent-soft);
+      border: 1px solid rgba(45, 239, 216, 0.24);
+      color: var(--accent);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      max-width: 12ch;
+      font-size: clamp(2.25rem, 4vw, 4rem);
+      line-height: 0.98;
+      letter-spacing: -0.05em;
+      margin-bottom: 18px;
+    }
+
+    .hero-description {
+      max-width: 58ch;
+      color: var(--text-secondary);
+      font-size: 16px;
+      line-height: 1.8;
+    }
+
+    .record-card,
+    .context-card,
+    .preview-frame {
+      background: rgba(20, 8, 47, 0.92);
+      border: 1px solid var(--card-border);
+      border-radius: 22px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(16px);
+    }
+
+    .record-card {
+      position: relative;
+      overflow: hidden;
+      padding: 26px 24px 22px;
+    }
+
+    .record-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: var(--accent);
+    }
+
+    .record-label,
+    .context-label,
+    .share-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    .record-label {
+      display: inline-block;
+      margin-bottom: 18px;
+    }
+
+    .record-list {
+      display: grid;
+      gap: 16px;
+    }
+
+    .record-item {
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    .record-item:last-child {
+      padding-bottom: 0;
+      border-bottom: 0;
+    }
+
+    .record-item strong {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--text-muted);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .record-item span {
+      color: var(--text-primary);
+      font-size: 15px;
+      line-height: 1.55;
+      word-break: break-word;
+    }
+
+    .preview-frame {
+      overflow: hidden;
+      margin-bottom: 28px;
+      padding: 18px;
+    }
+
+    .preview-surface {
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid var(--card-border);
+      background: var(--card-bg-soft);
+    }
+
+    .card-image {
+      width: 100%;
+      display: block;
+      aspect-ratio: 1200 / 630;
+      background: var(--card-bg-soft);
+    }
+
+    .context-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 24px;
+      margin-bottom: 28px;
+    }
+
+    .context-card {
+      padding: 28px;
+    }
+
+    .context-label {
+      display: inline-block;
+      margin-bottom: 16px;
+    }
+
+    .context-card h2 {
+      font-size: 24px;
+      line-height: 1.15;
+      letter-spacing: -0.04em;
+      margin-bottom: 14px;
+    }
+
+    .context-card p {
+      color: var(--text-secondary);
+      font-size: 15px;
+      line-height: 1.75;
+    }
+
+    .share-block {
+      margin-top: 22px;
+      padding-top: 22px;
+      border-top: 1px solid var(--card-border);
+    }
+
+    .share-label {
+      display: block;
+      margin-bottom: 10px;
+    }
+
+    .share-url {
+      color: var(--text-secondary);
+      background: var(--card-bg-soft);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 14px 16px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      line-height: 1.7;
+      word-break: break-all;
+    }
+
+    .legal-note {
+      margin-top: 18px;
+      padding-left: 14px;
+      border-left: 2px solid var(--accent);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      line-height: 1.7;
+      color: var(--text-muted);
+    }
+
+    .page-footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: center;
+      padding-top: 4px;
+      color: var(--text-footer);
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    .page-footer a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    @media (max-width: 900px) {
+      .hero,
+      .context-grid,
+      .page-footer {
+        grid-template-columns: 1fr;
+        display: grid;
+      }
+
+      .page-footer {
+        gap: 10px;
+      }
+
+      h1 {
+        max-width: none;
+      }
+    }
+
+    @media (max-width: 640px) {
+      body {
+        padding: 32px 14px 40px;
+      }
+
+      .preview-frame {
+        padding: 12px;
+      }
+
+      .record-card,
+      .context-card {
+        padding: 22px 18px;
+      }
+
+      h1 {
+        font-size: 2.4rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main>
+    <div class="logo">
+      <div class="logo-arrow"></div>
+      <span class="logo-text">IMO</span>
+    </div>
+
+    <section class="hero">
+      <div>
+        <span class="eyebrow">milestone.progress</span>
+        <h1>Marco de progresso compartilhado</h1>
+        <p class="hero-description"
+          th:text="${milestone.authorNameSnapshot + ' compartilhou o registro público da conclusão do curso ' + milestone.courseNameSnapshot + ' na IMO. O card abaixo preserva os dados capturados no momento da geração do marco.'}">
+          [DESCRIÇÃO DO MARCO]
+        </p>
+      </div>
+
+      <aside class="record-card">
+        <span class="record-label">registro.público</span>
+
+        <div class="record-list">
+          <div class="record-item">
+            <strong>Autor</strong>
+            <span th:text="${milestone.authorNameSnapshot}">[AUTOR]</span>
+          </div>
+          <div class="record-item">
+            <strong>Curso</strong>
+            <span th:text="${milestone.courseNameSnapshot}">[CURSO]</span>
+          </div>
+          <div class="record-item">
+            <strong>Código público</strong>
+            <span th:text="${milestone.publicCode}">[PUBLIC_CODE]</span>
+          </div>
+          <div class="record-item">
+            <strong>Gerado em</strong>
+            <span th:text="${#temporals.format(generatedAt, 'dd/MM/yyyy HH:mm')}">04/05/2026 14:30</span>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="preview-frame">
+      <div class="preview-surface">
+        <img class="card-image" th:src="${imageUrl}" alt="Card público do marco de progresso" />
+      </div>
+    </section>
+
+    <div class="page-footer">
+      <p>Dúvidas? Fale com nosso suporte em <a href="mailto:suporte@imo.com.br">suporte@imo.com.br</a></p>
+      <p>&copy; 2025 IMO Plataforma &mdash; Todos os direitos reservados</p>
+    </div>
+  </main>
+</body>
+
+</html>

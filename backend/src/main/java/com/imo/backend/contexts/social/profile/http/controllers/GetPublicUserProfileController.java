@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 @RestController
 public class GetPublicUserProfileController extends UserController {
@@ -42,7 +43,8 @@ public class GetPublicUserProfileController extends UserController {
   @GetMapping("/public/{id}")
   public ResponseEntity<PublicUserProfileDTO> handle(@PathVariable String id) {
     MongoDB.validateObjectId(id);
+    String baseUrl = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
 
-    return ResponseEntity.ok(this.getPublicUserProfileUseCase.execute(id));
+    return ResponseEntity.ok(this.getPublicUserProfileUseCase.execute(id, baseUrl));
   }
 }

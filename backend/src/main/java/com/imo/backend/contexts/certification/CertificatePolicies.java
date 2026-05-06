@@ -2,9 +2,9 @@ package com.imo.backend.contexts.certification;
 
 import com.imo.backend.contexts.common.exceptions.custom.ForbiddenException;
 import com.imo.backend.contexts.common.exceptions.custom.NotFoundException;
-import com.imo.backend.contexts.journey_tracking.Progress;
-import com.imo.backend.contexts.journey_tracking.repositories.ProgressRepository;
-import com.imo.backend.contexts.journey_tracking.value_objects.ProgressStatus;
+import com.imo.backend.contexts.journey_tracking.progress.Progress;
+import com.imo.backend.contexts.journey_tracking.progress.repositories.ProgressRepository;
+import com.imo.backend.contexts.journey_tracking.progress.value_objects.ProgressStatus;
 import org.springframework.stereotype.Service;
 
 @Service

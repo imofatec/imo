@@ -3,7 +3,7 @@ package com.imo.backend.lib.pdf;
 import com.imo.backend.contexts.certification.CertificateDetails;
 import com.imo.backend.contexts.certification.lib.PdfManager;
 import com.imo.backend.contexts.certification.values_objects.CertificatePeriod;
-import com.imo.backend.contexts.common.FormatDateTime;
+import com.imo.backend.contexts.common.HttpDateTimeFormatter;
 import com.itextpdf.html2pdf.ConverterProperties;
 import com.itextpdf.html2pdf.HtmlConverter;
 import com.itextpdf.kernel.geom.PageSize;
@@ -51,7 +51,8 @@ public class ItextPdfManager implements PdfManager {
             "IMO-%s-%s-%s",
             user.getName().toUpperCase(),
             course.getName().slug().toUpperCase(),
-            FormatDateTime.toDate(certificateDetails.certificate().getIssuedAt()));
+            HttpDateTimeFormatter.toDate(certificateDetails.certificate().getIssuedAt())
+                .replace('/', '-'));
 
     context.setVariable("documentTitle", documentTile);
     context.setVariable("name", user.getName().toUpperCase());
@@ -59,14 +60,11 @@ public class ItextPdfManager implements PdfManager {
     context.setVariable("certificateId", certificateDetails.certificate().getId());
 
     CertificatePeriod certificatePeriod = certificateDetails.certificate().getCertificatePeriod();
-    var startedAt = FormatDateTime.toDate(certificatePeriod.courseStartedAt()).replaceAll("-", "/");
+    var startedAt = HttpDateTimeFormatter.toDate(certificatePeriod.courseStartedAt());
 
-    var finishedAt =
-        FormatDateTime.toDate(certificatePeriod.courseFinishedAt()).replaceAll("-", "/");
+    var finishedAt = HttpDateTimeFormatter.toDate(certificatePeriod.courseFinishedAt());
 
-    var issuedAt =
-        FormatDateTime.toDateTime(certificateDetails.certificate().getIssuedAt())
-            .replaceAll("-", "/");
+    var issuedAt = HttpDateTimeFormatter.toDateTime(certificateDetails.certificate().getIssuedAt());
 
     context.setVariable("startedAt", startedAt);
     context.setVariable("finishedAt", finishedAt);

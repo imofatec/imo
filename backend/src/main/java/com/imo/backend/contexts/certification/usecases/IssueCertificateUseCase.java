@@ -7,7 +7,7 @@ import com.imo.backend.contexts.certification.lib.PdfManager;
 import com.imo.backend.contexts.certification.repositories.CertificateRepository;
 import com.imo.backend.contexts.certification.values_objects.CertificatePeriod;
 import com.imo.backend.contexts.common.exceptions.custom.NotFoundException;
-import com.imo.backend.contexts.journey_tracking.Progress;
+import com.imo.backend.contexts.journey_tracking.progress.Progress;
 import java.time.LocalDateTime;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
