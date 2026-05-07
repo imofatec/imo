@@ -5,10 +5,11 @@ export const levelOptions = [
 ]
 
 export const categoryOptions = [
-  { label: 'Inteligência artificial', value: 'AI' },
-  { label: 'Dados', value: 'DATA' },
-  { label: 'Computação em nuvem', value: 'CLOUD' },
-  { label: 'Desenvolvimento web', value: 'DEV_WEB' },
-  { label: 'Segurança', value: 'SECURITY' },
-  { label: 'Desenvolvimento mobile', value: 'DEV_MOBILE' },
+  { label: 'Inteligência artificial', value: 'AI', slug: 'inteligencia-artificial' },
+  { label: 'Dados', value: 'DATA', slug: 'dados' },
+  { label: 'Computação em nuvem', value: 'CLOUD', slug: 'computacao-em-nuvem' },
+  { label: 'Desenvolvimento web', value: 'DEV_WEB', slug: 'desenvolvimento-web' },
+  { label: 'Segurança', value: 'SECURITY', slug: 'seguranca' },
+  { label: 'Desenvolvimento mobile', value: 'DEV_MOBILE', slug: 'desenvolvimento-mobile' },
+  { label: 'Fundamentos', value: 'FUNDAMENTALS', slug: 'fundamentos' },
 ]

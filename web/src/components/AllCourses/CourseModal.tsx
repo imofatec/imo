@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { X } from 'lucide-react'
+import CourseSkillChips from './CourseSkillChips'
 import type { Course } from '@/types/course'
 
 type Props = {
@@ -66,6 +67,8 @@ export default function CourseModal({
 
         <div className="mt-5 space-y-4">
           <p className="text-sm leading-7 wrap-break-word text-white">{course.description}</p>
+
+          <CourseSkillChips categorySlug={course.category.slug} skillIds={course.skillIds} />
 
           <div className="grid gap-3 sm:grid-cols-3">
             <div className="rounded-xl bg-white/5 p-4">

@@ -4,13 +4,19 @@ import DeleteCourseButton from '@/components/EditCourse/DeleteCourseButton'
 import DeleteCourseModal from '@/components/EditCourse/DeleteCourseModal'
 import EditCourseLessonsSection from '@/components/EditCourse/EditCourseLessonsSection'
 import { useEditCoursePage } from '@/hooks/useEditCoursePage'
+import { useRequestErrorToast } from '@/lib/requestToast'
 
 export default function EditCoursePage() {
   const {
     course,
     register,
+    control,
     errors,
     isSubmitting,
+    skills,
+    skillsError,
+    skillsLoading,
+    selectedCategorySlug,
     statusMessage,
     newLessonIndex,
     newLessonError,
@@ -25,6 +31,8 @@ export default function EditCoursePage() {
     handleDeleteCourse,
   } = useEditCoursePage()
 
+  useRequestErrorToast(skillsError, { id: 'edit-course-skills-error' })
+
   return (
     <main className="min-h-screen w-full bg-[#0C0424]">
       <section className="flex justify-center border-b border-white/10">
@@ -38,8 +46,12 @@ export default function EditCoursePage() {
           <FormSection title="Informacoes do curso">
             <CourseFormEdit
               register={register}
+              control={control}
               errors={errors}
               course={course}
+              selectedCategorySlug={selectedCategorySlug}
+              skills={skills}
+              skillsLoading={skillsLoading}
               onSaveCourse={handleSaveCourse}
             />
           </FormSection>

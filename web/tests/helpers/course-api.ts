@@ -1,7 +1,9 @@
 import { expect, type APIRequestContext } from '@playwright/test'
+import { categoryOptions } from '../../src/constants/courseOptions'
 import { extractPaginatedArray } from '../../src/lib/pagination'
 import type { Category } from '../../src/types/category'
 import type { Course, CourseDetails } from '../../src/types/course'
+import type { Skill } from '../../src/types/skill'
 import type { AuthSession } from './auth'
 import { apiBaseUrl } from './auth'
 import type { CourseInput } from './course-data'
@@ -37,6 +39,10 @@ function extractCourseId(payload: unknown): string | null {
   return null
 }
 
+function getCategorySlug(categoryValue: string) {
+  return categoryOptions.find((category) => category.value === categoryValue)?.slug ?? categoryValue
+}
+
 export async function getCategoriesByApi(request: APIRequestContext, accessToken: string) {
   const response = await request.get(`${apiBaseUrl}/api/course/categories`, {
     headers: authHeaders(accessToken),
@@ -45,6 +51,20 @@ export async function getCategoriesByApi(request: APIRequestContext, accessToken
   expect(response.ok()).toBeTruthy()
 
   return (await response.json()) as Category[]
+}
+
+export async function getSkillsByCategoryApi(
+  request: APIRequestContext,
+  accessToken: string,
+  categorySlug: string
+) {
+  const response = await request.get(`${apiBaseUrl}/api/skill/${categorySlug}`, {
+    headers: authHeaders(accessToken),
+  })
+
+  expect(response.ok()).toBeTruthy()
+
+  return (await response.json()) as Skill[]
 }
 
 export async function searchCoursesByApi(
@@ -103,10 +123,26 @@ export async function createCourseByApi(
   session: AuthSession,
   course: CourseInput
 ) {
+  const skillIds =
+    course.skillIds.length > 0
+      ? course.skillIds
+      : (
+          await getSkillsByCategoryApi(
+            request,
+            session.accessToken,
+            getCategorySlug(course.category)
+          )
+        )
+          .slice(0, 1)
+          .map((skill) => skill.id)
+
+  expect(skillIds.length).toBeGreaterThan(0)
+
   const response = await request.post(`${apiBaseUrl}/api/course`, {
     headers: authHeaders(session.accessToken),
     data: {
       ...course,
+      skillIds,
       contributorId: session.id,
     },
   })

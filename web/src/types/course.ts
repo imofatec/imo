@@ -11,6 +11,7 @@ export type Course = {
   description: string
   firstLessonYoutubeLink: string
   lessonsCount: number
+  skillIds?: string[]
   isActive: boolean
 }
 
