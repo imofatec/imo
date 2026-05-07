@@ -3,6 +3,7 @@ package com.imo.backend.contexts.journey_tracking.progress_milestone.http.contro
 import com.imo.backend.contexts.journey_tracking.progress_milestone.http.dtos.ProgressMilestoneDTO;
 import com.imo.backend.contexts.journey_tracking.progress_milestone.usecases.GetPublicProgressMilestoneUseCase;
 import io.swagger.v3.oas.annotations.Hidden;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,10 +14,13 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 @Controller
 public class GetPublicProgressMilestonePageController {
   private final GetPublicProgressMilestoneUseCase getPublicProgressMilestoneUseCase;
+  private final String frontendClientUrl;
 
   public GetPublicProgressMilestonePageController(
-      GetPublicProgressMilestoneUseCase getPublicProgressMilestoneUseCase) {
+      GetPublicProgressMilestoneUseCase getPublicProgressMilestoneUseCase,
+      @Value("${frontend.client.url}") String frontendClientUrl) {
     this.getPublicProgressMilestoneUseCase = getPublicProgressMilestoneUseCase;
+    this.frontendClientUrl = frontendClientUrl;
   }
 
   @GetMapping("/m/{publicCode}")
@@ -25,6 +29,7 @@ public class GetPublicProgressMilestonePageController {
     String baseUrl = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
     String shareUrl = ProgressMilestoneDTO.buildShareUrl(baseUrl, publicCode);
     String imageUrl = ProgressMilestoneDTO.buildImageUrl(baseUrl, publicCode);
+    String profileUrl = this.buildProfileUrl(milestone.getUserId());
 
     model.addAttribute(
         "pageTitle", milestone.getAuthorNameSnapshot() + " concluiu um curso na IMO");
@@ -38,9 +43,19 @@ public class GetPublicProgressMilestonePageController {
             milestone.getCourseNameSnapshot()));
     model.addAttribute("imageUrl", imageUrl);
     model.addAttribute("shareUrl", shareUrl);
+    model.addAttribute("profileUrl", profileUrl);
     model.addAttribute("milestone", milestone);
     model.addAttribute("generatedAt", milestone.getGeneratedAt());
 
     return "progress-milestone-public";
+  }
+
+  private String buildProfileUrl(String userId) {
+    String normalizedClientUrl =
+        this.frontendClientUrl.endsWith("/")
+            ? this.frontendClientUrl.substring(0, this.frontendClientUrl.length() - 1)
+            : this.frontendClientUrl;
+
+    return normalizedClientUrl + "/social/" + userId;
   }
 }

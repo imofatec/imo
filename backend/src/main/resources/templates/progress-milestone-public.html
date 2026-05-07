@@ -118,6 +118,22 @@
       line-height: 1.8;
     }
 
+    .hero-link {
+      display: inline-flex;
+      align-items: center;
+      margin-top: 18px;
+      color: var(--accent);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      letter-spacing: 0.04em;
+      text-decoration: none;
+      text-transform: uppercase;
+    }
+
+    .hero-link:hover {
+      text-decoration: underline;
+    }
+
     .record-card,
     .context-card,
     .preview-frame {
@@ -336,16 +352,20 @@
 
     <section class="hero">
       <div>
-        <span class="eyebrow">milestone.progress</span>
         <h1>Marco de progresso compartilhado</h1>
         <p class="hero-description"
-          th:text="${milestone.authorNameSnapshot + ' compartilhou o registro público da conclusão do curso ' + milestone.courseNameSnapshot + ' na IMO. O card abaixo preserva os dados capturados no momento da geração do marco.'}">
+          th:text="${milestone.authorNameSnapshot + ' compartilhou um marco da conclusão do curso ' + milestone.courseNameSnapshot + ' na IMO. O card abaixo preserva os dados capturados no momento da geração do marco.'}">
           [DESCRIÇÃO DO MARCO]
         </p>
+        <a class="hero-link" th:href="${profileUrl}"
+          th:text="${'Ver perfil de ' + milestone.authorNameSnapshot}"
+          target="_blank" rel="noopener noreferrer">
+          Ver perfil de [AUTOR]
+        </a>
       </div>
 
       <aside class="record-card">
-        <span class="record-label">registro.público</span>
+        <span class="record-label">marco.compartilhado</span>
 
         <div class="record-list">
           <div class="record-item">
