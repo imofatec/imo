@@ -5,11 +5,11 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.imo.backend.contexts.catalog.course.Categories;
+import com.imo.backend.contexts.catalog.course.Category;
 import com.imo.backend.contexts.catalog.course.Course;
 import com.imo.backend.contexts.catalog.course.CoursePolicies;
 import com.imo.backend.contexts.catalog.course.repositories.CourseRepository;
-import com.imo.backend.contexts.catalog.course.value_objects.Categories;
-import com.imo.backend.contexts.catalog.course.value_objects.Category;
 import com.imo.backend.contexts.catalog.skill.Skill;
 import com.imo.backend.contexts.catalog.skill.repositories.SkillRepository;
 import com.imo.backend.contexts.common.Slug;

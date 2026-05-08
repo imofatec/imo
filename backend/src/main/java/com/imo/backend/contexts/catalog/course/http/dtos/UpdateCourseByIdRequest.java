@@ -1,7 +1,7 @@
 package com.imo.backend.contexts.catalog.course.http.dtos;
 
+import com.imo.backend.contexts.catalog.course.Categories;
 import com.imo.backend.contexts.catalog.course.commands.UpdateCourseByIdCommand;
-import com.imo.backend.contexts.catalog.course.value_objects.Categories;
 import jakarta.validation.constraints.Size;
 import java.util.List;
 

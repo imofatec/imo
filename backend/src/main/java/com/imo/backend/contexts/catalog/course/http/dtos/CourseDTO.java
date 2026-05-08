@@ -1,9 +1,9 @@
 package com.imo.backend.contexts.catalog.course.http.dtos;
 
+import com.imo.backend.contexts.catalog.course.Category;
 import com.imo.backend.contexts.catalog.course.Course;
-import com.imo.backend.contexts.catalog.course.value_objects.Category;
-import com.imo.backend.contexts.catalog.course.value_objects.CourseName;
-import com.imo.backend.contexts.catalog.course.value_objects.Level;
+import com.imo.backend.contexts.catalog.course.CourseName;
+import com.imo.backend.contexts.catalog.course.Level;
 import java.util.List;
 
 public record CourseDTO(

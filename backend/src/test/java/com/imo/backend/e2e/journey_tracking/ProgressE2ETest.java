@@ -6,9 +6,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import com.imo.backend.contexts.catalog.course.http.dtos.CourseDetailsDTO;
 import com.imo.backend.contexts.identity.user.repositories.UserRepository;
+import com.imo.backend.contexts.journey_tracking.progress.ProgressStatus;
 import com.imo.backend.contexts.journey_tracking.progress.controllers.dtos.ProgressDTO;
 import com.imo.backend.contexts.journey_tracking.progress.controllers.dtos.ProgressDetailsDTO;
-import com.imo.backend.contexts.journey_tracking.progress.value_objects.ProgressStatus;
 import com.imo.backend.contexts.learning_path.skill_profile.SkillProfile;
 import com.imo.backend.contexts.learning_path.skill_profile.repositories.SkillProfileRepository;
 import com.imo.backend.e2e.BaseE2ETest;

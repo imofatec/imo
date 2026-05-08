@@ -3,8 +3,8 @@ package com.imo.backend.contexts.journey_tracking.progress_milestone;
 import com.imo.backend.contexts.common.exceptions.custom.ForbiddenException;
 import com.imo.backend.contexts.common.exceptions.custom.NotFoundException;
 import com.imo.backend.contexts.journey_tracking.progress.ProgressDetails;
+import com.imo.backend.contexts.journey_tracking.progress.ProgressStatus;
 import com.imo.backend.contexts.journey_tracking.progress.repositories.ProgressRepository;
-import com.imo.backend.contexts.journey_tracking.progress.value_objects.ProgressStatus;
 import org.springframework.stereotype.Service;
 
 @Service

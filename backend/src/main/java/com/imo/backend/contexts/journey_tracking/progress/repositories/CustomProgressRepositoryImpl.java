@@ -3,7 +3,7 @@ package com.imo.backend.contexts.journey_tracking.progress.repositories;
 import com.imo.backend.contexts.common.Pageable;
 import com.imo.backend.contexts.journey_tracking.progress.Progress;
 import com.imo.backend.contexts.journey_tracking.progress.ProgressDetails;
-import com.imo.backend.contexts.journey_tracking.progress.value_objects.ProgressStatus;
+import com.imo.backend.contexts.journey_tracking.progress.ProgressStatus;
 import com.imo.backend.contexts.recognition.gateways.AchievementMetricsGateway;
 import java.util.ArrayList;
 import java.util.Arrays;

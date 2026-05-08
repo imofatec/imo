@@ -1,12 +1,11 @@
 package com.imo.backend.contexts.catalog.lesson.usecases;
 
-import com.imo.backend.contexts.catalog.course.events.UpdateCourseLessonsCountEvent;
 import com.imo.backend.contexts.catalog.lesson.Lesson;
 import com.imo.backend.contexts.catalog.lesson.LessonFactory;
 import com.imo.backend.contexts.catalog.lesson.LessonPolicies;
 import com.imo.backend.contexts.catalog.lesson.commands.CreateLessonCommand;
+import com.imo.backend.contexts.catalog.lesson.events.LessonsListUpdatedEvent;
 import com.imo.backend.contexts.catalog.lesson.repositories.LessonRepository;
-import com.imo.backend.contexts.journey_tracking.progress.events.ReevaluateProgressEvent;
 import java.util.List;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -32,8 +31,7 @@ public class CreateLessonUseCase {
     var newLessons = this.lessonRepository.saveAll(LessonFactory.createLesson(commands, courseId));
 
     this.applicationEventPublisher.publishEvent(
-        new UpdateCourseLessonsCountEvent(courseId, newLessons.size()));
-    this.applicationEventPublisher.publishEvent(new ReevaluateProgressEvent(courseId));
+        new LessonsListUpdatedEvent(courseId, newLessons.size()));
 
     return newLessons;
   }
@@ -55,8 +53,7 @@ public class CreateLessonUseCase {
                 command.youtubeLink()));
 
     this.applicationEventPublisher.publishEvent(
-        new UpdateCourseLessonsCountEvent(courseId, existingLessonsCount + 1));
-    this.applicationEventPublisher.publishEvent(new ReevaluateProgressEvent(courseId));
+        new LessonsListUpdatedEvent(courseId, existingLessonsCount + 1));
 
     return newLesson;
   }

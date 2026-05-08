@@ -1,4 +1,4 @@
-package com.imo.backend.contexts.catalog.course.value_objects;
+package com.imo.backend.contexts.catalog.course;
 
 import java.util.List;
 import lombok.Getter;

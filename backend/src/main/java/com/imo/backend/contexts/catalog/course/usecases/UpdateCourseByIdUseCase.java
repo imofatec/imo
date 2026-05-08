@@ -1,13 +1,9 @@
 package com.imo.backend.contexts.catalog.course.usecases;
 
-import com.imo.backend.contexts.catalog.course.Course;
-import com.imo.backend.contexts.catalog.course.CoursePolicies;
+import com.imo.backend.contexts.catalog.course.*;
 import com.imo.backend.contexts.catalog.course.commands.UpdateCourseByIdCommand;
 import com.imo.backend.contexts.catalog.course.events.CourseSkillIdsChangedEvent;
 import com.imo.backend.contexts.catalog.course.repositories.CourseRepository;
-import com.imo.backend.contexts.catalog.course.value_objects.Category;
-import com.imo.backend.contexts.catalog.course.value_objects.CourseName;
-import com.imo.backend.contexts.catalog.course.value_objects.Level;
 import com.imo.backend.contexts.common.Slug;
 import java.util.List;
 import java.util.Set;

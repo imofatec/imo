@@ -1,4 +1,4 @@
-package com.imo.backend.contexts.catalog.course.value_objects;
+package com.imo.backend.contexts.catalog.course;
 
 import com.imo.backend.contexts.common.Slug;
 

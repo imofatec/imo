@@ -1,7 +1,7 @@
 package com.imo.backend.contexts.catalog.skill;
 
-import com.imo.backend.contexts.catalog.course.value_objects.Categories;
-import com.imo.backend.contexts.catalog.course.value_objects.Category;
+import com.imo.backend.contexts.catalog.course.Categories;
+import com.imo.backend.contexts.catalog.course.Category;
 import com.imo.backend.contexts.common.Entity;
 import com.imo.backend.contexts.common.exceptions.custom.BadRequestException;
 import lombok.Data;

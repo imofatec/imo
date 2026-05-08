@@ -1,12 +1,9 @@
 package com.imo.backend.contexts.identity.user;
 
-import com.imo.backend.contexts.catalog.course.value_objects.Categories;
+import com.imo.backend.contexts.catalog.course.Categories;
 import com.imo.backend.contexts.common.Entity;
 import com.imo.backend.contexts.common.exceptions.custom.BadRequestException;
 import com.imo.backend.contexts.common.exceptions.custom.ForbiddenException;
-import com.imo.backend.contexts.identity.user.value_objects.AcademicDegree;
-import com.imo.backend.contexts.identity.user.value_objects.AvailableTimePerDay;
-import com.imo.backend.contexts.identity.user.value_objects.ExperienceLevel;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Locale;
