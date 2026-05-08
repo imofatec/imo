@@ -1,0 +1,108 @@
+package com.imo.backend.contexts.catalog.course.http.controllers;
+
+import com.imo.backend.contexts.catalog.course.http.dtos.CourseDTO;
+import com.imo.backend.contexts.catalog.course.http.dtos.UpdateCourseByIdRequest;
+import com.imo.backend.contexts.catalog.course.http.middlewares.ValidateUserCourseAccessService;
+import com.imo.backend.contexts.catalog.course.usecases.UpdateCourseByIdUseCase;
+import com.imo.backend.contexts.common.MongoDB;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class UpdateCourseByIdController extends CourseController {
+  private final UpdateCourseByIdUseCase useCase;
+
+  private final ValidateUserCourseAccessService validateUserCourseAccessService;
+
+  public UpdateCourseByIdController(
+      UpdateCourseByIdUseCase useCase,
+      ValidateUserCourseAccessService validateUserCourseAccessService) {
+    this.useCase = useCase;
+    this.validateUserCourseAccessService = validateUserCourseAccessService;
+  }
+
+  @Operation(summary = "Update course fields by id")
+  @SecurityRequirement(name = "Authorization")
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "Curso atualizado com sucesso",
+            content = @Content(schema = @Schema(implementation = CourseDTO.class))),
+        @ApiResponse(responseCode = "204", description = "Nenhum campo para atualizar"),
+        @ApiResponse(
+            responseCode = "400",
+            description = "Dados inválidos",
+            content =
+                @Content(
+                    schema =
+                        @Schema(
+                            implementation =
+                                com.imo.backend.contexts.common.exceptions.ErrorResponseDto
+                                    .class))),
+        @ApiResponse(
+            responseCode = "401",
+            description = "Não autenticado",
+            content =
+                @Content(
+                    schema =
+                        @Schema(
+                            implementation =
+                                com.imo.backend.contexts.common.exceptions.ErrorResponseDto
+                                    .class))),
+        @ApiResponse(
+            responseCode = "403",
+            description = "Sem permissão para editar este curso",
+            content =
+                @Content(
+                    schema =
+                        @Schema(
+                            implementation =
+                                com.imo.backend.contexts.common.exceptions.ErrorResponseDto
+                                    .class))),
+        @ApiResponse(
+            responseCode = "404",
+            description = "Curso não encontrado",
+            content =
+                @Content(
+                    schema =
+                        @Schema(
+                            implementation =
+                                com.imo.backend.contexts.common.exceptions.ErrorResponseDto
+                                    .class))),
+        @ApiResponse(
+            responseCode = "409",
+            description = "Curso já existe com este slug",
+            content =
+                @Content(
+                    schema =
+                        @Schema(
+                            implementation =
+                                com.imo.backend.contexts.common.exceptions.ErrorResponseDto.class)))
+      })
+  @PutMapping("/{id}")
+  public ResponseEntity<CourseDTO> handle(
+      @PathVariable String id, @Valid @RequestBody UpdateCourseByIdRequest dto) {
+    MongoDB.validateObjectId(id);
+    String userId = SecurityContextHolder.getContext().getAuthentication().getName();
+
+    this.validateUserCourseAccessService.execute(userId, id);
+
+    var updatedCourse = this.useCase.execute(id, dto.toCommand(id));
+
+    return updatedCourse == null
+        ? ResponseEntity.noContent().build()
+        : ResponseEntity.ok(CourseDTO.fromEntity(updatedCourse));
+  }
+}

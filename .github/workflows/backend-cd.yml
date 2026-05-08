@@ -1,0 +1,29 @@
+name: Backend CD Pipeline
+
+on:
+  push:
+    branches:
+      - develop
+      - master
+    paths:
+      - "backend/**"
+      - ".github/workflows/backend-cd.yml"
+
+jobs:
+  deploy-homolog:
+    if: github.ref == 'refs/heads/develop'
+    uses: ./.github/workflows/_deploy-ecs.yml
+    with:
+      environment: homolog
+      concurrency-group: backend-cd-homolog-${{ github.ref }}
+      build-and-push: true
+    secrets: inherit
+
+  deploy-prod:
+    if: github.ref == 'refs/heads/master'
+    uses: ./.github/workflows/_deploy-ecs.yml
+    with:
+      environment: prod
+      concurrency-group: backend-cd-prod-${{ github.ref }}
+      build-and-push: false
+    secrets: inherit

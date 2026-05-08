@@ -1,0 +1,59 @@
+@import 'tailwindcss';
+
+@font-face {
+  font-family: 'Manrope';
+  src: url('/fonts/Manrope/Manrope-VariableFont_wght.ttf') format('truetype');
+  font-weight: 100 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+@theme {
+  --color-dark-purple: #0e0025;
+  --color-cyan: #2DEFD8;
+  --color-custom-blue: #111827;
+  --color-custom-border-gray: #374151;
+  --color-custom-text-gray: #9CA3AF;
+}
+
+html,
+body {
+  font-family: 'Manrope', sans-serif;
+}
+
+.home-trending-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(45, 239, 216, 0.7) rgba(255, 255, 255, 0.08);
+}
+
+.home-trending-scrollbar::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+.home-trending-scrollbar::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 9999px;
+}
+
+.home-trending-scrollbar::-webkit-scrollbar-thumb {
+  background: linear-gradient(90deg, rgba(45, 239, 216, 0.65), rgba(45, 239, 216, 0.95));
+  border-radius: 9999px;
+  border: 1px solid rgba(11, 3, 38, 0.6);
+}
+
+.home-trending-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(90deg, rgba(45, 239, 216, 0.85), rgba(45, 239, 216, 1));
+}
+
+.search-input::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.search-input::-ms-clear,
+.search-input::-ms-reveal {
+  display: none;
+  width: 0;
+  height: 0;
+}

@@ -1,0 +1,110 @@
+import { zodResolver } from '@hookform/resolvers/zod'
+import { LoaderCircle } from 'lucide-react'
+import UserAvatar from '@/components/ui/UserAvatar'
+import { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import CharacterCount from '@/components/ui/CharacterCount'
+import { useUser } from '@/contexts/UserContext'
+import { showRequestErrorToast } from '@/lib/requestToast'
+import type { CommentData } from '@/schemas/comments/commentSchema'
+import { commentSchema } from '@/schemas/comments/commentSchema'
+
+type Props = {
+  onSubmitComment?: (comment: CommentData) => Promise<void> | void
+}
+
+export default function CommentInput({ onSubmitComment }: Props) {
+  const { user } = useUser()
+  const [isCommentInputActive, setIsCommentInputActive] = useState(false)
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    watch,
+    formState: { errors, isSubmitting },
+  } = useForm<CommentData>({
+    resolver: zodResolver(commentSchema),
+    mode: 'onBlur',
+    reValidateMode: 'onChange',
+    defaultValues: {
+      content: '',
+    },
+  })
+
+  const content = watch('content') ?? ''
+  const profileImageSrc = user?.profilePicturePath ?? null
+  const currentUserName = user?.name?.trim() || 'Usuario'
+
+  function handleCancelComment() {
+    reset({ content: '' })
+    setIsCommentInputActive(false)
+  }
+
+  async function handleSubmitComment(data: CommentData) {
+    try {
+      await onSubmitComment?.(data)
+      reset({ content: '' })
+      setIsCommentInputActive(false)
+    } catch (error: unknown) {
+      showRequestErrorToast(
+        error,
+        'Ocorreu um erro ao enviar seu comentário. Por favor, tente novamente.',
+        { id: 'comment-submit-error' }
+      )
+    }
+  }
+
+  return (
+    <form onSubmit={handleSubmit(handleSubmitComment)}>
+      <label htmlFor="new-comment" className="text-sm font-medium text-white">
+        Novo comentario
+      </label>
+
+      <div className="mt-3 flex items-center gap-3">
+        <UserAvatar imageSrc={profileImageSrc} name={currentUserName} fallback="initials" />
+        <input
+          id="new-comment"
+          type="text"
+          onFocus={() => setIsCommentInputActive(true)}
+          {...register('content')}
+          maxLength={200}
+          className="focus:border-cyan/40 h-11 w-full rounded-xl border border-white/10 bg-[#0C0424] px-3 text-sm text-white outline-none placeholder:text-white/35"
+          placeholder="Escreva um comentario aqui..."
+        />
+      </div>
+
+      <div className="mt-2 flex min-h-5 items-start justify-between gap-3 text-sm leading-5">
+        <p
+          role="alert"
+          className={`${errors.content?.message ? 'text-red-500' : 'text-transparent'} min-h-5`}
+        >
+          {errors.content?.message ?? ' '}
+        </p>
+        {isCommentInputActive ? (
+          <CharacterCount currentLength={content.length} minLength={1} maxLength={200} />
+        ) : null}
+      </div>
+
+      {isCommentInputActive && (
+        <div className="mt-3 flex items-center justify-end gap-3">
+          <button
+            type="button"
+            onClick={handleCancelComment}
+            className="rounded-xl border border-white/15 bg-white/5 px-4 py-2 text-sm font-medium text-white/80 transition hover:bg-white/10 hover:text-white"
+          >
+            Cancelar
+          </button>
+
+          <button
+            type="submit"
+            disabled={!content.trim() || isSubmitting}
+            className="border-cyan/30 bg-cyan/10 text-cyan hover:bg-cyan/20 rounded-xl border px-4 py-2 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            {isSubmitting ? <LoaderCircle className="animate-spin" size={16} /> : 'Comentar'}
+          </button>
+        </div>
+      )}
+    </form>
+  )
+}
