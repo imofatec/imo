@@ -7,6 +7,7 @@ import HomeSectionHeader from '@/components/Home/HomeSectionHeader'
 import { categoryOptions } from '@/constants/courseOptions'
 import { useContinueProgress } from '@/hooks/useContinueProgress'
 import { useCourses } from '@/hooks/useCourses'
+import { useRecommendations } from '@/hooks/useRecommendations'
 import LinkButton from '@/components/ui/LinkButton'
 import { useMemo } from 'react'
 
@@ -37,6 +38,12 @@ function getCategoryPath(value: string) {
 export default function HomePage() {
   const { continueProgress, loading: continueLoading } = useContinueProgress()
   const { courses, loading: coursesLoading, error: coursesError } = useCourses({ page: 0, size: 6 })
+  const {
+    courses: recommendedCourses,
+    loading: recommendationsLoading,
+    error: recommendationsError,
+    isAuthenticated,
+  } = useRecommendations()
 
   const continueCourse = useMemo(() => {
     if (!continueProgress) {
@@ -56,9 +63,9 @@ export default function HomePage() {
     }
   }, [continueProgress])
 
-  const recommendedCourses = useMemo(() => courses.slice(0, 4), [courses])
   const trendingCourses = useMemo(() => courses.slice(0, 6), [courses])
   const shouldShowCoursesSkeleton = coursesLoading || Boolean(coursesError)
+  const shouldShowRecommendationsFallback = Boolean(recommendationsError)
 
   return (
     <main className="min-h-screen w-full bg-[#0C0424]">
@@ -113,25 +120,66 @@ export default function HomePage() {
         <div>
           <HomeSectionHeader title="Cursos recomendados" to="/categorias" />
 
-          {shouldShowCoursesSkeleton ? (
+          {recommendationsLoading ? (
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
               {Array.from({ length: 4 }).map((_, index) => (
                 <SkeletonCourseCard key={`recommended-skeleton-${index}`} />
               ))}
             </div>
           ) : recommendedCourses.length > 0 ? (
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="home-trending-scrollbar flex gap-4 overflow-x-auto pb-2">
               {recommendedCourses.map((course) => (
-                <CourseCard
-                  key={course.id}
-                  course={course}
-                  actionLabel="Ver mais"
-                  modalActionLabel="Inscrever-se"
-                />
+                <div key={course.id} className="w-72 shrink-0">
+                  <CourseCard
+                    course={course}
+                    actionLabel="Ver mais"
+                    modalActionLabel="Inscrever-se"
+                  />
+                </div>
               ))}
             </div>
+          ) : !isAuthenticated ? (
+            <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
+              <p className="text-sm text-white/75">
+                Entre na sua conta para receber recomendações alinhadas com suas skills e
+                interesses.
+              </p>
+              <LinkButton
+                to="/login"
+                variant="cyanOutline"
+                className="text-cyan border-cyan/40 mt-4! w-auto rounded-full border px-4 py-2"
+              >
+                Fazer login
+              </LinkButton>
+            </div>
+          ) : shouldShowRecommendationsFallback ? (
+            <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
+              <p className="text-sm text-white/75">
+                Não foi possível carregar suas recomendações agora. Enquanto isso, você pode
+                explorar o catálogo completo.
+              </p>
+              <LinkButton
+                to="/categorias"
+                variant="cyanOutline"
+                className="text-cyan border-cyan/40 mt-4! w-auto rounded-full border px-4 py-2"
+              >
+                Explorar catálogo
+              </LinkButton>
+            </div>
           ) : (
-            <p className="text-sm text-white/70">Nenhum curso encontrado.</p>
+            <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
+              <p className="text-sm text-white/75">
+                Ainda não temos recomendações para você. Explore o catálogo para encontrar cursos e
+                ajudar o sistema a entender melhor seus interesses.
+              </p>
+              <LinkButton
+                to="/categorias"
+                variant="cyanOutline"
+                className="text-cyan border-cyan/40 mt-4! w-auto rounded-full border px-4 py-2"
+              >
+                Explorar catálogo
+              </LinkButton>
+            </div>
           )}
         </div>
 

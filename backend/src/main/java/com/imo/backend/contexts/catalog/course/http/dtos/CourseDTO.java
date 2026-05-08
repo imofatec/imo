@@ -4,6 +4,7 @@ import com.imo.backend.contexts.catalog.course.Course;
 import com.imo.backend.contexts.catalog.course.value_objects.Category;
 import com.imo.backend.contexts.catalog.course.value_objects.CourseName;
 import com.imo.backend.contexts.catalog.course.value_objects.Level;
+import java.util.List;
 
 public record CourseDTO(
     String id,
@@ -13,6 +14,7 @@ public record CourseDTO(
     String description,
     String firstLessonYoutubeLink,
     int lessonsCount,
+    List<String> skillIds,
     boolean isActive) {
   public static CourseDTO fromEntity(Course course) {
     return new CourseDTO(
@@ -23,6 +25,7 @@ public record CourseDTO(
         course.getDescription(),
         course.getFirstLessonYoutubeLink(),
         course.getLessonsCount(),
+        course.getSkillIdsAsString(),
         course.isActive());
   }
 }

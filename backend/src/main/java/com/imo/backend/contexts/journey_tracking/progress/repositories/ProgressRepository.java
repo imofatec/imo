@@ -7,12 +7,6 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 
 public interface ProgressRepository
     extends MongoRepository<Progress, String>, CustomProgressRepository {
-
-  default Progress findByUserIdAndCourseIdOrThrow(String userId, String courseId) {
-    return this.findByUserIdAndCourseId(userId, courseId)
-        .orElseThrow(() -> new NotFoundException("Progresso não encontrado"));
-  }
-
   default ProgressDetails findProgressDetailsOrThrow(String userId, String courseId) {
     return this.findDetailsByUserIdAndCourseId(userId, courseId)
         .orElseThrow(() -> new NotFoundException("Progresso não encontrado"));

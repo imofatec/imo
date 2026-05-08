@@ -5,21 +5,31 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.imo.backend.contexts.catalog.course.http.dtos.CourseDetailsDTO;
+import com.imo.backend.contexts.identity.user.repositories.UserRepository;
 import com.imo.backend.contexts.journey_tracking.progress.controllers.dtos.ProgressDTO;
 import com.imo.backend.contexts.journey_tracking.progress.controllers.dtos.ProgressDetailsDTO;
 import com.imo.backend.contexts.journey_tracking.progress.value_objects.ProgressStatus;
+import com.imo.backend.contexts.learning_path.skill_profile.SkillProfile;
+import com.imo.backend.contexts.learning_path.skill_profile.repositories.SkillProfileRepository;
 import com.imo.backend.e2e.BaseE2ETest;
 import com.imo.backend.e2e.catalog.helpers.CatalogTestHelper;
 import com.imo.backend.e2e.catalog.helpers.CatalogTestHelper.TestCourse;
 import com.imo.backend.e2e.identity.helpers.IdentityTestHelper;
 import com.imo.backend.e2e.identity.helpers.IdentityTestHelper.TestUser;
 import com.imo.backend.e2e.journey_tracking.helpers.JourneyTrackingTestHelper;
+import com.imo.backend.e2e.skill_profile.helpers.SkillProfileTestHelper;
 import io.restassured.http.ContentType;
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
 class ProgressE2ETest extends BaseE2ETest {
+  @Autowired private UserRepository userRepository;
+
+  @Autowired private SkillProfileRepository skillProfileRepository;
+
   @Test
   @DisplayName(
       "happy path (GET /api/progress/details): retorna 200 com lista de progressos paginada")
@@ -182,5 +192,30 @@ class ProgressE2ETest extends BaseE2ETest {
         .then()
         .statusCode(HttpStatus.CONFLICT.value())
         .body("error", equalTo("CONFLICT"));
+  }
+
+  @Test
+  @DisplayName(
+      "functional (PUT /api/progress/{lessonId}): atualizar skillProfile quando usuário finaliza curso")
+  void shouldUpdateSkillProfileWhenCourseIsFinished() {
+    TestUser user = TestUser.defaultUser();
+    String token = IdentityTestHelper.registerAndLogin(user);
+    CourseDetailsDTO courseDetails =
+        CatalogTestHelper.createCourse(token, TestCourse.defaultCourse());
+    String lessonId = courseDetails.lessons().getFirst().getId();
+    String userId = this.userRepository.findByEmail(user.email()).orElseThrow().getId();
+
+    JourneyTrackingTestHelper.watchLesson(token, lessonId);
+
+    List<SkillProfile> skillProfiles =
+        SkillProfileTestHelper.waitForSkillProfiles(
+            this.skillProfileRepository, userId, courseDetails.course().skillIds().size());
+
+    assertEquals(courseDetails.course().skillIds().size(), skillProfiles.size());
+    assertTrue(
+        skillProfiles.stream()
+            .allMatch(
+                skillProfile ->
+                    courseDetails.course().skillIds().contains(skillProfile.getSkillId())));
   }
 }

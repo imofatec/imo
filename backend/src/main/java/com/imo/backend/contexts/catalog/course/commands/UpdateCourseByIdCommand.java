@@ -1,6 +1,7 @@
 package com.imo.backend.contexts.catalog.course.commands;
 
 import com.imo.backend.contexts.catalog.course.value_objects.Categories;
+import java.util.List;
 
 public record UpdateCourseByIdCommand(
     String id,
@@ -9,4 +10,5 @@ public record UpdateCourseByIdCommand(
     String level,
     String description,
     Integer lessonsCount,
-    String firstLessonYoutubeLink) {}
+    String firstLessonYoutubeLink,
+    List<String> skillIds) {}

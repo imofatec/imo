@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class WatchLessonByIdUseCase {
   private final ProgressRepository progressRepository;
-
   private final CourseRepository courseRepository;
 
   private final ApplicationEventPublisher applicationEventPublisher;

@@ -1,5 +1,8 @@
 package com.imo.backend.e2e;
 
+import com.imo.backend.config.mongodb.populate.skills.PopulateSkills;
+import com.imo.backend.contexts.catalog.skill.repositories.SkillRepository;
+import com.imo.backend.e2e.catalog.helpers.CatalogSkillTestHelper;
 import com.imo.backend.singleton.MongoDBContainerSingleton;
 import com.imo.backend.singleton.RabbitMQContainerSingleton;
 import io.restassured.RestAssured;
@@ -47,6 +50,8 @@ public abstract class BaseE2ETest {
   @LocalServerPort int port;
 
   @Autowired MongoTemplate mongoTemplate;
+  @Autowired PopulateSkills populateSkills;
+  @Autowired SkillRepository skillRepository;
 
   @AfterEach
   void cleanDatabase() {
@@ -60,6 +65,7 @@ public abstract class BaseE2ETest {
 
               mongoTemplate.getCollection(collectionName).deleteMany(new Document());
             });
+    CatalogSkillTestHelper.clear();
   }
 
   @BeforeEach
@@ -67,5 +73,7 @@ public abstract class BaseE2ETest {
     RestAssured.baseURI = "http://localhost";
     RestAssured.port = this.port;
     RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
+    this.populateSkills.initializeIfEmpty();
+    CatalogSkillTestHelper.initialize(this.skillRepository.findAll());
   }
 }

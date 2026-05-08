@@ -66,6 +66,7 @@ public class SecurityConfig {
                         "/api/course/details/inactive/{id}",
                         "/api/course/search",
                         "/api/course/categories",
+                        "/api/skill/**",
                         "/api/comment/{lessonId}",
                         "/api/progress/milestones/public/**",
                         "/api/notification/stream/**",

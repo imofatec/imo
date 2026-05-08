@@ -1,15 +1,17 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useFieldArray, useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
-import FormInput from '@/components/ui/FormInput'
-import SelectInput from '@/components/CreateCourses/SelectInput'
-import TextBoxInput from '@/components/CreateCourses/TextBoxInput'
-import LessonFormCard from '@/components/CreateCourses/LessonForm'
 import FormSection from '@/components/CreateCourses/FormSection'
-import { useUser } from '@/contexts/UserContext'
+import LessonFormCard from '@/components/CreateCourses/LessonForm'
+import SelectInput from '@/components/CreateCourses/SelectInput'
+import SkillsSelectField from '@/components/CreateCourses/SkillsSelectField'
+import TextBoxInput from '@/components/CreateCourses/TextBoxInput'
 import Button from '@/components/ui/Button'
+import FormInput from '@/components/ui/FormInput'
 import { categoryOptions, levelOptions } from '@/constants/courseOptions'
-import { showRequestErrorToast } from '@/lib/requestToast'
+import { useUser } from '@/contexts/UserContext'
+import { useCourseSkillsField } from '@/hooks/useCourseSkillsField'
+import { showRequestErrorToast, useRequestErrorToast } from '@/lib/requestToast'
 import { createCourseSchema, type CreateCourseData } from '@/schemas/courses/CreateCourseSchema'
 import { createCourseRequest } from '@/services/course/createCourse'
 import { toast } from 'sonner'
@@ -22,6 +24,7 @@ export default function CreateCoursePage() {
     register,
     handleSubmit,
     control,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm<CreateCourseData>({
     resolver: zodResolver(createCourseSchema),
@@ -32,9 +35,17 @@ export default function CreateCoursePage() {
       category: '',
       level: '',
       description: '',
+      skillIds: [],
       lessons: [{ nameLesson: '', link: '', descriptionL: '' }],
     },
   })
+
+  const { skills, skillsError, skillsLoading, selectedCategorySlug } = useCourseSkillsField({
+    control,
+    setValue,
+  })
+
+  useRequestErrorToast(skillsError, { id: 'create-course-skills-error' })
 
   const { fields, append, remove } = useFieldArray({
     control,
@@ -105,7 +116,7 @@ export default function CreateCoursePage() {
               />
             </div>
 
-            <div className="mt-5">
+            <div className="grid gap-5 md:grid-cols-2">
               <SelectInput
                 id="level"
                 label="Nível"
@@ -114,6 +125,14 @@ export default function CreateCoursePage() {
                 className="h-12 rounded-xl bg-white/5"
                 error={errors.level?.message}
                 {...register('level')}
+              />
+
+              <SkillsSelectField
+                control={control}
+                error={errors.skillIds?.message}
+                hasCategorySelected={Boolean(selectedCategorySlug)}
+                loading={skillsLoading}
+                skills={skills}
               />
             </div>
 

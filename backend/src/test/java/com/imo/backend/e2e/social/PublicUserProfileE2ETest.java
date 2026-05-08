@@ -12,6 +12,7 @@ import com.imo.backend.contexts.journey_tracking.progress_milestone.http.dtos.Pr
 import com.imo.backend.contexts.social.profile.http.dtos.PublicUserProfileDTO;
 import com.imo.backend.contexts.social.profile.http.dtos.SharedProgressMilestoneDTO;
 import com.imo.backend.e2e.BaseE2ETest;
+import com.imo.backend.e2e.catalog.helpers.CatalogSkillTestHelper;
 import com.imo.backend.e2e.catalog.helpers.CatalogTestHelper;
 import com.imo.backend.e2e.catalog.helpers.CatalogTestHelper.TestCourse;
 import com.imo.backend.e2e.identity.helpers.IdentityTestHelper;
@@ -163,7 +164,8 @@ class PublicUserProfileE2ETest extends BaseE2ETest {
         Categories.DEV_WEB,
         "Iniciante",
         "Curso criado para testar perfil público",
-        baseCourse.lessons());
+        baseCourse.lessons(),
+        CatalogSkillTestHelper.getSkillIdsForCategory(Categories.DEV_WEB, 2));
   }
 
   private void watchAllLessons(String token, CourseDetailsDTO courseDetails) {

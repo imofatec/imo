@@ -1,5 +1,6 @@
 package com.imo.backend.config.mongodb.populate;
 
+import com.imo.backend.config.mongodb.populate.skills.PopulateSkills;
 import com.imo.backend.contexts.identity.user.User;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -13,25 +14,28 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
+@Profile({"dev", "test"})
 public class Populate implements CommandLineRunner {
   private final MongoDatabaseFactory mongoDatabaseFactory;
+  private final PopulateSkills populateSkills;
   private final PopulateUsers populateUsers;
   private final PopulateCourses populateCourses;
   private final PopulateProgress populateProgress;
 
   public Populate(
       MongoDatabaseFactory mongoDatabaseFactory,
+      PopulateSkills populateSkills,
       PopulateUsers populateUsers,
       PopulateCourses populateCourses,
       PopulateProgress populateProgress) {
     this.mongoDatabaseFactory = mongoDatabaseFactory;
+    this.populateSkills = populateSkills;
     this.populateUsers = populateUsers;
     this.populateCourses = populateCourses;
     this.populateProgress = populateProgress;
   }
 
   @Override
-  @Profile({"dev", "test"})
   public void run(String... args) throws Exception {
     Map<String, String> argMap = parseArgs(args);
 
@@ -48,6 +52,7 @@ public class Populate implements CommandLineRunner {
 
     this.clearCollections();
 
+    this.populateSkills.execute();
     User adminUser = this.populateUsers.execute(userQty);
     this.populateCourses.execute(adminUser.getId(), courseQty);
     this.populateProgress.execute();

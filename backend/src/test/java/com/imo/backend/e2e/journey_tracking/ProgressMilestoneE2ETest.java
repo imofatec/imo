@@ -11,6 +11,7 @@ import com.imo.backend.contexts.catalog.course.http.dtos.UpdateCourseByIdRequest
 import com.imo.backend.contexts.catalog.course.value_objects.Categories;
 import com.imo.backend.contexts.journey_tracking.progress_milestone.http.dtos.ProgressMilestoneDTO;
 import com.imo.backend.e2e.BaseE2ETest;
+import com.imo.backend.e2e.catalog.helpers.CatalogSkillTestHelper;
 import com.imo.backend.e2e.catalog.helpers.CatalogTestHelper;
 import com.imo.backend.e2e.catalog.helpers.CatalogTestHelper.TestCourse;
 import com.imo.backend.e2e.identity.helpers.IdentityTestHelper;
@@ -107,7 +108,8 @@ class ProgressMilestoneE2ETest extends BaseE2ETest {
                 "Curso Atualizado para Compartilhamento",
                 Categories.DEV_WEB,
                 "Iniciante",
-                "Descrição suficiente para atualizar o snapshot do marco de progresso."))
+                "Descrição suficiente para atualizar o snapshot do marco de progresso.",
+                CatalogSkillTestHelper.getSkillIdsForCategory(Categories.DEV_WEB, 2)))
         .when()
         .put("/api/course/{id}", courseDetails.course().id())
         .then()

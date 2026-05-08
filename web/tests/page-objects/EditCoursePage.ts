@@ -6,6 +6,7 @@ type CourseUpdateInput = {
   category: string
   level: string
   description: string
+  skillIds?: string[]
 }
 
 export class EditCoursePage {
@@ -20,8 +21,12 @@ export class EditCoursePage {
     await this.page.locator('input[name="nameCourse"]').fill(course.name)
     await this.page.locator('select[name="category"]').selectOption(course.category)
     await this.page.locator('select[name="level"]').selectOption(course.level)
+    await this.fillSkills(course.skillIds ?? [])
     await this.page.locator('textarea[name="description"]').fill(course.description)
-    await this.page.getByRole('button', { name: /Salvar altera/i }).first().click()
+    await this.page
+      .getByRole('button', { name: /Salvar altera/i })
+      .first()
+      .click()
   }
 
   async createLesson(lesson: CourseLessonInput) {
@@ -33,11 +38,17 @@ export class EditCoursePage {
 
   async updateLesson(index: number, lesson: CourseLessonInput) {
     await this.fillLesson(index, lesson)
-    await this.page.getByRole('button', { name: /Salvar altera/i }).nth(index + 1).click()
+    await this.page
+      .getByRole('button', { name: /Salvar altera/i })
+      .nth(index + 1)
+      .click()
   }
 
   async deleteLesson(index: number) {
-    await this.page.getByRole('button', { name: /Excluir aula/i }).nth(index).click()
+    await this.page
+      .getByRole('button', { name: /Excluir aula/i })
+      .nth(index)
+      .click()
   }
 
   async openDeleteCourseModal() {
@@ -65,5 +76,20 @@ export class EditCoursePage {
     await this.page.locator(`[name="lessons.${index}.nameLesson"]`).fill(lesson.title)
     await this.page.locator(`[name="lessons.${index}.link"]`).fill(lesson.youtubeLink)
     await this.page.locator(`[name="lessons.${index}.descriptionL"]`).fill(lesson.description)
+  }
+
+  private async fillSkills(skillIds: string[]) {
+    const skillSelect = this.page.locator('select[name="skillIds"]')
+
+    await expect(skillSelect).toBeEnabled()
+
+    if (skillIds.length === 0) {
+      await skillSelect.selectOption({ index: 1 })
+      return
+    }
+
+    for (const skillId of skillIds.slice(0, 2)) {
+      await skillSelect.selectOption(skillId)
+    }
   }
 }
