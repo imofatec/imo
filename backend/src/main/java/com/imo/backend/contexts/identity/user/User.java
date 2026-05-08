@@ -9,9 +9,11 @@ import com.imo.backend.contexts.identity.user.value_objects.AvailableTimePerDay;
 import com.imo.backend.contexts.identity.user.value_objects.ExperienceLevel;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Locale;
 import java.util.regex.Pattern;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @EqualsAndHashCode(callSuper = true)
@@ -21,6 +23,7 @@ public class User extends Entity {
 
   private String name;
 
+  @Indexed(unique = true, name = "uk_users_email")
   private String email;
 
   private String password;
@@ -80,11 +83,22 @@ public class User extends Entity {
 
   private static final String EMAIL_REGEX = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
 
+  public static String normalizeEmail(String email) {
+    if (email == null) {
+      return null;
+    }
+
+    return email.trim().toLowerCase(Locale.ROOT);
+  }
+
   public void setEmail(String email) {
-    if (email == null || !Pattern.matches(EMAIL_REGEX, email)) {
+    String normalizedEmail = normalizeEmail(email);
+
+    if (normalizedEmail == null || !Pattern.matches(EMAIL_REGEX, normalizedEmail)) {
       throw new BadRequestException("Formato de e-mail inválido");
     }
-    this.email = email;
+
+    this.email = normalizedEmail;
   }
 
   public void setName(String name) {

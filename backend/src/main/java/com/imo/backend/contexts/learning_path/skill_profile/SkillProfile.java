@@ -5,10 +5,15 @@ import com.imo.backend.contexts.common.exceptions.custom.BadRequestException;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.bson.types.ObjectId;
+import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @EqualsAndHashCode(callSuper = true)
 @Document("skill_profile")
+@CompoundIndex(
+    name = "uk_skill_profile_user_skill",
+    def = "{'userId': 1, 'skillId': 1}",
+    unique = true)
 @Data
 public class SkillProfile extends Entity {
   private ObjectId userId;

@@ -34,7 +34,7 @@ public class RecoveryCodePolicy {
             .orElseThrow(() -> new BadRequestException(ERROR_MESSAGE));
 
     RecoveryCode foundRecoveryCode =
-        this.recoveryCodeRepository.findByUserId(foundUser.getId()).orElse(null);
+        this.recoveryCodeRepository.findValidByUserId(foundUser.getId()).orElse(null);
 
     if (foundRecoveryCode == null
         || foundRecoveryCode.isWasUsed()

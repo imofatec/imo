@@ -19,10 +19,7 @@ public class UserPolicies {
   }
 
   public void assertCanRegister(CreateUserCommand createUserCommand) {
-    var userEmail = userRepository.findByEmail(createUserCommand.email());
-    if (userEmail.isPresent()) {
-      throw new ConflictException("O email já existe");
-    }
+    this.assertEmailAvailable(createUserCommand.email(), null);
 
     if (!createUserCommand.confPassword().equals(createUserCommand.password())) {
       throw new BadRequestException("As senhas não coincidem");
@@ -53,5 +50,19 @@ public class UserPolicies {
     if (!this.passwordEncoder.matches(oldPassword, user.getPassword())) {
       throw new BadRequestException("A senha atual está incorreta");
     }
+  }
+
+  public void assertEmailAvailable(String email, String currentUserId) {
+    User existingUser = this.userRepository.findByEmail(email).orElse(null);
+
+    if (existingUser == null) {
+      return;
+    }
+
+    if (currentUserId != null && currentUserId.equals(existingUser.getId())) {
+      return;
+    }
+
+    throw new ConflictException("O email já existe");
   }
 }
