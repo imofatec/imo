@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 @Slf4j
@@ -62,6 +63,18 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
             "VALIDATION_ERROR",
             String.format("O parâmetro %s é obrigatório", ex.getParameterName())),
         HttpStatus.BAD_REQUEST);
+  }
+
+  @Override
+  protected ResponseEntity<Object> handleMaxUploadSizeExceededException(
+      MaxUploadSizeExceededException ex,
+      HttpHeaders headers,
+      HttpStatusCode status,
+      WebRequest request) {
+    return new ResponseEntity<>(
+        new ErrorResponseDto(
+            "PAYLOAD_TOO_LARGE", "O arquivo enviado excede o tamanho máximo permitido"),
+        HttpStatus.PAYLOAD_TOO_LARGE);
   }
 
   @ExceptionHandler(MethodArgumentTypeMismatchException.class)
