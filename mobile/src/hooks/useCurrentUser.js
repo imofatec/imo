@@ -1,7 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import { apiFetch } from "../api/apiFetch";
 import { safeAwait } from "../lib/safeAwait";
-import { baseURL } from "../api/enviroment";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export function useCurrentUser() {
@@ -27,7 +26,7 @@ export function useCurrentUser() {
         if (data.profilePicturePath) {
             try {
                 const token = await AsyncStorage.getItem("token");
-                const imageUrl = `${baseURL}/uploads/${data.profilePicturePath}`;
+                const imageUrl = data.profilePicturePath;
 
                 const res = await fetch(imageUrl, {
                     method: "GET",
@@ -44,6 +43,8 @@ export function useCurrentUser() {
             } catch (imgErr) {
                 console.error("Erro ao buscar imagem:", imgErr);
             }
+        } else {
+            setUrlImage(null);
         }
         setLoading(false);
     }, []);

@@ -299,6 +299,7 @@ class UserE2ETest extends BaseE2ETest {
 
     assertNotNull(updated.id());
     assertNotNull(updated.profilePicturePath());
+    assertTrue(updated.profilePicturePath().startsWith(this.baseUrl() + "/uploads/"));
     tempFile.delete();
   }
 }

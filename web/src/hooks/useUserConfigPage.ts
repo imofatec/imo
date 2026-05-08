@@ -1,5 +1,4 @@
 import { useUser } from '@/contexts/UserContext'
-import { resolveProfileImageSrc } from '@/lib/resolveProfileImageSrc'
 import { showRequestErrorToast } from '@/lib/requestToast'
 import {
   type UpdateUserBioData,
@@ -47,7 +46,7 @@ function resolveCurrentProfileImageSrc(
     return photoPreviewUrl
   }
 
-  return resolveProfileImageSrc(profilePicturePath)
+  return profilePicturePath?.trim() || null
 }
 
 export function useUserConfigPage() {

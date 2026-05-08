@@ -1,6 +1,7 @@
 package com.imo.backend.contexts.social.profile.http.dtos;
 
 import com.imo.backend.contexts.common.HttpDateTimeFormatter;
+import com.imo.backend.contexts.journey_tracking.progress_milestone.lib.ProgressMilestoneUrlBuilder;
 import com.imo.backend.contexts.social.profile.SharedProgressMilestoneDetails;
 import java.time.LocalDateTime;
 
@@ -12,16 +13,8 @@ public record SharedProgressMilestoneDTO(
         milestone.publicCode(),
         milestone.courseNameSnapshot(),
         HttpDateTimeFormatter.toDateTime(resolveGeneratedAt(milestone)),
-        buildShareUrl(baseUrl, milestone.publicCode()),
-        buildImageUrl(baseUrl, milestone.publicCode()));
-  }
-
-  static String buildShareUrl(String baseUrl, String publicCode) {
-    return baseUrl + "/m/" + publicCode;
-  }
-
-  static String buildImageUrl(String baseUrl, String publicCode) {
-    return baseUrl + "/api/progress/milestones/public/" + publicCode + "/image.png";
+        ProgressMilestoneUrlBuilder.buildShareUrl(baseUrl, milestone.publicCode()),
+        ProgressMilestoneUrlBuilder.buildImageUrl(baseUrl, milestone.publicCode()));
   }
 
   private static LocalDateTime resolveGeneratedAt(SharedProgressMilestoneDetails milestone) {

@@ -7,7 +7,6 @@ import SocialProfileNotFound from '@/components/SocialProfile/SocialProfileNotFo
 import SocialProfileSidebar from '@/components/SocialProfile/SocialProfileSidebar'
 import SocialProfileSkeleton from '@/components/SocialProfile/SocialProfileSkeleton'
 import { useSocialProfilePage } from '@/hooks/useSocialProfilePage'
-import { resolveProfileImageSrc } from '@/lib/resolveProfileImageSrc'
 import { useParams } from 'react-router-dom'
 
 export default function SocialProfilePage() {
@@ -16,7 +15,6 @@ export default function SocialProfilePage() {
     userId,
   })
 
-  const profileImageSrc = resolveProfileImageSrc(profile?.profilePicturePath ?? null)
   const categories = profile?.categoriesOfInterest ?? []
 
   if (isLoading) {
@@ -41,7 +39,7 @@ export default function SocialProfilePage() {
           <div className="grid gap-8 xl:grid-cols-[240px_minmax(0,1fr)] 2xl:gap-10 xl:items-stretch">
             <SocialProfileSidebar
               name={profile.name}
-              profileImageSrc={profileImageSrc}
+              profileImageSrc={profile.profilePicturePath}
               categories={categories}
             />
 

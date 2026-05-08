@@ -76,4 +76,8 @@ public abstract class BaseE2ETest {
     this.populateSkills.initializeIfEmpty();
     CatalogSkillTestHelper.initialize(this.skillRepository.findAll());
   }
+
+  protected String baseUrl() {
+    return RestAssured.baseURI + ":" + RestAssured.port;
+  }
 }

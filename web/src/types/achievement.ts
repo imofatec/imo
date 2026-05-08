@@ -11,7 +11,6 @@ export type Achievement = {
 }
 
 export type AchievementListItem = Achievement & {
-  imageSrc: string | null
   unlockedLabel: string
   isUnlocked: boolean
 }

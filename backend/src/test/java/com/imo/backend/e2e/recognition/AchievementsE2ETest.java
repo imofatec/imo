@@ -43,7 +43,8 @@ class AchievementsE2ETest extends BaseE2ETest {
     AchievementCardDTO firstLesson =
         this.findByKey(achievements, StaticAchievementsKeys.FIRST_LESSON);
     assertNotNull(firstLesson.unlockedAt());
-    assertEquals("/images/achievements/unlocked/first-lesson.png", firstLesson.imageUrl());
+    assertEquals(
+        this.baseUrl() + "/images/achievements/unlocked/first-lesson.png", firstLesson.imageUrl());
     assertEquals(3L, firstLesson.currentValue());
     assertEquals(1, firstLesson.targetValue());
     assertEquals(100, firstLesson.progressPercentage());
@@ -51,7 +52,8 @@ class AchievementsE2ETest extends BaseE2ETest {
     AchievementCardDTO firstCourse =
         this.findByKey(achievements, StaticAchievementsKeys.FIRST_COURSE);
     assertNotNull(firstCourse.unlockedAt());
-    assertEquals("/images/achievements/unlocked/first-course.png", firstCourse.imageUrl());
+    assertEquals(
+        this.baseUrl() + "/images/achievements/unlocked/first-course.png", firstCourse.imageUrl());
     assertEquals(1L, firstCourse.currentValue());
     assertEquals(1, firstCourse.targetValue());
     assertEquals(100, firstCourse.progressPercentage());
@@ -59,7 +61,7 @@ class AchievementsE2ETest extends BaseE2ETest {
     AchievementCardDTO tenCourses =
         this.findByKey(achievements, StaticAchievementsKeys.TEN_COURSES);
     assertNull(tenCourses.unlockedAt());
-    assertEquals("/images/achievements/locked/default.png", tenCourses.imageUrl());
+    assertEquals(this.baseUrl() + "/images/achievements/locked/default.png", tenCourses.imageUrl());
     assertEquals(1L, tenCourses.currentValue());
     assertEquals(10, tenCourses.targetValue());
     assertEquals(10, tenCourses.progressPercentage());
@@ -67,7 +69,7 @@ class AchievementsE2ETest extends BaseE2ETest {
     AchievementCardDTO tenLessons =
         this.findByKey(achievements, StaticAchievementsKeys.TEN_LESSONS);
     assertNull(tenLessons.unlockedAt());
-    assertEquals("/images/achievements/locked/default.png", tenLessons.imageUrl());
+    assertEquals(this.baseUrl() + "/images/achievements/locked/default.png", tenLessons.imageUrl());
     assertEquals(3L, tenLessons.currentValue());
     assertEquals(10, tenLessons.targetValue());
     assertEquals(30, tenLessons.progressPercentage());
@@ -75,7 +77,8 @@ class AchievementsE2ETest extends BaseE2ETest {
     AchievementCardDTO threeCourses =
         this.findByKey(achievements, StaticAchievementsKeys.THREE_COURSES);
     assertNull(threeCourses.unlockedAt());
-    assertEquals("/images/achievements/locked/default.png", threeCourses.imageUrl());
+    assertEquals(
+        this.baseUrl() + "/images/achievements/locked/default.png", threeCourses.imageUrl());
     assertEquals(1L, threeCourses.currentValue());
     assertEquals(3, threeCourses.targetValue());
     assertEquals(33, threeCourses.progressPercentage());
@@ -83,7 +86,8 @@ class AchievementsE2ETest extends BaseE2ETest {
     AchievementCardDTO fiftyLessons =
         this.findByKey(achievements, StaticAchievementsKeys.FIFTY_LESSONS);
     assertNull(fiftyLessons.unlockedAt());
-    assertEquals("/images/achievements/locked/default.png", fiftyLessons.imageUrl());
+    assertEquals(
+        this.baseUrl() + "/images/achievements/locked/default.png", fiftyLessons.imageUrl());
     assertEquals(3L, fiftyLessons.currentValue());
     assertEquals(50, fiftyLessons.targetValue());
     assertEquals(6, fiftyLessons.progressPercentage());

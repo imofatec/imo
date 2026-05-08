@@ -1,5 +1,4 @@
 import axios from 'axios'
-import { resolveAchievementImageSrc } from '@/lib/resolveAchievementImageSrc'
 import { formatSocialProfileDateTime } from '@/lib/socialProfile'
 import { getPublicUserProfileRequest } from '@/services/user/getPublicUserProfileRequest'
 import type { AchievementListItem } from '@/types/achievement'
@@ -25,7 +24,6 @@ function mapAchievementItem(
     currentValue: 1,
     targetValue: 1,
     progressPercentage: 100,
-    imageSrc: resolveAchievementImageSrc(achievement.imageUrl),
     unlockedLabel: formatSocialProfileDateTime(achievement.unlockedAt, 'Data não encontrada'),
     isUnlocked: Boolean(achievement.unlockedAt),
   }

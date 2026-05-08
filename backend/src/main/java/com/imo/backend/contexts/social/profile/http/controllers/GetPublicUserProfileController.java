@@ -1,5 +1,6 @@
 package com.imo.backend.contexts.social.profile.http.controllers;
 
+import com.imo.backend.contexts.common.ApplicationUrlHelper;
 import com.imo.backend.contexts.common.MongoDB;
 import com.imo.backend.contexts.identity.user.http.controllers.UserController;
 import com.imo.backend.contexts.social.profile.http.dtos.PublicUserProfileDTO;
@@ -13,14 +14,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 @RestController
 public class GetPublicUserProfileController extends UserController {
   private final GetPublicUserProfileUseCase getPublicUserProfileUseCase;
+  private final ApplicationUrlHelper applicationUrlHelper;
 
-  public GetPublicUserProfileController(GetPublicUserProfileUseCase getPublicUserProfileUseCase) {
+  public GetPublicUserProfileController(
+      GetPublicUserProfileUseCase getPublicUserProfileUseCase,
+      ApplicationUrlHelper applicationUrlHelper) {
     this.getPublicUserProfileUseCase = getPublicUserProfileUseCase;
+    this.applicationUrlHelper = applicationUrlHelper;
   }
 
   @Operation(summary = "Get public user profile")
@@ -43,7 +47,7 @@ public class GetPublicUserProfileController extends UserController {
   @GetMapping("/public/{id}")
   public ResponseEntity<PublicUserProfileDTO> handle(@PathVariable String id) {
     MongoDB.validateObjectId(id);
-    String baseUrl = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
+    String baseUrl = this.applicationUrlHelper.getBackendBaseUrl();
 
     return ResponseEntity.ok(this.getPublicUserProfileUseCase.execute(id, baseUrl));
   }

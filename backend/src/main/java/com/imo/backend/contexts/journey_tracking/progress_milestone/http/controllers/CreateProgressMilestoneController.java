@@ -1,5 +1,6 @@
 package com.imo.backend.contexts.journey_tracking.progress_milestone.http.controllers;
 
+import com.imo.backend.contexts.common.ApplicationUrlHelper;
 import com.imo.backend.contexts.common.MongoDB;
 import com.imo.backend.contexts.common.exceptions.ErrorResponseDto;
 import com.imo.backend.contexts.journey_tracking.progress_milestone.http.dtos.ProgressMilestoneDTO;
@@ -15,15 +16,17 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 @RestController
 public class CreateProgressMilestoneController extends ProgressMilestoneController {
   private final CreateProgressMilestoneUseCase createProgressMilestoneUseCase;
+  private final ApplicationUrlHelper applicationUrlHelper;
 
   public CreateProgressMilestoneController(
-      CreateProgressMilestoneUseCase createProgressMilestoneUseCase) {
+      CreateProgressMilestoneUseCase createProgressMilestoneUseCase,
+      ApplicationUrlHelper applicationUrlHelper) {
     this.createProgressMilestoneUseCase = createProgressMilestoneUseCase;
+    this.applicationUrlHelper = applicationUrlHelper;
   }
 
   @Operation(summary = "Create or refresh a progress milestone by course id")
@@ -51,7 +54,7 @@ public class CreateProgressMilestoneController extends ProgressMilestoneControll
   public ResponseEntity<ProgressMilestoneDTO> handle(@PathVariable String courseId) {
     MongoDB.validateObjectId(courseId);
     String userId = SecurityContextHolder.getContext().getAuthentication().getName();
-    String baseUrl = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
+    String baseUrl = this.applicationUrlHelper.getBackendBaseUrl();
 
     var milestone = this.createProgressMilestoneUseCase.execute(userId, courseId);
 
