@@ -1,22 +1,22 @@
 import authAxiosInstance from '@/api/authAxiosInstance'
 import { useAuth } from '@/contexts/AuthContext'
 import { safeAwait } from '@/lib/safeAwait'
-import type { User } from '@/types/user'
+import type { CurrentUserProfile } from '@/types/user'
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 
 type UserContextType = {
-  user: User | null
+  user: CurrentUserProfile | null
   loading: boolean
   error: string | null
   refetch: () => Promise<void>
-  setUser: React.Dispatch<React.SetStateAction<User | null>>
+  setUser: React.Dispatch<React.SetStateAction<CurrentUserProfile | null>>
 }
 
 const UserContext = createContext<UserContextType | null>(null)
 
 export function UserProvider({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, isLoading: isAuthLoading } = useAuth()
-  const [user, setUser] = useState<User | null>(null)
+  const [user, setUser] = useState<CurrentUserProfile | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -30,7 +30,9 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
 
     setLoading(true)
 
-    const [err, response] = await safeAwait(authAxiosInstance.get<User>('/api/user/profile'))
+    const [err, response] = await safeAwait(
+      authAxiosInstance.get<CurrentUserProfile>('/api/user/profile')
+    )
 
     if (err || !response) {
       setError(err?.message || 'Erro ao buscar perfil do usuário')

@@ -2,7 +2,7 @@ package com.imo.backend.contexts.identity.user.http.controllers.get;
 
 import com.imo.backend.contexts.common.MongoDB;
 import com.imo.backend.contexts.identity.user.http.controllers.UserController;
-import com.imo.backend.contexts.identity.user.http.dtos.UserDTO;
+import com.imo.backend.contexts.identity.user.http.dtos.UserSummaryDTO;
 import com.imo.backend.contexts.identity.user.repositories.UserRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -28,7 +28,7 @@ public class GetUserByIdController extends UserController {
         @ApiResponse(
             responseCode = "200",
             description = "Usuário encontrado",
-            content = @Content(schema = @Schema(implementation = UserDTO.class))),
+            content = @Content(schema = @Schema(implementation = UserSummaryDTO.class))),
         @ApiResponse(
             responseCode = "404",
             description = "Usuário não encontrado",
@@ -40,9 +40,9 @@ public class GetUserByIdController extends UserController {
                                 com.imo.backend.contexts.common.exceptions.ErrorResponseDto.class)))
       })
   @GetMapping("/{id}")
-  public ResponseEntity<UserDTO> handle(@PathVariable String id) {
+  public ResponseEntity<UserSummaryDTO> handle(@PathVariable String id) {
     MongoDB.validateObjectId(id);
-    var user = UserDTO.fromUser(this.userRepository.findByIdOrThrow(id));
+    var user = UserSummaryDTO.fromUser(this.userRepository.findByIdOrThrow(id));
 
     return ResponseEntity.ok(user);
   }

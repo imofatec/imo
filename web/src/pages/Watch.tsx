@@ -1,15 +1,18 @@
 import { useEffect, useState } from 'react'
+import { toast } from 'sonner'
 import { useNavigate, useParams } from 'react-router-dom'
-import authAxiosInstance from '@/api/authAxiosInstance'
 import LessonTabContent from '@/components/watch/LessonTabContent'
 import LessonCommentsSection from '@/components/watch/LessonCommentsSection'
 import PlayerHeader from '@/components/watch/PlayerHeader'
+import ProgressMilestoneModal from '@/components/watch/ProgressMilestoneModal'
 import WatchHeader from '@/components/watch/WatchHeader'
 import { useAchievementNotificationStream } from '@/hooks/useAchievementNotificationStream'
 import { useCurrentCourse } from '@/hooks/useCurrentCourse'
 import { useCurrentProgress } from '@/hooks/useCurrentProgress'
-import { useRequestErrorToast } from '@/lib/requestToast'
+import { showRequestErrorToast, useRequestErrorToast } from '@/lib/requestToast'
+import { createProgressMilestoneRequest } from '@/services/progressMilestone/createProgressMilestone'
 import type { CourseDetailsLesson } from '@/types/course'
+import type { ProgressMilestone } from '@/types/progressMilestone'
 
 export default function WatchPage() {
   useAchievementNotificationStream()
@@ -26,7 +29,11 @@ export default function WatchPage() {
   } = useCurrentProgress(courseId ?? '')
   const [currentLesson, setCurrentLesson] = useState<CourseDetailsLesson | null>(null)
   const [currentLessonId, setCurrentLessonId] = useState('')
-  const [isDownloadingCertificate, setIsDownloadingCertificate] = useState(false)
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false)
+  const [milestone, setMilestone] = useState<ProgressMilestone | null>(null)
+  const [milestoneCourseId, setMilestoneCourseId] = useState<string | null>(null)
+  const [milestoneError, setMilestoneError] = useState<string | null>(null)
+  const [isPreparingMilestone, setIsPreparingMilestone] = useState(false)
   const lessonsCount = course?.lessons.length ?? 0
 
   useRequestErrorToast(courseError, { id: 'watch-course-error' })
@@ -44,6 +51,14 @@ export default function WatchPage() {
     setCurrentLesson(lessonFromUrl)
     setCurrentLessonId(lessonFromUrl.id)
   }, [course, idLesson])
+
+  useEffect(() => {
+    setIsShareModalOpen(false)
+    setMilestone(null)
+    setMilestoneCourseId(null)
+    setMilestoneError(null)
+    setIsPreparingMilestone(false)
+  }, [courseId])
 
   const watchedCount = watchedLessonIds.size
   const progressPercent = currentProgress?.summary.completionPercentage ?? 0
@@ -87,30 +102,63 @@ export default function WatchPage() {
     await markLessonAsWatched(lessonId)
   }
 
-  async function handleDownloadCertificate() {
-    if (!courseId || !allWatched || isDownloadingCertificate) return
+  async function loadMilestone(forceRefresh = false) {
+    if (!courseId || !allWatched || isPreparingMilestone) return
 
-    setIsDownloadingCertificate(true)
+    if (!forceRefresh && milestone && milestoneCourseId === courseId) {
+      setMilestoneError(null)
+      return
+    }
+
+    setIsPreparingMilestone(true)
+    setMilestoneError(null)
 
     try {
-      const response = await authAxiosInstance.get(`/api/certificate/issue/${courseId}`, {
-        responseType: 'blob',
-      })
+      const responseMilestone = await createProgressMilestoneRequest(courseId)
 
-      const blobUrl = window.URL.createObjectURL(response.data)
-      const downloadLink = document.createElement('a')
-      const fileName = `${course?.course.name.slug ?? 'certificado'}.pdf`
+      setMilestone(responseMilestone)
+      setMilestoneCourseId(courseId)
+    } catch (requestError) {
+      const message = showRequestErrorToast(
+        requestError,
+        'Não foi possível preparar o marco de progresso. Por favor, tente novamente.',
+        { id: 'progress-milestone-error' }
+      )
 
-      downloadLink.href = blobUrl
-      downloadLink.download = fileName
-      document.body.appendChild(downloadLink)
-      downloadLink.click()
-      downloadLink.remove()
-      window.URL.revokeObjectURL(blobUrl)
+      setMilestoneError(message)
     } finally {
-      setIsDownloadingCertificate(false)
+      setIsPreparingMilestone(false)
     }
   }
+
+  async function handleOpenShareProgress() {
+    if (!courseId || !allWatched) return
+
+    setIsShareModalOpen(true)
+    await loadMilestone()
+  }
+
+  async function handleRetryMilestone() {
+    await loadMilestone(true)
+  }
+
+  function handleCloseShareModal() {
+    setIsShareModalOpen(false)
+  }
+
+  function handleMilestoneReadyFeedback() {
+    if (!milestone || isPreparingMilestone || milestoneError) return
+
+    toast.success('Marco pronto para compartilhar', {
+      id: 'progress-milestone-ready',
+      description: 'Use a prévia pública para baixar a imagem ou compartilhar o link.',
+    })
+  }
+
+  useEffect(() => {
+    handleMilestoneReadyFeedback()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [milestone, isPreparingMilestone, milestoneError])
 
   return (
     <main className="min-h-screen w-full bg-[#0C0424]">
@@ -138,12 +186,21 @@ export default function WatchPage() {
             watchedLessonIds={watchedLessonIds}
             markingLessonIds={markingLessonIds}
             onToggleLessonWatched={handleToggleLessonWatched}
-            onDownloadCertificate={handleDownloadCertificate}
-            isDownloadingCertificate={isDownloadingCertificate}
-            certificateDisabled={!allWatched}
+            onOpenShareProgress={handleOpenShareProgress}
+            isPreparingMilestone={isPreparingMilestone}
+            shareDisabled={!allWatched}
           />
         </div>
       </section>
+
+      <ProgressMilestoneModal
+        isOpen={isShareModalOpen}
+        milestone={milestone}
+        loading={isPreparingMilestone}
+        error={milestoneError}
+        onClose={handleCloseShareModal}
+        onRetry={handleRetryMilestone}
+      />
     </main>
   )
 }

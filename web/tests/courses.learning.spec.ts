@@ -53,7 +53,7 @@ test.describe('Courses Learning', () => {
     await watchCoursePage.expectCommentVisible(comment)
   })
 
-  test('should issue a certificate when the course is complete', async ({
+  test('should open the progress milestone share modal when the course is complete', async ({
     page,
     request,
     authenticatedUser,
@@ -70,17 +70,20 @@ test.describe('Courses Learning', () => {
     const watchCoursePage = new WatchCoursePage(page)
     await watchCoursePage.goto(course.course.id, course.lessons[0].youtubeLink)
 
-    await expect(watchCoursePage.certificateButton()).toBeEnabled()
+    await expect(watchCoursePage.shareProgressButton()).toBeEnabled()
 
-    const [response, download] = await Promise.all([
+    const [response] = await Promise.all([
       page.waitForResponse((requestResponse) =>
-        requestResponse.url().includes(`/api/certificate/issue/${course.course.id}`)
+        requestResponse.url().includes(`/api/progress/milestones/course/${course.course.id}`)
       ),
-      page.waitForEvent('download'),
-      watchCoursePage.certificateButton().click(),
+      watchCoursePage.shareProgressButton().click(),
     ])
 
     expect(response.ok()).toBeTruthy()
-    expect(download.suggestedFilename()).toContain('.pdf')
+    await expect(watchCoursePage.progressMilestoneModal()).toBeVisible()
+    await expect(watchCoursePage.progressMilestonePreviewImage()).toBeVisible()
+    await expect(watchCoursePage.progressMilestoneDownloadButton()).toBeVisible()
+    await expect(watchCoursePage.progressMilestoneShareButton()).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Compartilhar progresso' })).toBeVisible()
   })
 })

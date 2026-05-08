@@ -1,11 +1,11 @@
 import UserAvatar from '@/components/ui/UserAvatar'
-import type { User } from '@/types/user'
+import type { UserSummary } from '@/types/user'
 import type { LessonComment } from '@/types/watch'
 import { Link } from 'react-router-dom'
 
 type Props = {
   comment: LessonComment
-  author?: User
+  author?: UserSummary
 }
 
 export default function CommentItem({ comment, author }: Props) {

@@ -4,7 +4,7 @@ import com.imo.backend.contexts.catalog.course.Course;
 import com.imo.backend.contexts.catalog.lesson.Lesson;
 import com.imo.backend.contexts.common.exceptions.custom.NotFoundException;
 import com.imo.backend.contexts.identity.user.User;
-import com.imo.backend.contexts.journey_tracking.Progress;
+import com.imo.backend.contexts.journey_tracking.progress.Progress;
 import com.imo.backend.contexts.recognition.UserAchievement;
 import com.imo.backend.contexts.recognition.repositories.AchievementRepository;
 import com.imo.backend.contexts.social.comment.Comment;
@@ -12,6 +12,7 @@ import com.imo.backend.contexts.social.profile.HighlightedAchievementDetails;
 import com.imo.backend.contexts.social.profile.LastCommentActivityDetails;
 import com.imo.backend.contexts.social.profile.PublicUserDetails;
 import com.imo.backend.contexts.social.profile.RecentCourseActivityDetails;
+import com.imo.backend.contexts.social.profile.SharedProgressMilestoneDetails;
 import com.imo.backend.contexts.social.profile.gateways.PublicUserProfileGateway;
 import java.util.List;
 import java.util.Objects;
@@ -26,6 +27,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class PublicUserProfileRepository implements PublicUserProfileGateway {
   private static final int HIGHLIGHTED_ACHIEVEMENTS_LIMIT = 10;
+  private static final int SHARED_PROGRESS_MILESTONES_LIMIT = 10;
   private static final int RECENT_COURSES_LIMIT = 10;
 
   private final MongoTemplate mongoTemplate;
@@ -84,6 +86,32 @@ public class PublicUserProfileRepository implements PublicUserProfileGateway {
                     .orElse(null))
         .filter(Objects::nonNull)
         .toList();
+  }
+
+  @Override
+  public List<SharedProgressMilestoneDetails> findLatestSharedProgressMilestonesByUserId(
+      String userId, int limit) {
+    Query query =
+        new Query()
+            .addCriteria(Criteria.where("userId").is(new ObjectId(userId)))
+            .with(Sort.by(Sort.Order.desc("updatedAt"), Sort.Order.desc("createdAt")))
+            .limit(Math.min(limit, SHARED_PROGRESS_MILESTONES_LIMIT));
+
+    query
+        .fields()
+        .include("publicCode")
+        .include("courseNameSnapshot")
+        .include("watchedLessonsCountSnapshot")
+        .include("totalLessonsCountSnapshot")
+        .include("completionPercentageSnapshot")
+        .include("updatedAt")
+        .include("createdAt");
+
+    return this.mongoTemplate.find(
+        query,
+        SharedProgressMilestoneDetails.class,
+        this.mongoTemplate.getCollectionName(
+            com.imo.backend.contexts.journey_tracking.progress_milestone.ProgressMilestone.class));
   }
 
   @Override

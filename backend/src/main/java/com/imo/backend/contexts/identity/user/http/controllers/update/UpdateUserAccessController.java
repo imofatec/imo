@@ -1,7 +1,7 @@
 package com.imo.backend.contexts.identity.user.http.controllers.update;
 
 import com.imo.backend.contexts.identity.user.http.controllers.UserController;
-import com.imo.backend.contexts.identity.user.http.dtos.UserDTO;
+import com.imo.backend.contexts.identity.user.http.dtos.UserConfirmationDTO;
 import com.imo.backend.contexts.identity.user.usecases.UpdateUserAccessByIdUseCase;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -30,7 +30,7 @@ public class UpdateUserAccessController extends UserController {
         @ApiResponse(
             responseCode = "200",
             description = "Registro confirmado com sucesso",
-            content = @Content(schema = @Schema(implementation = UserDTO.class))),
+            content = @Content(schema = @Schema(implementation = UserConfirmationDTO.class))),
         @ApiResponse(
             responseCode = "401",
             description = "Não autenticado",
@@ -52,10 +52,10 @@ public class UpdateUserAccessController extends UserController {
                                 com.imo.backend.contexts.common.exceptions.ErrorResponseDto.class)))
       })
   @PutMapping("/confirm")
-  public ResponseEntity<UserDTO> handle() {
+  public ResponseEntity<UserConfirmationDTO> handle() {
     String userId = SecurityContextHolder.getContext().getAuthentication().getName();
 
-    var updatedUser = UserDTO.fromUser(accessByIdUseCase.execute(userId));
+    var updatedUser = UserConfirmationDTO.fromUser(accessByIdUseCase.execute(userId));
     return ResponseEntity.ok(updatedUser);
   }
 }

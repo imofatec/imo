@@ -1,4 +1,4 @@
-import CertificateButton from '@/components/watch/CertificateButton'
+import ShareProgressButton from '@/components/watch/ShareProgressButton'
 import LessonList from '@/components/watch/LessonList'
 import type { CourseDetailsLesson } from '@/types/course'
 
@@ -11,9 +11,9 @@ type Props = {
   watchedLessonIds: Set<string>
   markingLessonIds: Set<string>
   onToggleLessonWatched: (lessonId: string) => void
-  onDownloadCertificate: () => void
-  isDownloadingCertificate: boolean
-  certificateDisabled?: boolean
+  onOpenShareProgress: () => void
+  isPreparingMilestone: boolean
+  shareDisabled?: boolean
 }
 
 export default function LessonTabContent({
@@ -25,9 +25,9 @@ export default function LessonTabContent({
   watchedLessonIds,
   markingLessonIds,
   onToggleLessonWatched,
-  onDownloadCertificate,
-  isDownloadingCertificate,
-  certificateDisabled = true,
+  onOpenShareProgress,
+  isPreparingMilestone,
+  shareDisabled = true,
 }: Props) {
   return (
     <aside className="xl:border-l xl:border-white/10 xl:pl-6">
@@ -51,10 +51,10 @@ export default function LessonTabContent({
         markingLessonIds={markingLessonIds}
         onToggleLessonWatched={onToggleLessonWatched}
       />
-      <CertificateButton
-        disabled={certificateDisabled}
-        loading={isDownloadingCertificate}
-        onClick={onDownloadCertificate}
+      <ShareProgressButton
+        disabled={shareDisabled}
+        loading={isPreparingMilestone}
+        onClick={onOpenShareProgress}
       />
     </aside>
   )

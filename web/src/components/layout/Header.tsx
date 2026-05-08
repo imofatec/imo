@@ -71,7 +71,6 @@ export default function Header() {
     { label: 'Todos os cursos', to: '/categorias' },
     { label: 'Criar curso', to: '/criar-curso' },
     { label: 'Editar curso', to: '/user/cursos?filtro=CONTRIBUICAO' },
-    { label: 'Validar certificado', to: '/home' },
   ]
 
   return (
@@ -172,9 +171,6 @@ export default function Header() {
           className="bg-cyan font-semibold text-black"
         >
           Contribuir com curso
-        </LinkButton>
-        <LinkButton variant="default" to="/home" className="bg-cyan font-semibold text-black">
-          Validar certificado
         </LinkButton>
       </div>
     </header>

@@ -1,4 +1,5 @@
 import type { Course } from '@/types/course'
+import type { UserSummary } from '@/types/user'
 
 export type ProgressStatus = 'NOT_STARTED' | 'IN_PROGRESS' | 'FINISHED'
 
@@ -15,19 +16,6 @@ export type Progress = {
   lessonsCount: number
   status: ProgressStatus
   progressPeriod: ProgressPeriod
-}
-
-export type UserProgressUser = {
-  id: string
-  name: string
-  email: string
-  isConfirmed: boolean
-  profilePicturePath: string
-  birthDate: string
-  availableTimePerDay: string
-  academicDegree: string
-  experienceLevel: string
-  categoriesOfInterest: string[]
 }
 
 export type Lesson = {
@@ -47,7 +35,7 @@ export type ProgressSummary = {
 
 export type UserProgress = {
   progress: Progress
-  user: UserProgressUser
+  user: UserSummary
   course: Course
   lessons: Lesson[]
   summary: ProgressSummary

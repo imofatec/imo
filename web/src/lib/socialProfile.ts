@@ -9,15 +9,17 @@ export function getSocialProfileOptionLabel(
 }
 
 export function formatSocialProfileDateTime(
-  value: string | null,
+  value: string | null | undefined,
   fallback = 'Data não encontrada'
 ) {
-  if (!value) return fallback
+  const normalizedValue = value?.trim()
 
-  const parsedDate = new Date(value)
+  if (!normalizedValue) return fallback
+
+  const parsedDate = new Date(normalizedValue)
 
   if (Number.isNaN(parsedDate.getTime())) {
-    return fallback
+    return normalizedValue
   }
 
   return new Intl.DateTimeFormat('pt-BR', {

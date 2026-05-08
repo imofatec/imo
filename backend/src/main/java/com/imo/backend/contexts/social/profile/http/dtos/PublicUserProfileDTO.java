@@ -9,4 +9,5 @@ public record PublicUserProfileDTO(
     String profilePicturePath,
     List<Categories> categoriesOfInterest,
     List<HighlightedAchievementDTO> highlightedAchievements,
+    List<SharedProgressMilestoneDTO> sharedProgressMilestones,
     LastActivityDTO lastActivity) {}

@@ -23,12 +23,21 @@ export type PublicProfileLastComment = {
   courseName: string
 }
 
+export type PublicProfileSharedProgressMilestone = {
+  publicCode: string
+  courseName: string
+  generatedAt: string | null
+  shareUrl: string
+  imageUrl: string
+}
+
 export type PublicUserProfile = {
   name: string
   bio: string | null
   profilePicturePath: string | null
   categoriesOfInterest: string[] | null
   highlightedAchievements: PublicProfileHighlightedAchievement[]
+  sharedProgressMilestones: PublicProfileSharedProgressMilestone[]
   lastActivity: {
     recentCourses: PublicProfileRecentCourse[]
     lastComment: PublicProfileLastComment | null

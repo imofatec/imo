@@ -1,7 +1,7 @@
 package com.imo.backend.contexts.identity.user.http.controllers.get;
 
 import com.imo.backend.contexts.identity.user.http.controllers.UserController;
-import com.imo.backend.contexts.identity.user.http.dtos.UserDTO;
+import com.imo.backend.contexts.identity.user.http.dtos.CurrentUserProfileDTO;
 import com.imo.backend.contexts.identity.user.repositories.UserRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -30,7 +30,7 @@ public class GetYourselfController extends UserController {
         @ApiResponse(
             responseCode = "200",
             description = "Perfil do usuário",
-            content = @Content(schema = @Schema(implementation = UserDTO.class))),
+            content = @Content(schema = @Schema(implementation = CurrentUserProfileDTO.class))),
         @ApiResponse(
             responseCode = "401",
             description = "Não autenticado",
@@ -52,9 +52,9 @@ public class GetYourselfController extends UserController {
                                 com.imo.backend.contexts.common.exceptions.ErrorResponseDto.class)))
       })
   @GetMapping("/profile")
-  public ResponseEntity<UserDTO> handle() {
+  public ResponseEntity<CurrentUserProfileDTO> handle() {
     var userId = SecurityContextHolder.getContext().getAuthentication().getName();
-    var user = UserDTO.fromUser(this.userRepository.findByIdOrThrow(userId));
+    var user = CurrentUserProfileDTO.fromUser(this.userRepository.findByIdOrThrow(userId));
 
     return ResponseEntity.ok(user);
   }
