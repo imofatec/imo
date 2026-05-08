@@ -3,7 +3,7 @@ package com.imo.backend.contexts.identity.user.http.controllers.create;
 import com.imo.backend.contexts.identity.user.commands.CreateUserCommand;
 import com.imo.backend.contexts.identity.user.http.controllers.UserController;
 import com.imo.backend.contexts.identity.user.http.dtos.CreateUserRequest;
-import com.imo.backend.contexts.identity.user.http.dtos.UserDTO;
+import com.imo.backend.contexts.identity.user.http.dtos.CreatedUserDTO;
 import com.imo.backend.contexts.identity.user.usecases.CreateUserUseCase;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -32,7 +32,7 @@ public class CreateUserController extends UserController {
         @ApiResponse(
             responseCode = "201",
             description = "Usuário criado com sucesso",
-            content = @Content(schema = @Schema(implementation = UserDTO.class))),
+            content = @Content(schema = @Schema(implementation = CreatedUserDTO.class))),
         @ApiResponse(
             responseCode = "400",
             description = "Dados inválidos",
@@ -54,9 +54,10 @@ public class CreateUserController extends UserController {
                                 com.imo.backend.contexts.common.exceptions.ErrorResponseDto.class)))
       })
   @PostMapping()
-  public ResponseEntity<UserDTO> handle(@Valid @RequestBody CreateUserRequest createUserRequest) {
+  public ResponseEntity<CreatedUserDTO> handle(
+      @Valid @RequestBody CreateUserRequest createUserRequest) {
     var newUser =
-        UserDTO.fromUser(
+        CreatedUserDTO.fromUser(
             this.createUserUseCase.execute(
                 new CreateUserCommand(
                     createUserRequest.name(),

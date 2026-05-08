@@ -2,7 +2,7 @@ package com.imo.backend.contexts.identity.user.http.controllers.get;
 
 import com.imo.backend.contexts.common.MongoDB;
 import com.imo.backend.contexts.identity.user.http.controllers.UserController;
-import com.imo.backend.contexts.identity.user.http.dtos.UserDTO;
+import com.imo.backend.contexts.identity.user.http.dtos.UserSummaryDTO;
 import com.imo.backend.contexts.identity.user.repositories.UserRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -31,14 +31,13 @@ public class GetUsersByIdsController extends UserController {
             responseCode = "200",
             description = "Usuários encontrados",
             content =
-                @Content(array = @ArraySchema(schema = @Schema(implementation = UserDTO.class))))
+                @Content(
+                    array = @ArraySchema(schema = @Schema(implementation = UserSummaryDTO.class))))
       })
   @GetMapping("/ids")
-  public ResponseEntity<List<UserDTO>> handle(@RequestParam List<String> ids) {
-    ids.forEach(
-        MongoDB
-            ::validateObjectId); // Qual diferença desse pro ids.forEach(ValidateObjectId::execute);
-    var users = this.userRepository.findByIds(ids).stream().map(UserDTO::fromUser).toList();
+  public ResponseEntity<List<UserSummaryDTO>> handle(@RequestParam List<String> ids) {
+    ids.forEach(MongoDB::validateObjectId);
+    var users = this.userRepository.findByIds(ids).stream().map(UserSummaryDTO::fromUser).toList();
     return ResponseEntity.ok(users);
   }
 }

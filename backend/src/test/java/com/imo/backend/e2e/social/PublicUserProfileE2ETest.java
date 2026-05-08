@@ -6,8 +6,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import com.imo.backend.contexts.catalog.course.http.dtos.CourseDetailsDTO;
 import com.imo.backend.contexts.catalog.course.value_objects.Categories;
+import com.imo.backend.contexts.identity.user.http.dtos.CurrentUserProfileDTO;
 import com.imo.backend.contexts.identity.user.http.dtos.UpdateUserByIdRequest;
-import com.imo.backend.contexts.identity.user.http.dtos.UserDTO;
 import com.imo.backend.contexts.journey_tracking.progress_milestone.http.dtos.ProgressMilestoneDTO;
 import com.imo.backend.contexts.social.profile.http.dtos.PublicUserProfileDTO;
 import com.imo.backend.contexts.social.profile.http.dtos.SharedProgressMilestoneDTO;
@@ -32,7 +32,7 @@ class PublicUserProfileE2ETest extends BaseE2ETest {
       "happy path (GET /api/user/public/{id}): retorna perfil público com bio, conquistas, marcos compartilhados e última atividade")
   void shouldReturnPublicUserProfile() {
     String token = IdentityTestHelper.registerAndLogin(TestUser.defaultUser());
-    UserDTO currentUser = this.getCurrentUserProfile(token);
+    CurrentUserProfileDTO currentUser = this.getCurrentUserProfile(token);
 
     given()
         .header("Authorization", "Bearer " + token)
@@ -121,7 +121,7 @@ class PublicUserProfileE2ETest extends BaseE2ETest {
         .body("error", equalTo("NOT_FOUND"));
   }
 
-  private UserDTO getCurrentUserProfile(String token) {
+  private CurrentUserProfileDTO getCurrentUserProfile(String token) {
     return given()
         .header("Authorization", "Bearer " + token)
         .when()
@@ -129,7 +129,7 @@ class PublicUserProfileE2ETest extends BaseE2ETest {
         .then()
         .statusCode(HttpStatus.OK.value())
         .extract()
-        .as(UserDTO.class);
+        .as(CurrentUserProfileDTO.class);
   }
 
   private PublicUserProfileDTO waitForPublicProfile(String userId, int expectedAchievementsCount) {

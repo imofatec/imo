@@ -5,8 +5,11 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.imo.backend.contexts.identity.user.http.dtos.CreatedUserDTO;
+import com.imo.backend.contexts.identity.user.http.dtos.CurrentUserProfileDTO;
 import com.imo.backend.contexts.identity.user.http.dtos.UpdateUserByIdRequest;
-import com.imo.backend.contexts.identity.user.http.dtos.UserDTO;
+import com.imo.backend.contexts.identity.user.http.dtos.UserConfirmationDTO;
+import com.imo.backend.contexts.identity.user.http.dtos.UserProfilePictureDTO;
 import com.imo.backend.contexts.identity.user.http.dtos.auth.LoginRequestDTO;
 import com.imo.backend.contexts.identity.user.value_objects.AcademicDegree;
 import com.imo.backend.contexts.identity.user.value_objects.AvailableTimePerDay;
@@ -27,7 +30,7 @@ class UserE2ETest extends BaseE2ETest {
   void shouldCreateUser() {
     TestUser user = TestUser.defaultUser();
 
-    UserDTO created =
+    CreatedUserDTO created =
         given()
             .contentType(ContentType.JSON)
             .body(user.toCreateRequest())
@@ -37,11 +40,10 @@ class UserE2ETest extends BaseE2ETest {
             .statusCode(HttpStatus.CREATED.value())
             .contentType(ContentType.JSON)
             .extract()
-            .as(UserDTO.class);
+            .as(CreatedUserDTO.class);
 
     assertNotNull(created.id());
     assertEquals(user.name(), created.name());
-    assertEquals(user.email(), created.email());
     assertFalse(created.isConfirmed());
   }
 
@@ -118,7 +120,7 @@ class UserE2ETest extends BaseE2ETest {
     IdentityTestHelper.registerUser(user.toCreateRequest());
     String token = IdentityTestHelper.login(user.toLoginRequest());
 
-    UserDTO foundUser =
+    UserConfirmationDTO foundUser =
         given()
             .header("Authorization", "Bearer " + token)
             .when()
@@ -127,11 +129,9 @@ class UserE2ETest extends BaseE2ETest {
             .statusCode(HttpStatus.OK.value())
             .contentType(ContentType.JSON)
             .extract()
-            .as(UserDTO.class);
+            .as(UserConfirmationDTO.class);
 
     assertNotNull(foundUser.id());
-    assertEquals(user.name(), foundUser.name());
-    assertEquals(user.email(), foundUser.email());
     assertTrue(foundUser.isConfirmed());
   }
 
@@ -141,7 +141,7 @@ class UserE2ETest extends BaseE2ETest {
     TestUser user = TestUser.defaultUser();
     String token = IdentityTestHelper.registerAndLogin(user);
 
-    UserDTO profile =
+    CurrentUserProfileDTO profile =
         given()
             .header("Authorization", "Bearer " + token)
             .when()
@@ -150,7 +150,7 @@ class UserE2ETest extends BaseE2ETest {
             .statusCode(HttpStatus.OK.value())
             .contentType(ContentType.JSON)
             .extract()
-            .as(UserDTO.class);
+            .as(CurrentUserProfileDTO.class);
 
     assertNotNull(profile.id());
     assertEquals(user.name(), profile.name());
@@ -188,7 +188,7 @@ class UserE2ETest extends BaseE2ETest {
             null,
             null);
 
-    UserDTO updated =
+    CurrentUserProfileDTO updated =
         given()
             .header("Authorization", "Bearer " + token)
             .contentType(ContentType.JSON)
@@ -199,7 +199,7 @@ class UserE2ETest extends BaseE2ETest {
             .statusCode(HttpStatus.OK.value())
             .contentType(ContentType.JSON)
             .extract()
-            .as(UserDTO.class);
+            .as(CurrentUserProfileDTO.class);
 
     assertNotNull(updated.id());
     assertEquals("Updated Name", updated.name());
@@ -239,7 +239,7 @@ class UserE2ETest extends BaseE2ETest {
       fos.write(new byte[] {(byte) 0x89, 0x50, 0x4E, 0x47});
     }
 
-    UserDTO updated =
+    UserProfilePictureDTO updated =
         given()
             .header("Authorization", "Bearer " + token)
             .multiPart("file", tempFile, "image/png")
@@ -249,7 +249,7 @@ class UserE2ETest extends BaseE2ETest {
             .statusCode(HttpStatus.OK.value())
             .contentType(ContentType.JSON)
             .extract()
-            .as(UserDTO.class);
+            .as(UserProfilePictureDTO.class);
 
     assertNotNull(updated.id());
     assertNotNull(updated.profilePicturePath());

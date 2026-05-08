@@ -1,14 +1,14 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import authAxiosInstance from '@/api/authAxiosInstance'
 import { safeAwait } from '@/lib/safeAwait'
-import type { User } from '@/types/user'
+import type { UserSummary } from '@/types/user'
 
 type UseUsersByIdsParams = {
   enabled?: boolean
 }
 
 export function useUsersByIds(ids: string[], { enabled = true }: UseUsersByIdsParams = {}) {
-  const [users, setUsers] = useState<User[]>([])
+  const [users, setUsers] = useState<UserSummary[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -29,7 +29,9 @@ export function useUsersByIds(ids: string[], { enabled = true }: UseUsersByIdsPa
       ids: uniqueIds.join(','),
     }).toString()
 
-    const [err, response] = await safeAwait(authAxiosInstance.get<User[]>(`/api/user/ids?${query}`))
+    const [err, response] = await safeAwait(
+      authAxiosInstance.get<UserSummary[]>(`/api/user/ids?${query}`)
+    )
 
     if (err || !response) {
       setError(err?.message || 'Erro ao buscar usuários')
@@ -49,7 +51,7 @@ export function useUsersByIds(ids: string[], { enabled = true }: UseUsersByIdsPa
 
   const usersById = useMemo(
     () =>
-      users.reduce<Record<string, User>>((acc, user) => {
+      users.reduce<Record<string, UserSummary>>((acc, user) => {
         acc[user.id] = user
         return acc
       }, {}),
