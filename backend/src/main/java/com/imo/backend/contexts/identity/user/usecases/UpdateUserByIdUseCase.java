@@ -35,6 +35,7 @@ public class UpdateUserByIdUseCase {
     }
 
     if (cmd.email() != null && !cmd.email().isEmpty()) {
+      this.userPolicies.assertEmailAvailable(cmd.email(), foundUser.getId());
       foundUser.setEmail(cmd.email());
     }
 

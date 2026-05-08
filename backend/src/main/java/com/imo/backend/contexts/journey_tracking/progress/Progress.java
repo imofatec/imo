@@ -12,10 +12,15 @@ import java.util.Set;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.bson.types.ObjectId;
+import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @EqualsAndHashCode(callSuper = true)
 @Document("progress")
+@CompoundIndex(
+    name = "uk_progress_user_course",
+    def = "{'userId': 1, 'courseId': 1}",
+    unique = true)
 @Data
 public class Progress extends Entity {
   //  relations

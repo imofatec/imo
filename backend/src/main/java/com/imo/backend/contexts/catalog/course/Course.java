@@ -14,10 +14,15 @@ import java.util.Set;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.bson.types.ObjectId;
+import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @EqualsAndHashCode(callSuper = true)
 @Document("courses")
+@CompoundIndex(
+    name = "uk_courses_contributor_slug",
+    def = "{'contributorId': 1, 'name.slug': 1}",
+    unique = true)
 @Data
 public class Course extends Entity {
   // relations

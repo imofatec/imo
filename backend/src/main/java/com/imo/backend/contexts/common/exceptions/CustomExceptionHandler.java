@@ -7,6 +7,7 @@ import com.imo.backend.contexts.common.exceptions.custom.NotFoundException;
 import com.imo.backend.contexts.common.exceptions.custom.UnauthorizedException;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -96,6 +97,12 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         new ErrorResponseDto("CONFLICT", ex.getMessage()), HttpStatus.CONFLICT);
   }
 
+  @ExceptionHandler(DuplicateKeyException.class)
+  public final ResponseEntity<Object> handleDuplicateKeyException(DuplicateKeyException ex) {
+    return new ResponseEntity<>(
+        new ErrorResponseDto("CONFLICT", this.resolveDuplicateKeyMessage(ex)), HttpStatus.CONFLICT);
+  }
+
   @ExceptionHandler(UnauthorizedException.class)
   public final ResponseEntity<Object> handleUnauthorizedException(UnauthorizedException ex) {
     return new ResponseEntity<>(
@@ -108,5 +115,32 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
     return new ResponseEntity<>(
         new ErrorResponseDto("INTERNAL_ERROR", "Erro interno do servidor"),
         HttpStatus.INTERNAL_SERVER_ERROR);
+  }
+
+  private String resolveDuplicateKeyMessage(DuplicateKeyException ex) {
+    String message =
+        Optional.ofNullable(ex.getMostSpecificCause()).map(Throwable::getMessage).orElse("");
+
+    if (message.contains("uk_users_email")) {
+      return "O email já existe";
+    }
+
+    if (message.contains("uk_courses_contributor_slug")) {
+      return "Já existe um curso com esse nome para este usuário";
+    }
+
+    if (message.contains("uk_lessons_course_title")) {
+      return "Já existe uma aula com esse título";
+    }
+
+    if (message.contains("uk_lessons_course_youtube_link")) {
+      return "Já existe uma aula com este link";
+    }
+
+    if (message.contains("uk_lessons_course_index")) {
+      return "Já existe uma aula nessa posição";
+    }
+
+    return "Conflito de dados duplicados";
   }
 }

@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CustomRecoveryCodeRepository {
-  Optional<RecoveryCode> findByUserId(String userId);
+  Optional<RecoveryCode> findValidByUserId(String userId);
 }

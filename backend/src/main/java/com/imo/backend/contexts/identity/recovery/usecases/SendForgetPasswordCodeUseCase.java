@@ -45,7 +45,7 @@ public class SendForgetPasswordCodeUseCase {
       return RESPONSE_MESSAGE;
     }
 
-    var existingCode = this.recoveryCodeRepository.findByUserId(foundUser.getId());
+    var existingCode = this.recoveryCodeRepository.findValidByUserId(foundUser.getId());
 
     if (existingCode.isPresent()) {
       throw new BadRequestException("Espere alguns minutos para solicitar novamente");
