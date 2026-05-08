@@ -1,5 +1,4 @@
 import { Trophy } from 'lucide-react'
-import { resolveAchievementImageSrc } from '@/lib/resolveAchievementImageSrc'
 import type { AchievementUnlockedNotification } from '@/types/notification'
 
 type AchievementNotificationToastProps = {
@@ -9,7 +8,7 @@ type AchievementNotificationToastProps = {
 export default function AchievementNotificationToast({
   achievement,
 }: AchievementNotificationToastProps) {
-  const imageSrc = resolveAchievementImageSrc(achievement.imageUrl)
+  const imageSrc = achievement.imageUrl?.trim() || null
 
   return (
     <div className="border-cyan/45 shadow-cyan/10 flex w-86 max-w-[calc(100vw-24px)] items-center gap-3 rounded-lg border bg-[#171a21] p-3 shadow-2xl ring-1 ring-black/40">

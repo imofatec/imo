@@ -1,5 +1,4 @@
 import { CircleUserRound } from 'lucide-react'
-import { resolveProfileImageSrc } from '@/lib/resolveProfileImageSrc'
 
 type UserAvatarProps = {
   imageSrc?: string | null
@@ -27,7 +26,7 @@ export default function UserAvatar({
   className = '',
   iconClassName = 'text-cyan',
 }: UserAvatarProps) {
-  const resolvedImageSrc = resolveProfileImageSrc(imageSrc ?? null)
+  const resolvedImageSrc = imageSrc?.trim() || null
 
   if (resolvedImageSrc) {
     return (

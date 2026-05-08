@@ -1,5 +1,6 @@
 package com.imo.backend.contexts.recognition.repositories;
 
+import com.imo.backend.contexts.common.ApplicationUrlHelper;
 import com.imo.backend.contexts.recognition.Achievement;
 import com.imo.backend.contexts.recognition.AchievementTrigger;
 import java.util.Comparator;
@@ -11,6 +12,11 @@ import org.springframework.stereotype.Repository;
 public class StaticAchievementRepository implements AchievementRepository {
   private static final String LOCKED_IMAGE_PATH = "/images/achievements/locked/default.png";
   private static final String UNLOCKED_IMAGE_PATH_PREFIX = "/images/achievements/unlocked/";
+  private final ApplicationUrlHelper applicationUrlHelper;
+
+  public StaticAchievementRepository(ApplicationUrlHelper applicationUrlHelper) {
+    this.applicationUrlHelper = applicationUrlHelper;
+  }
 
   public enum StaticAchievementsKeys {
     FIRST_LESSON,
@@ -100,12 +106,18 @@ public class StaticAchievementRepository implements AchievementRepository {
 
   @Override
   public Optional<Achievement> findByKey(String key) {
-    return ITEMS.stream().filter(achievement -> achievement.getKey().equals(key)).findFirst();
+    return ITEMS.stream()
+        .filter(achievement -> achievement.getKey().equals(key))
+        .map(this::toAbsoluteImageUrls)
+        .findFirst();
   }
 
   @Override
   public List<Achievement> findAllOrderByDisplayOrderAsc() {
-    return ITEMS.stream().sorted(Comparator.comparingInt(Achievement::getDisplayOrder)).toList();
+    return ITEMS.stream()
+        .sorted(Comparator.comparingInt(Achievement::getDisplayOrder))
+        .map(this::toAbsoluteImageUrls)
+        .toList();
   }
 
   @Override
@@ -113,6 +125,19 @@ public class StaticAchievementRepository implements AchievementRepository {
     return ITEMS.stream()
         .filter(achievement -> achievement.getTrigger() == trigger)
         .sorted(Comparator.comparingInt(Achievement::getDisplayOrder))
+        .map(this::toAbsoluteImageUrls)
         .toList();
+  }
+
+  private Achievement toAbsoluteImageUrls(Achievement achievement) {
+    return new Achievement(
+        achievement.getKey(),
+        achievement.getTitle(),
+        achievement.getDescription(),
+        achievement.getTrigger(),
+        achievement.getTarget(),
+        achievement.getDisplayOrder(),
+        this.applicationUrlHelper.buildBackendUrl(achievement.getUnlockedImagePath()),
+        this.applicationUrlHelper.buildBackendUrl(achievement.getLockedImagePath()));
   }
 }

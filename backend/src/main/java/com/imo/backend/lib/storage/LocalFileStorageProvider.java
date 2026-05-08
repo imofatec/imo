@@ -1,7 +1,9 @@
 package com.imo.backend.lib.storage;
 
+import com.imo.backend.contexts.common.ApplicationUrlHelper;
 import com.imo.backend.contexts.identity.user.lib.ImageStorageProvider;
 import java.io.IOException;
+import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -15,9 +17,13 @@ import org.springframework.web.multipart.MultipartFile;
 public class LocalFileStorageProvider implements ImageStorageProvider {
 
   private final Path uploadDir;
+  private final ApplicationUrlHelper applicationUrlHelper;
 
-  public LocalFileStorageProvider(@Value("${storage.local.upload-dir}") String uploadDir) {
+  public LocalFileStorageProvider(
+      @Value("${storage.local.upload-dir}") String uploadDir,
+      ApplicationUrlHelper applicationUrlHelper) {
     this.uploadDir = Paths.get(uploadDir).toAbsolutePath().normalize();
+    this.applicationUrlHelper = applicationUrlHelper;
   }
 
   @Override
@@ -27,7 +33,7 @@ public class LocalFileStorageProvider implements ImageStorageProvider {
     try {
       Path destination = userDir.resolve(fileName);
       file.transferTo(destination);
-      return userId + "/" + fileName;
+      return this.applicationUrlHelper.buildBackendUrl("/uploads/" + userId + "/" + fileName);
     } catch (IOException e) {
       throw new RuntimeException("Erro ao processar arquivo");
     }
@@ -39,13 +45,7 @@ public class LocalFileStorageProvider implements ImageStorageProvider {
       return;
     }
 
-    String relativePath = path;
-
-    if (relativePath.startsWith("/uploads/")) {
-      relativePath = relativePath.substring("/uploads/".length());
-    }
-
-    Path filePath = uploadDir.resolve(relativePath).normalize();
+    Path filePath = uploadDir.resolve(this.extractRelativePath(path)).normalize();
 
     try {
       Files.deleteIfExists(filePath);
@@ -64,5 +64,15 @@ public class LocalFileStorageProvider implements ImageStorageProvider {
     }
 
     return userDir;
+  }
+
+  private String extractRelativePath(String path) {
+    String relativePath = URI.create(path).getPath();
+
+    if (relativePath.startsWith("/uploads/")) {
+      return relativePath.substring("/uploads/".length());
+    }
+
+    return relativePath.startsWith("/") ? relativePath.substring(1) : relativePath;
   }
 }
