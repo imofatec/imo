@@ -2,10 +2,10 @@ package com.imo.backend.e2e.catalog.helpers;
 
 import static io.restassured.RestAssured.given;
 
+import com.imo.backend.contexts.catalog.course.Categories;
 import com.imo.backend.contexts.catalog.course.http.dtos.CourseDTO;
 import com.imo.backend.contexts.catalog.course.http.dtos.CourseDetailsDTO;
 import com.imo.backend.contexts.catalog.course.http.dtos.CreateCourseRequest;
-import com.imo.backend.contexts.catalog.course.value_objects.Categories;
 import com.imo.backend.contexts.catalog.lesson.http.dtos.CreateLessonRequest;
 import com.imo.backend.contexts.catalog.lesson.http.dtos.LessonDTO;
 import io.restassured.http.ContentType;

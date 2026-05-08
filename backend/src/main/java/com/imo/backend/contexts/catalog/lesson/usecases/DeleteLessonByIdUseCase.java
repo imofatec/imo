@@ -1,10 +1,9 @@
 package com.imo.backend.contexts.catalog.lesson.usecases;
 
-import com.imo.backend.contexts.catalog.course.events.UpdateCourseFirstYoutubeLinkEvent;
-import com.imo.backend.contexts.catalog.course.events.UpdateCourseLessonsCountEvent;
 import com.imo.backend.contexts.catalog.lesson.Lesson;
+import com.imo.backend.contexts.catalog.lesson.events.FirstLessonInCourseUpdatedEvent;
+import com.imo.backend.contexts.catalog.lesson.events.LessonsListUpdatedEvent;
 import com.imo.backend.contexts.catalog.lesson.repositories.LessonRepository;
-import com.imo.backend.contexts.journey_tracking.progress.events.ReevaluateProgressEvent;
 import java.util.List;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -34,8 +33,9 @@ public class DeleteLessonByIdUseCase {
     Lesson.sortLessonsByIndexInCourse(newSequenceOfLessons);
 
     if (foundLesson.getIndexInCourse() == 1) {
+
       this.applicationEventPublisher.publishEvent(
-          new UpdateCourseFirstYoutubeLinkEvent(
+          new FirstLessonInCourseUpdatedEvent(
               foundLesson.getCourseId(),
               (newSequenceOfLessons.isEmpty())
                   ? ""
@@ -43,10 +43,7 @@ public class DeleteLessonByIdUseCase {
     }
 
     this.applicationEventPublisher.publishEvent(
-        new UpdateCourseLessonsCountEvent(foundLesson.getCourseId(), newSequenceOfLessons.size()));
-
-    this.applicationEventPublisher.publishEvent(
-        new ReevaluateProgressEvent(foundLesson.getCourseId()));
+        new LessonsListUpdatedEvent(foundLesson.getCourseId(), newSequenceOfLessons.size()));
 
     return foundLesson;
   }

@@ -1,13 +1,9 @@
 package com.imo.backend.unit.catalog;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
+import com.imo.backend.contexts.catalog.course.Categories;
 import com.imo.backend.contexts.catalog.course.Course;
-import com.imo.backend.contexts.catalog.course.value_objects.Categories;
 import com.imo.backend.contexts.common.exceptions.custom.BadRequestException;
 import com.imo.backend.contexts.common.exceptions.custom.ForbiddenException;
 import java.util.List;

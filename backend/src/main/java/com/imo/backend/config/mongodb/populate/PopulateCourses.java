@@ -1,8 +1,8 @@
 package com.imo.backend.config.mongodb.populate;
 
+import com.imo.backend.contexts.catalog.course.Categories;
 import com.imo.backend.contexts.catalog.course.http.dtos.CreateCourseRequest;
 import com.imo.backend.contexts.catalog.course.usecases.CreateCourseUseCase;
-import com.imo.backend.contexts.catalog.course.value_objects.Categories;
 import com.imo.backend.contexts.catalog.lesson.http.dtos.CreateLessonRequest;
 import com.imo.backend.contexts.catalog.skill.repositories.SkillRepository;
 import java.util.ArrayList;

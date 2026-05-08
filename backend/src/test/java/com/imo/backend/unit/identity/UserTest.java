@@ -2,7 +2,7 @@ package com.imo.backend.unit.identity;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import com.imo.backend.contexts.catalog.course.value_objects.Categories;
+import com.imo.backend.contexts.catalog.course.Categories;
 import com.imo.backend.contexts.common.exceptions.custom.BadRequestException;
 import com.imo.backend.contexts.common.exceptions.custom.ForbiddenException;
 import com.imo.backend.contexts.identity.user.User;

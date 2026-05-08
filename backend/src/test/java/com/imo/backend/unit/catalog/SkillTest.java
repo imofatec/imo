@@ -1,10 +1,8 @@
 package com.imo.backend.unit.catalog;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
-import com.imo.backend.contexts.catalog.course.value_objects.Categories;
+import com.imo.backend.contexts.catalog.course.Categories;
 import com.imo.backend.contexts.catalog.skill.Skill;
 import com.imo.backend.contexts.common.exceptions.custom.BadRequestException;
 import org.junit.jupiter.api.DisplayName;

@@ -1,4 +1,4 @@
-package com.imo.backend.contexts.identity.user.value_objects;
+package com.imo.backend.contexts.identity.user;
 
 import lombok.Getter;
 

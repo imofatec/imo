@@ -5,6 +5,8 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.imo.backend.contexts.identity.user.AcademicDegree;
+import com.imo.backend.contexts.identity.user.AvailableTimePerDay;
 import com.imo.backend.contexts.identity.user.http.dtos.CreateUserRequest;
 import com.imo.backend.contexts.identity.user.http.dtos.CreatedUserDTO;
 import com.imo.backend.contexts.identity.user.http.dtos.CurrentUserProfileDTO;
@@ -12,8 +14,6 @@ import com.imo.backend.contexts.identity.user.http.dtos.UpdateUserByIdRequest;
 import com.imo.backend.contexts.identity.user.http.dtos.UserConfirmationDTO;
 import com.imo.backend.contexts.identity.user.http.dtos.UserProfilePictureDTO;
 import com.imo.backend.contexts.identity.user.http.dtos.auth.LoginRequestDTO;
-import com.imo.backend.contexts.identity.user.value_objects.AcademicDegree;
-import com.imo.backend.contexts.identity.user.value_objects.AvailableTimePerDay;
 import com.imo.backend.e2e.BaseE2ETest;
 import com.imo.backend.e2e.identity.helpers.IdentityTestHelper;
 import com.imo.backend.e2e.identity.helpers.IdentityTestHelper.TestUser;

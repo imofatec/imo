@@ -1,6 +1,6 @@
 package com.imo.backend.contexts.learning_path.skill_profile.http.dtos;
 
-import com.imo.backend.contexts.catalog.course.value_objects.Category;
+import com.imo.backend.contexts.catalog.course.Category;
 import com.imo.backend.contexts.catalog.skill.Skill;
 import com.imo.backend.contexts.learning_path.skill_profile.SkillProfile;
 import com.imo.backend.contexts.learning_path.skill_profile.SkillProfileDetails;

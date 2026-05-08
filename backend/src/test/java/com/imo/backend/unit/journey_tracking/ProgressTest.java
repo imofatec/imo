@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import com.imo.backend.contexts.common.exceptions.custom.BadRequestException;
 import com.imo.backend.contexts.common.exceptions.custom.ConflictException;
 import com.imo.backend.contexts.journey_tracking.progress.Progress;
-import com.imo.backend.contexts.journey_tracking.progress.value_objects.ProgressStatus;
+import com.imo.backend.contexts.journey_tracking.progress.ProgressStatus;
 import java.util.List;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.DisplayName;

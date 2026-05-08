@@ -3,8 +3,6 @@ package com.imo.backend.contexts.journey_tracking.progress;
 import com.imo.backend.contexts.common.Entity;
 import com.imo.backend.contexts.common.exceptions.custom.BadRequestException;
 import com.imo.backend.contexts.common.exceptions.custom.ConflictException;
-import com.imo.backend.contexts.journey_tracking.progress.value_objects.ProgressPeriod;
-import com.imo.backend.contexts.journey_tracking.progress.value_objects.ProgressStatus;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;

@@ -1,9 +1,5 @@
 package com.imo.backend.contexts.catalog.course;
 
-import com.imo.backend.contexts.catalog.course.value_objects.Categories;
-import com.imo.backend.contexts.catalog.course.value_objects.Category;
-import com.imo.backend.contexts.catalog.course.value_objects.CourseName;
-import com.imo.backend.contexts.catalog.course.value_objects.Level;
 import com.imo.backend.contexts.catalog.lesson.Lesson;
 import com.imo.backend.contexts.common.Entity;
 import com.imo.backend.contexts.common.MongoDB;

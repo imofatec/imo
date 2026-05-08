@@ -1,8 +1,8 @@
 package com.imo.backend.contexts.catalog.course.http.controllers;
 
+import com.imo.backend.contexts.catalog.course.Categories;
+import com.imo.backend.contexts.catalog.course.Category;
 import com.imo.backend.contexts.catalog.course.http.dtos.CategoryDTO;
-import com.imo.backend.contexts.catalog.course.value_objects.Categories;
-import com.imo.backend.contexts.catalog.course.value_objects.Category;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
