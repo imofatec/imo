@@ -12,6 +12,7 @@ type CreateCoursePayload = {
     description: string
     youtubeLink: string
   }[]
+  skillIds: string[]
   contributorId: string
 }
 
@@ -24,6 +25,7 @@ function toCreateCoursePayload(
     category: data.category,
     level: data.level,
     description: data.description,
+    skillIds: data.skillIds,
     contributorId,
     lessons: data.lessons.map((lesson) => ({
       title: lesson.nameLesson,

@@ -9,6 +9,7 @@ export type CourseInput = {
   category: string
   level: string
   description: string
+  skillIds: string[]
   lessons: CourseLessonInput[]
 }
 
@@ -21,7 +22,10 @@ function createUniqueSuffix() {
 }
 
 function createYoutubeId(seed: string) {
-  return seed.replace(/[^a-zA-Z0-9]/g, '').padEnd(11, 'x').slice(0, 11)
+  return seed
+    .replace(/[^a-zA-Z0-9]/g, '')
+    .padEnd(11, 'x')
+    .slice(0, 11)
 }
 
 export function createLessonInput(seed: string, overrides: Partial<CourseLessonInput> = {}) {
@@ -44,6 +48,7 @@ export function createCourseInput(overrides: CourseInputOverrides = {}): CourseI
     category: 'AI',
     level: 'beginner',
     description: `Descricao completa para o curso de testes automatizados ${suffix}, cobrindo fluxos reais da plataforma.`,
+    skillIds: [],
     lessons: [createLessonInput('fundamentos'), createLessonInput('pratica')],
     ...overrides,
   }

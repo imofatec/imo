@@ -33,6 +33,10 @@ export const createCourseSchema = z.object({
     .trim()
     .min(25, { message: 'Descrição muito curta' })
     .max(300, { message: 'A descrição do curso deve ter no máximo 300 caracteres' }),
+  skillIds: z
+    .array(z.string().trim().min(1))
+    .min(1, { message: 'Selecione pelo menos uma skill' })
+    .max(2, { message: 'O curso pode ter no máximo 2 skills' }),
   lessons: z.array(lessonSchema).min(1, { message: 'O curso precisa de pelo menos uma aula' }),
 })
 

@@ -1,5 +1,6 @@
 import { categoryOptions, levelOptions } from '@/constants/courseOptions'
 import { useCurrentCourse } from '@/hooks/useCurrentCourse'
+import { useCourseSkillsField } from '@/hooks/useCourseSkillsField'
 import { showRequestErrorToast } from '@/lib/requestToast'
 import {
   createCourseSchema,
@@ -38,6 +39,7 @@ export function useEditCoursePage() {
     getValues,
     reset,
     resetField,
+    setValue,
     trigger,
     formState: { errors, isSubmitting },
   } = useForm<CreateCourseData>({
@@ -49,8 +51,13 @@ export function useEditCoursePage() {
       category: '',
       level: '',
       description: '',
+      skillIds: [],
       lessons: [],
     },
+  })
+  const { skills, skillsError, skillsLoading, selectedCategorySlug } = useCourseSkillsField({
+    control,
+    setValue,
   })
 
   const { append, remove } = useFieldArray({
@@ -81,6 +88,7 @@ export function useEditCoursePage() {
       category: selectedCategory,
       level: selectedLevel,
       description: '',
+      skillIds: course.course.skillIds ?? [],
       lessons: [],
     })
   }, [course, reset])
@@ -91,7 +99,7 @@ export function useEditCoursePage() {
     if (!courseId || !course) return
 
     const data = getValues()
-    const validations = [trigger(['category', 'level'])]
+    const validations = [trigger(['category', 'level', 'skillIds'])]
 
     if (data.nameCourse.trim()) {
       validations.push(trigger('nameCourse'))
@@ -114,6 +122,7 @@ export function useEditCoursePage() {
         category: data.category,
         level: data.level,
         description,
+        skillIds: data.skillIds,
       })
 
       await refetch()
@@ -277,8 +286,13 @@ export function useEditCoursePage() {
   return {
     course,
     register,
+    control,
     errors,
     isSubmitting,
+    skills,
+    skillsError,
+    skillsLoading,
+    selectedCategorySlug,
     statusMessage,
     newLessonIndex,
     newLessonError,

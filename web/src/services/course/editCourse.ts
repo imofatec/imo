@@ -6,6 +6,7 @@ type EditCoursePayload = {
   category?: string
   level?: string
   description?: string
+  skillIds?: string[]
 }
 
 export async function editCourseRequest(courseId: string, data: EditCoursePayload) {
