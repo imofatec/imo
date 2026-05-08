@@ -1,10 +1,10 @@
 import CommentItem from '@/components/watch/CommentItem'
-import type { User } from '@/types/user'
+import type { UserSummary } from '@/types/user'
 import type { LessonComment } from '@/types/watch'
 
 type Props = {
   comments: LessonComment[]
-  usersById?: Record<string, User>
+  usersById?: Record<string, UserSummary>
 }
 
 export default function CommentList({ comments, usersById = {} }: Props) {

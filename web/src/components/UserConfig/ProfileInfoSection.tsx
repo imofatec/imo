@@ -8,13 +8,13 @@ import {
   experienceOptions,
 } from '@/constants/userOptions'
 import type { UpdateUserProfileData } from '@/schemas/user/updateUserSchema'
-import type { User } from '@/types/user'
+import type { CurrentUserProfile } from '@/types/user'
 import { LoaderCircle } from 'lucide-react'
 import type { FormEventHandler } from 'react'
 import type { FieldErrors, UseFormRegister } from 'react-hook-form'
 
 type Props = {
-  user: User | null
+  user: CurrentUserProfile | null
   register: UseFormRegister<UpdateUserProfileData>
   errors: FieldErrors<UpdateUserProfileData>
   isSubmitting: boolean

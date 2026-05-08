@@ -1,11 +1,11 @@
 import Button from '@/components/ui/Button'
-import type { User } from '@/types/user'
+import type { CurrentUserProfile } from '@/types/user'
 import { Camera, LoaderCircle } from 'lucide-react'
 import { useRef, type ChangeEvent } from 'react'
 import { Link } from 'react-router-dom'
 
 type Props = {
-  user: User | null
+  user: CurrentUserProfile | null
   profileImageSrc: string | null
   hasPendingPhoto: boolean
   isUploadingPhoto: boolean

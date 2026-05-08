@@ -2,8 +2,8 @@ package com.imo.backend.contexts.identity.user.http.controllers.update;
 
 import com.imo.backend.contexts.identity.user.commands.UpdateUserByIdCommand;
 import com.imo.backend.contexts.identity.user.http.controllers.UserController;
+import com.imo.backend.contexts.identity.user.http.dtos.CurrentUserProfileDTO;
 import com.imo.backend.contexts.identity.user.http.dtos.UpdateUserByIdRequest;
-import com.imo.backend.contexts.identity.user.http.dtos.UserDTO;
 import com.imo.backend.contexts.identity.user.usecases.UpdateUserByIdUseCase;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -37,7 +37,7 @@ public class UpdateUserByIdController extends UserController {
         @ApiResponse(
             responseCode = "200",
             description = "Usuário atualizado com sucesso",
-            content = @Content(schema = @Schema(implementation = UserDTO.class))),
+            content = @Content(schema = @Schema(implementation = CurrentUserProfileDTO.class))),
         @ApiResponse(responseCode = "204", description = "Nenhum campo para atualizar"),
         @ApiResponse(
             responseCode = "400",
@@ -60,7 +60,7 @@ public class UpdateUserByIdController extends UserController {
                                 com.imo.backend.contexts.common.exceptions.ErrorResponseDto.class)))
       })
   @PutMapping()
-  public ResponseEntity<UserDTO> handle(
+  public ResponseEntity<CurrentUserProfileDTO> handle(
       @Valid @RequestBody UpdateUserByIdRequest fieldsToUpdateUser) {
 
     String userId = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -89,7 +89,8 @@ public class UpdateUserByIdController extends UserController {
             fieldsToUpdateUser.experienceLevel(),
             fieldsToUpdateUser.categoriesOfInterest());
 
-    return ResponseEntity.ok(UserDTO.fromUser(this.updateUserByIdUseCase.execute(userId, cmd)));
+    return ResponseEntity.ok(
+        CurrentUserProfileDTO.fromUser(this.updateUserByIdUseCase.execute(userId, cmd)));
   }
 
   private static boolean checkNoContent(UpdateUserByIdRequest fieldsToUpdateUser) {

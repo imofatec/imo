@@ -1,7 +1,7 @@
 package com.imo.backend.contexts.identity.user.http.controllers.update;
 
 import com.imo.backend.contexts.identity.user.http.controllers.UserController;
-import com.imo.backend.contexts.identity.user.http.dtos.UserDTO;
+import com.imo.backend.contexts.identity.user.http.dtos.UserProfilePictureDTO;
 import com.imo.backend.contexts.identity.user.usecases.UploadUserProfilePictureUseCase;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -35,7 +35,7 @@ public class UploadUserProfilePictureController extends UserController {
         @ApiResponse(
             responseCode = "200",
             description = "Foto de perfil atualizada com sucesso",
-            content = @Content(schema = @Schema(implementation = UserDTO.class))),
+            content = @Content(schema = @Schema(implementation = UserProfilePictureDTO.class))),
         @ApiResponse(
             responseCode = "400",
             description = "Arquivo inválido",
@@ -67,10 +67,10 @@ public class UploadUserProfilePictureController extends UserController {
                                 com.imo.backend.contexts.common.exceptions.ErrorResponseDto.class)))
       })
   @PutMapping(value = "/profile-picture", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-  public ResponseEntity<UserDTO> handle(@RequestParam("file") MultipartFile file) {
+  public ResponseEntity<UserProfilePictureDTO> handle(@RequestParam("file") MultipartFile file) {
     String userId = SecurityContextHolder.getContext().getAuthentication().getName();
 
-    var updatedUser = UserDTO.fromUser(this.useCase.execute(userId, file));
+    var updatedUser = UserProfilePictureDTO.fromUser(this.useCase.execute(userId, file));
 
     return ResponseEntity.ok(updatedUser);
   }

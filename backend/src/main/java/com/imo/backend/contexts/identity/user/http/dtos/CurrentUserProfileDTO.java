@@ -8,7 +8,7 @@ import com.imo.backend.contexts.identity.user.value_objects.ExperienceLevel;
 import java.time.LocalDate;
 import java.util.List;
 
-public record UserDTO(
+public record CurrentUserProfileDTO(
     String id,
     String name,
     String email,
@@ -20,10 +20,10 @@ public record UserDTO(
     AcademicDegree academicDegree,
     ExperienceLevel experienceLevel,
     List<Categories> categoriesOfInterest) {
-  public static UserDTO fromUser(User user) {
+  public static CurrentUserProfileDTO fromUser(User user) {
     return (user == null)
         ? null
-        : new UserDTO(
+        : new CurrentUserProfileDTO(
             user.getId(),
             user.getName(),
             user.getEmail(),

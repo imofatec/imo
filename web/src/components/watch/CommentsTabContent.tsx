@@ -3,12 +3,12 @@ import { useState } from 'react'
 import CommentInput from '@/components/watch/CommentInput'
 import CommentList from '@/components/watch/CommentList'
 import type { CommentData } from '@/schemas/comments/commentSchema'
-import type { User } from '@/types/user'
+import type { UserSummary } from '@/types/user'
 import type { LessonComment } from '@/types/watch'
 
 type Props = {
   comments: LessonComment[]
-  usersById?: Record<string, User>
+  usersById?: Record<string, UserSummary>
   onSubmitComment?: (comment: CommentData) => Promise<void> | void
 }
 

@@ -1,9 +1,9 @@
 import Button from '@/components/ui/Button'
-import type { User } from '@/types/user'
+import type { CurrentUserProfile } from '@/types/user'
 import { LoaderCircle } from 'lucide-react'
 
 type Props = {
-  user: User | null
+  user: CurrentUserProfile | null
   isResendingConfirmation: boolean
   onResendConfirmationEmail: () => Promise<void>
 }
