@@ -1,4 +1,5 @@
 import { Outlet } from 'react-router-dom'
+import Footer from '@/components/layout/Footer'
 import Header from '@/components/layout/Header'
 import Breadcrumbs from '@/components/layout/Breadcrumbs'
 
@@ -10,6 +11,7 @@ export default function App() {
       <main className="flex flex-1">
         <Outlet />
       </main>
+      <Footer />
     </div>
   )
 }
