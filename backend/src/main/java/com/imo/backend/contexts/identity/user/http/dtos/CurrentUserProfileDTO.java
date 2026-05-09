@@ -1,10 +1,10 @@
 package com.imo.backend.contexts.identity.user.http.dtos;
 
-import com.imo.backend.contexts.catalog.course.value_objects.Categories;
+import com.imo.backend.contexts.catalog.course.Categories;
+import com.imo.backend.contexts.identity.user.AcademicDegree;
+import com.imo.backend.contexts.identity.user.AvailableTimePerDay;
+import com.imo.backend.contexts.identity.user.ExperienceLevel;
 import com.imo.backend.contexts.identity.user.User;
-import com.imo.backend.contexts.identity.user.value_objects.AcademicDegree;
-import com.imo.backend.contexts.identity.user.value_objects.AvailableTimePerDay;
-import com.imo.backend.contexts.identity.user.value_objects.ExperienceLevel;
 import java.time.LocalDate;
 import java.util.List;
 

@@ -1,6 +1,6 @@
 package com.imo.backend.e2e.catalog.helpers;
 
-import com.imo.backend.contexts.catalog.course.value_objects.Categories;
+import com.imo.backend.contexts.catalog.course.Categories;
 import com.imo.backend.contexts.catalog.skill.Skill;
 import com.imo.backend.contexts.common.exceptions.custom.BadRequestException;
 import java.util.List;

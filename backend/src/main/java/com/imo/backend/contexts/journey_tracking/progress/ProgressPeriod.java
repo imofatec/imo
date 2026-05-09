@@ -1,4 +1,4 @@
-package com.imo.backend.contexts.journey_tracking.progress.value_objects;
+package com.imo.backend.contexts.journey_tracking.progress;
 
 import java.time.LocalDateTime;
 

@@ -1,6 +1,6 @@
 package com.imo.backend.config.mongodb.populate.skills;
 
-import com.imo.backend.contexts.catalog.course.value_objects.Categories;
+import com.imo.backend.contexts.catalog.course.Categories;
 import com.imo.backend.contexts.catalog.skill.Skill;
 import java.util.List;
 import org.springframework.stereotype.Component;

@@ -5,14 +5,15 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.imo.backend.contexts.identity.user.AcademicDegree;
+import com.imo.backend.contexts.identity.user.AvailableTimePerDay;
+import com.imo.backend.contexts.identity.user.http.dtos.CreateUserRequest;
 import com.imo.backend.contexts.identity.user.http.dtos.CreatedUserDTO;
 import com.imo.backend.contexts.identity.user.http.dtos.CurrentUserProfileDTO;
 import com.imo.backend.contexts.identity.user.http.dtos.UpdateUserByIdRequest;
 import com.imo.backend.contexts.identity.user.http.dtos.UserConfirmationDTO;
 import com.imo.backend.contexts.identity.user.http.dtos.UserProfilePictureDTO;
 import com.imo.backend.contexts.identity.user.http.dtos.auth.LoginRequestDTO;
-import com.imo.backend.contexts.identity.user.value_objects.AcademicDegree;
-import com.imo.backend.contexts.identity.user.value_objects.AvailableTimePerDay;
 import com.imo.backend.e2e.BaseE2ETest;
 import com.imo.backend.e2e.identity.helpers.IdentityTestHelper;
 import com.imo.backend.e2e.identity.helpers.IdentityTestHelper.TestUser;
@@ -73,6 +74,26 @@ class UserE2ETest extends BaseE2ETest {
     given()
         .contentType(ContentType.JSON)
         .body(user.toCreateRequest())
+        .when()
+        .post("/api/user")
+        .then()
+        .statusCode(HttpStatus.CONFLICT.value())
+        .contentType(ContentType.JSON)
+        .body("error", equalTo("CONFLICT"));
+  }
+
+  @Test
+  @DisplayName("exception (POST /api/user): retorna 409 quando email ja existe com case diferente")
+  void shouldReturn409WhenEmailAlreadyExistsIgnoringCase() {
+    TestUser user = TestUser.defaultUser();
+
+    given().contentType(ContentType.JSON).body(user.toCreateRequest()).when().post("/api/user");
+
+    given()
+        .contentType(ContentType.JSON)
+        .body(
+            new CreateUserRequest(
+                user.name(), user.email().toUpperCase(), user.password(), user.password()))
         .when()
         .post("/api/user")
         .then()
@@ -210,6 +231,31 @@ class UserE2ETest extends BaseE2ETest {
   }
 
   @Test
+  @DisplayName("exception (PUT /api/user): retorna 409 quando atualiza para email já existente")
+  void shouldReturn409WhenUpdatingToExistingEmail() {
+    TestUser firstUser = TestUser.defaultUser();
+    TestUser secondUser = new TestUser("Outro Usuário", "outro@email.com", "Teste123");
+
+    IdentityTestHelper.registerAndLogin(firstUser);
+    String secondUserToken = IdentityTestHelper.registerAndLogin(secondUser);
+
+    UpdateUserByIdRequest updateRequest =
+        new UpdateUserByIdRequest(
+            firstUser.email().toUpperCase(), null, null, null, null, null, null, null, null, null);
+
+    given()
+        .header("Authorization", "Bearer " + secondUserToken)
+        .contentType(ContentType.JSON)
+        .body(updateRequest)
+        .when()
+        .put("/api/user")
+        .then()
+        .statusCode(HttpStatus.CONFLICT.value())
+        .contentType(ContentType.JSON)
+        .body("error", equalTo("CONFLICT"));
+  }
+
+  @Test
   @DisplayName("happy path (PUT /api/user): retorna 204 quando só oldPassword é enviado")
   void shouldReturn204WhenOnlyOldPasswordIsSent() {
     TestUser user = TestUser.defaultUser();
@@ -253,6 +299,7 @@ class UserE2ETest extends BaseE2ETest {
 
     assertNotNull(updated.id());
     assertNotNull(updated.profilePicturePath());
+    assertTrue(updated.profilePicturePath().startsWith(this.baseUrl() + "/uploads/"));
     tempFile.delete();
   }
 }

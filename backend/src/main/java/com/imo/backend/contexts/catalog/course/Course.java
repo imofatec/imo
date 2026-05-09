@@ -1,9 +1,5 @@
 package com.imo.backend.contexts.catalog.course;
 
-import com.imo.backend.contexts.catalog.course.value_objects.Categories;
-import com.imo.backend.contexts.catalog.course.value_objects.Category;
-import com.imo.backend.contexts.catalog.course.value_objects.CourseName;
-import com.imo.backend.contexts.catalog.course.value_objects.Level;
 import com.imo.backend.contexts.catalog.lesson.Lesson;
 import com.imo.backend.contexts.common.Entity;
 import com.imo.backend.contexts.common.MongoDB;
@@ -14,10 +10,15 @@ import java.util.Set;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.bson.types.ObjectId;
+import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @EqualsAndHashCode(callSuper = true)
 @Document("courses")
+@CompoundIndex(
+    name = "uk_courses_contributor_slug",
+    def = "{'contributorId': 1, 'name.slug': 1}",
+    unique = true)
 @Data
 public class Course extends Entity {
   // relations

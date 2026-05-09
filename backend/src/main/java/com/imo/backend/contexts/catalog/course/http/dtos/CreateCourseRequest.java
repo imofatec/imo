@@ -1,7 +1,7 @@
 package com.imo.backend.contexts.catalog.course.http.dtos;
 
+import com.imo.backend.contexts.catalog.course.Categories;
 import com.imo.backend.contexts.catalog.course.commands.CreateCourseCommand;
-import com.imo.backend.contexts.catalog.course.value_objects.Categories;
 import com.imo.backend.contexts.catalog.lesson.http.dtos.CreateLessonRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;

@@ -61,8 +61,7 @@ class LessonPoliciesTest {
   }
 
   @Test
-  @DisplayName(
-      "happy path (checkLessonConflicts): aceitar título, descrição e link únicos no curso")
+  @DisplayName("happy path (checkLessonConflicts): aceitar título e link únicos no curso")
   void shouldAllowUniqueLessonFieldsInCourse() {
     String courseId = new ObjectId().toString();
     String currentLessonId = new ObjectId().toString();
@@ -110,8 +109,8 @@ class LessonPoliciesTest {
   }
 
   @Test
-  @DisplayName("exception (checkLessonConflicts): rejeitar descrição repetida no curso")
-  void shouldThrowWhenDescriptionIsDuplicated() {
+  @DisplayName("happy path (checkLessonConflicts): permitir descrição repetida no curso")
+  void shouldAllowRepeatedDescription() {
     String courseId = new ObjectId().toString();
     String currentLessonId = new ObjectId().toString();
     String newTitle = "Aula 4";
@@ -121,8 +120,7 @@ class LessonPoliciesTest {
     when(this.lessonRepository.findAllByCourseId(courseId))
         .thenReturn(createExistingLessons(courseId));
 
-    assertThrows(
-        ConflictException.class,
+    assertDoesNotThrow(
         () ->
             this.lessonPolicies.checkLessonConflicts(
                 courseId, currentLessonId, newTitle, newLink, newDescription));
@@ -186,8 +184,8 @@ class LessonPoliciesTest {
   }
 
   @Test
-  @DisplayName("exception (checkListInternalConflicts): rejeitar lista com descrições duplicadas")
-  void shouldThrowWhenDescriptionsConflictInsideList() {
+  @DisplayName("happy path (checkListInternalConflicts): permitir lista com descrições repetidas")
+  void shouldAllowRepeatedDescriptionsInsideList() {
     CreateLessonCommand lessonWithConflict =
         new CreateLessonCommand(
             "Java Funcional",
@@ -198,8 +196,6 @@ class LessonPoliciesTest {
     List<CreateLessonCommand> lessonsWithConflict =
         List.of(commands.get(0), commands.get(1), commands.get(2), lessonWithConflict);
 
-    assertThrows(
-        ConflictException.class,
-        () -> this.lessonPolicies.checkListInternalConflicts(lessonsWithConflict));
+    assertDoesNotThrow(() -> this.lessonPolicies.checkListInternalConflicts(lessonsWithConflict));
   }
 }

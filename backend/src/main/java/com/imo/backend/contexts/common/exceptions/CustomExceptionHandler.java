@@ -7,6 +7,7 @@ import com.imo.backend.contexts.common.exceptions.custom.NotFoundException;
 import com.imo.backend.contexts.common.exceptions.custom.UnauthorizedException;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 @Slf4j
@@ -63,6 +65,18 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         HttpStatus.BAD_REQUEST);
   }
 
+  @Override
+  protected ResponseEntity<Object> handleMaxUploadSizeExceededException(
+      MaxUploadSizeExceededException ex,
+      HttpHeaders headers,
+      HttpStatusCode status,
+      WebRequest request) {
+    return new ResponseEntity<>(
+        new ErrorResponseDto(
+            "PAYLOAD_TOO_LARGE", "O arquivo enviado excede o tamanho máximo permitido"),
+        HttpStatus.PAYLOAD_TOO_LARGE);
+  }
+
   @ExceptionHandler(MethodArgumentTypeMismatchException.class)
   public final ResponseEntity<Object> handleMethodArgumentTypeMismatchException(
       MethodArgumentTypeMismatchException ex) {
@@ -96,6 +110,12 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         new ErrorResponseDto("CONFLICT", ex.getMessage()), HttpStatus.CONFLICT);
   }
 
+  @ExceptionHandler(DuplicateKeyException.class)
+  public final ResponseEntity<Object> handleDuplicateKeyException(DuplicateKeyException ex) {
+    return new ResponseEntity<>(
+        new ErrorResponseDto("CONFLICT", this.resolveDuplicateKeyMessage(ex)), HttpStatus.CONFLICT);
+  }
+
   @ExceptionHandler(UnauthorizedException.class)
   public final ResponseEntity<Object> handleUnauthorizedException(UnauthorizedException ex) {
     return new ResponseEntity<>(
@@ -108,5 +128,32 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
     return new ResponseEntity<>(
         new ErrorResponseDto("INTERNAL_ERROR", "Erro interno do servidor"),
         HttpStatus.INTERNAL_SERVER_ERROR);
+  }
+
+  private String resolveDuplicateKeyMessage(DuplicateKeyException ex) {
+    String message =
+        Optional.ofNullable(ex.getMostSpecificCause()).map(Throwable::getMessage).orElse("");
+
+    if (message.contains("uk_users_email")) {
+      return "O email já existe";
+    }
+
+    if (message.contains("uk_courses_contributor_slug")) {
+      return "Já existe um curso com esse nome para este usuário";
+    }
+
+    if (message.contains("uk_lessons_course_title")) {
+      return "Já existe uma aula com esse título";
+    }
+
+    if (message.contains("uk_lessons_course_youtube_link")) {
+      return "Já existe uma aula com este link";
+    }
+
+    if (message.contains("uk_lessons_course_index")) {
+      return "Já existe uma aula nessa posição";
+    }
+
+    return "Conflito de dados duplicados";
   }
 }

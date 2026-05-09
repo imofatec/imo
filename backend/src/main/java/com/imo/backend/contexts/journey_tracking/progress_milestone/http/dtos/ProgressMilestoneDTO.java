@@ -2,6 +2,7 @@ package com.imo.backend.contexts.journey_tracking.progress_milestone.http.dtos;
 
 import com.imo.backend.contexts.common.HttpDateTimeFormatter;
 import com.imo.backend.contexts.journey_tracking.progress_milestone.ProgressMilestone;
+import com.imo.backend.contexts.journey_tracking.progress_milestone.lib.ProgressMilestoneUrlBuilder;
 
 public record ProgressMilestoneDTO(
     String id,
@@ -29,15 +30,7 @@ public record ProgressMilestoneDTO(
         HttpDateTimeFormatter.toDate(progressMilestone.getCourseStartedAtSnapshot()),
         HttpDateTimeFormatter.toDate(progressMilestone.getCourseFinishedAtSnapshot()),
         HttpDateTimeFormatter.toDateTime(progressMilestone.getGeneratedAt()),
-        buildShareUrl(baseUrl, progressMilestone.getPublicCode()),
-        buildImageUrl(baseUrl, progressMilestone.getPublicCode()));
-  }
-
-  public static String buildShareUrl(String baseUrl, String publicCode) {
-    return baseUrl + "/m/" + publicCode;
-  }
-
-  public static String buildImageUrl(String baseUrl, String publicCode) {
-    return baseUrl + "/api/progress/milestones/public/" + publicCode + "/image.png";
+        ProgressMilestoneUrlBuilder.buildShareUrl(baseUrl, progressMilestone.getPublicCode()),
+        ProgressMilestoneUrlBuilder.buildImageUrl(baseUrl, progressMilestone.getPublicCode()));
   }
 }

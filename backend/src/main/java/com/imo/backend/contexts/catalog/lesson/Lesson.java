@@ -7,10 +7,26 @@ import java.util.stream.IntStream;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.bson.types.ObjectId;
+import org.springframework.data.mongodb.core.index.CompoundIndex;
+import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document("lessons")
 @EqualsAndHashCode(callSuper = true)
+@CompoundIndexes({
+  @CompoundIndex(
+      name = "uk_lessons_course_index",
+      def = "{'courseId': 1, 'indexInCourse': 1}",
+      unique = true),
+  @CompoundIndex(
+      name = "uk_lessons_course_title",
+      def = "{'courseId': 1, 'title': 1}",
+      unique = true),
+  @CompoundIndex(
+      name = "uk_lessons_course_youtube_link",
+      def = "{'courseId': 1, 'youtubeLink': 1}",
+      unique = true)
+})
 @Data
 public class Lesson extends Entity {
   // relations

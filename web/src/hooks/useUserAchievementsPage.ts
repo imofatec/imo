@@ -1,5 +1,4 @@
 import authAxiosInstance from '@/api/authAxiosInstance'
-import { resolveAchievementImageSrc } from '@/lib/resolveAchievementImageSrc'
 import { safeAwait } from '@/lib/safeAwait'
 import type {
   Achievement,
@@ -33,7 +32,6 @@ function formatUnlockedAt(value: string | null) {
 function mapAchievementItem(achievement: Achievement): AchievementListItem {
   return {
     ...achievement,
-    imageSrc: resolveAchievementImageSrc(achievement.imageUrl),
     unlockedLabel: formatUnlockedAt(achievement.unlockedAt),
     isUnlocked: Boolean(achievement.unlockedAt),
   }

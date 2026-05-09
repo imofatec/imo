@@ -24,11 +24,14 @@ Exemplo:
 
 ```properties
 server.port=8081
+backend.base-url=http://localhost:8080
 spring.data.mongodb.database=imo_dev
 frontend.client.url=http://localhost:5173
 email.username=meu email
 email.password=minha senha de app
 ```
+
+Use `backend.base-url=http://localhost:8080` como valor local padrão quando quiser que o backend devolva URLs absolutas de uploads, achievements e links públicos. Em produção, defina `BACKEND_BASE_URL` com a URL pública real da API.
 
 Use variáveis de ambiente apenas se preferir esse modelo de configuração ou se estiver integrando o backend com outro ambiente.
 

@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
+import com.imo.backend.contexts.common.ApplicationUrlHelper;
 import com.imo.backend.contexts.recognition.*;
 import com.imo.backend.contexts.recognition.repositories.StaticAchievementRepository;
 import com.imo.backend.contexts.recognition.repositories.StaticAchievementRepository.StaticAchievementsKeys;
@@ -16,6 +17,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.mock.env.MockEnvironment;
 
 @ExtendWith(MockitoExtension.class)
 class AchievementPoliciesTest {
@@ -26,7 +28,11 @@ class AchievementPoliciesTest {
   @InjectMocks private AchievementPolicies achievementPolicies;
 
   private final StaticAchievementRepository staticAchievementRepository =
-      new StaticAchievementRepository();
+      new StaticAchievementRepository(
+          new ApplicationUrlHelper(
+              new MockEnvironment()
+                  .withProperty("backend.base-url", "http://localhost:8080")
+                  .withProperty("frontend.client.url", "http://localhost:5173")));
 
   @Test
   @DisplayName(

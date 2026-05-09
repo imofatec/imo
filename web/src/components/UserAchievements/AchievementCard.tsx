@@ -8,13 +8,14 @@ type AchievementCardProps = {
 
 export default function AchievementCard({ achievement, hideProgress = false }: AchievementCardProps) {
   const progress = Math.min(Math.max(achievement.progressPercentage ?? 0, 0), 100)
+  const imageSrc = achievement.imageUrl?.trim() || null
 
   return (
     <article className="group hover:border-cyan/30 relative overflow-visible rounded-3xl border border-white/10 bg-[#14082f] p-4 transition hover:-translate-y-1 hover:bg-[#1a0d3c]">
       <div className="relative flex aspect-square items-center justify-center overflow-hidden rounded-2xl border border-white/10 bg-[#0f0628] p-4">
-        {achievement.imageSrc ? (
+        {imageSrc ? (
           <img
-            src={achievement.imageSrc}
+            src={imageSrc}
             alt={achievement.title}
             className={`h-full w-full object-contain transition ${achievement.isUnlocked ? '' : 'opacity-45 grayscale'}`}
           />

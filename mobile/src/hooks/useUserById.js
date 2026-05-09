@@ -1,7 +1,6 @@
 import { useEffect, useState, useCallback } from "react"
 import { apiFetch } from "../api/apiFetch";
 import { safeAwait } from "../lib/safeAwait";
-import { baseURL } from "../api/enviroment";
 
 export function useUserById(userId) {
     const [user, setUser] = useState(null);
@@ -25,10 +24,11 @@ export function useUserById(userId) {
         setError(null);
         setLoading(false);
 
-        if (data.profilePicturePath === '') {
+        if (!data.profilePicturePath) {
+            setUrlImage('')
             return
         }
-        setUrlImage(`${baseURL}/uploads/${data.profilePicturePath}`)
+        setUrlImage(data.profilePicturePath)
 
     }, [userId]);
     useEffect(() => {

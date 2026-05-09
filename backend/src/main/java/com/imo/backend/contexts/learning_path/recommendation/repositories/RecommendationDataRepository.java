@@ -4,7 +4,7 @@ import com.imo.backend.contexts.catalog.course.Course;
 import com.imo.backend.contexts.common.exceptions.custom.NotFoundException;
 import com.imo.backend.contexts.identity.user.User;
 import com.imo.backend.contexts.journey_tracking.progress.Progress;
-import com.imo.backend.contexts.journey_tracking.progress.value_objects.ProgressStatus;
+import com.imo.backend.contexts.journey_tracking.progress.ProgressStatus;
 import com.imo.backend.contexts.learning_path.recommendation.RecommendationCourseDetails;
 import com.imo.backend.contexts.learning_path.recommendation.RecommendationSkillDetails;
 import com.imo.backend.contexts.learning_path.recommendation.gateways.RecommendationDataGateway;

@@ -1,7 +1,6 @@
 package com.imo.backend.contexts.catalog.course;
 
 import com.imo.backend.contexts.catalog.course.repositories.CourseRepository;
-import com.imo.backend.contexts.catalog.course.value_objects.Category;
 import com.imo.backend.contexts.catalog.skill.Skill;
 import com.imo.backend.contexts.catalog.skill.repositories.SkillRepository;
 import com.imo.backend.contexts.common.exceptions.custom.BadRequestException;

@@ -10,7 +10,11 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface UserRepository extends MongoRepository<User, String>, CustomUserRepository {
-  Optional<User> findByEmail(String email);
+  Optional<User> findFirstByEmail(String email);
+
+  default Optional<User> findByEmail(String email) {
+    return this.findFirstByEmail(User.normalizeEmail(email));
+  }
 
   @Query("{ '_id': { $in: ?0 } }")
   List<User> findByIds(List<String> ids);

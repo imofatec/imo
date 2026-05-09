@@ -98,6 +98,54 @@ class LessonE2ETest extends BaseE2ETest {
   }
 
   @Test
+  @DisplayName(
+      "exception (POST /api/lesson/{courseId}): retorna 409 quando título já existe no curso")
+  void shouldReturn409WhenLessonTitleAlreadyExistsInCourse() {
+    String token = IdentityTestHelper.registerAndLogin(TestUser.defaultUser());
+    CourseDetailsDTO courseDetails =
+        CatalogTestHelper.createCourse(token, TestCourse.defaultCourse());
+    TestLesson duplicatedTitleLesson =
+        new TestLesson(
+            courseDetails.lessons().getFirst().getTitle(),
+            "Outra descrição",
+            "https://www.youtube.com/watch?v=8hly31xKli0");
+
+    given()
+        .header("Authorization", "Bearer " + token)
+        .contentType(ContentType.JSON)
+        .body(duplicatedTitleLesson.toCreateRequest())
+        .when()
+        .post("/api/lesson/{courseId}", courseDetails.course().id())
+        .then()
+        .statusCode(HttpStatus.CONFLICT.value())
+        .contentType(ContentType.JSON)
+        .body("error", equalTo("CONFLICT"));
+  }
+
+  @Test
+  @DisplayName(
+      "exception (POST /api/lesson/{courseId}): retorna 409 quando link já existe no curso")
+  void shouldReturn409WhenLessonLinkAlreadyExistsInCourse() {
+    String token = IdentityTestHelper.registerAndLogin(TestUser.defaultUser());
+    CourseDetailsDTO courseDetails =
+        CatalogTestHelper.createCourse(token, TestCourse.defaultCourse());
+    TestLesson duplicatedLinkLesson =
+        new TestLesson(
+            "Outro título", "Outra descrição", courseDetails.lessons().getFirst().getYoutubeLink());
+
+    given()
+        .header("Authorization", "Bearer " + token)
+        .contentType(ContentType.JSON)
+        .body(duplicatedLinkLesson.toCreateRequest())
+        .when()
+        .post("/api/lesson/{courseId}", courseDetails.course().id())
+        .then()
+        .statusCode(HttpStatus.CONFLICT.value())
+        .contentType(ContentType.JSON)
+        .body("error", equalTo("CONFLICT"));
+  }
+
+  @Test
   @DisplayName("exception (POST /api/lesson/{courseId}): retorna 400 quando courseId é inválido")
   void shouldReturn400WhenCourseIdIsInvalid() {
     String token = IdentityTestHelper.registerAndLogin(TestUser.defaultUser());

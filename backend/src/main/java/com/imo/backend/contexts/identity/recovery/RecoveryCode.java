@@ -18,7 +18,8 @@ public class RecoveryCode extends Entity {
 
   private boolean wasUsed;
 
-  @Indexed(expireAfter = "10m")
+  // Expires exactly at the timestamp stored in expiresAt.
+  @Indexed(expireAfter = "0s")
   private LocalDateTime expiresAt;
 
   public RecoveryCode() {}

@@ -1,5 +1,6 @@
 package com.imo.backend.contexts.journey_tracking.progress.events;
 
+import com.imo.backend.contexts.catalog.lesson.events.LessonsListUpdatedEvent;
 import com.imo.backend.contexts.catalog.lesson.repositories.LessonRepository;
 import com.imo.backend.contexts.common.Entity;
 import com.imo.backend.contexts.journey_tracking.progress.Progress;
@@ -23,7 +24,7 @@ public class ProgressEventListener {
 
   @Async
   @EventListener
-  public void execute(ReevaluateProgressEvent event) {
+  public void execute(LessonsListUpdatedEvent event) {
     int page = 0;
     int size = 100;
     List<Progress> progressList;

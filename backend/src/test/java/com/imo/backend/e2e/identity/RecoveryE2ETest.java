@@ -157,4 +157,40 @@ class RecoveryE2ETest extends BaseE2ETest {
         .then()
         .statusCode(HttpStatus.OK.value());
   }
+
+  @Test
+  @DisplayName(
+      "happy path (POST /api/recovery/password/send-code): permite solicitar novo código após reset")
+  void shouldAllowSendingAnotherRecoveryCodeAfterPasswordReset() {
+    TestUser user = registerUser();
+
+    given()
+        .contentType(ContentType.JSON)
+        .body(new SendRecoveryCodeRequest(user.email()))
+        .when()
+        .post("/api/recovery/password/send-code")
+        .then()
+        .statusCode(HttpStatus.OK.value());
+
+    given()
+        .contentType(ContentType.JSON)
+        .body(new ResetPasswordRequest(user.email(), "Nova1234", CODE))
+        .when()
+        .patch("/api/recovery/password/reset")
+        .then()
+        .statusCode(HttpStatus.OK.value());
+
+    given()
+        .contentType(ContentType.JSON)
+        .body(new SendRecoveryCodeRequest(user.email()))
+        .when()
+        .post("/api/recovery/password/send-code")
+        .then()
+        .statusCode(HttpStatus.OK.value())
+        .contentType(ContentType.JSON)
+        .body(
+            "message",
+            equalTo(
+                "Se o email informado existir, você receberá uma mensagem com o código de recuperação"));
+  }
 }

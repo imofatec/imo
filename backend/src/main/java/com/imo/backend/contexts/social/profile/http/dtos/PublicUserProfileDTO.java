@@ -1,6 +1,6 @@
 package com.imo.backend.contexts.social.profile.http.dtos;
 
-import com.imo.backend.contexts.catalog.course.value_objects.Categories;
+import com.imo.backend.contexts.catalog.course.Categories;
 import java.util.List;
 
 public record PublicUserProfileDTO(
