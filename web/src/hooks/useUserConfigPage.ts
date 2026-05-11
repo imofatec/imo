@@ -168,6 +168,11 @@ export function useUserConfigPage() {
       }
 
       await updateUserRequest(payload)
+       toast.success('Informações atualizadas', {
+        id: 'user-profile-success',
+        description: 'Suas informações foram atualizadas com sucesso.',
+        duration: 3000,
+      })
       await refetch()
       resetProfileForm()
     } catch (error: unknown) {
@@ -184,6 +189,11 @@ export function useUserConfigPage() {
       const normalizedBio = data.bio.trim()
 
       await updateUserRequest({ bio: normalizedBio })
+      toast.success('Bio atualizada', {
+        id: 'user-bio-success',
+        description: 'Sua bio foi atualizada com sucesso.',
+        duration: 3000,
+      })
       await refetch()
       resetBioForm({ bio: normalizedBio })
     } catch (error: unknown) {
@@ -202,6 +212,11 @@ export function useUserConfigPage() {
         password: data.password,
       })
 
+      toast.success('Senha atualizada', {
+        id: 'user-password-success',
+        description: 'Sua senha foi atualizada com sucesso.',
+        duration: 3000,
+      })
       resetPasswordForm()
     } catch (error: unknown) {
       showRequestErrorToast(
