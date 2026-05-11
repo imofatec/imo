@@ -2,6 +2,7 @@ import { categoryOptions, levelOptions } from '@/constants/courseOptions'
 import { useCurrentCourse } from '@/hooks/useCurrentCourse'
 import { useCourseSkillsField } from '@/hooks/useCourseSkillsField'
 import { showRequestErrorToast } from '@/lib/requestToast'
+import { toast } from 'sonner'
 import {
   createCourseSchema,
   lessonSchema,
@@ -125,6 +126,11 @@ export function useEditCoursePage() {
         skillIds: data.skillIds,
       })
 
+      toast.success('Curso atualizado', {
+        id: 'edit-course-success',
+        description: 'O curso foi atualizado com sucesso.',
+        duration: 3000,
+      })
       await refetch()
       setStatusMessage('Informações do curso atualizadas com sucesso.')
     } catch (error: unknown) {
@@ -166,6 +172,11 @@ export function useEditCoursePage() {
         description: lessonData.descriptionL,
       })
 
+      toast.success('Aula atualizada', {
+        id: 'edit-lesson-success',
+        description: 'A aula foi atualizada com sucesso.',
+        duration: 3000,
+      })
       await refetch()
       setStatusMessage('Aula atualizada com sucesso.')
       resetField(`lessons.${index}.nameLesson`, { defaultValue: '' })
@@ -253,7 +264,11 @@ export function useEditCoursePage() {
       remove(newLessonIndex)
       setNewLessonIndex(null)
       await refetch()
-      setStatusMessage('Aula criada com sucesso.')
+       toast.success('Aula criada', {
+        id: 'create-lesson-success',
+        description: 'A aula foi criada com sucesso.',
+        duration: 3000,
+      })
     } catch (error: unknown) {
       showRequestErrorToast(
         error,

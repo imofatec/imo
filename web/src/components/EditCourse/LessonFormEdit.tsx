@@ -39,6 +39,7 @@ export default function LessonFormEdit({
         className="h-12 rounded-xl bg-white/5"
         error={nameError}
         minLength={15}
+        maxLength={50}
         {...register(`lessons.${index}.nameLesson` as const)}
       />
 
