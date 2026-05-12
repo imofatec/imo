@@ -1,0 +1,50 @@
+@startuml ComponentIMO
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+LAYOUT_LEFT_RIGHT()
+
+title C4 Nível 3 - Componentes da API IMO
+
+Container_Ext(webapp, "Aplicação Web", "React", "Cliente web da plataforma")
+Container_Ext(mobileapp, "Aplicação Mobile", "React Native", "Cliente mobile da plataforma")
+ContainerDb_Ext(database, "MongoDB", "Persistência NoSQL")
+ContainerQueue_Ext(eventbus, "RabbitMQ", "Mensageria assíncrona")
+System_Ext(objectstore, "S3", "Armazenamento de arquivos")
+
+Container_Boundary(api, "API IMO - Spring Boot") {
+  Component(controllers, "Controllers HTTP", "Spring Web / RestController", "Recebem requisições, validam entrada e delegam para os casos de uso")
+  Component(usecases, "Use Cases", "Application Services", "Orquestram fluxos de aplicação por contexto")
+  Component(domain, "Domain Model", "Entities, Policies, Events", "Concentra regras de negócio e invariantes")
+  Component(repositories, "Repositories", "Spring Data MongoDB / MongoTemplate", "Persistem agregados, consultas e projeções")
+  Component(events, "Event Handlers", "Spring EventListener / Async", "Reagem a eventos internos e disparam fluxos assíncronos")
+  Component(adapters, "Infra Adapters", "JWT, Mail, SSE, Storage, RabbitMQ", "Integram a aplicação com recursos técnicos e serviços externos")
+}
+
+Rel(webapp, controllers, "Chama endpoints", "JSON/HTTPS")
+Rel(mobileapp, controllers, "Chama endpoints", "JSON/HTTPS")
+
+Rel(controllers, usecases, "Encaminha comandos e consultas")
+Rel(usecases, domain, "Aplica regras de negócio")
+Rel(usecases, repositories, "Lê e grava dados")
+Rel(usecases, adapters, "Usa serviços técnicos")
+Rel(usecases, events, "Publica eventos internos")
+Rel(events, usecases, "Dispara fluxos assíncronos")
+
+Rel(repositories, database, "Spring Data MongoDB")
+Rel(adapters, eventbus, "Publica e consome mensagens", "Spring AMQP")
+Rel(adapters, objectstore, "Salva e consulta arquivos", "S3 API")
+
+note right of usecases
+Exemplos no código:
+- CreateUserUseCase
+- CreateCourseUseCase
+- WatchLessonByIdUseCase
+end note
+
+note bottom of api
+Esse padrão se repete nos contextos:
+identidade, catálogo, jornada, aprendizado,
+reconhecimento, social e notificação.
+end note
+
+@enduml

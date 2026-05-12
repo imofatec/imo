@@ -1,0 +1,57 @@
+@startuml IMOContextEvents
+left to right direction
+skinparam shadowing false
+skinparam linetype ortho
+skinparam nodesep 150
+skinparam ranksep 150
+skinparam ArrowColor #475569
+skinparam ArrowThickness 1.2
+skinparam DefaultTextAlignment center
+skinparam rectangle {
+  RoundCorner 14
+  BorderColor #334155
+  FontColor #0F172A
+}
+skinparam note {
+  BorderColor #CBD5E1
+  BackgroundColor #FFFDEB
+  FontColor #334155
+}
+
+title IMO - Fluxo de Eventos Entre Contextos
+
+rectangle "Catálogo\n(Curso, Aula, Skill)" as catalog #EEF8E8
+rectangle "Jornada\n(Progresso, Marco)" as journey #FFF3E6
+rectangle "Reconhecimento\n(Conquistas)" as recognition #FFF8D8
+rectangle "Aprendizagem\n(Skill Profile, Recomendação)" as learning #EAFBF7
+rectangle "Notificação\n(E-mail, SSE)" as notification #FFE8EF
+
+catalog -[hidden]right-> journey
+journey -[hidden]right-> recognition
+recognition -[hidden]down-> notification
+catalog -[hidden]down-> learning
+learning -[hidden]right-> notification
+
+catalog ..> journey : aulas atualizadas, progressos precisam ser reavaliados
+catalog ..> learning : catálogo alterado
+
+journey ..> learning : curso finalizado
+journey ..> recognition : uso / conclusão
+
+recognition ..> notification : desbloqueio
+
+note top of journey
+Jornada é o ponto central dos eventos de uso.
+end note
+
+legend bottom
+..> reação assíncrona por evento publicado
+
+Catálogo -> Jornada: LessonListUpdatedEvent
+Catálogo -> Aprendizagem: CourseCreated, CourseSkillIdsChanged, CourseStatusToggled
+Jornada -> Aprendizagem: CourseFinishedEvent
+Jornada -> Reconhecimento: LessonWatchedEvent, CourseFinishedEvent
+Reconhecimento -> Notificação: AchievementUnlockedEvent
+endlegend
+
+@enduml

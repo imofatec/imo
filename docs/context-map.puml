@@ -1,0 +1,55 @@
+@startuml IMOContextMap
+left to right direction
+skinparam shadowing false
+skinparam linetype ortho
+skinparam nodesep 150
+skinparam ranksep 150
+skinparam ArrowColor #475569
+skinparam ArrowThickness 1.2
+skinparam DefaultTextAlignment center
+skinparam rectangle {
+  RoundCorner 14
+  BorderColor #334155
+  FontColor #0F172A
+}
+
+title IMO - Context Map Estrutural
+
+rectangle "Identidade\n(Usuário, Autenticação)" as identity #E8F1FF
+rectangle "Catálogo\n(Curso, Aula, Skill)" as catalog #EEF8E8
+rectangle "Jornada\n(Progresso, Marco)" as journey #FFF3E6
+rectangle "Social\n(Comentário, Perfil público)" as social #F4ECFF
+rectangle "Aprendizagem\n(Skill Profile, Recomendação)" as learning #EAFBF7
+rectangle "Reconhecimento\n(Conquistas)" as recognition #FFF8D8
+rectangle "Notificação\n(E-mail, SSE)" as notification #FFE8EF
+rectangle "YouTube\n(sistema externo)" as youtube #EEEEEE
+
+identity -[hidden]right-> catalog
+catalog -[hidden]right-> journey
+journey -[hidden]right-> social
+catalog -[hidden]down-> youtube
+journey -[hidden]down-> learning
+social -[hidden]down-> recognition
+recognition -[hidden]right-> notification
+
+identity --> catalog : JWT / autoria
+identity --> journey : progresso por usuário
+identity --> notification : conta / recuperação
+
+catalog --> journey : curso / aula
+catalog --> learning : cursos / skills
+catalog --> youtube : videoId
+
+journey --> social : atividade / marco
+recognition --> social : conquistas no perfil
+
+note right of social
+O perfil público combina dados de identidade,
+atividade e conquistas.
+end note
+
+legend bottom
+--> dependência estrutural, consulta ou fonte de dados
+endlegend
+
+@enduml
