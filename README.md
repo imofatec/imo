@@ -1,59 +1,44 @@
 # IMO
 
-Software multiplataforma de aprendizagem que organiza conteúdos técnicos externos, especialmente vídeos do YouTube, em trilhas de estudo com progresso, interação.
+Software multiplataforma de aprendizagem que organiza vídeos técnicos da área de desenvolvimento de software do YouTube, em cursos com progresso, interação e recomendação.
 
 ## Visão geral
 
-Aprender tecnologia pela internet costuma significar navegar por conteúdos relevantes, porém dispersos, sem sequência clara e sem acompanhamento de progresso. Plataformas como o YouTube concentram muito material de qualidade, mas não foram desenhadas para organizar uma jornada estruturada de aprendizagem técnica.
+Aprender tecnologia pela internet costuma significar navegar por muito conteúdo relevante, porém disperso, sem sequência clara e sem acompanhamento de progresso. Plataformas como o YouTube concentram material de qualidade, mas não foram desenhadas para organizar cursos de um nicho específico.
 
-A IMO foi criada para atuar como uma camada de curadoria sobre esses conteúdos, organizando links e materiais externos em cursos e trilhas com começo, meio e fim. O objetivo é transformar consumo solto de conteúdo em uma experiência de estudo mais guiada, acompanhável e integrada entre web e mobile.
-
-## Exemplos de telas
-
-### Web
-
-![Placeholder - Web Page](https://placehold.co/1200x675?text=IMO+Page+Example)
-
-### Mobile
-
-![Placeholder - Mobile page](https://placehold.co/720x1280?text=IMO+Page+Example)
+A IMO foi criada para atuar como uma camada de curadoria sobre esses vídeos, transformando o consumo solto em uma experiência de estudo mais guiada. Além de organizar cursos e aulas, a plataforma acompanha o progresso, mantém sinais da jornada do usuário e passa a recomendar os próximos cursos com base em skills e lacunas de proficiência.
 
 ## Como a IMO funciona
 
-A IMO permite que os próprios usuário submetam e organizem conteúdos técnicos já publicados na internet em cursos. Em vez de consumir vídeos isolados e materiais desconectados, o usuário percorre uma jornada que já foi estruturada por outra pessoa, acompanha a evolução por aula, interage com outros usuários.
+Na prática, a plataforma permite que usuários organizem vídeos, já publicados na internet, em cursos. A partir disso, outros usuários podem consumir as aulas, acompanhar a própria evolução e interagir com a comunidade.
 
-Na prática, a plataforma oferece:
+Hoje, a IMO oferece:
 
 - Cursos e aulas organizados em sequência
-- Acompanhamento de progresso
-- Interação social por comentários
+- Acompanhamento de progresso por aula e por curso
+- Comentários em aulas
+- Perfil público com atividades e marcos compartilhados
+- Conquistas desbloqueadas ao longo da jornada
+- Recomendações orientadas por skills e lacunas de proficiência
+- Notificações assíncronas e em tempo real
 - Experiência integrada entre web e mobile
-
-## Números do projeto
-
-- ~30 endpoints HTTP no backend
-- ~10 páginas
-- ~76% cobertura de testes do backend
-- ~?% cobertura de testes do frontend web
-- ~?% cobertura de testes do mobile
-- Pipelines de CI e CD para homologação e produção
 
 ## Decisões de engenharia e maturidade técnica
 
-O projeto foi desenvolvido com decisões conscientes de design, arquitetura e qualidade, buscando refletir preocupações reais de engenharia além da escolha de tecnologias.
+O projeto foi desenvolvido com preocupações explícitas de arquitetura, qualidade e evolução incremental. A implementação segue a ideia de um monólito modular, com organização interna por contextos de negócio e fronteiras mais claras entre responsabilidades.
 
 - Organização do backend por contextos de negócio, evitando uma estrutura única centrada em CRUD
-- Separação entre camada HTTP, casos de uso, repositórios e regras de domínio
-- Encapsulamento de comportamentos e invariantes em entidades e policies
-- Uso de comunicação assíncrona para fluxos e integrações entre partes do sistema
+- Separação entre camada HTTP, casos de uso, repositórios, integrações e regras de domínio
+- Inspiração em domínio rico, com entidades, policies e invariantes encapsuladas no modelo
+- Comunicação assíncrona por eventos para fluxos entre catálogo, jornada, reconhecimento, recomendação e notificação
 - Tratamento padronizado de erros e respostas da API
-- Documentação OpenAPI para consumo e teste da API
-- Testes automatizados em múltiplas camadas
-- Integração contínua executada em Pull Requests
-- Deploy contínuo para ambientes distintos
-- Infraestrutura e deploy automatizados em AWS
+- Documentação OpenAPI com Swagger UI e Scalar UI
+- Testes automatizados em múltiplas camadas: unidade, integração, E2E e UI
+- Integração contínua em Pull Requests
+- Deploy contínuo para homologação e produção
+- Infraestrutura e entrega automatizadas em AWS
 
-Embora o projeto não tenha sido implementado formalmente como DDD, houve uma preocupação consciente em enriquecer o domínio e aplicar orientação a objetos de forma intencional, evitando uma modelagem limitada a classes genéricas e operações básicas de CRUD.
+Embora o projeto não tenha sido implementado formalmente como DDD, houve uma preocupação consciente em enriquecer o domínio e em aproximar o código das regras de negócio da plataforma.
 
 ## O que este projeto demonstra
 
@@ -65,6 +50,7 @@ Como equipe, o projeto demonstra capacidade de:
 - Estruturar testes automatizados em diferentes níveis
 - Integrar aplicações com mensageria e serviços externos
 - Automatizar validação e deploy em ambientes de nuvem
+- Evoluir uma plataforma para além de operações básicas de cadastro
 
 ## Estrutura do monorepo
 
@@ -73,6 +59,7 @@ Como equipe, o projeto demonstra capacidade de:
 | `backend/` | API principal em Java com Spring Boot   |
 | `web/`     | Aplicação web em React + Vite           |
 | `mobile/`  | Aplicação mobile em React Native + Expo |
+| `docs/`    | Diagramas e artefatos de arquitetura    |
 
 ## Como rodar cada ambiente
 
@@ -84,30 +71,47 @@ As instruções detalhadas de execução ficam em cada aplicação:
 
 ## Domínios da plataforma
 
-Do ponto de vista de negócio, a plataforma está organizada em seis contextos:
+Do ponto de vista de negócio, a plataforma está organizada em sete contextos:
 
 - `Identidade`: cadastro, autenticação, autorização e ciclo de vida da conta
-- `Catálogo`: cursos, aulas e organização do conteúdo
-- `Jornada de aprendizagem`: progresso, consumo de aulas e conclusão
-- `Social`: comentários e interação entre usuários
-- `Notificação`: orquestra o envio assíncrono de comunicações disparadas por diferentes operações da plataforma
+- `Catálogo`: cursos, aulas, categorias e skills associadas ao conteúdo
+- `Jornada`: progresso do usuário, consumo de aulas e marcos compartilháveis
+- `Aprendizagem`: perfil de skills e recomendação de próximos cursos
+- `Social`: comentários e perfil público com atividade do usuário
+- `Reconhecimento`: conquistas e regras de desbloqueio ao longo da jornada
+- `Notificação`: orquestração assíncrona de e-mails, SSE e comunicações disparadas por eventos da plataforma
 
 ## Stack principal
 
-| Camada         | Tecnologias                                                      |
-| :------------- | :--------------------------------------------------------------- |
-| Backend        | Java 21, Spring Boot, Maven, MongoDB, RabbitMQ, JWT              |
-| Web            | React, TypeScript, Vite, Tailwind CSS                            |
-| Mobile         | React Native, Expo                                               |
-| Qualidade      | JUnit, Mockito, Rest Assured, Testcontainers, Playwright, Vitest |
-| Infraestrutura | Docker, GitHub Actions, AWS, MongoDB Atlas, CloudAMQP            |
+| Camada         | Tecnologias                                                                                                  |
+| :------------- | :----------------------------------------------------------------------------------------------------------- |
+| Backend        | Java 21, Spring Boot, Maven, MongoDB, RabbitMQ, JWT, Spring Security, Spring Mail, Springdoc, Scalar, AWS S3 |
+| Web            | React 19, TypeScript, Vite, React Router, Tailwind CSS 4, React Hook Form, Zod, Axios                        |
+| Mobile         | React Native, Expo, Expo Router, NativeWind, React Hook Form, Zod                                            |
+| Qualidade      | JUnit, Mockito, Rest Assured, Testcontainers, JaCoCo, Playwright                                             |
+| Infraestrutura | Docker, GitHub Actions, AWS ECS, ECR, S3, CloudFront, ALB, IAM, SSM, MongoDB Atlas, CloudAMQP                |
 
-## Demonstração e documentação complementar
+## CI/CD e infraestrutura
 
-- Vídeo de demonstração: [placeholder]()
-- Relatório técnico: [placeholder]()
-- Requisitos e regras de negócio: [placeholder](s)
-- Análise de risco: [placeholder]()
+O projeto possui pipelines separados para backend e web.
+
+- O backend executa validação automatizada em Pull Requests e deploy contínuo por branch: homologação em `develop` e produção em `master`
+- O deploy do backend utiliza Docker, Amazon ECR e Amazon ECS
+- O frontend web executa testes E2E no CI e deploy em Amazon S3, com distribuição via CloudFront
+- A autenticação da pipeline com a AWS utiliza OIDC, evitando credenciais estáticas no repositório
+
+## Arquitetura e documentação complementar
+
+- Relatório técnico: [PDF](https://drive.google.com/file/d/15P-z4X15PUKV5S0RMsh1uc-ZeS7i92vL/view?usp=sharing)
+- Apresentação: [PDF](https://drive.google.com/file/d/1IAsyU9Xxz1II7nAcwYAYRNhJbmf37yGR/view?usp=sharing)
+- Context Map estrutural: [`docs/context-map.puml`](docs/context-map.puml)
+- Fluxo de eventos entre contextos: [`docs/context-events.puml`](docs/context-events.puml)
+- C4 nível 1: [`docs/c4/context.puml`](docs/c4/context.puml)
+- C4 nível 2: [`docs/c4/container.puml`](docs/c4/container.puml)
+- C4 nível 3 da API: [`docs/c4/component.puml`](docs/c4/component.puml)
+- C4 nível 3 da aplicação web: [`docs/c4/component-web.puml`](docs/c4/component-web.puml)
+- Requisitos e regras de negócio: [Google Docs](https://docs.google.com/document/d/1ppUHqpMedrUB-X3jCE1EB0Yd62vp4r6L/edit?usp=sharing&ouid=118107849553791070174&rtpof=true&sd=true)
+- Histórias de usuário e análise de risco: [Google Sheets](https://docs.google.com/spreadsheets/d/13NYt1LqwIODdfDzTfWS20svd2fkz3Mahpeb3dQzeGY0/edit?usp=sharing)
 
 ## Contexto acadêmico
 

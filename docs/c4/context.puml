@@ -1,0 +1,19 @@
+@startuml IMOContextoNivel1
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+
+LAYOUT_LEFT_RIGHT()
+
+title C4 Nível 1 - Contexto da IMO
+
+Person(usuario, "Usuário", "Desenvolvedor que consome cursos, acompanha jornada, visita perfis e recebe recomendações")
+Person(contribuidor, "Contribuidor", "Usuário que cria e mantém cursos")
+
+System(imo, "Plataforma IMO", "Curadoria de cursos técnicos com rastreamento de jornada, recomendações e conquistas")
+
+System_Ext(youtube, "YouTube", "Origem dos vídeos das aulas")
+
+Rel(usuario, imo, "Consulta cursos, marca aulas assistidas, visita perfis, comenta, recebe recomendações e desbloqueia conquistas")
+Rel(contribuidor, imo, "Cria e atualiza cursos e aulas")
+Rel(imo, youtube, "Incorpora vídeos por ID", "HTTPS")
+
+@enduml

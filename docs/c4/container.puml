@@ -1,0 +1,46 @@
+@startuml ContainerIMO
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+LAYOUT_LEFT_RIGHT()
+
+title C4 Nível 2 - Containers da IMO
+
+Person(usuario, "Usuário", "Consome cursos, acompanha jornada, visita perfis, recebe recomendações e comenta")
+Person(contribuidor, "Contribuidor", "Cria e mantém cursos e aulas")
+
+System_Ext(youtube, "YouTube", "Provedor externo de vídeos")
+
+System_Boundary(imo, "IMO") {
+  Container(webapp, "Aplicação Web", "React", "Interface web")
+  Container(mobileapp, "Aplicação Mobile", "React Native", "Interface mobile")
+  Container(api, "API IMO", "Spring Boot", "Monólito modular")
+  ContainerDb(database, "Banco de Dados", "MongoDB", "Persistência NoSQL de dados da plataforma")
+  ContainerQueue(eventbus, "Broker", "RabbitMQ", "Mensageria para processamento assíncrono")
+  Container(objectstore, "Armazenamento de Arquivos", "S3", "Armazena somente fotos de perfil dos usuários")
+}
+
+Rel(usuario, webapp, "Usa", "HTTPS")
+Rel(usuario, mobileapp, "Usa", "HTTPS")
+Rel(contribuidor, webapp, "Usa", "HTTPS")
+Rel(contribuidor, mobileapp, "Usa e publica cursos", "HTTPS")
+
+Rel(webapp, api, "Chama API", "JSON/HTTPS")
+Rel(mobileapp, api, "Chama API", "JSON/HTTPS")
+Rel(webapp, youtube, "Incorpora vídeos", "HTTPS")
+Rel(mobileapp, youtube, "Incorpora vídeos", "HTTPS")
+
+Rel(api, database, "Lê e grava dados", "Spring Data MongoDB")
+Rel(api, eventbus, "Publica eventos", "Spring AMQP")
+Rel(eventbus, api, "Entrega eventos para handlers internos", "Spring AMQP")
+Rel(api, objectstore, "Salva e consulta fotos de perfil", "S3 API")
+
+note right of api
+Handlers assíncronos no próprio monólito:
+- rastreamento de jornada
+- desbloqueio de conquistas
+- motor de recomendações
+- entrega de e-mails
+- notificação SSE
+end note
+
+@enduml

@@ -1,0 +1,64 @@
+@startuml ComponentIMOWeb
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+LAYOUT_LEFT_RIGHT()
+
+title C4 Nível 3 - Componentes da Aplicação Web IMO
+
+Person(user, "Usuário", "Interage com a plataforma pelo navegador")
+Container(api, "API IMO", "Spring Boot", "Backend da plataforma")
+System_Ext(browserapis, "Browser APIs", "localStorage, EventSource, Blob, URL", "Recursos do navegador usados pela aplicação")
+
+Container_Boundary(webapp, "Aplicação Web IMO - React / Vite") {
+  Component(routes, "Pages e Route Guards", "React Router", "Define navegação, layout base e controle de acesso")
+  Component(components, "Feature Components", "React Components", "Renderizam telas, seções, cards, formulários e interações")
+  Component(hooks, "Hooks de Aplicação", "Custom Hooks", "Orquestram estado da tela, carregamento de dados e fluxos de usuário")
+  Component(contexts, "Contexts de Sessão", "React Context", "Mantém autenticação, perfil carregado e estado global simples")
+  Component(forms, "Schemas e Formulários", "Zod + React Hook Form", "Validam entrada e controlam formulários")
+  Component(services, "Services e API Clients", "Axios / SSE", "Encapsulam chamadas HTTP autenticadas, upload e notificações em tempo real")
+  Component(utils, "Types e Utils", "TypeScript helpers", "Padronizam tipos, tratamento de erro, paginação e transformações")
+}
+
+Rel(user, routes, "Navega e aciona fluxos", "HTTPS")
+
+Rel(routes, components, "Compõe a interface")
+Rel(routes, hooks, "Inicializa fluxos de página")
+
+Rel(components, hooks, "Consome estado e ações")
+Rel(components, forms, "Valida entrada e envia dados")
+
+Rel(hooks, contexts, "Lê e atualiza sessão e perfil")
+Rel(hooks, services, "Busca e envia dados")
+Rel(hooks, utils, "Usa helpers e tipos")
+
+Rel(services, api, "Consome endpoints", "JSON/HTTPS")
+Rel(services, browserapis, "Usa stream, token e download")
+Rel(contexts, browserapis, "Persiste sessão", "localStorage")
+
+note right of hooks
+Exemplos no código:
+- useCourses
+- useCurrentCourse
+- useUserConfigPage
+end note
+
+note right of contexts
+Exemplos no código:
+- AuthContext
+- UserContext
+end note
+
+note right of services
+Exemplos no código:
+- loginRequest
+- createCourseRequest
+- createAuthEventSource
+end note
+
+note bottom of webapp
+Esse padrão se repete nas funcionalidades:
+autenticação, catálogo, cursos, aprendizado,
+perfil, configurações, social e conquistas.
+end note
+
+@enduml
