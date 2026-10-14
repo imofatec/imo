@@ -25,14 +25,14 @@ Software multiplataforma de aprendizagem que organiza vídeos técnicos do YouTu
 
 ## Demonstração
 
-> 🚧 Vídeo demo em gravação — o player abaixo será ativado após o upload.
+> 🚧 WEB
 
-<!-- Para ativar: upe o mp4 arrastando em um comentário de Issue/PR pelo github.com e troque o valor de src pela URL gerada (https://github.com/user-attachments/assets/...) -->
-<video src="PASTE_GITHUB_VIDEO_URL_HERE" controls width="100%"></video>
+https://github.com/user-attachments/assets/0a7369db-47d9-4fce-8335-7d05815bc160
 
-Roteiro de 2 min: criar curso a partir de link do YouTube → assistir aula → ver progresso salvar → desbloquear conquista → receber recomendação por skill faltante.
+> 🚧 Mobile
 
-Sem demo pública no momento — para rodar local, siga os guias de cada módulo abaixo.
+https://github.com/user-attachments/assets/0fa45fdd-a3af-4454-85ce-29465882d86f
+
 
 ## Por que a IMO existe?
 
